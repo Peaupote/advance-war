@@ -3,6 +3,7 @@ package fr.main.view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Dimension;
+import java.awt.Point;
 
 import fr.main.view.MainFrame;
 
@@ -22,21 +23,22 @@ public abstract class Position {
 
     @Override
     protected boolean canMove (Direction d) {
-      return (d == Direction.LEFT   && x > 0) ||
-             (d == Direction.RIGHT  && x < size.width - 1) ||
-             (d == Direction.TOP    && y > 0) ||
-             (d == Direction.BOTTOM && y < size.height - 1);
+      return (d == Direction.LEFT   && position.x > 0) ||
+             (d == Direction.RIGHT  && position.x < size.width - 1) ||
+             (d == Direction.TOP    && position.y > 0) ||
+             (d == Direction.BOTTOM && position.y < size.height - 1);
     }
 
     @Override
     protected boolean hasReachLocation () {
-      return (realX == targetX * MainFrame.UNIT) &&
-             (realY == targetY * MainFrame.UNIT);
+      return (real.x == target.x * MainFrame.UNIT) &&
+             (real.y == target.y * MainFrame.UNIT);
     }
 
     public void draw (Graphics g) {
       g.setColor(Color.black);
-      g.drawRect(realX - camera.realX , realY - camera.realY, MainFrame.UNIT, MainFrame.UNIT);
+      g.drawRect(real.x - camera.real.x, real.y - camera.real.y,
+                 MainFrame.UNIT, MainFrame.UNIT);
     }
 
   }
@@ -57,28 +59,28 @@ public abstract class Position {
 
     @Override
     protected boolean canMove (Direction d) {
-      return (d == Direction.LEFT   && x > 0) ||
-             (d == Direction.RIGHT  && x + width < size.width) ||
-             (d == Direction.TOP    && y > 0) ||
-             (d == Direction.BOTTOM && y + height < size.height);
+      return (d == Direction.LEFT   && position.x > 0) ||
+             (d == Direction.RIGHT  && position.x + width < size.width) ||
+             (d == Direction.TOP    && position.y > 0) ||
+             (d == Direction.BOTTOM && position.y + height < size.height);
     }
 
     @Override
     protected boolean hasReachLocation () {
-      return (realX == targetX * MainFrame.UNIT) &&
-             (realY == targetY * MainFrame.UNIT);
+      return (real.x == target.x * MainFrame.UNIT) &&
+             (real.y == target.y * MainFrame.UNIT);
     }
 
   }
 
-  protected int x, y, realX, realY, targetX, targetY;
+  protected Point position, real, target;
   protected Direction direction;
 
   public Position (int x, int y) {
-    this.x = x;
-    this.y = y;
-    realX = x * MainFrame.UNIT;
-    realY = y * MainFrame.UNIT;
+    this.direction = Direction.NONE;
+    this.position = new Point(x, y);
+    this.target = new Point(x,y);
+    this.real = new Point(x * MainFrame.UNIT, y * MainFrame.UNIT);
   }
 
   public Position () {
@@ -86,32 +88,26 @@ public abstract class Position {
   }
 
   public final int getX () {
-    return x;
+    return position.x;
   }
 
   public final int getY () {
-    return y;
+    return position.y;
   }
 
   public final int getOffsetX () {
-    return realX - x * MainFrame.UNIT;
+    return real.x - position.x * MainFrame.UNIT;
   }
 
   public final int getOffsetY() {
-    return realY - y * MainFrame.UNIT;
+    return real.y - position.y * MainFrame.UNIT;
   }
 
   public final boolean move () {
-    if      (direction == Direction.TOP)    realY--;
-    else if (direction == Direction.LEFT)   realX--;
-    else if (direction == Direction.RIGHT)  realX++;
-    else if (direction == Direction.BOTTOM) realY++;
+    direction.move(real);
 
     if (hasReachLocation()) {
-      if      (direction == Direction.TOP)    y--;
-      else if (direction == Direction.LEFT)   x--;
-      else if (direction == Direction.RIGHT)  x++;
-      else if (direction == Direction.BOTTOM) y++;
+      direction.move(position);
       direction = Direction.NONE;
     }
 
@@ -121,11 +117,7 @@ public abstract class Position {
   public final void setDirection (Direction d) {
     if (canMove(d)) {
       direction = d;
-
-      if      (direction == Direction.TOP)    targetY--;
-      else if (direction == Direction.LEFT)   targetX--;
-      else if (direction == Direction.RIGHT)  targetX++;
-      else if (direction == Direction.BOTTOM) targetY++;
+      direction.move(target);
     }
   }
 

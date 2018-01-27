@@ -25,6 +25,6 @@ public class App {
     Universe word = new Universe("maps/maptest.map");
     System.out.println(word);
     
-    EventQueue.invokeLater(() -> new MainFrame());
+    EventQueue.invokeLater(MainFrame::new);
   }
 }

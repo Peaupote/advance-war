@@ -1,0 +1,9 @@
+*.class
+*.swp
+*.aux
+*.log
+*.dvi
+*.pdf
+*.out
+*.gz
+*.toc

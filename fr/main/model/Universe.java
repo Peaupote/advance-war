@@ -37,10 +37,15 @@ public class Universe {
     }
   }
 
-  public void draw (Graphics g, int x, int y) {
-    for (int i = y; i < y + MainFrame.WIDTH / MainFrame.UNIT; i++)
-      for (int j = x; j < x + MainFrame.HEIGHT / MainFrame.UNIT; j++)
-        map.board[i][j].draw(g, (j - x) * MainFrame.UNIT, (i - y) * MainFrame.UNIT);
+  public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
+    int firstX = x - (offsetX < 0 ? 1 : 0),
+        firstY = y - (offsetY < 0 ? 1 : 0),
+        lastX  = x + MainFrame.WIDTH / MainFrame.UNIT + (offsetX > 0 ? 1 : 0),
+        lastY  = y + MainFrame.HEIGHT / MainFrame.UNIT + (offsetY > 0 ? 1 : 0);
+
+    for (int i = firstY; i < lastY; i++)
+      for (int j = firstX; j < lastX; j++)
+        map.board[i][j].draw(g, (j - x) * MainFrame.UNIT - offsetX, (i - y) * MainFrame.UNIT - offsetY);
   }
 
   public Dimension getDimension () {

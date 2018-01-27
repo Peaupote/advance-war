@@ -15,8 +15,10 @@ public class View extends JPanel {
   @Override
   public void paintComponent (Graphics g) {
     int x = controller.camera.getX(),
-        y = controller.camera.getY();
-    controller.word.draw(g, x, y);
+        y = controller.camera.getY(),
+        offsetX = controller.camera.getOffsetX(),
+        offsetY = controller.camera.getOffsetY();
+    controller.word.draw(g, x, y, offsetX, offsetY);
     controller.cursor.draw(g);
   }
 

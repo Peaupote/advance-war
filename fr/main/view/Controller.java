@@ -23,12 +23,10 @@ public class Controller extends KeyAdapter {
   @Override
   public void keyPressed (KeyEvent e) {
     key = e.getKeyCode();
-    isListening = true;
   }
 
   @Override
   public void keyReleased (KeyEvent e) {
-    isListening = false;
   }
 
   @Override
@@ -36,18 +34,20 @@ public class Controller extends KeyAdapter {
   }
 
   public void update () {
-    if (isListening) {
-      if (key == KeyEvent.VK_UP)         moveScreen(Direction.TOP);
-      else if (key == KeyEvent.VK_LEFT)  moveScreen(Direction.LEFT);
-      else if (key == KeyEvent.VK_RIGHT) moveScreen(Direction.RIGHT);
-      else if (key == KeyEvent.VK_DOWN)  moveScreen(Direction.BOTTOM);
-      isListening = false;
+    if (!isListening) {
+      if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
+      else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
+      else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
+      else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
+      key = -1;
     }
+
+    isListening = cursor.move() || camera.move();
   }
 
-  private void moveScreen (Direction d) {
-    cursor.move(d);
-    camera.move(d);
+  private void move (Direction d) {
+    camera.setDirection (d);
+    cursor.setDirection (d);
   }
 
 }

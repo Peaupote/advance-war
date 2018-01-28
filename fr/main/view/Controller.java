@@ -2,16 +2,18 @@ package fr.main.view;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
 
 import fr.main.model.Universe;
+import fr.main.view.MainFrame;
 
-public class Controller extends KeyAdapter {
+public class Controller extends KeyAdapter implements MouseMotionListener {
 
   public final Position.Cursor cursor;
   public final Position.Camera camera;
   public final Universe word;
 
-  private int key = -1; 
   private boolean isListening = false;
 
   public Controller () {
@@ -22,7 +24,13 @@ public class Controller extends KeyAdapter {
 
   @Override
   public void keyPressed (KeyEvent e) {
-    key = e.getKeyCode();
+    int key = e.getKeyCode();
+    if (!isListening) {
+      if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
+      else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
+      else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
+      else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
+    }
   }
 
   @Override
@@ -33,15 +41,22 @@ public class Controller extends KeyAdapter {
   public void keyTyped(KeyEvent e) {
   }
 
-  public void update () {
-    if (!isListening) {
-      if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
-      else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
-      else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
-      else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
-      key = -1;
-    }
+  @Override
+  public void mouseDragged (MouseEvent e) {}
 
+  @Override
+  public void mouseMoved (MouseEvent e) {
+    if (!isListening) {
+      int x = e.getX() / MainFrame.UNIT,
+          y = e.getY() / MainFrame.UNIT;
+      cursor.setPosition (x, y);
+    }
+  }
+
+  /**
+   * Function called each loop turn
+   */
+  public void update () {
     isListening = cursor.move() || camera.move();
   }
 

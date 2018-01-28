@@ -8,6 +8,9 @@ import java.awt.Dimension;
 import java.lang.Thread;
 import java.lang.InterruptedException;
 
+/**
+ * Frame for the application
+ */
 public class MainFrame extends JFrame {
 
   public static final int WIDTH = 500, HEIGHT = 500, UNIT = 100;
@@ -20,11 +23,16 @@ public class MainFrame extends JFrame {
 
     Controller controller = new Controller();
     View view = new View(controller);
+
+    // set view to listen key events
     setFocusable(false);
     view.setFocusable(true);
+
+    // set view content
     view.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     setContentPane(view);
 
+    // main loop
     new Thread(() -> {
       while (true) {
         controller.update();

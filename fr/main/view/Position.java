@@ -7,11 +7,24 @@ import java.awt.Point;
 
 import fr.main.view.MainFrame;
 
+/**
+ * Represent a moving point on the map
+ */
 public abstract class Position {
 
+  /**
+   * Represent the user cursor
+   */
   public static class Cursor extends Position {
     
+    /**
+     * Dimension of the universe
+     */
     private final Dimension size;
+
+    /**
+     * Camera showing the game
+     */
     private final Camera camera;
 
     public Cursor (Camera camera, Dimension size) {
@@ -41,11 +54,36 @@ public abstract class Position {
                  MainFrame.UNIT, MainFrame.UNIT);
     }
 
+    public void setPosition (int x, int y) {
+      if (x >= 0 && x < camera.width && y >= 0 && y < camera.height) {
+        x = x + camera.position.x;
+        y = y + camera.position.y;
+
+        position.x = x;
+        position.y = y;
+        target.x = x;
+        target.y = y;
+
+        real.x = x * MainFrame.UNIT;
+        real.y = y * MainFrame.UNIT;
+      }
+    }
+
   }
 
+  /**
+   * Class representing the camera, ie what the user can see
+   */
   public static class Camera extends Position {
 
+    /**
+     * Dimension of the camera
+     */
     public final int width, height;
+
+    /**
+     * Dimension of the universe
+     */
     private final Dimension size;
 
     public Camera (Dimension size) {
@@ -73,7 +111,14 @@ public abstract class Position {
 
   }
 
+  /**
+   * Point representing respectivly position on the map, the position on the screen and the target postion on the map while moving
+   */
   protected Point position, real, target;
+
+  /**
+   * Moving direction
+   */
   protected Direction direction;
 
   public Position (int x, int y) {
@@ -103,6 +148,10 @@ public abstract class Position {
     return real.y - position.y * MainFrame.UNIT;
   }
 
+  /**
+   * Make the position move
+   * @return true if the movement is finished, false otherwise
+   */
   public final boolean move () {
     direction.move(real);
 
@@ -114,6 +163,9 @@ public abstract class Position {
     return direction != Direction.NONE;
   }
 
+  /**
+   * Set the movement of the position if he can move by the given way
+   */
   public final void setDirection (Direction d) {
     if (canMove(d)) {
       direction = d;
@@ -121,7 +173,14 @@ public abstract class Position {
     }
   }
 
+  /**
+   * @return true if can move by the given direction, false othewise
+   */
   protected abstract boolean canMove (Direction d);
+
+  /**
+   * @return true if real location has reach target location
+   */
   protected boolean hasReachLocation () { return true; }
 }
 

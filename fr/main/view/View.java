@@ -10,6 +10,7 @@ public class View extends JPanel {
   public View (Controller controller) {
     this.controller = controller;
     addKeyListener(controller);
+    addMouseMotionListener(controller);
   }
 
   @Override

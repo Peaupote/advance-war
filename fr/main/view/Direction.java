@@ -2,6 +2,9 @@ package fr.main.view;
 
 import java.awt.Point;
 
+/**
+ * Class listing movements
+ */
 enum Direction {
   LEFT(-1),
   RIGHT(1),
@@ -9,12 +12,19 @@ enum Direction {
   BOTTOM(1),
   NONE(0);
 
+  /**
+   * value associated to the movement
+   */
   private final int value;
 
   private Direction (final int value) {
     this.value = value;
   }
 
+  /**
+   * Translate the given point by the given direction
+   * @param Point point to move
+   */
   public void move (Point pt) {
     if      (this == Direction.TOP)    pt.translate (0, -1);
     else if (this == Direction.LEFT)   pt.translate (-1, 0);

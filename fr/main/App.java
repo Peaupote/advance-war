@@ -19,6 +19,10 @@ public class App {
       {new Sea(), new Lowland(), new Reef(), new Sea(), new Lowland(), new Sea()},
       {new Sea(), new Lowland(), new Reef(), new Sea(), new Lowland(), new Sea()},
       {new Sea(), new Lowland(), new Reef(), new Sea(), new Lowland(), new Sea()},
+      {new Sea(), new Lowland(), new Reef(), new Sea(), new Lowland(), new Sea()},
+      {new Sea(), new Lowland(), new Reef(), new Reef(), new Lowland(), new Sea()},
+      {new Lowland(), new Lowland(), new Lowland(), new Lowland(), new Lowland(), new Sea()},
+      {new Sea(), new Lowland(), new Lowland(), new Sea(), new Lowland(), new Sea()},
       {new Reef(), new Lowland(), new Lowland(), new Lowland(), new Lowland(), new Lowland()}};
     Universe.save("maps/maptest.map", map);
 

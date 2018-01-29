@@ -49,6 +49,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     if (!isListening) {
       int x = e.getX() / MainFrame.UNIT,
           y = e.getY() / MainFrame.UNIT;
+      if (x == camera.getX()) camera.setDirection(Direction.LEFT);
+      else if (y == camera.getY()) camera.setDirection(Direction.TOP);
+      else if (x == camera.getX() + camera.width - 1) camera.setDirection(Direction.RIGHT);
+      else if (y == camera.getY() + camera.height - 1) camera.setDirection(Direction.BOTTOM);
       cursor.setPosition (x, y);
     }
   }

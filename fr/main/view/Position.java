@@ -153,7 +153,7 @@ public abstract class Position {
    * @return true if the movement is finished, false otherwise
    */
   public final boolean move () {
-    direction.move(real);
+    direction.move(real, 2);
 
     if (hasReachLocation()) {
       direction.move(position);

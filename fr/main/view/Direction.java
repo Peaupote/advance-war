@@ -25,11 +25,15 @@ enum Direction {
    * Translate the given point by the given direction
    * @param Point point to move
    */
+  public void move (Point pt, int incr) {
+    if      (this == Direction.TOP)    pt.translate (0, -incr);
+    else if (this == Direction.LEFT)   pt.translate (-incr, 0);
+    else if (this == Direction.RIGHT)  pt.translate (incr, 0);
+    else if (this == Direction.BOTTOM) pt.translate (0, incr);
+  }
+
   public void move (Point pt) {
-    if      (this == Direction.TOP)    pt.translate (0, -1);
-    else if (this == Direction.LEFT)   pt.translate (-1, 0);
-    else if (this == Direction.RIGHT)  pt.translate (1, 0);
-    else if (this == Direction.BOTTOM) pt.translate (0, 1);
+    move (pt, 1);
   }
 
 };

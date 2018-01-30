@@ -26,8 +26,8 @@ public class App {
       {new Reef(), new Lowland(), new Lowland(), new Lowland(), new Lowland(), new Lowland()}};
     Universe.save("maps/maptest.map", map);
 
-    Universe word = new Universe("maps/maptest.map");
-    System.out.println(word);
+    Universe world = new Universe("maps/maptest.map");
+    System.out.println(world);
     
     EventQueue.invokeLater(MainFrame::new);
   }

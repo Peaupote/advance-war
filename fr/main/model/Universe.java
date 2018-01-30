@@ -66,8 +66,7 @@ public class Universe {
     Board board = new Board (map);
 
     try {
-      FileOutputStream fileOut =
-      new FileOutputStream(path);
+      FileOutputStream fileOut = new FileOutputStream(path);
       ObjectOutputStream out = new ObjectOutputStream(fileOut);
       out.writeObject(board);
       out.close();

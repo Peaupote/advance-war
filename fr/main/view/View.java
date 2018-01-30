@@ -19,7 +19,7 @@ public class View extends JPanel {
         y = controller.camera.getY(),
         offsetX = controller.camera.getOffsetX(),
         offsetY = controller.camera.getOffsetY();
-    controller.word.draw(g, x, y, offsetX, offsetY);
+    controller.world.draw(g, x, y, offsetX, offsetY);
     controller.cursor.draw(g);
   }
 

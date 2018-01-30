@@ -112,7 +112,7 @@ public abstract class Position {
   }
 
   /**
-   * Point representing respectivly position on the map, the position on the screen and the target postion on the map while moving
+   * Point representing respectivly position on the map, the position on the screen and the target position on the map while moving
    */
   protected Point position, real, target;
 

@@ -12,14 +12,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   public final Position.Cursor cursor;
   public final Position.Camera camera;
-  public final Universe word;
+  public final Universe world;
 
   private boolean isListening = false;
 
   public Controller () {
-    word   = new Universe("maps/maptest.map");
-    camera = new Position.Camera(word.getDimension());
-    cursor = new Position.Cursor(camera, word.getDimension());
+    world  = new Universe("maps/maptest.map");
+    camera = new Position.Camera(world.getDimension());
+    cursor = new Position.Cursor(camera, world.getDimension());
   }
 
   @Override

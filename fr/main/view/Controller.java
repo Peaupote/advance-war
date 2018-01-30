@@ -61,7 +61,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
    * Function called each loop turn
    */
   public void update () {
-    isListening = cursor.move() || camera.move();
+    isListening = cursor.move() | camera.move();
   }
 
   private void move (Direction d) {

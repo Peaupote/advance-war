@@ -8,12 +8,12 @@ import java.awt.Point;
 import fr.main.view.MainFrame;
 
 /**
- * Represent a moving point on the map
+ * Represents a moving point on the map
  */
 public abstract class Position {
 
   /**
-   * Represent the user cursor
+   * Represents the user cursor
    */
   public static class Cursor extends Position {
     

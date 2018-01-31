@@ -6,7 +6,7 @@ import fr.main.model.units.Unit;
 import fr.main.model.Drawable;
 
 public abstract class Terrain
-  implements java.io.Serializable, Drawable {
+  implements java.io.Serializable {
 
   public abstract int getDefense(Unit u);
   public abstract int getBonusVision(Unit u);

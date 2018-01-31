@@ -1,19 +1,17 @@
 package fr.main.model;
 
 import java.io.*;
-import java.awt.Graphics;
 import java.awt.Dimension;
 
-import fr.main.view.MainFrame;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
 
 public class Universe {
 
-  private static class Board implements java.io.Serializable {
+  protected static class Board implements Serializable {
 
-    private Terrain[][] board;
-    private Unit[][] units;
+    public Terrain[][] board;
+    public Unit[][] units;
 
     public Board (Unit[][] units, Terrain[][] board) {
       this.board = board;
@@ -21,9 +19,9 @@ public class Universe {
     }
   }
 
-  private Board map;
-  private final PlayerIt players;
-  private Player current;
+  protected Board map;
+  protected final PlayerIt players;
+  protected Player current;
 
   public Universe (String mapPath, Player[] ps) {
     map = null;
@@ -52,25 +50,6 @@ public class Universe {
 
     current = players.iterator().next();
 
-  }
-
-  public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
-    int firstX = x - (offsetX < 0 ? 1 : 0),
-        firstY = y - (offsetY < 0 ? 1 : 0),
-        lastX  = x + MainFrame.WIDTH / MainFrame.UNIT + (offsetX > 0 ? 1 : 0),
-        lastY  = y + MainFrame.HEIGHT / MainFrame.UNIT + (offsetY > 0 ? 1 : 0);
-
-    for (int i = firstY; i < lastY; i++)
-      for (int j = firstX; j < lastX; j++)
-        map.board[i][j].draw(g, (j - x) * MainFrame.UNIT - offsetX, (i - y) * MainFrame.UNIT - offsetY);
-
-    for (int i = 0; i < map.units.length; i++)
-      for (int j = 0; j < map.units[i].length; j++) {
-        Unit unit = map.units[i][j];
-        if (unit.getX() >= firstX && unit.getX() < lastX &&
-            unit.getY() >= firstY && unit.getY() < lastY)
-          unit.draw(g, (unit.getX() - x) * MainFrame.UNIT - offsetX, (unit.getY() - y) * MainFrame.UNIT - offsetY);
-      }
   }
 
   public Dimension getDimension () {

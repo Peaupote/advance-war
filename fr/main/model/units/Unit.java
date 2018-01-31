@@ -1,9 +1,6 @@
 package fr.main.model.units;
 
-import fr.main.model.Drawable;
 import java.awt.Point;
-import java.awt.Graphics;
-import java.awt.Color;
 
 import fr.main.model.Player;
 import fr.main.view.MainFrame;
@@ -11,7 +8,7 @@ import fr.main.view.MainFrame;
 /**
  * Represent a unit on the board
  */
-public class Unit implements Drawable, java.io.Serializable {
+public class Unit implements java.io.Serializable {
 
   /**
    * Life in percentage
@@ -49,11 +46,6 @@ public class Unit implements Drawable, java.io.Serializable {
 
   public final int getY () {
     return location.y;
-  }
-
-  public void draw (Graphics g, int x, int y) {
-    g.setColor(Color.red);
-    g.fillRect(x, y, MainFrame.UNIT, MainFrame.UNIT);
   }
 
 }

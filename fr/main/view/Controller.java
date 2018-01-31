@@ -8,17 +8,18 @@ import java.awt.event.MouseEvent;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.view.MainFrame;
+import fr.main.view.render.UniverseRenderer;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
   public final Position.Cursor cursor;
   public final Position.Camera camera;
-  public final Universe word;
+  public final UniverseRenderer word;
 
   private boolean isListening = false;
 
   public Controller (Player ps[]) {
-    word   = new Universe("maps/maptest.map", ps);
+    word   = new UniverseRenderer("maps/maptest.map", ps);
     camera = new Position.Camera(word.getDimension());
     cursor = new Position.Cursor(camera, word.getDimension());
   }

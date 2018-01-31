@@ -1,8 +1,5 @@
 package fr.main.model.terrains.naval;
 
-import java.awt.Graphics;
-import java.awt.Color;
-
 import fr.main.view.MainFrame;
 import fr.main.model.units.Unit;
 
@@ -24,11 +21,6 @@ public class Reef extends NavalTerrain {
 
   public boolean isHiding (Unit u) {
     return true;
-  }
-
-  public void draw (Graphics g, int x, int y) {
-    g.setColor(Color.blue);
-    g.fillRect(x, y, MainFrame.UNIT, MainFrame.UNIT);
   }
 
   public String toString () {

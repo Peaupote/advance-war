@@ -48,4 +48,8 @@ public class Unit implements java.io.Serializable {
     return location.y;
   }
 
+  public void renderVision (boolean[][] fog, int x, int y) {
+    fog[y][x] = true;
+  }
+
 }

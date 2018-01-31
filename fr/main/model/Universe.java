@@ -2,6 +2,7 @@ package fr.main.model;
 
 import java.io.*;
 import java.awt.Dimension;
+import java.util.Iterator;
 
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
@@ -20,7 +21,7 @@ public class Universe {
   }
 
   protected Board map;
-  protected final PlayerIt players;
+  protected final Iterator<Player> players;
   protected Player current;
 
   public Universe (String mapPath, Player[] ps) {
@@ -39,7 +40,7 @@ public class Universe {
       e.printStackTrace();
     }
 
-    players = new PlayerIt(ps);
+    players = new PlayerIt(ps).iterator();
 
     int i = 0;
     for (Player p: ps) {
@@ -48,12 +49,20 @@ public class Universe {
       i++;
     }
 
-    current = players.iterator().next();
+    current = players.next();
 
   }
 
   public Dimension getDimension () {
     return new Dimension(map.board[0].length, map.board.length);
+  }
+
+  public Player getCurrentPlayer () {
+    return current;
+  }
+
+  public void next () {
+    current = players.next();
   }
 
   public String toString () {

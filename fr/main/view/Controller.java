@@ -19,7 +19,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private boolean isListening = false;
 
   public Controller (Player ps[]) {
-    world   = new UniverseRenderer("maps/maptest.map", ps);
+    world  = new UniverseRenderer("maps/maptest.map", ps);
     camera = new Position.Camera(world.getDimension());
     cursor = new Position.Cursor(camera, world.getDimension());
   }
@@ -37,6 +37,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   @Override
   public void keyReleased (KeyEvent e) {
+    if (e.getKeyCode() == KeyEvent.VK_SPACE)
+      world.next();
   }
 
   @Override

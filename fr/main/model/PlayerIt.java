@@ -6,7 +6,7 @@ import java.lang.Iterable;
 /**
  * Class managing the cycle of players:
  */
-public class PlayerIt implements Iterable<Player>{
+public class PlayerIt implements Iterable<Player> {
 
 
     /**

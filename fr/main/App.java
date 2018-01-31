@@ -19,7 +19,7 @@ public class App {
   public static void main (String[] args) {
     Unit[][] units = new Unit[][] {
       {new UnitRenderer(new Point(0,0))},
-      {new UnitRenderer(new Point(5,5))}
+      {new UnitRenderer(new Point(3,5)), new UnitRenderer(new Point(1,1))}
     };
 
     Terrain[][] map = new Terrain[][]{

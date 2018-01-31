@@ -24,7 +24,7 @@ public class UniverseRenderer extends Universe {
         lastX  = x + w + (offsetX > 0 ? 1 : 0),
         lastY  = y + h + (offsetY > 0 ? 1 : 0);
 
-    boolean[][] fogwar = new boolean[h + 2][w + 2];
+    boolean[][] fogwar = new boolean[map.board.length][map.board[0].length];
 
     for (int i = firstY; i < lastY; i++)
       for (int j = firstX; j < lastX; j++) {
@@ -40,15 +40,27 @@ public class UniverseRenderer extends Universe {
             ((Renderer)unit).draw(g,
               (unit.getX() - x) * MainFrame.UNIT - offsetX,
               (unit.getY() - y) * MainFrame.UNIT - offsetY);
-            unit.renderVision(fogwar, unit.getX() - x + 1, unit.getY() - y + 1);
           }
+      unit.renderVision(fogwar);
     }
 
-    for (int i = 0; i < h + 2; i++)
-      for (int j = 0; j < w + 2; j++) {
+    for (int i = 0; i < map.units.length; i++) {
+      if (i + 1 == current.id) continue;
+      for (int j = 0; j < map.units[i].length; j++) {
+        Unit unit = map.units[i][j];
+        if (fogwar[unit.getX()][unit.getY()]) {
+              ((Renderer)unit).draw(g,
+                (unit.getX() - x) * MainFrame.UNIT - offsetX,
+                (unit.getY() - y) * MainFrame.UNIT - offsetY);
+            }
+      }
+    }
+
+    for (int i = firstY; i < lastY; i++)
+      for (int j = firstX; j < lastX; j++) {
         if (!fogwar[i][j]) {
-          int a = (j - 1) * MainFrame.UNIT - offsetX,
-              b = (i - 1) * MainFrame.UNIT - offsetY;
+          int a = (j - x) * MainFrame.UNIT - offsetX,
+              b = (i - y) * MainFrame.UNIT - offsetY;
             g.setColor(fogColor);
             g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
         }

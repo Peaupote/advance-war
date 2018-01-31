@@ -6,21 +6,26 @@ import java.awt.Dimension;
 
 import fr.main.view.MainFrame;
 import fr.main.model.terrains.Terrain;
+import fr.main.model.units.Unit;
 
 public class Universe {
 
   private static class Board implements java.io.Serializable {
-    
-    private Terrain[][] board;
 
-    public Board (Terrain[][] board) {
+    private Terrain[][] board;
+    private Unit[][] units;
+
+    public Board (Unit[][] units, Terrain[][] board) {
       this.board = board;
+      this.units = units;
     }
   }
 
   private Board map;
+  private final PlayerIt players;
+  private Player current;
 
-  public Universe (String mapPath) {
+  public Universe (String mapPath, Player[] ps) {
     map = null;
 
     try {
@@ -35,6 +40,18 @@ public class Universe {
       System.err.println("Board class not found");
       e.printStackTrace();
     }
+
+    players = new PlayerIt(ps);
+
+    int i = 0;
+    for (Player p: ps) {
+      for (Unit unit: map.units[i])
+        unit.setPlayer(p);
+      i++;
+    }
+
+    current = players.iterator().next();
+
   }
 
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
@@ -46,6 +63,14 @@ public class Universe {
     for (int i = firstY; i < lastY; i++)
       for (int j = firstX; j < lastX; j++)
         map.board[i][j].draw(g, (j - x) * MainFrame.UNIT - offsetX, (i - y) * MainFrame.UNIT - offsetY);
+
+    for (int i = 0; i < map.units.length; i++)
+      for (int j = 0; j < map.units[i].length; j++) {
+        Unit unit = map.units[i][j];
+        if (unit.getX() >= firstX && unit.getX() < lastX &&
+            unit.getY() >= firstY && unit.getY() < lastY)
+          unit.draw(g, (unit.getX() - x) * MainFrame.UNIT - offsetX, (unit.getY() - y) * MainFrame.UNIT - offsetY);
+      }
   }
 
   public Dimension getDimension () {
@@ -62,8 +87,8 @@ public class Universe {
     return ret;
   }
 
-  public static void save (String path, Terrain[][] map) {
-    Board board = new Board (map);
+  public static void save (String path, Unit[][] units, Terrain[][] map) {
+    Board board = new Board (units, map);
 
     try {
       FileOutputStream fileOut =

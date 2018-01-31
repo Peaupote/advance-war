@@ -6,6 +6,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 
 import fr.main.model.Universe;
+import fr.main.model.Player;
 import fr.main.view.MainFrame;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
@@ -16,8 +17,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   private boolean isListening = false;
 
-  public Controller () {
-    word   = new Universe("maps/maptest.map");
+  public Controller (Player ps[]) {
+    word   = new Universe("maps/maptest.map", ps);
     camera = new Position.Camera(word.getDimension());
     cursor = new Position.Cursor(camera, word.getDimension());
   }
@@ -61,7 +62,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
    * Function called each loop turn
    */
   public void update () {
-    isListening = cursor.move() || camera.move();
+    isListening = cursor.move() | camera.move();
   }
 
   private void move (Direction d) {

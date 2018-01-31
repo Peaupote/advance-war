@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.lang.Thread;
 import java.lang.InterruptedException;
 
+import fr.main.model.Player;
+
 /**
  * Frame for the application
  */
@@ -21,7 +23,12 @@ public class MainFrame extends JFrame {
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setResizable(false);
 
-    Controller controller = new Controller();
+    Player[] players = new Player[] {
+      new Player("P1"),
+      new Player("P2")
+    };
+
+    Controller controller = new Controller(players);
     View view = new View(controller);
 
     // set view to listen key events

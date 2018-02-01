@@ -4,10 +4,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.view.MainFrame;
+import fr.main.view.components.AWComponents;
+import fr.main.view.components.InformationPanel;
 import fr.main.view.render.UniverseRenderer;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
@@ -15,6 +18,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public final Position.Cursor cursor;
   public final Position.Camera camera;
   public final UniverseRenderer world;
+  public final LinkedList<AWComponents> componentsList = new LinkedList<>();
 
   private boolean isListening = false;
 

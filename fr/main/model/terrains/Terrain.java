@@ -3,7 +3,6 @@ package fr.main.model.terrains;
 import java.awt.Graphics;
 
 import fr.main.model.units.Unit;
-import fr.main.model.Drawable;
 
 public abstract class Terrain
   implements java.io.Serializable {

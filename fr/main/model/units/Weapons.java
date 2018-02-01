@@ -1,6 +1,6 @@
 package fr.main.model.unit;
 
-@FunctionnalInterface
+@FunctionalInterface
 interface Weapon {
 
   int getDamage();

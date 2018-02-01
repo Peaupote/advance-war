@@ -26,8 +26,8 @@ public class UniverseRenderer extends Universe {
 
     boolean[][] fogwar = new boolean[map.board.length][map.board[0].length];
 
-    for (int i = firstY; i < lastY; i++)
-      for (int j = firstX; j < lastX; j++) {
+    for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
+      for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
         int a = (j - x) * MainFrame.UNIT - offsetX,
             b = (i - y) * MainFrame.UNIT - offsetY;
         ((Renderer)map.board[i][j]).draw(g, a, b);

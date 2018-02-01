@@ -15,7 +15,7 @@ import fr.main.model.Player;
  */
 public class MainFrame extends JFrame {
 
-  public static final int WIDTH = 500, HEIGHT = 500, UNIT = 100;
+  public static final int WIDTH = 640, HEIGHT = 704, UNIT = 64;
 
   public MainFrame () {
     super("Advance war");

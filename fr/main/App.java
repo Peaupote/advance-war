@@ -1,6 +1,7 @@
 package fr.main;
 
 import java.awt.EventQueue;
+import java.util.Random;
 import java.awt.Point;
 
 import fr.main.model.Universe;
@@ -22,14 +23,15 @@ public class App {
       {new UnitRenderer(new Point(3,5)), new UnitRenderer(new Point(1,1))}
     };
 
-    Terrain[][] map = new Terrain[][]{
-      {new SeaRenderer(), new SeaRenderer(), new SeaRenderer(), new SeaRenderer(), new SeaRenderer(), new ReefRenderer()},
-      {new SeaRenderer(), new LowlandRenderer(), new ReefRenderer(), new SeaRenderer(), new LowlandRenderer(), new SeaRenderer()},
-      {new SeaRenderer(), new LowlandRenderer(), new ReefRenderer(), new SeaRenderer(), new LowlandRenderer(), new SeaRenderer()},
-      {new SeaRenderer(), new LowlandRenderer(), new ReefRenderer(), new ReefRenderer(), new LowlandRenderer(), new SeaRenderer()},
-      {new LowlandRenderer(), new LowlandRenderer(), new LowlandRenderer(), new LowlandRenderer(), new LowlandRenderer(), new SeaRenderer()},
-      {new SeaRenderer(), new LowlandRenderer(), new LowlandRenderer(), new SeaRenderer(), new LowlandRenderer(), new SeaRenderer()},
-      {new ReefRenderer(), new LowlandRenderer(), new LowlandRenderer(), new LowlandRenderer(), new LowlandRenderer(), new LowlandRenderer()}};
+    Random rand = new Random();
+    Terrain[][] map = new Terrain[30][30];
+    for (int i = 0; i < 30; i++)
+      for (int j = 0; j < 30; j++)
+        switch (rand.nextInt(3)) {
+          case 0: map[i][j] = new LowlandRenderer();break;
+          case 1: map[i][j] = new SeaRenderer();break;
+          case 2: map[i][j] = new ReefRenderer();break;
+        }
     Universe.save("maps/maptest.map", units, map);
 
     //Universe word = new Universe("maps/maptest.map");

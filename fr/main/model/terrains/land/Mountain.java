@@ -1,21 +1,21 @@
-package fr.main.model.terrains.naval;
+package fr.main.model.terrains.land;
 
 import fr.main.model.units.Unit;
 
-public class Sea implements NavalTerrain {
+public class Mountain implements LandTerrain {
 
-  public static final int defense = 1;
+  public static final int defense = 4;
 
   public int getDefense (Unit u) {
     return defense;
   }
 
   public int getBonusVision (Unit u) {
-    return 0;
+    return 3;
   }
 
   public int getBonusRange (Unit u) {
-    return 0;
+    return 2;
   }
 
   public boolean isHiding (Unit u) {
@@ -23,7 +23,6 @@ public class Sea implements NavalTerrain {
   }
 
   public String toString () {
-    return "Mer";
+    return "Montagne";
   }
-
 }

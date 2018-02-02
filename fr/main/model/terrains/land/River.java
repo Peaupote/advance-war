@@ -1,10 +1,10 @@
-package fr.main.model.terrains.naval;
+package fr.main.model.terrains.land;
 
 import fr.main.model.units.Unit;
 
-public class Sea implements NavalTerrain {
+public class River implements LandTerrain {
 
-  public static final int defense = 1;
+  public static final int defense = 0;
 
   public int getDefense (Unit u) {
     return defense;
@@ -23,7 +23,6 @@ public class Sea implements NavalTerrain {
   }
 
   public String toString () {
-    return "Mer";
+    return "Rivière";
   }
-
 }

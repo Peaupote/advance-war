@@ -1,16 +1,13 @@
 package fr.main.model.terrains;
 
-import java.awt.Graphics;
-
 import fr.main.model.units.Unit;
-import fr.main.model.Drawable;
+import fr.main.model.buildings.Building;
 
-public abstract class Terrain
-  implements java.io.Serializable {
+public interface Terrain
+    extends java.io.Serializable {
 
-  public abstract int getDefense(Unit u);
-  public abstract int getBonusVision(Unit u);
-  public abstract int getBonusRange(Unit u);
-  public abstract boolean isHiding(Unit u);
-
+    public int getDefense(Unit u);
+    public int getBonusVision(Unit u);
+    public int getBonusRange(Unit u);
+    public boolean isHiding(Unit u);
 }

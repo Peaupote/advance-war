@@ -15,7 +15,9 @@ public class View extends JPanel {
     this.controller = controller;
 
     uiComponents = new LinkedList<>();
-    uiComponents.add(new TerrainPanel (controller.cursor, controller.world)); 
+    uiComponents.add(new TerrainPanel (controller.cursor, controller.camera, controller.world)); 
+    uiComponents.add(new PlayerPanel (controller.cursor, controller.camera, controller.world)); 
+
     addKeyListener(controller);
     addMouseMotionListener(controller);
   }

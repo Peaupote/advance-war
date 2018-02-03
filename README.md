@@ -12,7 +12,7 @@ Applications autour du jeu
 Schéma de l'expérience utilisateur
 ----------------------------------
 
-![image](wireframe)
+![image](wireframe.png)
 
 Détail des différentes pages
 ----------------------------

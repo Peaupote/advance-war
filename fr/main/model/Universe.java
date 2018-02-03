@@ -50,7 +50,6 @@ public class Universe {
     }
 
     current = players.next();
-
   }
 
   public Dimension getDimension () {
@@ -63,6 +62,10 @@ public class Universe {
 
   public void next () {
     current = players.next();
+  }
+
+  public final Terrain get (int x, int y) {
+    return map.board[y][x];
   }
 
   public String toString () {

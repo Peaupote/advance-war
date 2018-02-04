@@ -318,8 +318,8 @@ défenseur baisse avant qu'il puisse riposter et, par conséquent elle
 fait perdre moins de point de vie à l'assaillant.
 
 $$Damage\%=\left(\frac{B\cdot A_{CO}}{100}+R\right)\cdot\frac{A_{HP}}{10}\cdot \left(\frac{200-D_{CO}-D_{TR}\cdot D_{HP}}{100}\right)$$
-$Damage\%$ = Dégâts de base\
-$B$ = Dégâts de base infligé par l'arme\
+$Damage\%$ = Dégâts infligés\
+$B$ = Dégâts de l'arme\
 $A_{CO}$ = Points d'attaque du commandant\
 $R$ = Un nombre aléatoire entre 0 et 9\
 $A_{HP}$ = Nombre de points de vie de l'attaquant\

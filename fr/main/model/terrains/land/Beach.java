@@ -6,14 +6,6 @@ import fr.main.model.terrains.Terrain;
 
 public class Beach extends Terrain implements LandTerrain,NavalTerrain {
 	public Beach() {
-		super("Plage",0,0,0,false);
-	}
-
-	public boolean isLandTerrain(){
-		return true;
-	}
-
-	public boolean isNavalTerrain(){
-		return true;
+		super("Plage",0,0,0);
 	}
 }

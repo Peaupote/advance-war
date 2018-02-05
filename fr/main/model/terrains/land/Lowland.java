@@ -8,7 +8,7 @@ import fr.main.model.terrains.Terrain;
 public class Lowland extends Buildable implements LandTerrain {
 
   public Lowland() {
-    super("Plaine", 1, 0, 0, false );
+    super("Plaine", 1, 0, 0);
   }
 
 }

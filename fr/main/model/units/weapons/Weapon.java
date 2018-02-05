@@ -2,6 +2,7 @@ package fr.main.model.units.weapons;
 
 import java.util.Map;
 
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
 
 public abstract class Weapon {
@@ -16,10 +17,10 @@ public abstract class Weapon {
 		E=new Damage('E');
 	}
 
-	private final Map<Class<? extends Unit>,Damage> damages;
+	private final Map<Class<? extends AbstractUnit>,Damage> damages;
 	public final String name;
 
-	public Weapon(String name, Map<Class<? extends Unit>,Damage> damages){
+	public Weapon(String name, Map<Class<? extends AbstractUnit>,Damage> damages){
 		this.name=name;
 		this.damages=damages;
 	}
@@ -57,7 +58,7 @@ public abstract class Weapon {
 
 	public int getDamages(Unit unit){
 		if (unit!=null && damages!=null){
-			for (Map.Entry<Class<? extends Unit>, Damage> entry : damages.entrySet()){
+			for (Map.Entry<Class<? extends AbstractUnit>, Damage> entry : damages.entrySet()){
 				if (entry.getKey()!=null && entry.getKey().isInstance(unit))
 					return entry.getValue().toInt();
 			}
@@ -74,7 +75,7 @@ public abstract class Weapon {
 
 	public boolean canAttack(Unit unit){
 		if (unit!=null && damages!=null){
-			for (Map.Entry<Class<? extends Unit>, Damage> entry : damages.entrySet()){
+			for (Map.Entry<Class<? extends AbstractUnit>, Damage> entry : damages.entrySet()){
 				if (entry.getKey()!=null && entry.getKey().isInstance(unit))
 					return true;
 			}

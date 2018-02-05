@@ -3,17 +3,15 @@ package fr.main.model.terrains;
 import fr.main.model.units.Unit;
 import fr.main.model.buildings.Building;
 
-public abstract class Terrain implements java.io.Serializable {
+public abstract class Terrain implements AbstractTerrain {
     protected Unit unit;
     protected int defense, bonusVision, bonusRange;
-    protected boolean hideable;
     protected String name;
 
-    public Terrain(String name, int defense, int bonusVision, int bonusRange, boolean hideable) {
+    public Terrain(String name, int defense, int bonusVision, int bonusRange) {
         this.defense = defense;
         this.bonusRange = bonusRange;
         this.bonusVision = bonusVision;
-        this.hideable = hideable;
         this.unit = null;
         this.name = name;
     }

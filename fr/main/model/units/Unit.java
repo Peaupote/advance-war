@@ -3,13 +3,14 @@ package fr.main.model.units;
 import java.awt.Point;
 
 import fr.main.model.Player;
+import fr.main.model.terrains.Terrain;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 
 /**
  * Represents a unit on the board
  */
-public class Unit implements java.io.Serializable {
+public class Unit implements AbstractUnit {
 
 	/**
 	 * Life in percentage
@@ -24,8 +25,10 @@ public class Unit implements java.io.Serializable {
 
 	public final int vision;
 	private final Fuel fuel;
+	public final int moveQuantity;
+	private final MoveType moveType;
 
-	public class Fuel{
+	public class Fuel implements java.io.Serializable{
 		public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
 		public final int maximumQuantity;
 		private int quantity;
@@ -51,24 +54,44 @@ public class Unit implements java.io.Serializable {
 		public void replenish(){
 			this.quantity=this.maximumQuantity;
 		}
+
 		public int getQuantity() {
 			return quantity;
 		}
 	}
 
-	public Unit (Point location) {
-		this (null, location, null, 2, null, null);
+	/*
+	* Represents how a unit moves and whether or not it can go on a specific terrain.
+	*/
+	public static abstract class MoveType{
+		public abstract String toString();
+		public abstract int moveCost(Terrain t);
+		public abstract boolean canMoveTo(Terrain t);
 	}
 
-public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
+	public Unit (Point location) {
+		this (null, location, 50, null, 5, 2, null, null);
+	}
+
+	public Unit(Player player, Point location, int fuelQuantity, 
+					MoveType moveType, int moveQuantity, int vision, 
+					PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
+		this(player,location,"Carburant",fuelQuantity,moveType,moveQuantity,vision,primaryWeapon,secondaryWeapon);
+	}
+
+	public Unit (Player player, Point location, String fuelName, int fuelQuantity, 
+					MoveType moveType, int moveQuantity, int vision, 
+					PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
 		this.life=100;
 		this.location=location;
 		this.player=player;
-		this.fuel=fuel;
+		this.fuel=new Fuel(fuelName,fuelQuantity);
+		this.moveType=moveType;
+		this.moveQuantity=moveQuantity;
 		this.vision=vision;
 		this.primaryWeapon=primaryWeapon;
 		this.secondaryWeapon=secondaryWeapon;
-		unitLocations[location.y][location.x] = this;
+		unitLocations[location.y][location.x] = this;		
 	}
 
 	public final boolean removeLife(int life){
@@ -123,12 +146,6 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 		if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
 			return;
 		renderVision (fog,location.x,location.y,vision);
-
-		/* ANCIENNE FORMULE (je la garde au cas où je fasse de la merde)
-		for (int i = Math.max(0, location.y - 1); i < Math.min(location.y + 2, fog.length); i++)
-			for (int j = Math.max(0, location.x - 1); j < Math.min(location.x + 2, fog[i].length); j++)
-				fog[i][j] = true;
-		*/
 	}
 
 	public static Unit[][] getUnitLocations() {
@@ -142,14 +159,14 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 	private void renderVision (boolean[][] fog, int x, int y, int vision){
 		fog[y][x]=true;
 		if (vision!=0){
-			if (x!=0)
-				renderVision(fog,x-1,y,vision-1);
-			if (x!=fog.length)
-				renderVision(fog,x+1,y,vision-1);
 			if (y!=0)
 				renderVision(fog,x,y-1,vision-1);
-			if (y!=fog[0].length)
+			if (y!=fog.length-1)
 				renderVision(fog,x,y+1,vision-1);
+			if (x!=0)
+				renderVision(fog,x-1,y,vision-1);
+			if (x!=fog[0].length-1)
+				renderVision(fog,x+1,y,vision-1);
 		}
 	}
 

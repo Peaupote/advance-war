@@ -6,6 +6,6 @@ import fr.main.model.terrains.Terrain;
 public class Mountain extends Terrain implements LandTerrain {
 
   public Mountain () {
-    super("Montagne", 4, 3, 2, false);
+    super("Montagne", 4, 3, 2);
   }
 }

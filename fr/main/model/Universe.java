@@ -70,11 +70,11 @@ public class Universe {
 
   // To Work on.
   public final Unit getUnit(int x, int y) {
-    if(Unit.getUnitLocations() != null
-            && y < Unit.getUnitLocations().length && y >= 0
-            && x < Unit.getUnitLocations()[y].length && x >= 0
-            && Unit.getUnitLocations()[y][x] != null)
-      return Unit.getUnitLocations()[y][x];
+    if(map != null
+            && y < map.board.length && y >= 0
+            && x < map.board[y].length && x >= 0
+            && map.board[y][x] != null)
+      return map.board[y][x].getUnit();
     else return null;
   }
 

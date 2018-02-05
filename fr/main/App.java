@@ -19,10 +19,6 @@ public class App {
 
   public static void main (String[] args) {
 
-    // Needs to be called BEFORE creating any Unit-class derived object.
-    // Doit être appelé AVANT de créer un quelconque objet derivé de la classe Unit.
-    Unit.unitLocationsInit(30, 30);
-
     Random rand = new Random();
     Terrain[][] map = new Terrain[30][30];
     for (int i = 0; i < 30; i++)

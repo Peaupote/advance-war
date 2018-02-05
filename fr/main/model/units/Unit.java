@@ -17,7 +17,6 @@ public class Unit implements java.io.Serializable {
 	private int life;
 	private final Point location;
 	private Player player;
-	private static Unit[][] unitLocations;
 
 	private PrimaryWeapon primaryWeapon;
 	private SecondaryWeapon secondaryWeapon;
@@ -68,7 +67,6 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 		this.vision=vision;
 		this.primaryWeapon=primaryWeapon;
 		this.secondaryWeapon=secondaryWeapon;
-		unitLocations[location.y][location.x] = this;
 	}
 
 	public final boolean removeLife(int life){
@@ -105,20 +103,6 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 		return location.y;
 	}
 
-	public boolean move(int x, int y) {
-
-		// Checks if occupied
-		if(unitLocations[y][x] != null)
-			return false;
-
-		// Write all other parameters.
-
-		unitLocations[location.x][location.y] = null;
-		location.move(x, y);
-		unitLocations[y][x] = this;
-		return true;
-	}
-
 	public void renderVision (boolean[][] fog) {
 		if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
 			return;
@@ -129,14 +113,6 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 			for (int j = Math.max(0, location.x - 1); j < Math.min(location.x + 2, fog[i].length); j++)
 				fog[i][j] = true;
 		*/
-	}
-
-	public static Unit[][] getUnitLocations() {
-		return unitLocations;
-	}
-
-	public static void unitLocationsInit(int x, int y) {
-		unitLocations = new Unit[y][x];
 	}
 
 	private void renderVision (boolean[][] fog, int x, int y, int vision){

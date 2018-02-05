@@ -1,11 +1,10 @@
 package fr.main.model.terrains.naval;
 
-import fr.main.view.MainFrame;
 import fr.main.model.units.Unit;
 
-public class Reef extends NavalTerrain {
+public class Reef implements NavalTerrain {
 
-  private int defense = 2;
+  public static final int defense = 2;
 
   public int getDefense (Unit u) {
     return defense;
@@ -24,7 +23,7 @@ public class Reef extends NavalTerrain {
   }
 
   public String toString () {
-    return "R";
+    return "Récif";
   }
 
 }

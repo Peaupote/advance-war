@@ -56,8 +56,8 @@ public abstract class Position {
 
     public void setPosition (int x, int y) {
       if (x >= 0 && x < camera.width && y >= 0 && y < camera.height) {
-        x = x + camera.position.x;
-        y = y + camera.position.y;
+        x += camera.position.x;
+        y += camera.position.y;
 
         position.x = x;
         position.y = y;
@@ -92,7 +92,6 @@ public abstract class Position {
       width  = MainFrame.WIDTH / MainFrame.UNIT;
       height = MainFrame.HEIGHT / MainFrame.UNIT;
       this.size = size;
-      System.out.println(size);
     }
 
     @Override
@@ -153,7 +152,7 @@ public abstract class Position {
    * @return true if the movement is finished, false otherwise
    */
   public final boolean move () {
-    direction.move(real, 2);
+    direction.move(real, 4);
 
     if (hasReachLocation()) {
       direction.move(position);

@@ -60,7 +60,7 @@ public class Unit implements java.io.Serializable {
 		this (null, location, null, 2, null, null);
 	}
 
-	public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
+public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
 		this.life=100;
 		this.location=location;
 		this.player=player;

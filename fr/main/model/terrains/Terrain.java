@@ -33,6 +33,15 @@ public abstract class Terrain implements java.io.Serializable {
     public Unit getUnit() {
         return unit;
     }
+    public void setUnit(Unit u) {
+        this.unit = u;
+    }
+    public void removeUnit() {
+        this.unit = null;
+    }
+    public boolean hasUnit() {
+        return this.unit != null;
+    }
 
     @Override
     public String toString() {

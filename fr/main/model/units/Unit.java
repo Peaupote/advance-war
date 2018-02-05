@@ -5,7 +5,7 @@ import java.awt.Point;
 import fr.main.model.Player;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
-
+import fr.main.model.terrains.Terrain;
 /**
  * Represents a unit on the board
  */
@@ -23,6 +23,7 @@ public class Unit implements java.io.Serializable {
 
 	public final int vision;
 	private final Fuel fuel;
+	protected Terrain terrain;
 
 	public class Fuel{
 		public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
@@ -55,11 +56,11 @@ public class Unit implements java.io.Serializable {
 		}
 	}
 
-	public Unit (Point location) {
-		this (null, location, null, 2, null, null);
+	public Unit (Point location, Terrain[][] ts) {
+		this (null, location, null, 2, null, null, ts);
 	}
 
-public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
+public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
 		this.life=100;
 		this.location=location;
 		this.player=player;
@@ -67,6 +68,7 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 		this.vision=vision;
 		this.primaryWeapon=primaryWeapon;
 		this.secondaryWeapon=secondaryWeapon;
+        move(location.x, location.y, ts);
 	}
 
 	public final boolean removeLife(int life){
@@ -101,6 +103,21 @@ public Unit (Player player, Point location, Fuel fuel, int vision, PrimaryWeapon
 
 	public final int getY () {
 		return location.y;
+	}
+
+	public boolean move(int x, int y, Terrain[][] ts) {
+		if(y >= 0 && y < ts.length && x >= 0 && x < ts[y].length && isValidTerrain(ts[y][x])) {
+			location.move(x, y);
+			if (terrain != null) terrain.removeUnit();
+			ts[y][x].setUnit(this);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isValidTerrain(Terrain t) {
+		// Function to modify for the move() test.
+		return !(t == null || t.hasUnit());
 	}
 
 	public void renderVision (boolean[][] fog) {

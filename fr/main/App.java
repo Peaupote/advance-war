@@ -30,8 +30,8 @@ public class App {
         }
 
     Unit[][] units = new Unit[][] {
-            {new UnitRenderer(new Point(0,0))},
-            {new UnitRenderer(new Point(3,5)), new UnitRenderer(new Point(1,1))}
+            {new UnitRenderer(new Point(0,0), map)},
+            {new UnitRenderer(new Point(3,5), map), new UnitRenderer(new Point(1,1), map)}
     };
 
     Universe.save("maps/maptest.map", units, map);

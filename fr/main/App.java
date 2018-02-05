@@ -18,13 +18,12 @@ import fr.main.view.MainFrame;
 public class App {
 
   public static void main (String[] args) {
-    Unit[][] units = new Unit[][] {
-      {new UnitRenderer(new Point(0,0))},
-      {new UnitRenderer(new Point(3,5)), new UnitRenderer(new Point(1,1))}
-    };
+
 
     Random rand = new Random();
     Terrain[][] map = new Terrain[30][30];
+    Unit.unitLocationsInit(30, 30);
+
     for (int i = 0; i < 30; i++)
       for (int j = 0; j < 30; j++)
         switch (rand.nextInt(3)) {
@@ -32,10 +31,18 @@ public class App {
           case 1: map[i][j] = new SeaRenderer();break;
           case 2: map[i][j] = new ReefRenderer();break;
         }
+
+    Unit[][] units = new Unit[][] {
+            {new UnitRenderer(new Point(0,0))},
+            {new UnitRenderer(new Point(3,5)), new UnitRenderer(new Point(1,1))}
+    };
+
     Universe.save("maps/maptest.map", units, map);
 
     //Universe word = new Universe("maps/maptest.map");
     //System.out.println(word);
+
+
     
     EventQueue.invokeLater(MainFrame::new);
   }

@@ -67,12 +67,14 @@ public class Universe {
   public final Terrain get (int x, int y) {
     return map.board[y][x];
   }
+
+  // To Work on.
   public final Unit getUnit(int x, int y) {
-    if(map != null
-            && y < map.units.length && y >= 0
-            && x < map.units[y].length && x >= 0
-            && map.units[y][x] != null)
-      return map.units[y][x];
+    if(Unit.getUnitLocations() != null
+            && y < Unit.getUnitLocations().length && y >= 0
+            && x < Unit.getUnitLocations()[y].length && x >= 0
+            && Unit.getUnitLocations()[y][x] != null)
+      return Unit.getUnitLocations()[y][x];
     else return null;
   }
 

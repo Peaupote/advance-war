@@ -33,6 +33,8 @@ public class TerrainPanel implements InterfaceUI {
 
     g.setColor (FOREGROUNDCOLOR);
     g.drawString (world.get(cursor.getX(), cursor.getY()).toString(), x + 20, y + 20);
+
+    // Units info :
     if(world.getUnit (cursor.getX(), cursor.getY()) != null) {
       String[] unitInfo = world.getUnit(cursor.getX(), cursor.getY()).toString().split("\n");
       for(int i = 0; i < unitInfo.length; i ++)

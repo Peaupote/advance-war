@@ -50,6 +50,9 @@ public class Unit implements java.io.Serializable {
 		public void replenish(){
 			this.quantity=this.maximumQuantity;
 		}
+		public int getQuantity() {
+			return quantity;
+		}
 	}
 
 	public Unit (Point location) {
@@ -126,4 +129,19 @@ public class Unit implements java.io.Serializable {
 		}
 	}
 
+	@Override
+	public String toString() {
+		String out = "Name" +
+				"\nHP : " + Integer.toString(life);
+		if(player != null)
+			out += "\nPlayer : " + player.name;
+			out += "\nVision : " + Integer.toString(vision);
+		if(fuel != null)
+			out += "\nFuel : " + Integer.toString(fuel.getQuantity());
+		if(primaryWeapon != null)
+			out += "\nPrimary : " + primaryWeapon.name;
+		if(secondaryWeapon != null)
+			out += "\nSecondary : " + secondaryWeapon.name;
+		return out;
+	}
 }

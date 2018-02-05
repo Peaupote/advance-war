@@ -67,6 +67,14 @@ public class Universe {
   public final Terrain get (int x, int y) {
     return map.board[y][x];
   }
+  public final Unit getUnit(int x, int y) {
+    if(map != null
+            && y < map.units.length && y >= 0
+            && x < map.units[y].length && x >= 0
+            && map.units[y][x] != null)
+      return map.units[y][x];
+    else return null;
+  }
 
   public String toString () {
     String ret = "";

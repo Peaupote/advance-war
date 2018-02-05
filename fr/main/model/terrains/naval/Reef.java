@@ -1,29 +1,12 @@
 package fr.main.model.terrains.naval;
 
 import fr.main.model.units.Unit;
+import fr.main.model.terrains.Terrain;
 
-public class Reef implements NavalTerrain {
+public class Reef extends Terrain implements NavalTerrain {
 
-  public static final int defense = 2;
-
-  public int getDefense (Unit u) {
-    return defense;
-  }
-
-  public int getBonusVision (Unit u) {
-    return 0;
-  }
-
-  public int getBonusRange (Unit u) {
-    return 0;
-  }
-
-  public boolean isHiding (Unit u) {
-    return true;
-  }
-
-  public String toString () {
-    return "Récif";
+  public Reef () {
+    super("Récif", 2, 0, 0, true);
   }
 
 }

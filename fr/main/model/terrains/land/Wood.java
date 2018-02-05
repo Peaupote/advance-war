@@ -6,10 +6,7 @@ import fr.main.model.terrains.Terrain;
 public class Wood extends Terrain implements LandTerrain {
 
 	public Wood() {
-		super(2, 0, 0, true);
+		super("Forêt",2, 0, 0, true);
 	}
 
-	public String toString () {
-		return "Forêt";
-	}
 }

@@ -3,17 +3,19 @@ package fr.main.model.terrains;
 import fr.main.model.units.Unit;
 import fr.main.model.buildings.Building;
 
-public class Terrain implements java.io.Serializable {
-    private Unit unit;
-    private int defense, bonusVision, bonusRange;
-    boolean hideable;
+public abstract class Terrain implements java.io.Serializable {
+    protected Unit unit;
+    protected int defense, bonusVision, bonusRange;
+    protected boolean hideable;
+    protected String name;
 
-    public Terrain(int defense, int bonusVision, int bonusRange, boolean hideable) {
+    public Terrain(String name, int defense, int bonusVision, int bonusRange, boolean hideable) {
         this.defense = defense;
         this.bonusRange = bonusRange;
         this.bonusVision = bonusVision;
         this.hideable = hideable;
         this.unit = null;
+        this.name = name;
     }
 
     public int getDefense(Unit u) {
@@ -30,5 +32,10 @@ public class Terrain implements java.io.Serializable {
     }
     public Unit getUnit() {
         return unit;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

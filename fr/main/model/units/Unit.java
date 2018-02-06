@@ -10,7 +10,7 @@ import fr.main.model.terrains.Terrain;
 /**
  * Represents a unit on the board
  */
-public abstract class Unit implements Serializable {
+public abstract class Unit implements AbstractUnit {
 
 	/**
 	 * Life in percentage
@@ -21,8 +21,6 @@ public abstract class Unit implements Serializable {
 
 	private PrimaryWeapon primaryWeapon;
 	private SecondaryWeapon secondaryWeapon;
-
-	protected UnitType[] unitType;
 
 	public final int vision;
 	private Fuel fuel;
@@ -73,15 +71,15 @@ public abstract class Unit implements Serializable {
 
 
 	public Unit (Point location, Terrain[][] ts) {
-		this (null, location, null, null, null,0,  2, null, null, false, ts);
+		this (null, location, null, null,0,  2, null, null, ts);
 	}
 
-	public Unit (Player player, Point location, UnitType[] unitType, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, boolean hideable, Terrain[][] ts) {
-		this(player, location, unitType, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon, hideable, ts);
+	public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
+		this(player, location, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon, ts);
 		this.fuel = new Fuel(maxFuel);
 	}
 
-	public Unit (Player player, Point location, UnitType[] unitType, Fuel fuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, boolean hideable, Terrain[][] ts) {
+	public Unit (Player player, Point location, Fuel fuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
 		this.life=100;
 		this.location=location;
 		this.player=player;
@@ -91,7 +89,6 @@ public abstract class Unit implements Serializable {
 		this.vision=vision;
 		this.primaryWeapon=primaryWeapon;
 		this.secondaryWeapon=secondaryWeapon;
-		this.unitType = unitType;
         move(location.x, location.y, ts);
 	}
 
@@ -168,11 +165,6 @@ public abstract class Unit implements Serializable {
 		}
 	}
 
-	public boolean isUnitType(UnitType type) {
-		for(UnitType t : this.unitType) if(t == type) return true;
-		return false;
-	}
-
 	@Override
 	public String toString() {
 		String out = "Name" +
@@ -187,21 +179,5 @@ public abstract class Unit implements Serializable {
 		if(secondaryWeapon != null)
 			out += "\nSecondary : " + secondaryWeapon.name;
 		return out;
-	}
-
-	protected UnitType[] addType(UnitType a, UnitType b) {
-		UnitType[] ts = {a,b};
-		return ts;
-	}
-	protected UnitType[] addType(UnitType[] as, UnitType b) {
-		UnitType[] bs = {b};
-		return addType(as, bs);
-	}
-	protected UnitType[] addType(UnitType[] as, UnitType[] bs) {
-		UnitType[] c = new UnitType[as.length + bs.length];
-		System.arraycopy(as, 0, c, 0, as.length);
-		System.arraycopy(bs, 0, c, as.length, bs.length);
-
-		return c;
 	}
 }

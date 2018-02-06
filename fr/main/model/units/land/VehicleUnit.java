@@ -1,6 +1,6 @@
 package fr.main.model.units.land;
 
-import fr.main.model.units.land.LandUnit;
+import fr.main.model.units.AbstractUnit;
 
-public interface VehicleUnit {
+public interface VehicleUnit extends AbstractUnit{
 }

@@ -12,11 +12,12 @@ import fr.main.model.buildings.Dock;
 
 import fr.main.model.Player;
 
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 
-public interface NavalUnit {
+public interface NavalUnit extends AbstractUnit {
 
 	public static final Unit.MoveType navalMoveType=new NavalMoveType();
 

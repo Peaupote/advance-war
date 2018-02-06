@@ -1,4 +1,4 @@
 package fr.main.model.buildings;
 
-public interface ActionBuilding extends Building{
+public interface ActionBuilding extends AbstractBuilding {
 }

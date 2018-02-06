@@ -8,7 +8,7 @@ import fr.main.model.terrains.Terrain;
 public class Hill extends Buildable implements LandTerrain {
 
   public Hill() {
-    super("Colline", 2, 0, 0, false);
+    super("Colline", 2, 0, 0);
   }
 
 }

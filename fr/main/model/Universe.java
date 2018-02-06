@@ -23,6 +23,8 @@ public class Universe {
   protected Board map;
   protected final Iterator<Player> players;
   protected Player current;
+  protected boolean[][] fogwar;
+
 
   public Universe (String mapPath, Player[] ps) {
     map = null;
@@ -49,7 +51,8 @@ public class Universe {
       i++;
     }
 
-    current = players.next();
+    fogwar = new boolean[map.board.length][map.board[0].length];
+    next();
   }
 
   public Dimension getDimension () {
@@ -62,17 +65,25 @@ public class Universe {
 
   public void next () {
     current = players.next();
+    for (int i = 0; i < map.board.length; i++)
+      for (int j = 0; j < map.board[0].length; j++)
+        fogwar[i][j] = false;
+
+    for (Unit u: map.units[current.id - 1])
+      u.renderVision(fogwar);
   }
 
   public final Terrain get (int x, int y) {
     return map.board[y][x];
   }
+
+  // To Work on.
   public final Unit getUnit(int x, int y) {
     if(map != null
-            && y < map.units.length && y >= 0
-            && x < map.units[y].length && x >= 0
-            && map.units[y][x] != null)
-      return map.units[y][x];
+            && y < map.board.length && y >= 0
+            && x < map.board[y].length && x >= 0
+            && map.board[y][x] != null)
+      return map.board[y][x].getUnit();
     else return null;
   }
 

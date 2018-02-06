@@ -24,8 +24,6 @@ public class UniverseRenderer extends Universe {
         lastX  = x + w + (offsetX > 0 ? 1 : 0),
         lastY  = y + h + (offsetY > 0 ? 1 : 0);
 
-    boolean[][] fogwar = new boolean[map.board.length][map.board[0].length];
-
     for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
       for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
         int a = (j - x) * MainFrame.UNIT - offsetX,
@@ -41,7 +39,6 @@ public class UniverseRenderer extends Universe {
               (unit.getX() - x) * MainFrame.UNIT - offsetX,
               (unit.getY() - y) * MainFrame.UNIT - offsetY);
           }
-      unit.renderVision(fogwar);
     }
 
     for (int i = 0; i < map.units.length; i++) {

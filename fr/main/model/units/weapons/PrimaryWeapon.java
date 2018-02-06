@@ -2,7 +2,6 @@ package fr.main.model.units.weapons;
 
 import java.util.Map;
 
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
 
 /*
@@ -16,7 +15,7 @@ public class PrimaryWeapon extends Weapon{
 	public final int minimumRange;
 	public final int maximumRange;
 
-	public PrimaryWeapon(String name, Map<Class<? extends AbstractUnit>,Damage> damages, int maximumAmmo, int maximumRange, int minimumRange){
+	public PrimaryWeapon(String name, Map<Class<? extends Unit>,Damage> damages, int maximumAmmo, int maximumRange, int minimumRange){
 		super(name,damages);
 		this.maximumAmmo=maximumAmmo;
 		this.ammo=maximumAmmo;

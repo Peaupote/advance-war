@@ -63,6 +63,10 @@ public class Universe {
     return current;
   }
 
+  public boolean isVisible (int x, int y) {
+    return fogwar[y][x];
+  }
+
   public void next () {
     current = players.next();
     for (int i = 0; i < map.board.length; i++)

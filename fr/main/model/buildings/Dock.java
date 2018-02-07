@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import fr.main.model.Player;
 
-public class Dock implements FactoryBuilding,OwnableBuilding {
+public class Dock extends FactoryBuilding implements OwnableBuilding {
 
 	public static final int defense=3;
 	public static final int income=1000;

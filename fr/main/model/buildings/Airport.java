@@ -1,8 +1,10 @@
 package fr.main.model.buildings;
 
 import fr.main.model.Player;
+import fr.main.model.terrains.Terrain;
+import fr.main.model.units.air.AirUnit;
 
-public class Airport implements FactoryBuilding,OwnableBuilding {
+public class Airport extends FactoryBuilding<AirUnit> implements OwnableBuilding {
 
 	public static final int defense=3;
 	public static final int income=1000;
@@ -15,6 +17,10 @@ public class Airport implements FactoryBuilding,OwnableBuilding {
 	{
 		this.life=this.maximumLife;
 		this.owner=null;
+	}
+
+	public Airport(Terrain t) {
+		super()
 	}
 
 	public String toString(){

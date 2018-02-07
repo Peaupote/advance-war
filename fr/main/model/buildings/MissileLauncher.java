@@ -1,21 +1,21 @@
 package fr.main.model.buildings;
 
-public class MissileLauncher implements ActionBuilding {
+import fr.main.model.terrains.Terrain;
 
-	public static final int defense=2;
-	public static final String name="Silo à missile";
+public class MissileLauncher extends Building implements ActionBuilding, IndestructibleBuilding {
 
 	private boolean fired;
 
-	{
-		this.fired=false;
+	public MissileLauncher(Terrain t) {
+		super("Silo à missile", 2, 0, t);
+		this.fired = false;
 	}
 
-	public String toString(){
-		return name;
+	public boolean isFired() {
+		return fired;
 	}
-
-	public int getDefense(){
-		return this.defense;
+	public void fire() {
+		fired = true;
+		// WIP -> implémenter le missile.
 	}
 }

@@ -1,4 +1,4 @@
-package fr.main.model.units.land;
+package fr.main.model.units.air;
 
 import java.awt.Point;
 

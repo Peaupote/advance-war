@@ -20,7 +20,7 @@ public class Airport extends FactoryBuilding<AirUnit> implements OwnableBuilding
 	}
 
 	public Airport(Terrain t) {
-		super()
+		super();
 	}
 
 	public String toString(){

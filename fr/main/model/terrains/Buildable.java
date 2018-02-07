@@ -15,19 +15,15 @@ public abstract class Buildable extends Terrain implements AbstractBuildable<Bui
     }
 
     public void setBuilding(Building building){
-        this.building=building;
+        this.building = building;
     }
 
     public Building getBuilding(){
-        return this.building;
+        return building;
     }
 
     @Override
     public int getDefense (Unit u) {
-        if (building==null)
-            return this.defense;
-        else
-            return building.getDefense()+this.defense/2;
-        // ainsi un batiment construit sur une plaine ne verra pas sa défense modifiée mais un batiment construit sur une colline aura +1 de défense
+        return building==null ? defense : building.defense + defense/2;
     }
 }

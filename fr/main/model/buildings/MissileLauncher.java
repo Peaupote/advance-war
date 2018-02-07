@@ -7,7 +7,7 @@ public class MissileLauncher extends Building implements ActionBuilding, Indestr
 	private boolean fired;
 
 	public MissileLauncher(Terrain t) {
-		super("Silo à missile", 2, 0, t);
+		super(t, 2);
 		this.fired = false;
 	}
 
@@ -16,6 +16,6 @@ public class MissileLauncher extends Building implements ActionBuilding, Indestr
 	}
 	public void fire() {
 		fired = true;
-		// WIP -> implémenter le missile.
+		// TODO: implémenter le missile.
 	}
 }

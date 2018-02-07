@@ -63,7 +63,7 @@ public abstract class Unit implements AbstractUnit {
 	/*
 	* Represents how a unit moves and whether or not it can go on a specific terrain.
 	*/
-	public static abstract class MoveType{
+	public static abstract class MoveType implements java.io.Serializable{
 		public abstract String toString();
 		public abstract int moveCost(Terrain t);
 		public abstract boolean canMoveTo(Terrain t);

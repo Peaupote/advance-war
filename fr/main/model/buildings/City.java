@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import fr.main.model.Player;
 
-public class City implements OwnableBuilding {
+public class City extends Building implements OwnableBuilding {
 
 	public static final int defense=3;
 	public static final int income=1000;
@@ -12,9 +12,10 @@ public class City implements OwnableBuilding {
 	private Player owner;
 	private int life;
 
-	{
-		this.life=this.maximumLife;
-		this.owner=null;
+	public City() {
+		super("Ville", 3, 200);
+//		this.life=this.maximumLife;
+//		this.owner=null;
 	}
 
 	public String toString(){

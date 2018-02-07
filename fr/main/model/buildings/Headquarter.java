@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import fr.main.model.Player;
 
-public class Headquarter implements OwnableBuilding {
+public class Headquarter extends Building implements OwnableBuilding {
 
 	public static final int defense=4;
 	public static final int income=1000;
@@ -12,9 +12,10 @@ public class Headquarter implements OwnableBuilding {
 	private Player owner;
 	private int life;
 
-	{
-		this.life=this.maximumLife;
-		this.owner=null;
+	public Headquarter() {
+		super("QG", 4, 200);
+//		this.life=this.maximumLife;
+//		this.owner=null;
 	}
 
 	public String toString(){

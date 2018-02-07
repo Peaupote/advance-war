@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import fr.main.model.Player;
 
-public interface OwnableBuilding extends Building{
+public interface OwnableBuilding extends AbstractBuilding{
 
 	public Player getOwner();
 	public void setOwner(Player p);

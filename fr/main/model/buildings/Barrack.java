@@ -12,9 +12,10 @@ public class Barrack extends FactoryBuilding implements OwnableBuilding {
 	private Player owner;
 	private int life;
 
-	{
-		this.life=this.maximumLife;
-		this.owner=null;
+	public Barrack(){
+		super("Caserne", 3, null);
+//		this.life=this.maximumLife;
+//		this.owner=null;
 	}
 
 	public String toString(){

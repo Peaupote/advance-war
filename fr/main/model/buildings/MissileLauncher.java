@@ -14,7 +14,11 @@ public class MissileLauncher extends Building implements ActionBuilding, Indestr
 	public boolean isFired() {
 		return fired;
 	}
-	public void fire() {
+	public boolean canFire(int x, int y) {
+		return false; // WIP
+	}
+	public void fire(int x, int y) {
+		if(!canFire(x, y)) return;
 		fired = true;
 		// WIP -> implémenter le missile.
 	}

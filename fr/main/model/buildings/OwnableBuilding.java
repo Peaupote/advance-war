@@ -4,13 +4,12 @@ import fr.main.model.Player;
 
 public interface OwnableBuilding extends AbstractBuilding{
 
-	public Player getOwner();
-	public void setOwner(Player p);
-	public boolean isNeutral();
-	public int getIncome();
-	public int getMaximumLife();
-	public int getLife();
-	public boolean removeLife(Player player, int life); // renvoie si le batiment a été pris (donc si sa vie est tombée sous 0)
-	public void goBackToMaximumLife();
-
+	Player getOwner();
+	void setOwner(Player p);
+	boolean isNeutral();
+	int getIncome();
+	int getMaximumLife();
+	int getLife();
+	boolean removeLife(Player player, int life); // renvoie si le batiment a été pris (donc si sa vie est tombée sous 0)
+	void goBackToMaximumLife();
 }

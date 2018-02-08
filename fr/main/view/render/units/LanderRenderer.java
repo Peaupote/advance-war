@@ -20,4 +20,8 @@ public class LanderRenderer extends Lander implements Renderer {
     g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
   }
 
+  @Override
+  public void update() {
+
+  }
 }

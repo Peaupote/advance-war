@@ -13,5 +13,5 @@ public interface AbstractUnit extends Serializable {
     Player getPlayer();
     Unit.MoveType getMoveType();
     void renderVision(boolean[][] fog);
-    String toString();
+
 }

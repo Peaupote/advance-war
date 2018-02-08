@@ -9,7 +9,7 @@ import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.*;
-import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.render.units.LanderRenderer;
 import fr.main.view.MainFrame;
 
 /**
@@ -30,8 +30,8 @@ public class App {
         }
 
     Unit[][] units = new Unit[][] {
-            {new UnitRenderer(new Point(0,0), map)},
-            {new UnitRenderer(new Point(3,5), map), new UnitRenderer(new Point(1,1), map)}
+            {new LanderRenderer(new Point(0,0), map)},
+            {new LanderRenderer(new Point(3,5), map), new LanderRenderer(new Point(1,1), map)}
     };
 
     Universe.save("maps/maptest.map", units, map);

@@ -13,7 +13,7 @@ import fr.main.model.units.Unit;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 
-public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit>{
+public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
 
 	public static final Unit.MoveType landerMoveType=new NavalUnit.NavalMoveType(){
 		public boolean canMoveTo(Terrain t){
@@ -28,7 +28,7 @@ public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit>{
 	private final LinkedList<LandUnit> units=new LinkedList<LandUnit>();
 
 	public Lander(Player player, Point point, Terrain[][] ts){
-		super(player, point, 99, landerMoveType, 6, 1, null, null, ts);
+		super(player, point, 99, landerMoveType, 6, 2, null, null, ts);
 	}
 
 	public Lander(Player player, int x, int y, Terrain[][] ts){
@@ -50,6 +50,10 @@ public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit>{
 	public void charge(LandUnit u){
 
 	}
+
+  public String getName () {
+    return "Lander";
+  }
 
 
 }

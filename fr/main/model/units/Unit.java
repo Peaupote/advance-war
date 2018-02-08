@@ -19,14 +19,14 @@ public abstract class Unit implements AbstractUnit {
 	private final Point location;
 	private Player player;
 
+	private Fuel fuel;
+	private final MoveType moveType;
+
 	private PrimaryWeapon primaryWeapon;
 	private SecondaryWeapon secondaryWeapon;
 
-	public final int vision;
-	private Fuel fuel;
+	public final int vision, moveQuantity;
 	protected Terrain terrain;
-	public final int moveQuantity;
-	private final MoveType moveType;
 	protected boolean hideable;
 
 	public class Fuel implements java.io.Serializable{
@@ -39,9 +39,9 @@ public abstract class Unit implements AbstractUnit {
 		}
 
 		public Fuel(String name, int maximumQuantity){
-			this.name=name;
-			this.maximumQuantity=maximumQuantity;
-			this.quantity=maximumQuantity;
+			this.name            = name;
+			this.maximumQuantity = maximumQuantity;
+			this.quantity        = maximumQuantity;
 		}
 
 		/*
@@ -165,9 +165,11 @@ public abstract class Unit implements AbstractUnit {
 		}
 	}
 
+  public abstract String getName ();
+
 	@Override
 	public String toString() {
-		String out = "Name" +
+		String out = getName() +
 				"\nHP : " + Integer.toString(life);
 		if(player != null)
 			out += "\nPlayer : " + player.name;

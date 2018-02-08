@@ -24,6 +24,6 @@ public abstract class Buildable extends Terrain implements AbstractBuildable<Bui
 
     @Override
     public int getDefense (Unit u) {
-        return building==null ? defense : building.defense + defense/2;
+        return building==null ? defense : building.getDefense() + defense/2;
     }
 }

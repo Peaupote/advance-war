@@ -5,15 +5,13 @@ import fr.main.model.buildings.Building;
 
 public abstract class Terrain implements AbstractTerrain {
 
-    protected Unit unit;
     protected int defense, bonusVision, bonusRange;
     protected String name;
 
-    public Terrain(String name, int defense, int bonusVision, int bonusRange) {
+    protected Terrain(String name, int defense, int bonusVision, int bonusRange) {
         this.defense     = defense;
         this.bonusRange  = bonusRange;
         this.bonusVision = bonusVision;
-        this.unit        = null;
         this.name        = name;
     }
 
@@ -33,24 +31,9 @@ public abstract class Terrain implements AbstractTerrain {
         return false;
     }
     
-    public Unit getUnit() {
-        return unit;
-    }
-    
-    public void setUnit(Unit u) {
-        this.unit = u;
-    }
-    
-    public void removeUnit() {
-        this.unit = null;
-    }
-    
-    public boolean hasUnit() {
-        return this.unit != null;
-    }
-
     @Override
     public String toString() {
         return name;
     }
 }
+

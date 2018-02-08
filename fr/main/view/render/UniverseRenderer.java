@@ -12,8 +12,8 @@ public class UniverseRenderer extends Universe {
 
   private final Color fogColor = new Color (0,0,0,100);
 
-  public UniverseRenderer (String path, Player[] players) {
-    super (path, players);
+  public UniverseRenderer (String path) {
+    super (path);
   }
 
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
@@ -29,40 +29,15 @@ public class UniverseRenderer extends Universe {
         int a = (j - x) * MainFrame.UNIT - offsetX,
             b = (i - y) * MainFrame.UNIT - offsetY;
         ((Renderer)map.board[i][j]).draw(g, a, b);
-      }
+        if (map.units[i][j] != null)
+          if (map.units[i][j].getPlayer() == current || fogwar[i][j])
+            ((Renderer)map.units[i][j]).draw(g, a, b);
 
-    for (int j = 0; j < map.units[current.id - 1].length; j++) {
-      Unit unit = map.units[current.id - 1][j];
-      if (unit.getX() >= firstX && unit.getX() < lastX &&
-          unit.getY() >= firstY && unit.getY() < lastY) {
-            ((Renderer)unit).draw(g,
-              (unit.getX() - x) * MainFrame.UNIT - offsetX,
-              (unit.getY() - y) * MainFrame.UNIT - offsetY);
-          }
-    }
-
-    for (int i = 0; i < map.units.length; i++) {
-      if (i + 1 == current.id) continue;
-      for (int j = 0; j < map.units[i].length; j++) {
-        Unit unit = map.units[i][j];
-        if (fogwar[unit.getX()][unit.getY()]) {
-              ((Renderer)unit).draw(g,
-                (unit.getX() - x) * MainFrame.UNIT - offsetX,
-                (unit.getY() - y) * MainFrame.UNIT - offsetY);
-            }
-      }
-    }
-
-    for (int i = firstY; i < lastY; i++)
-      for (int j = firstX; j < lastX; j++) {
         if (!fogwar[i][j]) {
-          int a = (j - x) * MainFrame.UNIT - offsetX,
-              b = (i - y) * MainFrame.UNIT - offsetY;
-            g.setColor(fogColor);
-            g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
+          g.setColor(fogColor);
+          g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
         }
       }
-
   }
 }
 

@@ -5,7 +5,15 @@ import fr.main.model.terrains.Terrain;
 
 public class Mountain extends Terrain implements LandTerrain {
 
-  public Mountain () {
+  private static Mountain instance;
+
+  protected Mountain () {
     super("Montagne", 4, 3, 2);
   }
+
+  public static Mountain get () {
+    if (instance == null) instance = new Mountain();
+    return instance;
+  }
+
 }

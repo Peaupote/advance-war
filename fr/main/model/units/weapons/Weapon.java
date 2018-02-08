@@ -20,8 +20,8 @@ public abstract class Weapon {
 	public final String name;
 
 	public Weapon(String name, Map<Class<? extends Unit>,Damage> damages){
-		this.name=name;
-		this.damages=damages;
+		this.name    = name;
+		this.damages = damages;
 	}
 
 	/*

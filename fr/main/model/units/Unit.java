@@ -7,6 +7,7 @@ import fr.main.model.Player;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.Terrain;
+import fr.main.model.Universe;
 /**
  * Represents a unit on the board
  */
@@ -45,8 +46,8 @@ public abstract class Unit implements AbstractUnit {
 		}
 
 		/*
-		*	@return true if the unit has no more fuel.
-		*/
+		 *	@return true if the unit has no more fuel.
+		 */
 		public boolean consume(int quantity){
 			this.quantity=Math.max(0,this.quantity-quantity);
 			return this.quantity==0;
@@ -61,8 +62,8 @@ public abstract class Unit implements AbstractUnit {
 	}
 
 	/*
-	* Represents how a unit moves and whether or not it can go on a specific terrain.
-	*/
+	 * Represents how a unit moves and whether or not it can go on a specific terrain.
+	 */
 	public static abstract class MoveType implements java.io.Serializable{
 		public abstract String toString();
 		public abstract int moveCost(Terrain t);
@@ -70,16 +71,16 @@ public abstract class Unit implements AbstractUnit {
 	}
 
 
-	public Unit (Point location, Terrain[][] ts) {
-		this (null, location, null, null,0,  2, null, null, ts);
+	public Unit (Point location) {
+		this (null, location, null, null,0,  2, null, null);
 	}
 
-	public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
-		this(player, location, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon, ts);
+	public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
+		this(player, location, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon);
 		this.fuel = new Fuel(maxFuel);
 	}
 
-	public Unit (Player player, Point location, Fuel fuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
+	public Unit (Player player, Point location, Fuel fuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
 		this.life=100;
 		this.location=location;
 		this.player=player;
@@ -89,7 +90,7 @@ public abstract class Unit implements AbstractUnit {
 		this.vision=vision;
 		this.primaryWeapon=primaryWeapon;
 		this.secondaryWeapon=secondaryWeapon;
-        move(location.x, location.y, ts);
+    move(location.x, location.y);
 	}
 
 	public final boolean removeLife(int life){
@@ -126,23 +127,14 @@ public abstract class Unit implements AbstractUnit {
 		return location.y;
 	}
 
-	public boolean move(int x, int y, Terrain[][] ts) {
-		if(y >= 0 && y < ts.length && x >= 0 && x < ts[y].length && isValidTerrain(ts[y][x])) {
-			location.move(x, y);
-			if (terrain != null) terrain.removeUnit();
-			ts[y][x].setUnit(this);
-			return true;
-		}
-		return false;
+	public final void move(int x, int y) {
+    Universe u = Universe.get();
+    if (u != null && u.getUnit(x, y) == null)
+      u.setUnit(x, y, this);
 	}
 
 	public MoveType getMoveType() {
 		return moveType;
-	}
-
-	private boolean isValidTerrain(Terrain t) {
-		// Function to modify for the move() test.
-		return !(t == null || t.hasUnit());
 	}
 
 	public void renderVision (boolean[][] fog) {

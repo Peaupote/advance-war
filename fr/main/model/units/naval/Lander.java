@@ -27,12 +27,12 @@ public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
 
 	private final LinkedList<LandUnit> units=new LinkedList<LandUnit>();
 
-	public Lander(Player player, Point point, Terrain[][] ts){
-		super(player, point, 99, landerMoveType, 6, 2, null, null, ts);
+	public Lander(Player player, Point point){
+		super(player, point, 99, landerMoveType, 6, 2, null, null);
 	}
 
-	public Lander(Player player, int x, int y, Terrain[][] ts){
-		this(player, new Point(x,y), ts);
+	public Lander(Player player, int x, int y){
+		this(player, new Point(x,y));
 	}
 
 	public int getCapacity(){

@@ -6,7 +6,9 @@ import fr.main.model.terrains.Terrain;
 
 public class Wood extends Terrain implements LandTerrain {
 
-	public Wood() {
+  private static Wood instance;
+
+	protected Wood() {
 		super("Forêt",2, 0, 0);
 	}
 
@@ -14,5 +16,10 @@ public class Wood extends Terrain implements LandTerrain {
 	public boolean isHiding(Unit u){
 		return u instanceof LandUnit;
 	}
+
+  public static Wood get () {
+    if (instance == null) instance = new Wood();
+    return instance;
+  }
 
 }

@@ -22,7 +22,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private Point mouse;
 
   public Controller (Player ps[]) {
-    world  = new UniverseRenderer("maps/maptest.map", ps);
+    world  = new UniverseRenderer("maps/maptest.map");
     camera = new Position.Camera(world.getDimension());
     cursor = new Position.Cursor(camera, world.getDimension());
     mouse  = new Point(1,1);

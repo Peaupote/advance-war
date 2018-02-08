@@ -9,11 +9,9 @@ import fr.main.model.units.Unit;
 */
 public class PrimaryWeapon extends Weapon{
 
-	public final int maximumAmmo;
 	private int ammo;
 
-	public final int minimumRange;
-	public final int maximumRange;
+	public final int minimumRange, maximumRange, maximumAmmo;
 
 	public PrimaryWeapon(String name, Map<Class<? extends Unit>,Damage> damages, int maximumAmmo, int maximumRange, int minimumRange){
 		super(name,damages);

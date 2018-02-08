@@ -5,6 +5,7 @@ import java.util.Random;
 import java.awt.Point;
 
 import fr.main.model.Universe;
+import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
 import fr.main.view.render.terrains.land.*;
@@ -29,12 +30,20 @@ public class App {
           case 2: map[i][j] = new ReefRenderer();break;
         }
 
-    Unit[][] units = new Unit[][] {
-            {new LanderRenderer(new Point(0,0), map)},
-            {new LanderRenderer(new Point(3,5), map), new LanderRenderer(new Point(1,1), map)}
+    Player[] players = new Player[]{
+      new Player("P1"), new Player("P2")
     };
 
-    Universe.save("maps/maptest.map", units, map);
+    Unit[][] units = new Unit[30][30];
+    units[0][0] = new LanderRenderer(new Point(0,0));
+    units[1][1] = new LanderRenderer(new Point(1,1));
+    units[3][6] = new LanderRenderer(new Point(6,3));
+
+    players[0].add(units[0][0]);
+    players[0].add(units[3][6]);
+    players[1].add(units[1][1]);
+
+    Universe.save("maps/maptest.map", units, map, players);
 
     //Universe word = new Universe("maps/maptest.map");
     //System.out.println(word);

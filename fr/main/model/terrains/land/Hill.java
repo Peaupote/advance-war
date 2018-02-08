@@ -7,8 +7,14 @@ import fr.main.model.terrains.Terrain;
 
 public class Hill extends Buildable implements LandTerrain {
 
-  public Hill() {
+  private static Hill instance;
+
+  protected Hill() {
     super("Colline", 2, 0, 0);
   }
 
+  public static Hill get () {
+    if (instance == null) instance = new Hill();
+    return instance;
+  }
 }

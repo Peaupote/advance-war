@@ -5,8 +5,15 @@ import fr.main.model.units.Unit;
 
 public class River extends Terrain implements LandTerrain {
 
-  public River() {
+  private static River instance;
+
+  protected River() {
     super("Rivière",0,0,0);
+  }
+
+  public static River get () {
+    if (instance == null) instance = new River();
+    return instance;
   }
 
 }

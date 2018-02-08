@@ -1,67 +1,17 @@
 package fr.main.model.buildings;
 
 import fr.main.model.Player;
+import fr.main.model.terrains.Terrain;
 
-public class Barrack extends FactoryBuilding implements OwnableBuilding {
+public class Barrack extends OwnableBuilding implements FactoryBuilding {
 
-	public static final int defense=3;
-	public static final int income=1000;
-	public static final String name="Caserne";
-	public static final int maximumLife=200;
+	public static final int defense     = 3;
+	public static final int income      = 1000;
+	public static final String name     = "Caserne";
+	public static final int maximumLife = 200;
 
-	private Player owner;
-	private int life;
-
-	public Barrack(){
-		super("Caserne", 3, null);
-//		this.life=this.maximumLife;
-//		this.owner=null;
+	public Barrack(Terrain t, Player p){
+		super(t, defense, p, maximumLife, income, name);
 	}
 
-	public String toString(){
-		return name;
-	}
-
-	public int getDefense(){
-		return this.defense;
-	}
-
-	public int getMaximumLife(){
-		return this.maximumLife;
-	}
-
-	public int getIncome(){
-		return this.income;
-	}
-
-	public Player getOwner(){
-		return this.owner;
-	}
-
-	public void setOwner(Player player){
-		this.owner=player;
-	}
-
-	public boolean isNeutral(){
-		return getOwner()==null;
-	}
-
-	public int getLife(){
-		return this.life;
-	}
-
-	public boolean removeLife(Player player, int life){
-		if (this.life<=life){
-			setOwner(player);
-			goBackToMaximumLife();
-			return true;
-		}else{
-			this.life-=life;
-			return false;
-		}
-	}
-
-	public void goBackToMaximumLife(){
-		this.life=this.maximumLife;
-	}
 }

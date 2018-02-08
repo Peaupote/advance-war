@@ -9,6 +9,6 @@ public interface AbstractTerrain extends java.io.Serializable {
     public int getBonusRange(Unit u);
     public boolean isHiding(Unit u);
     public Unit getUnit();
-    public String toString();
 
 }
+

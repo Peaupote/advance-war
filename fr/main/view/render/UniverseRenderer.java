@@ -5,17 +5,21 @@ import java.awt.Color;
 
 import fr.main.model.Universe;
 import fr.main.model.Player;
+import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
 import fr.main.view.MainFrame;
 
 public class UniverseRenderer extends Universe {
 
+
   private final Color fogColor = new Color (0,0,0,100);
 
   public UniverseRenderer (String path, Player[] players) {
     super (path, players);
+    for(Terrain[] line : map.board)
+      for(Terrain t : line)
+        ((Renderer) t).update();
   }
-
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
     int w = MainFrame.WIDTH / MainFrame.UNIT,
         h = MainFrame.HEIGHT / MainFrame.UNIT,

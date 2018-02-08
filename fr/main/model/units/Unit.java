@@ -21,7 +21,7 @@ public abstract class Unit implements AbstractUnit {
 	private Player player;
 
 	private Fuel fuel;
-	private final MoveType moveType;
+	public final MoveType moveType;
 
 	private PrimaryWeapon primaryWeapon;
 	private SecondaryWeapon secondaryWeapon;
@@ -60,16 +60,6 @@ public abstract class Unit implements AbstractUnit {
 			return quantity;
 		}
 	}
-
-	/*
-	 * Represents how a unit moves and whether or not it can go on a specific terrain.
-	 */
-	public static abstract class MoveType implements java.io.Serializable{
-		public abstract String toString();
-		public abstract int moveCost(Terrain t);
-		public abstract boolean canMoveTo(Terrain t);
-	}
-
 
 	public Unit (Point location) {
 		this (null, location, null, null,0,  2, null, null);

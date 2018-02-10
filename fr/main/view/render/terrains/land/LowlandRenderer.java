@@ -13,11 +13,11 @@ import javax.imageio.ImageIO;
 
 public class LowlandRenderer extends Lowland implements Renderer {
 
-  //  private transient boolean imageChecked = false;
   private String imagePath;
   private transient BufferedImage image;
+  private transient static LowlandRenderer instance;
 
-  public LowlandRenderer(String imagePath) {
+  private LowlandRenderer(String imagePath) {
     this.imagePath = imagePath;
     update();
   }
@@ -38,6 +38,11 @@ public class LowlandRenderer extends Lowland implements Renderer {
 
     Graphics2D g2d = (Graphics2D) g;
     g2d.drawImage(image, x, y, null);
+  }
+
+  public static LowlandRenderer get () {
+    if (instance == null) instance = new LowlandRenderer ("./assets/lowland");
+    return instance;
   }
 
 }

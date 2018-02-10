@@ -15,6 +15,7 @@ public class SeaRenderer extends Sea implements Renderer {
 
   private String imagePath;
   private transient BufferedImage image;
+  private transient static SeaRenderer instance;
 
   public SeaRenderer(String imagePath) {
     this.imagePath = imagePath;
@@ -38,5 +39,11 @@ public class SeaRenderer extends Sea implements Renderer {
     Graphics2D g2d = (Graphics2D) g;
     g2d.drawImage(image, x, y, null);
   }
+
+  public static SeaRenderer get() {
+    if (instance == null) instance = new SeaRenderer("aeets");
+    return instance;
+  }
+
 }
 

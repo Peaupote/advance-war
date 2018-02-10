@@ -25,9 +25,9 @@ public class App {
     for (int i = 0; i < 30; i++)
       for (int j = 0; j < 30; j++)
         switch (rand.nextInt(3)) {
-          case 0: map[i][j] = new LowlandRenderer("");break;
-          case 1: map[i][j] = new SeaRenderer("");break;
-          case 2: map[i][j] = new ReefRenderer();break;
+          case 0: map[i][j] = LowlandRenderer.get();break;
+          case 1: map[i][j] = SeaRenderer.get();break;
+          case 2: map[i][j] = ReefRenderer.get();break;
         }
 
     Player[] players = new Player[]{

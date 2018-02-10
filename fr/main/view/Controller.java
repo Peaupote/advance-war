@@ -1,15 +1,19 @@
 package fr.main.view;
 
+import java.util.HashMap;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 import java.awt.Point;
 
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
+import fr.main.view.interfaces.*;
+import java.util.LinkedList;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -20,29 +24,78 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   private boolean isListening = false, listenMouse = false;
   private Point mouse;
+  private Mode mode;
+  final LinkedList<InterfaceUI> uiComponents;
+  private ActionPanel actionPanel;
+
+  public static enum Mode {
+    MOVE,
+    MENU
+  }
+
+  private class MainActionPanel extends ActionPanel {
+    
+    public MainActionPanel () {
+      super(null);
+      x = MainFrame.WIDTH - 200;
+      y = 10;
+
+      actions = new HashMap<>();
+      actions.put(new Index("Finish turn"), e -> world.next());
+
+      actions.put(new Index("Wait"), e -> {});
+    }
+
+    protected void onOpen () {
+      for (InterfaceUI com: uiComponents)
+        if (com != this) com.setVisible(false);
+      mode = Mode.MENU;
+    }
+
+    protected void onClose () {
+      for (InterfaceUI com: uiComponents) 
+        if (com != this) com.setVisible(true);
+      mode = Mode.MOVE;
+    }
+
+  }
 
   public Controller (Player ps[]) {
     world  = new UniverseRenderer("maps/maptest.map");
     camera = new Position.Camera(world.getDimension());
     cursor = new Position.Cursor(camera, world.getDimension());
     mouse  = new Point(1,1);
+
+    actionPanel = new MainActionPanel();
+    mode = Mode.MOVE;
+
+    uiComponents = new LinkedList<>();
+    uiComponents.add(new TerrainPanel (cursor, camera));
+    uiComponents.add(new PlayerPanel (cursor, camera)); 
+    uiComponents.add(actionPanel);
   }
 
   @Override
   public void keyPressed (KeyEvent e) {
     int key = e.getKeyCode();
     if (!isListening) {
-      if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
-      else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
-      else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
-      else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
+      if (mode == Mode.MOVE) {
+        if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
+        else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
+        else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
+        else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
+        else if (key == KeyEvent.VK_ENTER) actionPanel.setVisible (true);
+      } else if (mode == Mode.MENU) {
+        if      (key == KeyEvent.VK_UP)     actionPanel.goUp();
+        else if (key == KeyEvent.VK_DOWN)   actionPanel.goDown();
+        else if (key == KeyEvent.VK_ENTER)  actionPanel.perform();
+        else if (key == KeyEvent.VK_ESCAPE) actionPanel.setVisible (false);
+      }
     }
   }
 
   @Override
   public void keyReleased (KeyEvent e) {
-    if (e.getKeyCode() == KeyEvent.VK_SPACE)
-      world.next();
   }
 
   @Override
@@ -65,7 +118,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public void update () {
     isListening = cursor.move() | camera.move();
 
-    if (!isListening && listenMouse) {
+    if (!isListening && mode == Mode.MOVE && listenMouse) {
         if (mouse.x <= mouveRange) camera.setDirection(Direction.LEFT);
         else if (camera.width - mouse.x <= mouveRange) camera.setDirection(Direction.RIGHT);
         else if (mouse.y <= mouveRange) camera.setDirection(Direction.TOP);

@@ -20,7 +20,8 @@ public class Player implements java.io.Serializable, Iterable<Unit> {
   } 
 
   public void add(Unit u) {
-    units.add(u);
+    if (u.setPlayer(this))
+      units.add(u);
   }
 
   public Iterator<Unit> iterator () {

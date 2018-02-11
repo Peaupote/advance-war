@@ -65,6 +65,10 @@ public abstract class Unit implements AbstractUnit {
 		this (null, location, null, null,0,  2, null, null);
 	}
 
+  public Unit (Player player, Point location) {
+    this (player, location, null, null, 0, 2, null, null);
+  }
+
 	public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
 		this(player, location, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon);
 		this.fuel = new Fuel(maxFuel);
@@ -100,9 +104,12 @@ public abstract class Unit implements AbstractUnit {
 		return life;
 	}
 
-	public final void setPlayer (Player p) {
-		if (player == null)
+	public final boolean setPlayer (Player p) {
+		if (player == null) {
 			this.player = p;
+      return true;
+    }
+    return false;
 	}
 
 	public final Player getPlayer(){
@@ -123,11 +130,11 @@ public abstract class Unit implements AbstractUnit {
       u.setUnit(x, y, this);
 	}
 
-	public MoveType getMoveType() {
+	public final MoveType getMoveType() {
 		return moveType;
 	}
 
-	public void renderVision (boolean[][] fog) {
+	public final void renderVision (boolean[][] fog) {
 		if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
 			return;
 		renderVision (fog,location.x,location.y,vision);
@@ -146,6 +153,16 @@ public abstract class Unit implements AbstractUnit {
 				renderVision(fog,x+1,y,vision-1);
 		}
 	}
+
+  public void reachableLocation (boolean[][] map) {
+    // TODO: real implem for reachable location, for the moment can move as far as he see
+    renderVision(map);
+  }
+
+  public void canTarget (boolean[][] map) {
+    // TODO: real implem for can target location, for the moment can shoot as far as he see
+    renderVision(map);
+  }
 
   public abstract String getName ();
 

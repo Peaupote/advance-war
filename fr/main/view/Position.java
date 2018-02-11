@@ -48,10 +48,14 @@ public abstract class Position {
              (real.y == target.y * MainFrame.UNIT);
     }
 
-    public void draw (Graphics g) {
-      g.setColor(Color.black);
+    public void draw (Graphics g, Color color) {
+      g.setColor(color);
       g.drawRect(real.x - camera.real.x, real.y - camera.real.y,
                  MainFrame.UNIT, MainFrame.UNIT);
+    }
+
+    public void draw (Graphics g) {
+      draw (g, Color.black);
     }
 
     public void setPosition (int x, int y) {

@@ -76,7 +76,7 @@ public class Universe {
       u.renderVision(fogwar);
   }
 
-  public final Terrain get (int x, int y) {
+  public final Terrain getTerrain (int x, int y) {
     return map.board[y][x];
   }
 

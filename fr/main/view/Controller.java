@@ -27,6 +27,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private Mode mode;
   final LinkedList<InterfaceUI> uiComponents;
   private ActionPanel actionPanel;
+  private DayPanel dayPanel;
 
   public static enum Mode {
     MOVE,
@@ -42,20 +43,26 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       y = 10;
 
       actions = new HashMap<>();
-      actions.put(new Index("Finish turn"), e -> world.next());
+      actions.put(new Index("Finish turn"), e -> {
+        world.next();
+        dayPanel.setVisible(true);
+      });
 
       actions.put(new Index("Wait"), e -> {});
     }
 
-    protected void onOpen () {
+    public void onOpen () {
+      super.onOpen();
       for (InterfaceUI com: uiComponents)
         if (com != this) com.setVisible(false);
       mode = Mode.MENU;
     }
 
-    protected void onClose () {
+    public void onClose () {
+      super.onClose();
       for (InterfaceUI com: uiComponents) 
-        if (com != this) com.setVisible(true);
+        // TODO: change condition by splitting components in 2 sets
+        if (com != this && com != dayPanel) com.setVisible(true);
       mode = Mode.MOVE;
     }
 
@@ -68,12 +75,15 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     mouse  = new Point(1,1);
 
     actionPanel = new MainActionPanel();
+    dayPanel = new DayPanel();
     mode = Mode.MOVE;
 
+    // TODO: change this implementation for static list in interfaceUI
     uiComponents = new LinkedList<>();
     uiComponents.add(new TerrainPanel (cursor, camera));
     uiComponents.add(new PlayerPanel (cursor, camera)); 
     uiComponents.add(actionPanel);
+    uiComponents.add(dayPanel);
   }
 
   @Override

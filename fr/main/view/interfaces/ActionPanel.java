@@ -67,6 +67,11 @@ public class ActionPanel extends InterfaceUI {
     selected = Math.min (Index.incr, selected + 1);
   }
 
+  @Override
+  public void onOpen () {
+    selected = 1;
+  }
+
   public void perform () {
     for (Index i : actions.keySet())
       if (i.id == selected) {

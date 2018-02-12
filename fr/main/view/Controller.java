@@ -25,7 +25,6 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private boolean isListening = false, listenMouse = false;
   private Point mouse;
   private Mode mode;
-  final LinkedList<InterfaceUI> uiComponents;
   private ActionPanel actionPanel;
   private DayPanel dayPanel;
 
@@ -53,14 +52,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public void onOpen () {
       super.onOpen();
-      for (InterfaceUI com: uiComponents)
+      for (InterfaceUI com: InterfaceUI.components())
         if (com != this) com.setVisible(false);
       mode = Mode.MENU;
     }
 
     public void onClose () {
       super.onClose();
-      for (InterfaceUI com: uiComponents) 
+      for (InterfaceUI com: InterfaceUI.components()) 
         // TODO: change condition by splitting components in 2 sets
         if (com != this && com != dayPanel) com.setVisible(true);
       mode = Mode.MOVE;
@@ -78,12 +77,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     dayPanel = new DayPanel();
     mode = Mode.MOVE;
 
-    // TODO: change this implementation for static list in interfaceUI
-    uiComponents = new LinkedList<>();
-    uiComponents.add(new TerrainPanel (cursor, camera));
-    uiComponents.add(new PlayerPanel (cursor, camera)); 
-    uiComponents.add(actionPanel);
-    uiComponents.add(dayPanel);
+    new TerrainPanel (cursor, camera);
+    new PlayerPanel (cursor, camera);
   }
 
   @Override

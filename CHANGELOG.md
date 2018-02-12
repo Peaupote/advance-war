@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
   - Unit selection
   - Day panel first implementation
-
+### Changed
+  - Static Iterable of InterfaceUI instead of LinkedList in Controller
 
 ## [0.0.4] - 2018-02-11
 ### Added

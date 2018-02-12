@@ -26,7 +26,7 @@ public class View extends JPanel {
     controller.world.draw(g, x, y, offsetX, offsetY);
     controller.cursor.draw(g);
     
-    for (InterfaceUI comp: controller.uiComponents)
+    for (InterfaceUI comp: InterfaceUI.components())
       comp.render(g);
   }
 

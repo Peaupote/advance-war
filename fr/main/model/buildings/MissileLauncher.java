@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import fr.main.model.terrains.Terrain;
 
-public class MissileLauncher extends Building implements ActionBuilding, IndestructibleBuilding {
+public class MissileLauncher extends Building implements ActionBuilding {
 
 	private boolean fired;
 

@@ -14,8 +14,8 @@ public class Reef extends Terrain implements NavalTerrain {
     protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
 
   static{
-    sunnyWeatherMovementCosts.put(MoveType.Naval,2);
-    sunnyWeatherMovementCosts.put(MoveType.Lander,2);
+    sunnyWeatherMovementCosts.put(MoveType.NAVAL,2);
+    sunnyWeatherMovementCosts.put(MoveType.LANDER,2);
   }
 
   protected Reef () {

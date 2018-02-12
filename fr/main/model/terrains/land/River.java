@@ -14,9 +14,9 @@ public class River extends Terrain implements LandTerrain {
 	protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
 
 	static{
-		sunnyWeatherMovementCosts.put(MoveType.Airy,1);
-		sunnyWeatherMovementCosts.put(MoveType.Infantry,2);
-		sunnyWeatherMovementCosts.put(MoveType.Mech,1);
+		sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
+		sunnyWeatherMovementCosts.put(MoveType.INFANTRY,2);
+		sunnyWeatherMovementCosts.put(MoveType.MECH,1);
 	}
 
   protected River() {

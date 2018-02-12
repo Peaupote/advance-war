@@ -81,7 +81,9 @@ public class Universe {
   }
 
   public final Unit getUnit(int x, int y) {
-    return map.units[y][x];
+    if (y>=0 && x>=0 && y<map.units.length && x<map.units[0].length)
+      return map.units[y][x];
+    return null;
   }
 
   public final void setUnit(int x, int y, Unit u) {

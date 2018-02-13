@@ -1,13 +1,13 @@
 package fr.main.model.units;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public interface TransportUnit<T extends AbstractUnit> extends AbstractUnit {
 
-	int getCapacity();
-	boolean isFull();
-	LinkedList<T> getUnits();
-	void charge(T u);
-
+    public int getCapacity();
+    public boolean isFull();
+    public ArrayList<T> getUnits();
+    public boolean charge(T u);
+    public boolean remove(T u);
+    public boolean canCharge(AbstractUnit u);
 }
-

@@ -2,21 +2,21 @@ package fr.main.model.units.weapons;
 
 import java.util.Map;
 
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 
 /*
 * Secondary weapons have infinite ammunition and are contact weapons.
 */
 public class SecondaryWeapon extends Weapon{
 
-	public SecondaryWeapon(String name, Map<Class<? extends Unit>,Damage> damages){
-		super(name,damages);
-	}
+    public SecondaryWeapon(String name, Map<Class<? extends AbstractUnit>,Integer> damages){
+        super(name,damages);
+    }
 
-	public void shoot(){}
+    public void shoot(){}
 
-	public boolean isInRange(int actualX, int actualY, int targetX, int targetY){
-		return Math.abs(actualX-targetX)+Math.abs(actualY-targetY)==1;
-	}
+    public boolean isInRange(int actualX, int actualY, int targetX, int targetY){
+        return Math.abs(actualX-targetX)+Math.abs(actualY-targetY)==1;
+    }
 
 }

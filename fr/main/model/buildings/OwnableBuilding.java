@@ -40,6 +40,9 @@ public abstract class OwnableBuilding extends Building {
 		return life;
 	}
 
+	/*
+	* @return true if and only if the building was captured
+	*/
 	public boolean removeLife(Player player, int life){
 		if (this.life<=life){
 			setOwner(player);

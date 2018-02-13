@@ -2,84 +2,43 @@ package fr.main.model.units.weapons;
 
 import java.util.Map;
 
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 
 public abstract class Weapon {
 
-	public static final Damage A,B,C,D,E;
+    public final String name;
+    private final Map<Class<? extends AbstractUnit>,Integer> damages;
 
-	static{
-		A=new Damage('A');
-		B=new Damage('B');
-		C=new Damage('C');
-		D=new Damage('D');
-		E=new Damage('E');
-	}
+    public Weapon(String name, Map<Class<? extends AbstractUnit>,Integer> damages){
+        this.name    = name;
+        this.damages = damages;
+    }
 
-	private final Map<Class<? extends Unit>,Damage> damages;
-	public final String name;
+    public abstract void shoot();
+    public abstract boolean isInRange(int actualX, int actualY, int targetX, int targetY);
 
-	public Weapon(String name, Map<Class<? extends Unit>,Damage> damages){
-		this.name    = name;
-		this.damages = damages;
-	}
+    public String toString(){
+        return name;
+    }
 
-	/*
-	*	The damage done by a unit changes depending on the type of unit is attacking.
-	* 	
-	*	A damage is a character between A and E, where A is the highest damage potential and E the lowest.
-	*/
-	public static class Damage{
-		public final char damage;
-		public Damage(char d){
-			char dd=(char)Math.max(d,d+'A'-'a'); // on garde une lettre majuscule
-			if (dd<'A' || dd>'E')
-				throw new RuntimeException("Damage are a character between A and E. "+d+" is not a possible value.");
-			else
-				damage=dd;
-		}
+    public boolean canShoot(AbstractUnit u){
+        if (u==null)
+            return false;
+        for (Class<? extends AbstractUnit> c : damages.keySet())
+            if (c!=null && c.isInstance(u))
+                return true;
+        return false;
+    }
 
-		public String toString(){
-			return damage+"";
-		}
-
-		public char toChar(){
-			return damage;
-		}
-
-		/*
-		*	@return an integer representing this damage from 1 to 5 : 'A' is 5 and 'E' is 1.
-		*/
-		public int toInt(){
-			return 5+'A'-damage;
-		}
-	}
-
-	public int getDamages(Unit unit){
-		if (unit!=null && damages!=null){
-			for (Map.Entry<Class<? extends Unit>, Damage> entry : damages.entrySet()){
-				if (entry.getKey()!=null && entry.getKey().isInstance(unit))
-					return entry.getValue().toInt();
-			}
-		}
-		throw new RuntimeException("This weapon cannot attack this unit.");
-	}
-
-	public abstract void shoot();
-	public abstract boolean isInRange(int actualX, int actualY, int targetX, int targetY);
-
-	public String toString(){
-		return name;
-	}
-
-	public boolean canAttack(Unit unit){
-		if (unit!=null && damages!=null){
-			for (Map.Entry<Class<? extends Unit>, Damage> entry : damages.entrySet()){
-				if (entry.getKey()!=null && entry.getKey().isInstance(unit))
-					return true;
-			}
-		}
-		return false;
-	}
+    /*
+    * @returns an Integer whose intValue is the damage inflicted by this weapon to the unit given as a parameter. Returns null if this weapon cannot attack the unit given in parameter.
+    */
+    public Integer damage(AbstractUnit u){
+        if (u==null)
+            return null;
+        for(Map.Entry<Class<? extends AbstractUnit>,Integer> e : damages.entrySet())
+            if (e!=null && e.getKey()!=null && e.getKey().isInstance(u))
+                return e.getValue();
+        return null;
+    }
 }
-

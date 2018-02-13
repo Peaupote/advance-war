@@ -13,8 +13,8 @@ public class Sea extends Terrain implements NavalTerrain {
   	protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
 
 	static{
-		sunnyWeatherMovementCosts.put(MoveType.Lander,1);
-		sunnyWeatherMovementCosts.put(MoveType.Naval,1);
+		sunnyWeatherMovementCosts.put(MoveType.LANDER,1);
+		sunnyWeatherMovementCosts.put(MoveType.NAVAL,1);
 	}
 
   protected Sea () {

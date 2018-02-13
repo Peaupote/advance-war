@@ -15,11 +15,11 @@ public class Hill extends Buildable implements LandTerrain {
 	protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
 
 	static{
-		sunnyWeatherMovementCosts.put(MoveType.Airy,1);
-		sunnyWeatherMovementCosts.put(MoveType.Wheel,3);
-		sunnyWeatherMovementCosts.put(MoveType.Track,2);
-		sunnyWeatherMovementCosts.put(MoveType.Infantry,1);
-		sunnyWeatherMovementCosts.put(MoveType.Mech,1);
+		sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
+		sunnyWeatherMovementCosts.put(MoveType.WHEEL,3);
+		sunnyWeatherMovementCosts.put(MoveType.TREAD,2);
+		sunnyWeatherMovementCosts.put(MoveType.INFANTRY,1);
+		sunnyWeatherMovementCosts.put(MoveType.MECH,1);
 	}
 
 	protected Hill() {

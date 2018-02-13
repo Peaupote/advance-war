@@ -41,7 +41,7 @@ public class LowlandRenderer extends Lowland implements Renderer {
   }
 
   public static LowlandRenderer get () {
-    if (instance == null) instance = new LowlandRenderer ("./assets/lowland");
+    if (instance == null) instance = new LowlandRenderer ("./assets/aw_terrain_lowland.png");
     return instance;
   }
 

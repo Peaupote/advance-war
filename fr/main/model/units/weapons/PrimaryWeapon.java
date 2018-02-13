@@ -2,7 +2,7 @@ package fr.main.model.units.weapons;
 
 import java.util.Map;
 
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 
 /*
 * Primary weapons are weapons with limited ammunitions that can be range weapons. 
@@ -10,15 +10,18 @@ import fr.main.model.units.Unit;
 public class PrimaryWeapon extends Weapon{
 
 	private int ammo;
-
 	public final int minimumRange, maximumRange, maximumAmmo;
 
-	public PrimaryWeapon(String name, Map<Class<? extends Unit>,Damage> damages, int maximumAmmo, int maximumRange, int minimumRange){
+	public PrimaryWeapon (String name, int maximumAmmo, int minimumRange, int maximumRange, Map<Class<? extends AbstractUnit>,Integer> damages){
 		super(name,damages);
-		this.maximumAmmo=maximumAmmo;
-		this.ammo=maximumAmmo;
+		this.maximumAmmo = maximumAmmo;
+		this.ammo        = maximumAmmo;
 		this.maximumRange=maximumRange;
 		this.minimumRange=minimumRange;
+	}
+
+	public PrimaryWeapon(String name, int maximumAmmo, Map<Class<? extends AbstractUnit>,Integer> damages){
+		this(name,maximumAmmo,1,1,damages);
 	}
 
 	public int getAmmunition(){
@@ -45,11 +48,11 @@ public class PrimaryWeapon extends Weapon{
 		return i<=getMaximumRange() && i>=getMinimumRange();
 	}
 
-	public final int getMinimumRange(){
+	public int getMinimumRange(){
 		return minimumRange;
 	}
 
-	public final int getMaximumRange(){
+	public int getMaximumRange(){
 		return maximumRange;
 	}
 

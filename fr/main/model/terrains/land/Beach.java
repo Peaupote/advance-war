@@ -15,12 +15,12 @@ public class Beach extends Terrain implements LandTerrain,NavalTerrain {
 	protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
 
 	static{
-		sunnyWeatherMovementCosts.put(MoveType.Airy,1);
-		sunnyWeatherMovementCosts.put(MoveType.Lander,1);
-		sunnyWeatherMovementCosts.put(MoveType.Wheel,1);
-		sunnyWeatherMovementCosts.put(MoveType.Track,1);
-		sunnyWeatherMovementCosts.put(MoveType.Infantry,1);
-		sunnyWeatherMovementCosts.put(MoveType.Mech,1);
+		sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
+		sunnyWeatherMovementCosts.put(MoveType.LANDER,1);
+		sunnyWeatherMovementCosts.put(MoveType.WHEEL,1);
+		sunnyWeatherMovementCosts.put(MoveType.TREAD,1);
+		sunnyWeatherMovementCosts.put(MoveType.INFANTRY,1);
+		sunnyWeatherMovementCosts.put(MoveType.MECH,1);
 	}
 
 

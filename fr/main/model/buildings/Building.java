@@ -4,7 +4,7 @@ import fr.main.model.terrains.Terrain;
 
 import java.io.Serializable;
 
-public abstract class Building implements AbstractBuilding, Serializable{
+public abstract class Building implements AbstractBuilding{
 
   protected final Terrain terrain;
   protected final int defense;

@@ -1,13 +1,14 @@
 package fr.main.model.units;
 
-public enum MoveType{
-	Airy("Aérien"),
-	Naval("Naval"),
-	Lander("Barge"),
-	Wheel("Roues"),
-	Track("Chenilles"),
-	Infantry("Infanterie"),
-	Mech("Bazooka");
+public enum MoveType {
+
+	AIRY("Aérien"),
+	NAVAL("Naval"),
+	LANDER("Barge"),
+	WHEEL("Roues"),
+	TREAD("Chenilles"),
+	INFANTRY("Infanterie"),
+	MECH("Bazooka");
 	
 	MoveType(String s){
 		name=s;

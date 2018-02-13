@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
   - Unit selection
   - Day panel first implementation
+  - All units classes & a few unit interfaces
 ### Changed
-  - Static Iterable of InterfaceUI instead of LinkedList in Controller
+  - Movement type becomes an enum
+  - convention : use of 4 spaces to indent
 
 ## [0.0.4] - 2018-02-11
 ### Added

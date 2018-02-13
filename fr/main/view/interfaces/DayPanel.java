@@ -22,7 +22,7 @@ public class DayPanel extends InterfaceUI {
     g.fillRect(0, MARGINTOP, MainFrame.WIDTH, HEIGHT);
 
     g.setColor (Color.white);
-    g.drawString ("Day " + (day / 2), MainFrame.WIDTH / 2 - 100, MARGINTOP + 50);
+    g.drawString ("Day " + (day / 2 + 1), MainFrame.WIDTH / 2 - 100, MARGINTOP + 50);
   }
 
   @Override

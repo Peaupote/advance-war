@@ -86,14 +86,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     };
 
-    mouse      = new Point(1,1);
-
+    mouse       = new Point(1,1);
     actionPanel = new MainActionPanel();
-    dayPanel = new DayPanel();
-    mode = Mode.MOVE;
+    dayPanel    = new DayPanel();
+    mode        = Mode.MOVE;
 
     new TerrainPanel (cursor, camera);
     new PlayerPanel (cursor, camera);
+    dayPanel.setVisible(true);
   }
 
   @Override

@@ -91,8 +91,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     dayPanel    = new DayPanel();
     mode        = Mode.MOVE;
 
-    new TerrainPanel (cursor, camera);
     new PlayerPanel (cursor, camera);
+    new Minimap (camera, new TerrainPanel (cursor, camera));
     dayPanel.setVisible(true);
   }
 

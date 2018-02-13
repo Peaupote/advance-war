@@ -28,6 +28,7 @@ public class Universe {
   protected final Iterator<Player> players;
   protected Player current;
   protected boolean[][] fogwar;
+  private Dimension size;
 
   public Universe (String mapPath) {
     map = null;
@@ -55,7 +56,8 @@ public class Universe {
   }
 
   public Dimension getDimension () {
-    return new Dimension(map.board[0].length, map.board.length);
+    if (size == null) size = new Dimension(map.board[0].length, map.board.length);
+    return size;
   }
 
   public Player getCurrentPlayer () {

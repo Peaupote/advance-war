@@ -17,7 +17,7 @@ import java.util.LinkedList;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
-  public final Position.Cursor cursor;
+  public final Position.Cursor cursor, unitCursor;
   public final Position.Camera camera;
   public final UniverseRenderer world;
   public final int mouveRange = 2;
@@ -68,10 +68,25 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   }
 
   public Controller (Player ps[]) {
-    world  = new UniverseRenderer("maps/maptest.map", this);
-    camera = new Position.Camera(world.getDimension());
-    cursor = new Position.Cursor(camera, world.getDimension());
-    mouse  = new Point(1,1);
+    world      = new UniverseRenderer("maps/maptest.map", this);
+    camera     = new Position.Camera(world.getDimension());
+    cursor     = new Position.Cursor(camera, world.getDimension());
+    unitCursor = new Position.Cursor(camera, world.getDimension()) {
+      
+      @Override
+      public boolean canMove(Direction d) {
+        if (!super.canMove(d)) return false;
+        boolean[][] map = new boolean[size.height][size.width];
+        world.getUnit(cursor.getX(), cursor.getY()).reachableLocation(map);
+        
+        Point target = new Point(position.x, position.y);
+        d.move(target);
+        return map[target.y][target.x];
+      }
+
+    };
+
+    mouse      = new Point(1,1);
 
     actionPanel = new MainActionPanel();
     dayPanel = new DayPanel();
@@ -85,14 +100,20 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public void keyPressed (KeyEvent e) {
     int key = e.getKeyCode();
     if (!isListening) {
-      if (mode == Mode.MOVE) {
+      if (mode == Mode.MOVE ||
+          (mode == Mode.UNIT && 
+           world.getCurrentPlayer() == world.getUnit(cursor.getX(), cursor.getY()).getPlayer())) {
         if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
         else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
         else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
         else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
         else if (key == KeyEvent.VK_ENTER)
           if (world.getUnit(cursor.getX(), cursor.getY()) == null) actionPanel.setVisible (true);
-          else mode = Mode.UNIT;
+          else {
+            mode = Mode.UNIT;
+            unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
+          }
+        else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
       } else if (mode == Mode.MENU) {
         if      (key == KeyEvent.VK_UP)     actionPanel.goUp();
         else if (key == KeyEvent.VK_DOWN)   actionPanel.goDown();
@@ -124,7 +145,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
    * Function called each loop turn
    */
   public void update () {
-    isListening = cursor.move() | camera.move();
+    isListening = cursor.move() | camera.move() | (mode == Mode.UNIT && unitCursor.move());
 
     if (!isListening && mode == Mode.MOVE && listenMouse) {
         if (mouse.x <= mouveRange) camera.setDirection(Direction.LEFT);
@@ -144,7 +165,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         (d == Direction.TOP && cursor.getY() - camera.getY() == mouveRange) ||
         (d == Direction.BOTTOM && camera.getY() + camera.height - cursor.getY() == mouveRange + 1))
       camera.setDirection (d);
-    cursor.setDirection (d);
+    
+    if (mode == Mode.MOVE) cursor.setDirection (d);
+    else if (mode == Mode.UNIT) unitCursor.setDirection (d);
   }
 
   public Mode getMode () {

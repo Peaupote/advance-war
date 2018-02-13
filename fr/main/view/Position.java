@@ -20,7 +20,7 @@ public abstract class Position {
     /**
      * Dimension of the universe
      */
-    private final Dimension size;
+    protected final Dimension size;
 
     /**
      * Camera showing the game

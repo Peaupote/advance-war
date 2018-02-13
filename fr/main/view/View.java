@@ -24,7 +24,10 @@ public class View extends JPanel {
         offsetX = controller.camera.getOffsetX(),
         offsetY = controller.camera.getOffsetY();
     controller.world.draw(g, x, y, offsetX, offsetY);
-    controller.cursor.draw(g);
+    
+    if (controller.getMode() == Controller.Mode.UNIT)
+      controller.unitCursor.draw(g);
+    else controller.cursor.draw(g);
     
     for (InterfaceUI comp: InterfaceUI.components())
       comp.render(g);

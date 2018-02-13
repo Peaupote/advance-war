@@ -22,13 +22,25 @@ public class App {
 
     Random rand = new Random();
     Terrain[][] map = new Terrain[30][30];
+//    for (int i = 0; i < 30; i++)
+//      for (int j = 0; j < 30; j++)
+//        switch (rand.nextInt(3)) {
+//          case 0: map[i][j] = LowlandRenderer.get();break;
+//          case 1: map[i][j] = SeaRenderer.get();break;
+//          case 2: map[i][j] = ReefRenderer.get();break;
+//        }
+//
+    int [][] intMap = Universe.randMap(30, 30);
+
     for (int i = 0; i < 30; i++)
       for (int j = 0; j < 30; j++)
-        switch (rand.nextInt(3)) {
+        switch (intMap[i][j]) {
+          case -1: map[i][j] = BeachRenderer.get(); break;
           case 0: map[i][j] = LowlandRenderer.get();break;
           case 1: map[i][j] = SeaRenderer.get();break;
           case 2: map[i][j] = ReefRenderer.get();break;
         }
+
 
     Player[] players = new Player[]{
       new Player("P1"), new Player("P2")

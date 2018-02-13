@@ -41,7 +41,7 @@ public class SeaRenderer extends Sea implements Renderer {
   }
 
   public static SeaRenderer get() {
-    if (instance == null) instance = new SeaRenderer("aeets");
+    if (instance == null) instance = new SeaRenderer("assets/aw_terrain_sea.png");
     return instance;
   }
 

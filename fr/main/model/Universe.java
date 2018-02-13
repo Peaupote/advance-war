@@ -9,14 +9,18 @@ import fr.main.model.units.Unit;
 
 public class Universe {
 
+  private static Universe instance;
+
   protected static class Board implements Serializable {
 
     public Terrain[][] board;
+    public Player[] players;
     public Unit[][] units;
 
-    public Board (Unit[][] units, Terrain[][] board) {
+    public Board (Unit[][] units, Player[] ps, Terrain[][] board) {
       this.board = board;
       this.units = units;
+      this.players = ps;
     }
   }
 
@@ -25,8 +29,7 @@ public class Universe {
   protected Player current;
   protected boolean[][] fogwar;
 
-
-  public Universe (String mapPath, Player[] ps) {
+  public Universe (String mapPath) {
     map = null;
 
     try {
@@ -42,14 +45,10 @@ public class Universe {
       e.printStackTrace();
     }
 
-    players = new PlayerIt(ps).iterator();
+    instance = this;
+    players = new PlayerIt(map.players).iterator();
 
     int i = 0;
-    for (Player p: ps) {
-      for (Unit unit: map.units[i])
-        unit.setPlayer(p);
-      i++;
-    }
 
     fogwar = new boolean[map.board.length][map.board[0].length];
     next();
@@ -73,22 +72,20 @@ public class Universe {
       for (int j = 0; j < map.board[0].length; j++)
         fogwar[i][j] = false;
 
-    for (Unit u: map.units[current.id - 1])
+    for (Unit u: current)
       u.renderVision(fogwar);
   }
 
-  public final Terrain get (int x, int y) {
+  public final Terrain getTerrain (int x, int y) {
     return map.board[y][x];
   }
 
-  // To Work on.
   public final Unit getUnit(int x, int y) {
-    if(map != null
-            && y < map.board.length && y >= 0
-            && x < map.board[y].length && x >= 0
-            && map.board[y][x] != null)
-      return map.board[y][x].getUnit();
-    else return null;
+    return map.units[y][x];
+  }
+
+  public final void setUnit(int x, int y, Unit u) {
+    map.units[y][x] = u;
   }
 
   public String toString () {
@@ -101,8 +98,8 @@ public class Universe {
     return ret;
   }
 
-  public static void save (String path, Unit[][] units, Terrain[][] map) {
-    Board board = new Board (units, map);
+  public static void save (String path, Unit[][] units, Terrain[][] map, Player[] ps) {
+    Board board = new Board (units, ps, map);
 
     try {
       FileOutputStream fileOut = new FileOutputStream(path);
@@ -114,6 +111,10 @@ public class Universe {
     } catch (IOException i) {
        i.printStackTrace();
     }
+  }
+
+  public static Universe get () {
+    return instance;
   }
 
 }

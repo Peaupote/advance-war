@@ -7,6 +7,7 @@ import fr.main.model.Player;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.Terrain;
+import fr.main.model.Universe;
 /**
  * Represents a unit on the board
  */
@@ -20,7 +21,7 @@ public abstract class Unit implements AbstractUnit {
 	private Player player;
 
 	private Fuel fuel;
-	private final MoveType moveType;
+	public final MoveType moveType;
 
 	private PrimaryWeapon primaryWeapon;
 	private SecondaryWeapon secondaryWeapon;
@@ -45,8 +46,8 @@ public abstract class Unit implements AbstractUnit {
 		}
 
 		/*
-		*	@return true if the unit has no more fuel.
-		*/
+		 *	@return true if the unit has no more fuel.
+		 */
 		public boolean consume(int quantity){
 			this.quantity=Math.max(0,this.quantity-quantity);
 			return this.quantity==0;
@@ -60,26 +61,20 @@ public abstract class Unit implements AbstractUnit {
 		}
 	}
 
-	/*
-	* Represents how a unit moves and whether or not it can go on a specific terrain.
-	*/
-	public static abstract class MoveType implements java.io.Serializable{
-		public abstract String toString();
-		public abstract int moveCost(Terrain t);
-		public abstract boolean canMoveTo(Terrain t);
+	public Unit (Point location) {
+		this (null, location, null, null,0,  2, null, null);
 	}
 
+  public Unit (Player player, Point location) {
+    this (player, location, null, null, 0, 2, null, null);
+  }
 
-	public Unit (Point location, Terrain[][] ts) {
-		this (null, location, null, null,0,  2, null, null, ts);
-	}
-
-	public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
-		this(player, location, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon, ts);
+	public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
+		this(player, location, null, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon);
 		this.fuel = new Fuel(maxFuel);
 	}
 
-	public Unit (Player player, Point location, Fuel fuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, Terrain[][] ts) {
+	public Unit (Player player, Point location, Fuel fuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon) {
 		this.life=100;
 		this.location=location;
 		this.player=player;
@@ -89,7 +84,7 @@ public abstract class Unit implements AbstractUnit {
 		this.vision=vision;
 		this.primaryWeapon=primaryWeapon;
 		this.secondaryWeapon=secondaryWeapon;
-        move(location.x, location.y, ts);
+    move(location.x, location.y);
 	}
 
 	public final boolean removeLife(int life){
@@ -109,9 +104,12 @@ public abstract class Unit implements AbstractUnit {
 		return life;
 	}
 
-	public final void setPlayer (Player p) {
-		if (player == null)
+	public final boolean setPlayer (Player p) {
+		if (player == null) {
 			this.player = p;
+      return true;
+    }
+    return false;
 	}
 
 	public final Player getPlayer(){
@@ -126,26 +124,17 @@ public abstract class Unit implements AbstractUnit {
 		return location.y;
 	}
 
-	public boolean move(int x, int y, Terrain[][] ts) {
-		if(y >= 0 && y < ts.length && x >= 0 && x < ts[y].length && isValidTerrain(ts[y][x])) {
-			location.move(x, y);
-			if (terrain != null) terrain.removeUnit();
-			ts[y][x].setUnit(this);
-			return true;
-		}
-		return false;
+	public final void move(int x, int y) {
+    Universe u = Universe.get();
+    if (u != null && u.getUnit(x, y) == null)
+      u.setUnit(x, y, this);
 	}
 
-	public MoveType getMoveType() {
+	public final MoveType getMoveType() {
 		return moveType;
 	}
 
-	private boolean isValidTerrain(Terrain t) {
-		// Function to modify for the move() test.
-		return !(t == null || t.hasUnit());
-	}
-
-	public void renderVision (boolean[][] fog) {
+	public final void renderVision (boolean[][] fog) {
 		if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
 			return;
 		renderVision (fog,location.x,location.y,vision);
@@ -164,6 +153,16 @@ public abstract class Unit implements AbstractUnit {
 				renderVision(fog,x+1,y,vision-1);
 		}
 	}
+
+  public void reachableLocation (boolean[][] map) {
+    // TODO: real implem for reachable location, for the moment can move as far as he see
+    renderVision(map);
+  }
+
+  public void canTarget (boolean[][] map) {
+    // TODO: real implem for can target location, for the moment can shoot as far as he see
+    renderVision(map);
+  }
 
   public abstract String getName ();
 

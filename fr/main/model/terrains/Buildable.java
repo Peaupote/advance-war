@@ -1,7 +1,10 @@
 package fr.main.model.terrains;
 
+import java.util.Map;
+
 import fr.main.model.buildings.Building;
 import fr.main.model.units.Unit;
+import fr.main.model.units.MoveType;
 
 /*
 * This class is a basic terrain on which can be built any building.
@@ -9,8 +12,8 @@ import fr.main.model.units.Unit;
 public abstract class Buildable extends Terrain implements AbstractBuildable<Building> {
     protected Building building;
 
-    public Buildable (String name, int defense, int bonusVision, int bonusRange) {
-        super(name, defense, bonusVision, bonusRange);
+    public Buildable (String name, int defense, int bonusVision, int bonusRange, Map<MoveType,Integer> sunny) {
+        super(name, defense, bonusVision, bonusRange,sunny);
         this.building = null;
     }
 

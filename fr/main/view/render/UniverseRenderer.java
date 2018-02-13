@@ -8,18 +8,24 @@ import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
 import fr.main.view.MainFrame;
+import fr.main.view.Controller;
 
 public class UniverseRenderer extends Universe {
 
+  private final Controller controller;
+  private final Color fogColor    = new Color (0,0,0,100),
+                      moveColor   = new Color (0, 255, 0, 50),
+                      targetColor = new Color (255, 0, 0, 100);
 
-  private final Color fogColor = new Color (0,0,0,100);
-
-  public UniverseRenderer (String path, Player[] players) {
-    super (path, players);
+  public UniverseRenderer (String path, Controller controller) {
+    super (path);
     for(Terrain[] line : map.board)
       for(Terrain t : line)
         ((Renderer) t).update();
+
+    this.controller = controller;
   }
+
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
     int w = MainFrame.WIDTH / MainFrame.UNIT,
         h = MainFrame.HEIGHT / MainFrame.UNIT,
@@ -28,45 +34,33 @@ public class UniverseRenderer extends Universe {
         lastX  = x + w + (offsetX > 0 ? 1 : 0),
         lastY  = y + h + (offsetY > 0 ? 1 : 0);
 
+    Color tColor = null;
+    boolean targets[][] = new boolean[map.board.length][map.board[0].length];
+    if (controller.getMode() == Controller.Mode.UNIT) {
+      Unit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
+      unit.reachableLocation(targets);
+      tColor = unit.getPlayer() == current ? moveColor : targetColor;
+    }
+
     for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
       for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
         int a = (j - x) * MainFrame.UNIT - offsetX,
             b = (i - y) * MainFrame.UNIT - offsetY;
         ((Renderer)map.board[i][j]).draw(g, a, b);
-      }
+        if (map.units[i][j] != null)
+          if (map.units[i][j].getPlayer() == current || fogwar[i][j])
+            ((Renderer)map.units[i][j]).draw(g, a, b);
 
-    for (int j = 0; j < map.units[current.id - 1].length; j++) {
-      Unit unit = map.units[current.id - 1][j];
-      if (unit.getX() >= firstX && unit.getX() < lastX &&
-          unit.getY() >= firstY && unit.getY() < lastY) {
-            ((Renderer)unit).draw(g,
-              (unit.getX() - x) * MainFrame.UNIT - offsetX,
-              (unit.getY() - y) * MainFrame.UNIT - offsetY);
-          }
-    }
-
-    for (int i = 0; i < map.units.length; i++) {
-      if (i + 1 == current.id) continue;
-      for (int j = 0; j < map.units[i].length; j++) {
-        Unit unit = map.units[i][j];
-        if (fogwar[unit.getX()][unit.getY()]) {
-              ((Renderer)unit).draw(g,
-                (unit.getX() - x) * MainFrame.UNIT - offsetX,
-                (unit.getY() - y) * MainFrame.UNIT - offsetY);
-            }
-      }
-    }
-
-    for (int i = firstY; i < lastY; i++)
-      for (int j = firstX; j < lastX; j++) {
         if (!fogwar[i][j]) {
-          int a = (j - x) * MainFrame.UNIT - offsetX,
-              b = (i - y) * MainFrame.UNIT - offsetY;
-            g.setColor(fogColor);
-            g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
+          g.setColor(fogColor);
+          g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
+        }
+        
+        if (targets[i][j]) {
+          g.setColor(tColor);
+          g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
         }
       }
-
   }
 }
 

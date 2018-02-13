@@ -7,7 +7,7 @@ import fr.main.view.MainFrame;
 import fr.main.model.Universe;
 import fr.main.view.Position;
 
-public class PlayerPanel implements InterfaceUI {
+public class PlayerPanel extends InterfaceUI {
 
   private static final Color BACKGROUNDCOLOR = new Color(0,0,0,230);
   private static final Color FOREGROUNDCOLOR = Color.white;
@@ -19,13 +19,14 @@ public class PlayerPanel implements InterfaceUI {
   protected final Position.Camera camera;
   protected final Universe world;
 
-  public PlayerPanel (Position.Cursor cursor, Position.Camera camera, Universe world) {
+  public PlayerPanel (Position.Cursor cursor, Position.Camera camera) {
     this.cursor = cursor;
     this.camera = camera;
-    this.world = world;
+    this.world = Universe.get();
   }
 
-  public void draw (Graphics g) {
+  @Override
+  protected void draw (Graphics g) {
     int x = cursor.getX() - camera.getX() >= HALFW && cursor.getY() - camera.getY() <= HALFH ? MARGIN : MainFrame.WIDTH - WIDTH - MARGIN,
         y = MARGIN;
     g.setColor (BACKGROUNDCOLOR);

@@ -11,8 +11,8 @@ import fr.main.model.units.naval.Lander;
 
 public class LanderRenderer extends Lander implements Renderer {
 
-  public LanderRenderer (Point location, Terrain[][] ts) {
-    super (null, location, ts);
+  public LanderRenderer (Point location) {
+    super (null, location);
   }
 
   public void draw (Graphics g, int x, int y) {

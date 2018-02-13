@@ -13,11 +13,11 @@ import javax.imageio.ImageIO;
 
 public class LowlandRenderer extends Lowland implements Renderer {
 
-  //  private transient boolean imageChecked = false;
   private String imagePath;
   private transient BufferedImage image;
+  private transient static LowlandRenderer instance;
 
-  public LowlandRenderer(String imagePath) {
+  private LowlandRenderer(String imagePath) {
     this.imagePath = imagePath;
     update();
   }
@@ -26,18 +26,10 @@ public class LowlandRenderer extends Lowland implements Renderer {
   public void update() {
     try {
       image = ImageIO.read(new File(imagePath));
-    } catch (IOException e) {
-      System.out.println("At 'setImage' IOException");
-    }
+    } catch (IOException e) {}
   }
 
   public void draw (Graphics g, int x, int y) {
-//    if(!imageChecked && image == null) {
-//      setImage(imagePath);
-//      imageChecked = true;
-//      System.out.println("Image checked");
-//    }
-
     if(image == null) {
       g.setColor (Color.green);
       g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
@@ -46,6 +38,11 @@ public class LowlandRenderer extends Lowland implements Renderer {
 
     Graphics2D g2d = (Graphics2D) g;
     g2d.drawImage(image, x, y, null);
+  }
+
+  public static LowlandRenderer get () {
+    if (instance == null) instance = new LowlandRenderer ("./assets/lowland");
+    return instance;
   }
 
 }

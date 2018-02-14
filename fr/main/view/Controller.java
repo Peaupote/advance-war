@@ -100,6 +100,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public void keyPressed (KeyEvent e) {
     int key = e.getKeyCode();
     if (!isListening) {
+      isListening = true;
       if (mode == Mode.MOVE ||
           (mode == Mode.UNIT && 
            world.getCurrentPlayer() == world.getUnit(cursor.getX(), cursor.getY()).getPlayer())) {

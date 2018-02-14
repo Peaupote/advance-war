@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
         view.repaint();
 
         try {
-          Thread.sleep(5);
+          Thread.sleep(10);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

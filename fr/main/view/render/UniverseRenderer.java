@@ -17,8 +17,8 @@ public class UniverseRenderer extends Universe {
                       moveColor   = new Color (0, 255, 0, 50),
                       targetColor = new Color (255, 0, 0, 100);
 
-  public UniverseRenderer (String path, Controller controller) {
-    super (path);
+  public UniverseRenderer (String mapName, Controller controller) {
+    super (mapName);
     for(Terrain[] line : map.board)
       for(Terrain t : line)
         ((Renderer) t).update();

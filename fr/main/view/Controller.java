@@ -68,7 +68,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   }
 
   public Controller (Player ps[]) {
-    world      = new UniverseRenderer("maps/maptest.map", this);
+    world      = new UniverseRenderer("maptest.map", this);
     camera     = new Position.Camera(world.getDimension());
     cursor     = new Position.Cursor(camera, world.getDimension());
     unitCursor = new Position.Cursor(camera, world.getDimension()) {

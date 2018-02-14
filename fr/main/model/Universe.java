@@ -10,6 +10,16 @@ import fr.main.model.units.Unit;
 public class Universe {
 
   private static Universe instance;
+  public static final String mapPath="maps/";
+  public static boolean save=false;
+
+  static{
+      File maps=new File(mapPath);
+      if (!maps.exists() && !maps.isDirectory() && !maps.mkdir())
+        System.out.println("Impossible to save.");
+      else
+        save=true;
+  }
 
   protected static class Board implements Serializable {
 
@@ -30,22 +40,24 @@ public class Universe {
   protected boolean[][] fogwar;
   private Dimension size;
 
-  public Universe (String mapPath) {
+  public Universe (String mapName) {
     map = null;
 
-    try {
-      FileInputStream fileIn = new FileInputStream(mapPath);
-      ObjectInputStream in = new ObjectInputStream(fileIn);
-      map = (Board) in.readObject();
-      in.close();
-      fileIn.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
-      System.err.println("Board class not found");
-      e.printStackTrace();
+    if (save){
+      try {
+        FileInputStream fileIn = new FileInputStream(mapPath+mapName);
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+        map = (Board) in.readObject();
+        in.close();
+        fileIn.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+        System.err.println("Board class not found");
+        e.printStackTrace();
+      }
     }
-
+    
     instance = this;
     players = new PlayerIt(map.players).iterator();
 
@@ -102,16 +114,21 @@ public class Universe {
     return ret;
   }
 
-  public static void save (String path, Unit[][] units, Terrain[][] map, Player[] ps) {
+  public static void save (String mapName, Unit[][] units, Terrain[][] map, Player[] ps) {
+    if (!Universe.save){
+      System.out.println("Impossible to save.");
+      return;
+    }
+
     Board board = new Board (units, ps, map);
 
     try {
-      FileOutputStream fileOut = new FileOutputStream(path);
+      FileOutputStream fileOut = new FileOutputStream(mapPath+mapName);
       ObjectOutputStream out = new ObjectOutputStream(fileOut);
       out.writeObject(board);
       out.close();
       fileOut.close();
-      System.out.println("Serialized data is saved in " + path);
+      System.out.println("Serialized data is saved in " + mapPath+mapName);
     } catch (IOException i) {
        i.printStackTrace();
     }

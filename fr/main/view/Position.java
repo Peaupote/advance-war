@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.lang.Thread;
+import java.lang.InterruptedException;
 
 import fr.main.view.MainFrame;
 
@@ -16,7 +21,7 @@ public abstract class Position {
    * Represents the user cursor
    */
   public static class Cursor extends Position {
-    
+
     /**
      * Dimension of the universe
      */
@@ -27,31 +32,53 @@ public abstract class Position {
      */
     private final Camera camera;
 
+    private Image image;
+    private int cursorScale;
+
     public Cursor (Camera camera, Dimension size) {
       super(0, 0);
 
       this.size   = size;
       this.camera = camera;
+      cursorScale = 1;
+
+      image = null;
+      try {
+        image = ImageIO.read(new File("./assets/cursor.png"));
+
+        new Thread(() -> {
+          while(true) {
+            cursorScale = (cursorScale + 1) % 10;
+
+            try {
+              Thread.sleep(50);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+          }
+        }).start();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
     @Override
     protected boolean canMove (Direction d) {
       return (d == Direction.LEFT   && position.x > 0) ||
-             (d == Direction.RIGHT  && position.x < size.width - 1) ||
-             (d == Direction.TOP    && position.y > 0) ||
-             (d == Direction.BOTTOM && position.y < size.height - 1);
+              (d == Direction.RIGHT  && position.x < size.width - 1) ||
+              (d == Direction.TOP    && position.y > 0) ||
+              (d == Direction.BOTTOM && position.y < size.height - 1);
     }
 
     @Override
     protected boolean hasReachLocation () {
       return (real.x == target.x * MainFrame.UNIT) &&
-             (real.y == target.y * MainFrame.UNIT);
+              (real.y == target.y * MainFrame.UNIT);
     }
 
     public void draw (Graphics g, Color color) {
-      g.setColor(color);
-      g.drawRect(real.x - camera.real.x, real.y - camera.real.y,
-                 MainFrame.UNIT, MainFrame.UNIT);
+      int s = MainFrame.UNIT + cursorScale;
+      g.drawImage (image, 2 + real.x - camera.real.x, 2 + real.y - camera.real.y, s, s, null);
     }
 
     public void draw (Graphics g) {
@@ -101,15 +128,15 @@ public abstract class Position {
     @Override
     protected boolean canMove (Direction d) {
       return (d == Direction.LEFT   && position.x > 0) ||
-             (d == Direction.RIGHT  && position.x + width < size.width) ||
-             (d == Direction.TOP    && position.y > 0) ||
-             (d == Direction.BOTTOM && position.y + height < size.height);
+              (d == Direction.RIGHT  && position.x + width < size.width) ||
+              (d == Direction.TOP    && position.y > 0) ||
+              (d == Direction.BOTTOM && position.y + height < size.height);
     }
 
     @Override
     protected boolean hasReachLocation () {
       return (real.x == target.x * MainFrame.UNIT) &&
-             (real.y == target.y * MainFrame.UNIT);
+              (real.y == target.y * MainFrame.UNIT);
     }
 
   }

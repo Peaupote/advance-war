@@ -2,7 +2,9 @@ package fr.main.model;
 
 import java.io.*;
 import java.awt.Dimension;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
@@ -57,7 +59,7 @@ public class Universe {
         e.printStackTrace();
       }
     }
-    
+
     instance = this;
     players = new PlayerIt(map.players).iterator();
 

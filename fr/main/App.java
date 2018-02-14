@@ -55,9 +55,9 @@ public class App {
     players[0].add(units[3][6]);
     players[1].add(units[1][1]);
 
-    Universe.save("maps/maptest.map", units, map, players);
+    Universe.save("maptest.map", units, map, players);
 
-    //Universe word = new Universe("maps/maptest.map");
+    //Universe world = new Universe("maptest.map");
     //System.out.println(word);
 
 

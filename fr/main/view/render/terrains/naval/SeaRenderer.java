@@ -37,7 +37,7 @@ public class SeaRenderer extends Sea implements Renderer {
     }
 
     Graphics2D g2d = (Graphics2D) g;
-    g2d.drawImage(image, x, y, null);
+    g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
   }
 
   public static SeaRenderer get() {

@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-  - Unit selection
+  - Unit selection & cursor movements when unit selected
   - Day panel first implementation
   - All units classes & a few unit interfaces
+  - Minimap
+  - Coherent random map generation
 ### Changed
   - Movement type becomes an enum
   - convention : use of 4 spaces to indent

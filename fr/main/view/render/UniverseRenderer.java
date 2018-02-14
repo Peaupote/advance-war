@@ -17,8 +17,8 @@ public class UniverseRenderer extends Universe {
                       moveColor   = new Color (0, 255, 0, 50),
                       targetColor = new Color (255, 0, 0, 100);
 
-  public UniverseRenderer (String path, Controller controller) {
-    super (path);
+  public UniverseRenderer (String mapName, Controller controller) {
+    super (mapName);
     for(Terrain[] line : map.board)
       for(Terrain t : line)
         ((Renderer) t).update();
@@ -27,8 +27,8 @@ public class UniverseRenderer extends Universe {
   }
 
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
-    int w = MainFrame.WIDTH / MainFrame.UNIT,
-        h = MainFrame.HEIGHT / MainFrame.UNIT,
+    int w = map.board.length,
+        h = map.board[0].length,
         firstX = x - (offsetX < 0 ? 1 : 0),
         firstY = y - (offsetY < 0 ? 1 : 0),
         lastX  = x + w + (offsetX > 0 ? 1 : 0),

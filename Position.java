@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.lang.Thread;
+import java.lang.InterruptedException;
 
 import fr.main.view.MainFrame;
 
@@ -27,11 +32,34 @@ public abstract class Position {
      */
     private final Camera camera;
 
+	private Image image;
+	private int cursorScale;
+
     public Cursor (Camera camera, Dimension size) {
       super(0, 0);
 
       this.size   = size;
       this.camera = camera;
+	  cursorScale = 1;
+
+	  image = null;
+	  try {
+		image = ImageIO.read(new File("./assets/cursor.png"));
+
+		new Thread(() -> {
+		  while(true) {
+			cursorScale = (cursorScale + 1) % 10;
+
+			try {
+			  Thread.sleep(50);
+			} catch (InterruptedException e) {
+			  e.printStackTrace();
+			}
+		  }
+		}).start();
+	  } catch (IOException e) {
+		e.printStackTrace();
+	  }
     }
 
     @Override
@@ -49,9 +77,8 @@ public abstract class Position {
     }
 
     public void draw (Graphics g, Color color) {
-      g.setColor(color);
-      g.drawRect(real.x - camera.real.x, real.y - camera.real.y,
-                 MainFrame.UNIT, MainFrame.UNIT);
+	  int s = MainFrame.UNIT + cursorScale;
+      g.drawImage (image, 2 + real.x - camera.real.x, 2 + real.y - camera.real.y, s, s, null);
     }
 
     public void draw (Graphics g) {

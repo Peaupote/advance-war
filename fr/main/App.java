@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.util.Random;
 import java.awt.Point;
 
+import fr.main.model.MapGenerator;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
@@ -19,18 +20,9 @@ import fr.main.view.MainFrame;
 public class App {
 
   public static void main (String[] args) {
-
-    Random rand = new Random();
     Terrain[][] map = new Terrain[30][30];
-//    for (int i = 0; i < 30; i++)
-//      for (int j = 0; j < 30; j++)
-//        switch (rand.nextInt(3)) {
-//          case 0: map[i][j] = LowlandRenderer.get();break;
-//          case 1: map[i][j] = SeaRenderer.get();break;
-//          case 2: map[i][j] = ReefRenderer.get();break;
-//        }
-//
-    int [][] intMap = Universe.randMap(30, 30);
+    MapGenerator mapGen = new MapGenerator(1);
+    int [][] intMap = mapGen.randMap(30, 30);
 
     for (int i = 0; i < 30; i++)
       for (int j = 0; j < 30; j++)
@@ -61,7 +53,7 @@ public class App {
     //System.out.println(word);
 
 
-    
+
     EventQueue.invokeLater(MainFrame::new);
   }
 }

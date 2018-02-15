@@ -16,7 +16,7 @@ public class LanderRenderer extends Lander implements Renderer {
   }
 
   public void draw (Graphics g, int x, int y) {
-    g.setColor (Color.red);
+    g.setColor (getPlayer().color);
     g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
   }
 

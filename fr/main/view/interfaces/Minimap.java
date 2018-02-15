@@ -7,6 +7,7 @@ import fr.main.model.terrains.naval.*;
 import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.Universe;
+import fr.main.model.units.Unit;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
@@ -37,17 +38,23 @@ public class Minimap extends InterfaceUI {
     // TODO: more efficient stuff
     for (int i = 0; i < w; i++)
       for (int j = 0; j < w; j++) {
-        Terrain t = world.getTerrain(j, i);
         int a = mx + j * size,
             b = my + i * size;
-        if (t instanceof Lowland) g.setColor(Color.green);
-        else if (t instanceof Sea) g.setColor(Color.cyan);
-        else if (t instanceof Reef) g.setColor(Color.blue);
-        else g.setColor(Color.black);
-        g.fillRect(a, b, size, size);
-        if (!world.isVisible(j, i)) {
-          g.setColor(fogColor);
+        Unit unit = world.getUnit(j, i);
+        if (unit != null && (unit.getPlayer() == world.getCurrentPlayer() || world.isVisible(j, i))) {
+          g.setColor(unit.getPlayer().color);
           g.fillRect(a, b, size, size);
+        } else {
+        Terrain t = world.getTerrain(j, i);
+          if (t instanceof Lowland) g.setColor(Color.green);
+          else if (t instanceof Sea) g.setColor(Color.cyan);
+          else if (t instanceof Reef) g.setColor(Color.blue);
+          else g.setColor(Color.black);
+          g.fillRect(a, b, size, size);
+          if (!world.isVisible(j, i)) {
+            g.setColor(fogColor);
+            g.fillRect(a, b, size, size);
+          }
         }
       }
 

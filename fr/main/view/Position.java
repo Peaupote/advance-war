@@ -65,20 +65,20 @@ public abstract class Position {
     @Override
     protected boolean canMove (Direction d) {
       return (d == Direction.LEFT   && position.x > 0) ||
-              (d == Direction.RIGHT  && position.x < size.width - 1) ||
-              (d == Direction.TOP    && position.y > 0) ||
-              (d == Direction.BOTTOM && position.y < size.height - 1);
+             (d == Direction.RIGHT  && position.x < size.width - 1) ||
+             (d == Direction.TOP    && position.y > 0) ||
+             (d == Direction.BOTTOM && position.y < size.height - 1);
     }
 
     @Override
     protected boolean hasReachLocation () {
       return (real.x == target.x * MainFrame.UNIT) &&
-              (real.y == target.y * MainFrame.UNIT);
+             (real.y == target.y * MainFrame.UNIT);
     }
 
     public void draw (Graphics g, Color color) {
       int s = MainFrame.UNIT + cursorScale;
-      g.drawImage (image, 2 + real.x - camera.real.x, 2 + real.y - camera.real.y, s, s, null);
+      g.drawImage (image, 2 + real.x - camera.real.x - cursorScale / 2 + 1, 2 + real.y - camera.real.y - cursorScale / 2 + 1, s, s, null);
     }
 
     public void draw (Graphics g) {
@@ -128,15 +128,15 @@ public abstract class Position {
     @Override
     protected boolean canMove (Direction d) {
       return (d == Direction.LEFT   && position.x > 0) ||
-              (d == Direction.RIGHT  && position.x + width < size.width) ||
-              (d == Direction.TOP    && position.y > 0) ||
-              (d == Direction.BOTTOM && position.y + height < size.height);
+             (d == Direction.RIGHT  && position.x + width < size.width) ||
+             (d == Direction.TOP    && position.y > 0) ||
+             (d == Direction.BOTTOM && position.y + height < size.height);
     }
 
     @Override
     protected boolean hasReachLocation () {
       return (real.x == target.x * MainFrame.UNIT) &&
-              (real.y == target.y * MainFrame.UNIT);
+             (real.y == target.y * MainFrame.UNIT);
     }
 
   }

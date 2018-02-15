@@ -78,7 +78,7 @@ public abstract class Position {
 
     public void draw (Graphics g, Color color) {
       int s = MainFrame.UNIT + cursorScale;
-      g.drawImage (image, 2 + real.x - camera.real.x, 2 + real.y - camera.real.y, s, s, null);
+      g.drawImage (image, 2 + real.x - camera.real.x - cursorScale / 2 + 1, 2 + real.y - camera.real.y - cursorScale / 2 + 1, s, s, null);
     }
 
     public void draw (Graphics g) {

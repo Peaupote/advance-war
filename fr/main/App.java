@@ -5,6 +5,7 @@ import java.util.Random;
 import java.awt.Point;
 
 import fr.main.model.MapGenerator;
+import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
@@ -21,17 +22,11 @@ public class App {
 
   public static void main (String[] args) {
     Terrain[][] map = new Terrain[30][30];
-    MapGenerator mapGen = new MapGenerator(1);
-    int [][] intMap = mapGen.randMap(30, 30);
+    TerrainEnum[][] eMap = new MapGenerator(2).randMap(30, 30);
 
-    for (int i = 0; i < 30; i++)
-      for (int j = 0; j < 30; j++)
-        switch (intMap[i][j]) {
-          case -1: map[i][j] = BeachRenderer.get(); break;
-          case 0: map[i][j] = LowlandRenderer.get();break;
-          case 1: map[i][j] = SeaRenderer.get();break;
-          case 2: map[i][j] = ReefRenderer.get();break;
-        }
+    for (int i = 0; i < eMap.length; i++)
+      for (int j = 0; j < eMap[0].length; j++)
+        map[i][j] = eMap[i][j].terrain;
 
 
     Player[] players = new Player[]{

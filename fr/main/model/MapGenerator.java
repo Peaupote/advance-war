@@ -1,7 +1,12 @@
 package fr.main.model;
 
+import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.naval.Sea;
+
 import java.util.Arrays;
 import java.util.Random;
+
+import static fr.main.model.TerrainEnum.*;
 
 public class MapGenerator {
     private long seed;
@@ -30,7 +35,7 @@ public class MapGenerator {
         System.out.println("Rand reset to : " + seed);
     }
 
-    public int[][] randMap(int x, int y) {
+    public TerrainEnum[][] randMap(int x, int y) {
         int power = 4; // power * 10 = size% of cells that will serve as reference;
         int smootness = 3;
 
@@ -38,7 +43,7 @@ public class MapGenerator {
     }
 
     // Voivonoi
-    public int[][] randMap(int x, int y, int power, int smoothness) {
+    public TerrainEnum[][] randMap(int x, int y, int power, int smoothness) {
         if(x < 0) x = 1;
         if(y < 0) y = 1;
         if(power < 1) power = 1;
@@ -48,19 +53,18 @@ public class MapGenerator {
         resetSeed();
         int size = x * y;
         int referenceNb = size / 10 * power;
-        int[][] map = new int [x][y];
-        for(int[] line : map) Arrays.fill(line, -1);
+        TerrainEnum[][] map = new TerrainEnum[x][y];
+        for(TerrainEnum[] line : map) Arrays.fill(line, none);
 
 
         System.out.println("Reference : " + referenceNb);
 
-        int[] terrainPortion = new int[3];
-        terrainPortion[0] = 50; // Lowland
+        int[] terrainPortion = new int[2];
+        terrainPortion[0] = 40; // Lowland
         terrainPortion[1] = 50; // Sea
-        terrainPortion[2] = 0;  // Reef
-        // Somme == 100
+        // Somme <= 100
 
-        int[] terrainLeft = new int[3];
+        int[] terrainLeft = new int[2];
         for(int i = 0; i < terrainPortion.length; i ++)
             terrainLeft[i] = referenceNb * terrainPortion[i] / 100;
 
@@ -72,8 +76,8 @@ public class MapGenerator {
             for(int j = 0; j < terrainLeft[i]; j ++) {
                 randX = rand.nextInt(x);
                 randY = rand.nextInt(y);
-                if (map[randX][randY] == -1) {
-                    map[randX][randY] = i;
+                if (map[randX][randY] == none) {
+                    map[randX][randY] = getTerrainEnum(i);
                     referencePoints[count][0] = randX;
                     referencePoints[count][1] = randY;
                     referencePoints[count][2] = i;
@@ -84,13 +88,13 @@ public class MapGenerator {
 
         for(int i = 0; i < x; i ++) {
             for(int j = 0; j < y; j++) {
-                if(map[i][j] == -1) {
-                    map[i][j] = referencePoints[closestPoint(i, j, referencePoints)][2];
+                if(map[i][j] == none) {
+                    map[i][j] = getTerrainEnum(referencePoints[closestPoint(i, j, referencePoints)][2]);
                 }
             }
         }
 
-        return refineMap(map, smoothness);
+        return placeBeach(refineMap(map, smoothness));
     }
 
     private int distance(int x1 , int y1, int x2, int y2) {
@@ -120,8 +124,8 @@ public class MapGenerator {
         return closestPoint;
     }
 
-    private int[][] refineMap(int[][] map, int it) {
-        int[][] mapBis = new int[map.length][map[0].length];
+    private TerrainEnum[][] refineMap(TerrainEnum[][] map, int it) {
+        TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
         for(int i = 0; i < map.length; i ++)
             for(int j = 0; j < map[0].length; j ++)
                 mapBis[i][j] = map[i][j];
@@ -132,30 +136,43 @@ public class MapGenerator {
         return mapBis;
     }
 
-    private int[][] refineMap(int[][] map) {
+    private TerrainEnum[][] refineMap(TerrainEnum[][] map) {
         return refineMap(map, 1);
     }
 
-    private int[][] cellAutomaton(int[][] map) {
-        int[][] mapBis = new int[map.length][map[0].length];
+    private TerrainEnum[][] cellAutomaton(TerrainEnum[][] map) {
+        TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
         int count;
 
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
                 count = 0;
-                if(i - 1 >= 0 && map[i - 1][j] == 0) count ++;
-                if(i + 1 < map.length && map[i + 1][j] == 0) count ++;
-                if(j - 1 >= 0 && map[i][j - 1] == 0) count ++;
-                if(j + 1 < map[0].length && map[i][j + 1] == 0) count ++;
+                if(i - 1 >= 0 && map[i - 1][j] == lowland) count ++;
+                if(i + 1 < map.length && map[i + 1][j] == lowland) count ++;
+                if(j - 1 >= 0 && map[i][j - 1] == lowland) count ++;
+                if(j + 1 < map[0].length && map[i][j + 1] == lowland) count ++;
                 switch (count) {
-                    case 0 : mapBis[i][j] = 1; break;
-                    case 1 : mapBis[i][j] = 1; break;
+                    case 0 : mapBis[i][j] = sea; break;
+                    case 1 : mapBis[i][j] = sea; break;
                     case 2 : mapBis[i][j] = map[i][j]; break;
-                    case 3 : mapBis[i][j] = 0; break;
-                    case 4 : mapBis[i][j] = 0; break;
+                    case 3 : mapBis[i][j] = lowland; break;
+                    case 4 : mapBis[i][j] = lowland; break;
                 }
             }
         }
         return mapBis;
+    }
+
+    private TerrainEnum[][] placeBeach(TerrainEnum[][] map) {
+        for(int i = 0; i < map.length; i ++) {
+            for(int j = 0; j < map[0].length; j ++) {
+                if(map[i][j] == sea) continue;
+                if(i - 1 >= 0 && map[i - 1][j] == sea) map[i][j] = beach;
+                if(i + 1 < map.length && map[i + 1][j] == sea) map[i][j] = beach;
+                if(j - 1 >= 0 && map[i][j - 1] == sea) map[i][j] = beach;
+                if(j + 1 < map[0].length && map[i][j + 1] == sea) map[i][j] = beach;
+            }
+        }
+        return map;
     }
 }

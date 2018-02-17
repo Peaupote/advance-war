@@ -21,8 +21,9 @@ import fr.main.view.MainFrame;
 public class App {
 
   public static void main (String[] args) {
-    Terrain[][] map = new Terrain[30][30];
-    TerrainEnum[][] eMap = new MapGenerator(2).randMap(30, 30);
+    int s = 50;
+    Terrain[][] map = new Terrain[s][s];
+    TerrainEnum[][] eMap = new MapGenerator(2).randMap(s, s);
 
     for (int i = 0; i < eMap.length; i++)
       for (int j = 0; j < eMap[0].length; j++)
@@ -33,7 +34,7 @@ public class App {
       new Player("P1"), new Player("P2")
     };
 
-    Unit[][] units = new Unit[30][30];
+    Unit[][] units = new Unit[s][s];
     units[0][0] = new LanderRenderer(new Point(0,0));
     units[1][1] = new LanderRenderer(new Point(1,1));
     units[3][6] = new LanderRenderer(new Point(6,3));

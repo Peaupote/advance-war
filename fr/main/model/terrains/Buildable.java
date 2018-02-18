@@ -3,7 +3,7 @@ package fr.main.model.terrains;
 import java.util.Map;
 
 import fr.main.model.buildings.Building;
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 
 /*
@@ -26,7 +26,7 @@ public abstract class Buildable extends Terrain implements AbstractBuildable<Bui
     }
 
     @Override
-    public int getDefense (Unit u) {
+    public int getDefense (AbstractUnit u) {
         return building==null ? defense : building.getDefense() + defense/2;
     }
 }

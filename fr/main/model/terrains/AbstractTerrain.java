@@ -1,16 +1,17 @@
 package fr.main.model.terrains;
 
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 
 public interface AbstractTerrain extends java.io.Serializable {
 
-    public int getDefense(Unit u);
-    public int getBonusVision(Unit u);
-    public int getBonusRange(Unit u);
-    public boolean isHiding(Unit u);
-	public boolean canMoveIn(Unit u);
+    public int getDefense(AbstractUnit u);
+    public int getBonusVision(AbstractUnit u);
+    public int getBonusRange(AbstractUnit u);
+    public boolean hideFrom(AbstractUnit u);
+	public boolean blockVision(AbstractUnit u);
+	public boolean canMoveIn(AbstractUnit u);
 	public boolean canMoveIn(MoveType mt);
-	public int moveCost(Unit u);
-	public int moveCost(MoveType mt);
+	public Integer moveCost(AbstractUnit u);
+	public Integer moveCost(MoveType mt);
 }

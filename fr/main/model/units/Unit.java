@@ -6,7 +6,7 @@ import java.io.Serializable;
 import fr.main.model.Player;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.Universe;
 /**
  * Represents a unit on the board
@@ -155,12 +155,29 @@ public abstract class Unit implements AbstractUnit {
     public final void renderVision (boolean[][] fog) {
         if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
             return;
-        renderVision (fog,location.x,location.y,vision);
+
+        int x=location.x;
+        int y=location.y;
+
+        if (vision!=0){
+            if (y!=0)
+                fog[y-1][x]=true;
+            if (y!=fog.length-1)
+                fog[y+1][x]=true;
+            if (x!=0)
+                fog[y][x-1]=true;
+            if (x!=fog[0].length-1)
+                fog[y][x+1]=true;
+        }
+
+        renderVision (fog,x,y,vision);
     }
 
     private void renderVision (boolean[][] fog, int x, int y, int vision){
-        fog[y][x]=true;
-        if (vision!=0){
+        AbstractTerrain t = Universe.get().getTerrain(x,y);
+        if (!fog[y][x] && !t.hideFrom(this))
+            fog[y][x]=true;
+        if (vision!=0 && !t.blockVision(this)){
             if (y!=0)
                 renderVision(fog,x,y-1,vision-1);
             if (y!=fog.length-1)

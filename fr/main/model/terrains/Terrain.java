@@ -2,7 +2,7 @@ package fr.main.model.terrains;
 
 import java.util.Map;
 
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.buildings.Building;
 
@@ -21,19 +21,23 @@ public abstract class Terrain implements AbstractTerrain {
         this.sunnyWeatherMovementCosts = sunny;
     }
 
-    public int getDefense(Unit u) {
+    public int getDefense(AbstractUnit u) {
         return defense;
     }
 
-    public int getBonusVision(Unit u) {
+    public int getBonusVision(AbstractUnit u) {
         return bonusVision;
     }
     
-    public int getBonusRange(Unit u) {
+    public int getBonusRange(AbstractUnit u) {
         return bonusRange;
     }
     
-    public boolean isHiding(Unit u) {
+    public boolean hideFrom(AbstractUnit from) {
+        return false;
+    }
+
+    public boolean blockVision(AbstractUnit u){
         return false;
     }
     
@@ -42,8 +46,8 @@ public abstract class Terrain implements AbstractTerrain {
         return name;
     }
 
-    public boolean canMoveIn(Unit u){
-        return canMoveIn(u.moveType);
+    public boolean canMoveIn(AbstractUnit u){
+        return canMoveIn(u.getMoveType());
     }
 
     public boolean canMoveIn(MoveType moveType){
@@ -53,14 +57,14 @@ public abstract class Terrain implements AbstractTerrain {
         return false;
     }
 
-    public int moveCost(Unit u){
-        return moveCost(u.moveType);
+    public Integer moveCost(AbstractUnit u){
+        return moveCost(u.getMoveType());
     }
 
-    public int moveCost(MoveType moveType){
+    public Integer moveCost(MoveType moveType){
         for (Map.Entry<MoveType, Integer> entry : sunnyWeatherMovementCosts.entrySet())
             if (entry.getKey()==moveType)
                 return entry.getValue();
-        throw new RuntimeException("Cannot move on this terrain");
+        return null;
     }
 }

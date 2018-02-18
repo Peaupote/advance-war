@@ -9,54 +9,64 @@ import fr.main.model.units.AbstractUnit;
 */
 public class PrimaryWeapon extends Weapon{
 
-	private int ammo;
-	public final int minimumRange, maximumRange, maximumAmmo;
+    private int ammo;
+    public final int minimumRange, maximumRange, maximumAmmo;
 
-	public PrimaryWeapon (String name, int maximumAmmo, int minimumRange, int maximumRange, Map<Class<? extends AbstractUnit>,Integer> damages){
-		super(name,damages);
-		this.maximumAmmo = maximumAmmo;
-		this.ammo        = maximumAmmo;
-		this.maximumRange=maximumRange;
-		this.minimumRange=minimumRange;
-	}
+    public PrimaryWeapon (String name, int maximumAmmo, int minimumRange, int maximumRange, Map<Class<? extends AbstractUnit>,Integer> damages){
+        super(name,damages);
+        this.maximumAmmo = maximumAmmo;
+        this.ammo        = maximumAmmo;
+        this.maximumRange=maximumRange;
+        this.minimumRange=minimumRange;
+    }
 
-	public PrimaryWeapon(String name, int maximumAmmo, Map<Class<? extends AbstractUnit>,Integer> damages){
-		this(name,maximumAmmo,1,1,damages);
-	}
+    public PrimaryWeapon(String name, int maximumAmmo, Map<Class<? extends AbstractUnit>,Integer> damages){
+        this(name,maximumAmmo,1,1,damages);
+    }
 
-	public int getAmmunition(){
-		return ammo;
-	}
+    public int getAmmunition(){
+        return ammo;
+    }
 
-	public int getMaximumAmmunition(){
-		return maximumAmmo;
-	}
+    public int getMaximumAmmunition(){
+        return maximumAmmo;
+    }
 
-	public void replenish(){
-		this.ammo=this.maximumAmmo;
-	}
+    public void replenish(){
+        this.ammo=this.maximumAmmo;
+    }
 
-	public void shoot(){
-		if (ammo==0)
-			throw new RuntimeException("No ammunition left ! Impossible to shoot.");
-		else
-			ammo--;
-	}
+    public void shoot(){
+        if (ammo==0)
+            throw new RuntimeException("No ammunition left ! Impossible to shoot.");
+        else
+            ammo--;
+    }
 
-	public boolean isInRange(int actualX, int actualY, int targetX, int targetY){
-		int i=Math.abs(actualX-targetX)+Math.abs(actualY-targetY);
-		return i<=getMaximumRange() && i>=getMinimumRange();
-	}
+    public boolean isInRange(int actualX, int actualY, int targetX, int targetY){
+        int i=Math.abs(actualX-targetX)+Math.abs(actualY-targetY);
+        return i<=getMaximumRange() && i>=getMinimumRange();
+    }
 
-	public int getMinimumRange(){
-		return minimumRange;
-	}
+    public void canTarget(boolean[][] map, int x, int y){
+        for (int i=-getMaximumRange();i<=getMaximumRange();i++){
+            for (int j=-getMaximumRange();j<=getMaximumRange();j++){
+                if (isInRange(x,y,x+i,y+j) && x+i>=0 && x+i<map.length && y+j>=0 && y+j<map[0].length)
+                    map[y+j][x+i]=true;
+            }
+        }
+    }
 
-	public int getMaximumRange(){
-		return maximumRange;
-	}
 
-	public final boolean isContactWeapon(){
-		return getMinimumRange()==1 && getMaximumRange()==1;
-	}
+    public int getMinimumRange(){
+        return minimumRange;
+    }
+
+    public int getMaximumRange(){
+        return maximumRange;
+    }
+
+    public final boolean isContactWeapon(){
+        return getMinimumRange()==1 && getMaximumRange()==1;
+    }
 }

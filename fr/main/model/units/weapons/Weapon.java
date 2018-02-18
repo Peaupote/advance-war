@@ -16,6 +16,7 @@ public abstract class Weapon {
 
     public abstract void shoot();
     public abstract boolean isInRange(int actualX, int actualY, int targetX, int targetY);
+    public abstract void canTarget(boolean[][] map, int x, int y);
 
     public String toString(){
         return name;

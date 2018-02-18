@@ -43,6 +43,10 @@ public class Carrier extends Unit implements NavalUnit,TransportUnit<AirUnit> {
         this(player, new Point(x,y));
     }
 
+    public boolean canAttackAfterMove(){
+        return false;
+    }
+
     public int getCapacity(){
         return 2;
     }

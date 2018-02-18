@@ -14,7 +14,7 @@ public class DayPanel extends InterfaceUI {
 
   public DayPanel () {
     super(false);
-    day = 0;
+    day = -1;
   }
 
   public void draw (Graphics g) {

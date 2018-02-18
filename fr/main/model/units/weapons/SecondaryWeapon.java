@@ -19,4 +19,12 @@ public class SecondaryWeapon extends Weapon{
         return Math.abs(actualX-targetX)+Math.abs(actualY-targetY)==1;
     }
 
+    public void canTarget(boolean[][] map, int x, int y){
+        for (int i=-1;i<2;i++){
+            for (int j=-1;j<2;j++){
+                if (x+i>=0 && x+i<map.length && y+j>=0 && y+j<map[0].length && 2+i+j%2==1)
+                    map[y+j][x+i]=true;
+            }
+        }
+    }
 }

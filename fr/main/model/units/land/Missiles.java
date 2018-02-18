@@ -36,4 +36,9 @@ public class Missiles extends Unit implements LandVehicleUnit{
 	public Missiles(Player player, int x, int y){
 		this(player, new Point(x,y));
 	}
+
+    public boolean canAttackAfterMove(){
+        return false;
+    }
+
 }

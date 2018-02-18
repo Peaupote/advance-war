@@ -70,7 +70,7 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public Unit (Player player, Point location) {
-        this (player, location, "fuel", 0, null, 5, 2, null, null, "unit");
+        this (player, location, "fuel", 0, MoveType.WHEEL, 5, 2, null, null, "unit");
     }
 
     public Unit (Player player, Point location, String fuelName, int maxFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name) {
@@ -112,7 +112,10 @@ public abstract class Unit implements AbstractUnit {
         setLife(this.life+life);
     }
 
-    public final boolean setLife (int life) { // renvoie vrai si l'unité est encore en vie
+    /*
+    * @return true if and only if the unit is still alive
+    */
+    public final boolean setLife (int life) {
         this.life = Math.max(0, Math.min(100, life));
         return this.life!=0;
     }
@@ -142,6 +145,10 @@ public abstract class Unit implements AbstractUnit {
         return location.y;
     }
 
+    public boolean canAttackAfterMove(){
+        return true;
+    }
+
     public final void move(int x, int y) {
     Universe u = Universe.get();
     if (u != null && u.getUnit(x, y) == null)
@@ -159,45 +166,105 @@ public abstract class Unit implements AbstractUnit {
         int x=location.x;
         int y=location.y;
 
-        if (vision!=0){
-            if (y!=0)
-                fog[y-1][x]=true;
-            if (y!=fog.length-1)
-                fog[y+1][x]=true;
-            if (x!=0)
-                fog[y][x-1]=true;
-            if (x!=fog[0].length-1)
-                fog[y][x+1]=true;
-        }
+        fog[y][x]=true;
 
-        renderVision (fog,x,y,vision);
+        if (vision!=0){
+            if (y!=0){
+                fog[y-1][x]=true;
+                renderVision (fog,x,y-1,vision);
+            }
+            if (y!=fog.length-1){
+                fog[y+1][x]=true;
+                renderVision (fog,x,y+1,vision);
+            }
+            if (x!=0){
+                fog[y][x-1]=true;
+                renderVision (fog,x-1,y,vision);
+            }
+            if (x!=fog[0].length-1){
+                fog[y][x+1]=true;
+                renderVision (fog,x+1,y,vision);
+            }
+        }
     }
 
     private void renderVision (boolean[][] fog, int x, int y, int vision){
+        vision--;
         AbstractTerrain t = Universe.get().getTerrain(x,y);
         if (!fog[y][x] && !t.hideFrom(this))
             fog[y][x]=true;
         if (vision!=0 && !t.blockVision(this)){
             if (y!=0)
-                renderVision(fog,x,y-1,vision-1);
+                renderVision(fog,x,y-1,vision);
             if (y!=fog.length-1)
-                renderVision(fog,x,y+1,vision-1);
+                renderVision(fog,x,y+1,vision);
             if (x!=0)
-                renderVision(fog,x-1,y,vision-1);
+                renderVision(fog,x-1,y,vision);
             if (x!=fog[0].length-1)
-                renderVision(fog,x+1,y,vision-1);
+                renderVision(fog,x+1,y,vision);
         }
     }
 
     public void reachableLocation (boolean[][] map) {
-        // TODO: real implem for reachable location, for the moment can move as far as he see
-        renderVision(map);
+        if (map!=null && map.length!=0 && map[0]!=null && map[0].length!=0)
+            reachableLocation (map,location.x,location.y,moveQuantity+Universe.get().getTerrain(location.x,location.y).moveCost(this));
+    }
+
+    private void reachableLocation (boolean[][] map, int x, int y, int movePoint){
+        Integer mvP=Universe.get().getTerrain(x,y).moveCost(this);
+        if (mvP!=null && movePoint>=mvP)
+            movePoint-=mvP;
+        else
+            return;
+
+        map[y][x]=true;
+
+        if (y!=0)
+            reachableLocation(map,x,y-1,movePoint);
+        if (y!=map.length-1)
+            reachableLocation(map,x,y+1,movePoint);
+        if (x!=0)
+            reachableLocation(map,x-1,y,movePoint);
+        if (x!=map[0].length-1)
+            reachableLocation(map,x+1,y,movePoint);
     }
 
     public void canTarget (boolean[][] map) {
-        // TODO: real implem for can target location, for the moment can shoot as far as he see
-        renderVision(map);
-    }   
+        if (map!=null && map.length!=0 && map[0]!=null && map[0].length!=0 && (primaryWeapon!=null || secondaryWeapon!=null)){
+            if (canAttackAfterMove())
+                canTarget (map,location.x,location.y,moveQuantity+Universe.get().getTerrain(location.x,location.y).moveCost(this));
+            else{
+                if (primaryWeapon!=null)
+                    primaryWeapon.canTarget(map,location.x,location.y);
+                if (secondaryWeapon!=null)
+                    secondaryWeapon.canTarget(map,location.x,location.y);
+            }
+        }
+    }
+
+    private void canTarget (boolean[][] map, int x, int y, int movePoint){
+        Integer mvP=Universe.get().getTerrain(x,y).moveCost(this);
+        if (mvP!=null && movePoint>=mvP)
+            movePoint-=mvP;
+        else
+            return;
+
+        if (movePoint>0){
+            if (primaryWeapon!=null)
+                primaryWeapon.canTarget(map,location.x,location.y);
+            if (secondaryWeapon!=null)
+                secondaryWeapon.canTarget(map,location.x,location.y);
+        }
+
+        if (y!=0)
+            reachableLocation(map,x,y-1,movePoint);
+        if (y!=map.length-1)
+            reachableLocation(map,x,y+1,movePoint);
+        if (x!=0)
+            reachableLocation(map,x-1,y,movePoint);
+        if (x!=map[0].length-1)
+            reachableLocation(map,x+1,y,movePoint);
+    }
 
     public String getName (){
         return name;

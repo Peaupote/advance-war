@@ -49,4 +49,8 @@ public class Rockets extends Unit implements LandVehicleUnit{
     public Rockets(Player player, int x, int y){
         this(player, new Point(x,y));
     }
+
+    public boolean canAttackAfterMove(){
+        return false;
+    }
 }

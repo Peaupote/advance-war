@@ -12,8 +12,11 @@ public interface AbstractUnit extends Serializable {
 	boolean setLife(int life);
 	Player getPlayer();
 	void renderVision(boolean[][] fog);
+    void reachableLocation (boolean[][] map);
+    void canTarget (boolean[][] map);
 	MoveType getMoveType();
 	boolean canAttack(AbstractUnit u);
+	boolean canAttackAfterMove();
 	String getName();
 	Unit.Fuel getFuel();
 	int getMoveQuantity();

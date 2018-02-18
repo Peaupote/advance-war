@@ -37,9 +37,9 @@ public class MapGenerator {
 
     public TerrainEnum[][] randMap(int x, int y) {
         int power = 4; // power * 10 = size% of cells that will serve as reference;
-        int smootness = 3;
+        int smoothness = 3;
 
-        return randMap(x, y, power, smootness);
+        return randMap(x, y, power, smoothness);
     }
 
     // Voivonoi
@@ -164,13 +164,47 @@ public class MapGenerator {
     }
 
     private TerrainEnum[][] placeBeach(TerrainEnum[][] map) {
+        int count;
+
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
                 if(map[i][j] == sea) continue;
-                if(i - 1 >= 0 && map[i - 1][j] == sea) map[i][j] = beach;
-                if(i + 1 < map.length && map[i + 1][j] == sea) map[i][j] = beach;
-                if(j - 1 >= 0 && map[i][j - 1] == sea) map[i][j] = beach;
-                if(j + 1 < map[0].length && map[i][j + 1] == sea) map[i][j] = beach;
+                count = 0;
+                if(i - 1 >= 0 && map[i - 1][j] == sea) count ++;
+                if(i + 1 < map.length && map[i + 1][j] == sea) count ++;
+                if(j - 1 >= 0 && map[i][j - 1] == sea) count ++;
+                if(j + 1 < map[0].length && map[i][j + 1] == sea) count ++;
+
+                switch (count) {
+                    case 1 : map[i][j] = beach; break;
+                    case 2 :
+                        if(map[i - 1][j] == sea && map[i + 1][j] == sea
+                            || map[i][j - 1] == sea && map[i][j + 1] == sea)
+                            map[i][j] = bridge;
+                        else map[i][j] = beach;
+                        break;
+                    case 3: map[i][j] = beach; break;
+                    case 4: map[i][j] = reef; break;
+                }
+            }
+        }
+
+        return map;
+    }
+
+    private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
+        int count;
+
+        for(int i = 0; i < map.length; i ++) {
+            for(int j = 0; j < map[0].length; j ++) {
+                if(map[i][j] == sea) continue;
+                count = 0;
+                if(i - 1 >= 0 && map[i - 1][j] == lowland) count ++;
+                if(i + 1 < map.length && map[i + 1][j] == lowland) count ++;
+                if(j - 1 >= 0 && map[i][j - 1] == lowland) count ++;
+                if(j + 1 < map[0].length && map[i][j + 1] == lowland) count ++;
+
+                if(count == 3) {}
             }
         }
         return map;

@@ -20,7 +20,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public final Position.Cursor cursor, unitCursor;
   public final Position.Camera camera;
   public final UniverseRenderer world;
-  public final int mouveRange = 2;
+  public final int moveRange = 2;
 
   private boolean isListening = false, listenMouse = false;
   private Point mouse;
@@ -35,7 +35,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   }
 
   private class MainActionPanel extends ActionPanel {
-    
+
     public MainActionPanel () {
       super(null);
       x = MainFrame.WIDTH - 200;
@@ -59,7 +59,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public void onClose () {
       super.onClose();
-      for (InterfaceUI com: InterfaceUI.components()) 
+      for (InterfaceUI com: InterfaceUI.components())
         // TODO: change condition by splitting components in 2 sets
         if (com != this && com != dayPanel) com.setVisible(true);
       mode = Mode.MOVE;
@@ -72,13 +72,13 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     camera     = new Position.Camera(world.getDimension());
     cursor     = new Position.Cursor(camera, world.getDimension());
     unitCursor = new Position.Cursor(camera, world.getDimension()) {
-      
+
       @Override
       public boolean canMove(Direction d) {
         if (!super.canMove(d)) return false;
         boolean[][] map = new boolean[size.height][size.width];
         world.getUnit(cursor.getX(), cursor.getY()).reachableLocation(map);
-        
+
         Point target = new Point(position.x, position.y);
         d.move(target);
         return map[target.y][target.x];
@@ -102,7 +102,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     if (!isListening) {
       isListening = true;
       if (mode == Mode.MOVE ||
-          (mode == Mode.UNIT && 
+          (mode == Mode.UNIT &&
            world.getCurrentPlayer() == world.getUnit(cursor.getX(), cursor.getY()).getPlayer())) {
         if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
         else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
@@ -149,10 +149,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     isListening = cursor.move() | camera.move() | (mode == Mode.UNIT && unitCursor.move());
 
     if (!isListening && mode == Mode.MOVE && listenMouse) {
-        if (mouse.x <= mouveRange) camera.setDirection(Direction.LEFT);
-        else if (camera.width - mouse.x <= mouveRange) camera.setDirection(Direction.RIGHT);
-        else if (mouse.y <= mouveRange) camera.setDirection(Direction.TOP);
-        else if (camera.height - mouse.y <= mouveRange) camera.setDirection(Direction.BOTTOM);
+        if (mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
+        else if (camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
+        else if (mouse.y <= moveRange) camera.setDirection(Direction.TOP);
+        else if (camera.height - mouse.y <= moveRange) camera.setDirection(Direction.BOTTOM);
 
         cursor.setPosition(mouse.x, mouse.y);
     }
@@ -161,12 +161,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private void move (Direction d) {
     listenMouse = false;
 
-    if ((d == Direction.LEFT && cursor.getX() - camera.getX() == mouveRange) ||
-        (d == Direction.RIGHT && camera.getX() + camera.width - cursor.getX() == mouveRange + 1) ||
-        (d == Direction.TOP && cursor.getY() - camera.getY() == mouveRange) ||
-        (d == Direction.BOTTOM && camera.getY() + camera.height - cursor.getY() == mouveRange + 1))
+    if ((d == Direction.LEFT && cursor.getX() - camera.getX() == moveRange) ||
+        (d == Direction.RIGHT && camera.getX() + camera.width - cursor.getX() == moveRange + 1) ||
+        (d == Direction.TOP && cursor.getY() - camera.getY() == moveRange) ||
+        (d == Direction.BOTTOM && camera.getY() + camera.height - cursor.getY() == moveRange + 1))
       camera.setDirection (d);
-    
+
     if (mode == Mode.MOVE) cursor.setDirection (d);
     else if (mode == Mode.UNIT) unitCursor.setDirection (d);
   }

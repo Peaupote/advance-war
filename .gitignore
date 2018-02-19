@@ -9,3 +9,5 @@
 *.toc
 *.map
 *.txt
+.classpath
+.project

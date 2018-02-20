@@ -84,14 +84,14 @@ public class Universe {
 
   public void next () {
     current = players.next();
-    for (int i = 0; i < map.board.length; i++)
-      for (int j = 0; j < map.board[0].length; j++)
-        fogwar[i][j] = false;
-
     updateVision ();
   }
 
   public void updateVision () {
+    for (int i = 0; i < map.board.length; i++)
+      for (int j = 0; j < map.board[0].length; j++)
+        fogwar[i][j] = false;
+
     for (Unit u: current)
       u.renderVision(fogwar);
   }

@@ -18,7 +18,8 @@ public abstract class Unit implements AbstractUnit {
      */
     private Point location;
     private Player player;
-    private int life;
+    private int life, moveQuantity;
+    private boolean enable;
 
     public final Fuel fuel;
     public final MoveType moveType;
@@ -27,7 +28,6 @@ public abstract class Unit implements AbstractUnit {
     private SecondaryWeapon secondaryWeapon;
 
     public final int vision, maxMoveQuantity;
-    private int moveQuantity;
     public final String name;
 
     public class Fuel implements java.io.Serializable{

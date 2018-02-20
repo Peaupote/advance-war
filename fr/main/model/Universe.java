@@ -85,6 +85,10 @@ public class Universe {
   public void next () {
     current = players.next();
     updateVision ();
+
+    for (Player p: map.players)
+      for (Unit u: p)
+        u.enable = true;
   }
 
   public void updateVision () {

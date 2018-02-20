@@ -120,7 +120,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
           } else {
             Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
             if (unit == null) actionPanel.setVisible (true);
-            else {
+            else if (unit.enable) {
               mode = Mode.UNIT;
               path.rebase(unit);
               unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());

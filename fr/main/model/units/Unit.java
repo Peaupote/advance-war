@@ -19,7 +19,7 @@ public abstract class Unit implements AbstractUnit {
     private Point location;
     private Player player;
     private int life, moveQuantity;
-    private boolean enable;
+    public boolean enable;
 
     public final Fuel fuel;
     public final MoveType moveType;
@@ -128,9 +128,7 @@ public abstract class Unit implements AbstractUnit {
         if (player == null) {
             this.player = p;
             return true;
-        }
-        else
-            return false;
+        } else return false;
     }
 
     public final Player getPlayer(){
@@ -156,6 +154,7 @@ public abstract class Unit implements AbstractUnit {
         location.x = x;
         location.y = y;
         u.setUnit(x, y, this);
+        enable = false;
         u.updateVision();
       }
     }

@@ -1,17 +1,14 @@
 package fr.main;
 
 import java.awt.EventQueue;
-import java.util.Random;
 import java.awt.Point;
 
-import fr.main.model.MapGenerator;
+import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Unit;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.*;
 import fr.main.view.render.units.LanderRenderer;
 import fr.main.view.MainFrame;
 

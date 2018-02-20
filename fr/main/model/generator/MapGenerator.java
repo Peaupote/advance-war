@@ -1,5 +1,6 @@
-package fr.main.model;
+package fr.main.model.generator;
 
+import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.naval.Sea;
 
@@ -44,6 +45,7 @@ public class MapGenerator {
 
     // Voivonoi
     public TerrainEnum[][] randMap(int x, int y, int power, int smoothness) {
+        System.out.println("Map size : " + x + "x" + y);
         if(x < 0) x = 1;
         if(y < 0) y = 1;
         if(power < 1) power = 1;
@@ -94,7 +96,7 @@ public class MapGenerator {
             }
         }
 
-        return placeBeach(refineMap(map, smoothness));
+        return placeBeach(refineMap(makeValidLowland(refineMap(map, smoothness)), 2));
     }
 
     private int distance(int x1 , int y1, int x2, int y2) {
@@ -178,8 +180,10 @@ public class MapGenerator {
                 switch (count) {
                     case 1 : map[i][j] = beach; break;
                     case 2 :
-                        if(map[i - 1][j] == sea && map[i + 1][j] == sea
-                            || map[i][j - 1] == sea && map[i][j + 1] == sea)
+                        if(isInMap(map, i - 1, j) && map[i - 1][j] == sea
+                                && isInMap(map, i + 1, j) && map[i + 1][j] == sea
+                                || isInMap(map, i, j - 1) && map[i][j - 1] == sea
+                                && isInMap(map, i, j + 1) && map[i][j + 1] == sea)
                             map[i][j] = bridge;
                         else map[i][j] = beach;
                         break;
@@ -193,20 +197,86 @@ public class MapGenerator {
     }
 
     private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
-        int count;
+        int countH, countV;
 
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
                 if(map[i][j] == sea) continue;
-                count = 0;
-                if(i - 1 >= 0 && map[i - 1][j] == lowland) count ++;
-                if(i + 1 < map.length && map[i + 1][j] == lowland) count ++;
-                if(j - 1 >= 0 && map[i][j - 1] == lowland) count ++;
-                if(j + 1 < map[0].length && map[i][j + 1] == lowland) count ++;
+                int right = terrainTypeNb(map, i, j, lowland, 0, 2),
+                        left = terrainTypeNb(map, i, j, lowland, 2, 2),
+                        down = terrainTypeNb(map, i, j, lowland, 1, 2),
+                        up = terrainTypeNb(map, i, j, lowland, 3, 2);
 
-                if(count == 3) {}
+//                if(left + right == 1)
+//                    if(left > right && i + 1 < map.length && isValidLowland(map,i + 1, j)) map[i + 1][j] = lowland;
+//                    else if(i - 1 >= 0 && isValidLowland(map, i - 1, j)) map[i - 1][j] = lowland;
+//                if(up + down == 1)
+//                    if(up > down && j + 1 < map[0].length && isValidLowland(map, i, j + 1)) map[i][j + 1] = lowland;
+//                    else if(j - 1 >= 0 && isValidLowland(map, i, j - 1)) map[i][j - 1] = lowland;
+                  if(left + right == 1 || up + down == 1) map[i][j] = sea;
             }
         }
         return map;
+    }
+
+
+    private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
+        // Direction: true = horizontal; false = vertical.
+        int beginning = 0, end = 0, count = 0;
+
+        if(direction) {
+            if(x - range < 0) beginning = 0;
+            else beginning = x - range;
+            if(x + range >= map.length) end = map.length - 1;
+            else end = x + range;
+        } else {
+            if(y - range < 0) beginning = 0;
+            else beginning = y - range;
+            if(y + range >= map[0].length) end = map[0].length - 1;
+            else end = y + range;
+        }
+
+        for(int i = beginning; i <= end; i ++) {
+            if(direction && i == x || !direction && i == y) continue;
+            if(direction && map[i][y] == type || !direction && map[x][i] == type) count ++;
+        }
+
+        return count;
+    }
+
+    private int terrainTypeNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, int direction, int range) {
+        int count = 0;
+        switch (direction) {
+            case 0: for(int i = 1; i <= range && x + i < map.length; i ++) if(map[x + i][y] == type) count ++; else break;
+                break;
+            case 1: for(int i = 1; i <= range && y + i < map[0].length; i ++) if(map[x][y + i] == type) count ++; else break;
+                break;
+            case 2: for(int i = 1; i <= range && x - i >= 0; i ++) if(map [x - i][y] == type) count ++; else break;
+                break;
+            case 3: for(int i = 1; i <= range && y - i >= 0; i ++) if(map [x][y - i] == type) count ++; else break;
+                break;
+            default: System.out.println("Wrong argument in terrainTypeNb : direction = " + direction);
+        }
+        return count;
+    }
+
+    private boolean isValidLowland(TerrainEnum[][] map, int x, int y) {
+
+        return getAdjacentTerrainNb(map, x, y, lowland) <= 2;
+    }
+
+    private int getAdjacentTerrainNb(TerrainEnum[][] map, int x , int y, TerrainEnum type) {
+      int count = 0;
+
+      if(isInMap(map, x + 1, y) && map[x + 1][y] == type) count ++;
+      if(isInMap(map, x - 1, y) && map[x - 1][y] == type) count ++;
+      if(isInMap(map, x, y + 1) && map[x][y + 1] == type) count ++;
+      if(isInMap(map, x, y - 1) && map[x][y - 1] == type) count ++;
+
+      return count;
+    }
+
+    private boolean isInMap(TerrainEnum[][] map, int x, int y) {
+        return x >= 0 && x < map.length && y >= 0 && y < map[0].length;
     }
 }

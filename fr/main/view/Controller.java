@@ -14,6 +14,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
 import java.util.LinkedList;
+import fr.main.model.units.Unit;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -108,12 +109,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
         else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
         else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
-        else if (key == KeyEvent.VK_ENTER)
-          if (world.getUnit(cursor.getX(), cursor.getY()) == null) actionPanel.setVisible (true);
-          else {
+        else if (key == KeyEvent.VK_ENTER) {
+          Unit unit = world.getUnit(cursor.getX(), cursor.getY());  
+          if (unit == null) actionPanel.setVisible (true);
+          else if (world.getCurrentPlayer() == unit.getPlayer()){
             mode = Mode.UNIT;
             unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
           }
+        }
         else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
       } else if (mode == Mode.MENU) {
         if      (key == KeyEvent.VK_UP)     actionPanel.goUp();

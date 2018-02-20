@@ -88,6 +88,10 @@ public class Universe {
       for (int j = 0; j < map.board[0].length; j++)
         fogwar[i][j] = false;
 
+    updateVision ();
+  }
+
+  public void updateVision () {
     for (Unit u: current)
       u.renderVision(fogwar);
   }

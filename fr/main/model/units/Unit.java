@@ -156,6 +156,7 @@ public abstract class Unit implements AbstractUnit {
         location.x = x;
         location.y = y;
         u.setUnit(x, y, this);
+        u.updateVision();
       }
     }
 

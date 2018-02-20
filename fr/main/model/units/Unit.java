@@ -8,6 +8,8 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.Universe;
+import fr.main.model.Direction;
+
 /**
  * Represents a unit on the board
  */
@@ -159,10 +161,14 @@ public abstract class Unit implements AbstractUnit {
       }
     }
 
+    public final void move (Direction d) {
+      Point t = (Point)location.clone();
+      d.move(t);
+      move(t.x, t.y);
+    }
+
     public final void move (Path path) {
-      // TODO: make real implementation
-      Point pt = path.getLast();
-      move(pt.x, pt.y);
+      for (Direction d: path) move(d);
     }
 
     public final MoveType getMoveType() {

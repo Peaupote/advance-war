@@ -23,6 +23,10 @@ public class UniverseRenderer extends Universe {
       for(Terrain t : line)
         ((Renderer) t).update();
 
+    for (Player p: map.players)
+      for (Unit u: p)
+        ((Renderer)u).update();
+
     this.controller = controller;
   }
 

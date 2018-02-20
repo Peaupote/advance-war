@@ -11,6 +11,7 @@ import java.lang.Thread;
 import java.lang.InterruptedException;
 
 import fr.main.view.MainFrame;
+import fr.main.model.Direction;
 
 /**
  * Represents a moving point on the map

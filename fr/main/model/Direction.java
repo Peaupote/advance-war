@@ -1,11 +1,11 @@
-package fr.main.view;
+package fr.main.model;
 
 import java.awt.Point;
 
 /**
  * Class listing movements
  */
-enum Direction {
+public enum Direction {
   LEFT(-1),
   RIGHT(1),
   TOP(-1),

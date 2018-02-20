@@ -7,15 +7,16 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.Point;
+import java.util.LinkedList;
 
 import fr.main.model.Universe;
 import fr.main.model.Player;
+import fr.main.model.Direction;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
 import fr.main.model.units.Unit;
-import java.util.LinkedList;
 import fr.main.model.units.Unit;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
@@ -23,7 +24,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public final Position.Cursor cursor, unitCursor;
   public final Position.Camera camera;
   public final UniverseRenderer world;
-  public final int moveRange = 2;
+  public final int moveRange = 3;
 
   private boolean isListening = false, listenMouse = false;
   private Point mouse;
@@ -121,7 +122,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             path.visible = false;
           } else {
             Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
-            if (unit == null) actionPanel.setVisible (true);
+            if (unit == null || !world.isVisible(cursor.getX(), cursor.getY())) actionPanel.setVisible (true);
             else if (unit.enable) {
               mode = Mode.UNIT;
               path.rebase(unit);
@@ -186,11 +187,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     c.setDirection (d);
     
-    if (mode == Mode.UNIT) {
-      Point p = new Point(unitCursor.getX(), unitCursor.getY());
-      d.move(p);
-      if (unitCursor.canMove(d)) path.add(p);
-    }
+    if (mode == Mode.UNIT && unitCursor.canMove(d)) path.add(d);
   }
 
   public Mode getMode () {

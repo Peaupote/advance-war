@@ -1,19 +1,11 @@
 package fr.main.model.units;
 
-import java.awt.Point;
 import java.util.LinkedList;
+import fr.main.model.Direction;
 
-public class Path extends LinkedList<Point> {
+public class Path extends LinkedList<Direction> {
 
-  private Unit unit;
-
-  public Path (Unit unit) {
-    super();
-    // we assume here that start has correct coordinates
-    add(new Point(unit.getX(), unit.getY()));
-
-    this.unit = unit;
-  }
+  protected Unit unit;
 
   public Path () {
     super();
@@ -22,17 +14,12 @@ public class Path extends LinkedList<Point> {
   public void rebase (Unit unit) {
     removeAll(this);
     this.unit = unit;
-    super.add(new Point(unit.getX(), unit.getY()));
   }
 
   @Override
-  public boolean add (Point point) {
-    Point last = getLast();
-    if (last.equals(point) ||
-        Math.abs(point.x - last.x) > 1 || Math.abs(point.y - last.y) > 1)
-      return false;
-    super.add(point);
-    return true;
+  public boolean add (Direction d) {
+    // TODO: do some check or change on the path here
+    return super.add(d);
   }
 
   public void apply () {

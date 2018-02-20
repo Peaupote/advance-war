@@ -13,6 +13,8 @@ import fr.main.model.Player;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
+import fr.main.model.units.Path;
+import fr.main.model.units.Unit;
 import java.util.LinkedList;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
@@ -27,6 +29,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private Mode mode;
   private ActionPanel actionPanel;
   private DayPanel dayPanel;
+  private Path path;
 
   public static enum Mode {
     MOVE,
@@ -90,6 +93,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     actionPanel = new MainActionPanel();
     dayPanel    = new DayPanel();
     mode        = Mode.MOVE;
+    path        = new Path();
 
     new PlayerPanel (cursor, camera);
     new Minimap (camera, new TerrainPanel (cursor, camera));
@@ -108,12 +112,21 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
         else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
         else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
-        else if (key == KeyEvent.VK_ENTER)
-          if (world.getUnit(cursor.getX(), cursor.getY()) == null) actionPanel.setVisible (true);
-          else {
-            mode = Mode.UNIT;
-            unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
+        else if (key == KeyEvent.VK_ENTER) {
+          if (mode == Mode.UNIT) {
+            path.apply();
+            mode = Mode.MOVE;
+            cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
+          } else {
+            Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
+            if (unit == null) actionPanel.setVisible (true);
+            else {
+              mode = Mode.UNIT;
+              path.rebase(unit);
+              unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
+            }
           }
+        }
         else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
       } else if (mode == Mode.MENU) {
         if      (key == KeyEvent.VK_UP)     actionPanel.goUp();
@@ -168,7 +181,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       camera.setDirection (d);
 
     if (mode == Mode.MOVE) cursor.setDirection (d);
-    else if (mode == Mode.UNIT) unitCursor.setDirection (d);
+    else if (mode == Mode.UNIT) {
+      unitCursor.setDirection (d);
+      Point p = new Point(unitCursor.getX(), unitCursor.getY());
+      d.move(p);
+      path.add(p);
+    }
   }
 
   public Mode getMode () {

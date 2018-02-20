@@ -16,7 +16,7 @@ public abstract class Unit implements AbstractUnit {
     /**
      * Life in percentage
      */
-    private final Point location;
+    private Point location;
     private Player player;
     private int life;
 
@@ -150,9 +150,19 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public final void move(int x, int y) {
-    Universe u = Universe.get();
-    if (u != null && u.getUnit(x, y) == null)
-      u.setUnit(x, y, this);
+      Universe u = Universe.get();
+      if (u != null && u.getUnit(x, y) == null) {
+        u.setUnit(location.x, location.y, null);
+        location.x = x;
+        location.y = y;
+        u.setUnit(x, y, this);
+      }
+    }
+
+    public final void move (Path path) {
+      // TODO: make real implementation
+      Point pt = path.getLast();
+      move(pt.x, pt.y);
     }
 
     public final MoveType getMoveType() {

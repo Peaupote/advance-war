@@ -16,6 +16,7 @@ import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
 import fr.main.model.units.Unit;
 import java.util.LinkedList;
+import fr.main.model.units.Unit;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 

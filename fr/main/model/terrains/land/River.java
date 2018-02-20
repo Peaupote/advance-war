@@ -10,22 +10,23 @@ import fr.main.model.units.Unit;
 
 public class River extends Terrain implements LandTerrain {
 
-  private static River instance;
-	protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
+    private static River instance;
+    protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
+    public static final String name="Rivière";
 
-	static{
-		sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
-		sunnyWeatherMovementCosts.put(MoveType.INFANTRY,2);
-		sunnyWeatherMovementCosts.put(MoveType.MECH,1);
-	}
+    static{
+        sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
+        sunnyWeatherMovementCosts.put(MoveType.INFANTRY,2);
+        sunnyWeatherMovementCosts.put(MoveType.MECH,1);
+    }
 
-  protected River() {
-    super("Rivière",0,0,0, sunnyWeatherMovementCosts);
-  }
+    protected River() {
+        super(name,0,0,0, sunnyWeatherMovementCosts);
+    }
 
-  public static River get () {
-    if (instance == null) instance = new River();
-    return instance;
-  }
+    public static River get () {
+        if (instance == null) instance = new River();
+        return instance;
+    }
 
 }

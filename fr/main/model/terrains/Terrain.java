@@ -57,6 +57,14 @@ public abstract class Terrain implements AbstractTerrain {
         return false;
     }
 
+    public boolean canStop(AbstractUnit u){
+        return canStop(u.getMoveType());
+    }
+
+    public boolean canStop(MoveType mt){
+        return canMoveIn(mt);
+    }
+
     public Integer moveCost(AbstractUnit u){
         return moveCost(u.getMoveType());
     }

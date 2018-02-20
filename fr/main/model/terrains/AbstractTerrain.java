@@ -12,6 +12,8 @@ public interface AbstractTerrain extends java.io.Serializable {
 	public boolean blockVision(AbstractUnit u);
 	public boolean canMoveIn(AbstractUnit u);
 	public boolean canMoveIn(MoveType mt);
+	public boolean canStop(AbstractUnit u);
+	public boolean canStop(MoveType mt);
 	public Integer moveCost(AbstractUnit u);
 	public Integer moveCost(MoveType mt);
 }

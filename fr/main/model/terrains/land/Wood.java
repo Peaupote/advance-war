@@ -12,7 +12,7 @@ import fr.main.model.terrains.Terrain;
 public class Wood extends Terrain implements LandTerrain {
 
     private static Wood instance;
-
+    public static final String name="Forêt";
     protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
 
     static{
@@ -24,7 +24,7 @@ public class Wood extends Terrain implements LandTerrain {
     }
 
     protected Wood() {
-        super("Forêt",2, 0, 0, sunnyWeatherMovementCosts);
+        super(name,2, 0, 0, sunnyWeatherMovementCosts);
     }
 
     @Override

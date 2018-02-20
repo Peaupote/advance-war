@@ -11,8 +11,8 @@ import fr.main.model.terrains.Terrain;
 public class Mountain extends Terrain implements LandTerrain {
 
     private static Mountain instance;
-
     protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
+    public static final String name="Montagne";
 
     static{
         sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
@@ -21,7 +21,7 @@ public class Mountain extends Terrain implements LandTerrain {
     }
 
     protected Mountain () {
-        super("Montagne", 4, 3, 2, sunnyWeatherMovementCosts);
+        super(name, 4, 3, 2, sunnyWeatherMovementCosts);
     }
 
     public static Mountain get () {

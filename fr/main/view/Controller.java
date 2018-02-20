@@ -13,7 +13,7 @@ import fr.main.model.Player;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
-import fr.main.model.units.Path;
+import fr.main.view.render.PathRenderer;
 import fr.main.model.units.Unit;
 import java.util.LinkedList;
 
@@ -29,7 +29,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private Mode mode;
   private ActionPanel actionPanel;
   private DayPanel dayPanel;
-  private Path path;
+  public PathRenderer path;
 
   public static enum Mode {
     MOVE,
@@ -93,7 +93,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     actionPanel = new MainActionPanel();
     dayPanel    = new DayPanel();
     mode        = Mode.MOVE;
-    path        = new Path();
+    path        = new PathRenderer(camera);
 
     new PlayerPanel (cursor, camera);
     new Minimap (camera, new TerrainPanel (cursor, camera));
@@ -117,12 +117,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             path.apply();
             mode = Mode.MOVE;
             cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
+            path.visible = false;
           } else {
             Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
             if (unit == null) actionPanel.setVisible (true);
             else if (unit.enable) {
               mode = Mode.UNIT;
               path.rebase(unit);
+              path.visible = true;
               unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
             }
           }
@@ -173,19 +175,20 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   private void move (Direction d) {
     listenMouse = false;
+    Position.Cursor c = mode == Mode.MOVE ? cursor : unitCursor;
 
-    if ((d == Direction.LEFT && cursor.getX() - camera.getX() == moveRange) ||
-        (d == Direction.RIGHT && camera.getX() + camera.width - cursor.getX() == moveRange + 1) ||
-        (d == Direction.TOP && cursor.getY() - camera.getY() == moveRange) ||
-        (d == Direction.BOTTOM && camera.getY() + camera.height - cursor.getY() == moveRange + 1))
+    if ((d == Direction.LEFT && c.getX() - camera.getX() <= moveRange) ||
+        (d == Direction.RIGHT && camera.getX() + camera.width - c.getX() <= moveRange + 1) ||
+        (d == Direction.TOP && c.getY() - camera.getY() <= moveRange) ||
+        (d == Direction.BOTTOM && camera.getY() + camera.height - c.getY() <= moveRange + 1))
       camera.setDirection (d);
 
-    if (mode == Mode.MOVE) cursor.setDirection (d);
-    else if (mode == Mode.UNIT) {
-      unitCursor.setDirection (d);
+    c.setDirection (d);
+    
+    if (mode == Mode.UNIT) {
       Point p = new Point(unitCursor.getX(), unitCursor.getY());
       d.move(p);
-      path.add(p);
+      if (unitCursor.canMove(d)) path.add(p);
     }
   }
 

@@ -63,7 +63,7 @@ public abstract class Position {
     }
 
     @Override
-    protected boolean canMove (Direction d) {
+    public boolean canMove (Direction d) {
       return (d == Direction.LEFT   && position.x > 0) ||
              (d == Direction.RIGHT  && position.x < size.width - 1) ||
              (d == Direction.TOP    && position.y > 0) ||
@@ -126,7 +126,7 @@ public abstract class Position {
     }
 
     @Override
-    protected boolean canMove (Direction d) {
+    public boolean canMove (Direction d) {
       return (d == Direction.LEFT   && position.x > 0) ||
              (d == Direction.RIGHT  && position.x + width < size.width) ||
              (d == Direction.TOP    && position.y > 0) ||
@@ -206,7 +206,7 @@ public abstract class Position {
   /**
    * @return true if can move by the given direction, false othewise
    */
-  protected abstract boolean canMove (Direction d);
+  public abstract boolean canMove (Direction d);
 
   /**
    * @return true if real location has reach target location

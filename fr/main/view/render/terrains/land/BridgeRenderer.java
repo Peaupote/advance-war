@@ -1,6 +1,6 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.land.Road;
+import fr.main.model.terrains.land.Bridge;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 
@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class BridgeRenderer extends Road implements Renderer {
+public class BridgeRenderer extends Bridge implements Renderer {
   private String imagePath;
   private transient BufferedImage image;
   private transient static BridgeRenderer instance;

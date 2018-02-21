@@ -8,6 +8,8 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.Universe;
+import fr.main.model.Direction;
+
 /**
  * Represents a unit on the board
  */
@@ -16,9 +18,10 @@ public abstract class Unit implements AbstractUnit {
     /**
      * Life in percentage
      */
-    private final Point location;
+    private Point location;
     private Player player;
-    private int life;
+    private int life, moveQuantity;
+    public boolean enable;
 
     public final Fuel fuel;
     public final MoveType moveType;
@@ -27,7 +30,6 @@ public abstract class Unit implements AbstractUnit {
     private SecondaryWeapon secondaryWeapon;
 
     public final int vision, maxMoveQuantity;
-    private int moveQuantity;
     public final String name;
 
     public class Fuel implements java.io.Serializable{
@@ -128,9 +130,7 @@ public abstract class Unit implements AbstractUnit {
         if (player == null) {
             this.player = p;
             return true;
-        }
-        else
-            return false;
+        } else return false;
     }
 
     public final Player getPlayer(){
@@ -150,9 +150,25 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public final void move(int x, int y) {
-    Universe u = Universe.get();
-    if (u != null && u.getUnit(x, y) == null)
-      u.setUnit(x, y, this);
+      Universe u = Universe.get();
+      if (u != null && u.getUnit(x, y) == null) {
+        u.setUnit(location.x, location.y, null);
+        location.x = x;
+        location.y = y;
+        u.setUnit(x, y, this);
+        enable = false;
+        u.updateVision();
+      }
+    }
+
+    public final void move (Direction d) {
+      Point t = (Point)location.clone();
+      d.move(t);
+      move(t.x, t.y);
+    }
+
+    public final void move (Path path) {
+      for (Direction d: path) move(d);
     }
 
     public final MoveType getMoveType() {

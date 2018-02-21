@@ -7,13 +7,16 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.Point;
+import java.util.LinkedList;
 
 import fr.main.model.Universe;
 import fr.main.model.Player;
+import fr.main.model.Direction;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
-import java.util.LinkedList;
+import fr.main.view.render.PathRenderer;
+import fr.main.model.units.Unit;
 import fr.main.model.units.Unit;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
@@ -21,13 +24,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public final Position.Cursor cursor, unitCursor;
   public final Position.Camera camera;
   public final UniverseRenderer world;
-  public final int moveRange = 2;
+  public final int moveRange = 3;
 
   private boolean isListening = false, listenMouse = false;
   private Point mouse;
   private Mode mode;
   private ActionPanel actionPanel;
   private DayPanel dayPanel;
+  public PathRenderer path;
 
   public static enum Mode {
     MOVE,
@@ -91,6 +95,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     actionPanel = new MainActionPanel();
     dayPanel    = new DayPanel();
     mode        = Mode.MOVE;
+    path        = new PathRenderer(camera);
 
     new PlayerPanel (cursor, camera);
     new Minimap (camera, new TerrainPanel (cursor, camera));
@@ -110,11 +115,20 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
         else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
         else if (key == KeyEvent.VK_ENTER) {
-          Unit unit = world.getUnit(cursor.getX(), cursor.getY());  
-          if (unit == null) actionPanel.setVisible (true);
-          else if (world.getCurrentPlayer() == unit.getPlayer()){
-            mode = Mode.UNIT;
-            unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
+          if (mode == Mode.UNIT) {
+            path.apply();
+            mode = Mode.MOVE;
+            cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
+            path.visible = false;
+          } else {
+            Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
+            if (unit == null || !world.isVisible(cursor.getX(), cursor.getY())) actionPanel.setVisible (true);
+            else if (unit.enable) {
+              mode = Mode.UNIT;
+              path.rebase(unit);
+              path.visible = true;
+              unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
+            }
           }
         }
         else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
@@ -163,15 +177,17 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   private void move (Direction d) {
     listenMouse = false;
+    Position.Cursor c = mode == Mode.MOVE ? cursor : unitCursor;
 
-    if ((d == Direction.LEFT && cursor.getX() - camera.getX() == moveRange) ||
-        (d == Direction.RIGHT && camera.getX() + camera.width - cursor.getX() == moveRange + 1) ||
-        (d == Direction.TOP && cursor.getY() - camera.getY() == moveRange) ||
-        (d == Direction.BOTTOM && camera.getY() + camera.height - cursor.getY() == moveRange + 1))
+    if ((d == Direction.LEFT && c.getX() - camera.getX() <= moveRange) ||
+        (d == Direction.RIGHT && camera.getX() + camera.width - c.getX() <= moveRange + 1) ||
+        (d == Direction.TOP && c.getY() - camera.getY() <= moveRange) ||
+        (d == Direction.BOTTOM && camera.getY() + camera.height - c.getY() <= moveRange + 1))
       camera.setDirection (d);
 
-    if (mode == Mode.MOVE) cursor.setDirection (d);
-    else if (mode == Mode.UNIT) unitCursor.setDirection (d);
+    c.setDirection (d);
+    
+    if (mode == Mode.UNIT && unitCursor.canMove(d)) path.add(d);
   }
 
   public Mode getMode () {

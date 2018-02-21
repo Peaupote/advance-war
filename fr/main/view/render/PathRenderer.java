@@ -12,24 +12,29 @@ public class PathRenderer extends Path {
 
   private Position.Camera camera;
   public boolean visible;
-  private Image[] images = new Image[10];
+  private Image[] images;
+  private static String[] filepaths = {
+      "./assets/arrows/arrow-bottom.png",
+      "./assets/arrows/arrow-left.png",
+      "./assets/arrows/arrow-right.png",
+      "./assets/arrows/arrow-top.png",
+      "./assets/arrows/left-bottom.png",
+      "./assets/arrows/left-top.png",
+      "./assets/arrows/left-right.png",
+      "./assets/arrows/right-bottom.png",
+      "./assets/arrows/right-top.png",
+      "./assets/arrows/top-bottom.png"
+  };
 
   public PathRenderer (Position.Camera camera) {
     super();
     this.camera = camera;
     visible = false;
 
+    images = new Image[filepaths.length];
     try {
-      images[0] = ImageIO.read(new File("./assets/arrows/arrow-bottom.png"));
-      images[1] = ImageIO.read(new File("./assets/arrows/arrow-left.png"));
-      images[2] = ImageIO.read(new File("./assets/arrows/arrow-right.png"));
-      images[3] = ImageIO.read(new File("./assets/arrows/arrow-top.png"));
-      images[4] = ImageIO.read(new File("./assets/arrows/left-bottom.png"));
-      images[5] = ImageIO.read(new File("./assets/arrows/left-top.png"));
-      images[6] = ImageIO.read(new File("./assets/arrows/left-right.png"));
-      images[7] = ImageIO.read(new File("./assets/arrows/right-bottom.png"));
-      images[8] = ImageIO.read(new File("./assets/arrows/right-top.png"));
-      images[9] = ImageIO.read(new File("./assets/arrows/top-bottom.png"));
+      for (int i = 0; i < filepaths.length; i++)
+        images[i] = ImageIO.read(new File(filepaths[i]));
     } catch (IOException e) {
       System.err.println(e.getMessage());
     }
@@ -42,10 +47,10 @@ public class PathRenderer extends Path {
     int size = size();
     if (size == 0) return;
     if (size > 1) {
-      Direction next = get(1);
+      Direction d = get(0);
       Image image = null;
-      for (int i = 0; i < size - 1; i++) {
-        Direction d = get(i);
+      for (int i = 1; i < size; i++) {
+        Direction next = get(i);
         d.move(point);
 
         if ((d == Direction.LEFT && next == Direction.LEFT) ||
@@ -71,7 +76,7 @@ public class PathRenderer extends Path {
                       (point.y - camera.getY()) * MainFrame.UNIT,
                       MainFrame.UNIT, MainFrame.UNIT, null);
 
-        next = d;
+        d = next;
       }
     }
 

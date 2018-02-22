@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.6] - 2018-22-02
+### Added
+  - Unit movement
+  - PathRenderer
+  - Commanders
+### Changed
+  - Unit vision, reachableLocation, attack range
+### Fixed
+  - Fog of war bug
+
 ## [0.0.5] - 2018-14-02
 ### Added
   - Unit selection & cursor movements when unit selected

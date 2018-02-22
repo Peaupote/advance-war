@@ -131,7 +131,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             }
           }
         }
-        else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
+        else if (key == KeyEvent.VK_ESCAPE) {
+          mode = Mode.MOVE;
+          path.visible = false;
+        }
       } else if (mode == Mode.MENU) {
         if      (key == KeyEvent.VK_UP)     actionPanel.goUp();
         else if (key == KeyEvent.VK_DOWN)   actionPanel.goDown();

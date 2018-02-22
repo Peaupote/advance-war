@@ -29,7 +29,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private boolean isListening = false, listenMouse = false;
   private Point mouse;
   private Mode mode;
-  private ActionPanel actionPanel;
+  private ActionPanel actionPanel, focusedActionPanel;
+  private UnitActionPanel unitActionPanel;
   private DayPanel dayPanel;
   public PathRenderer path;
 
@@ -39,38 +40,78 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     UNIT
   }
 
-  private class MainActionPanel extends ActionPanel {
-
-    public MainActionPanel () {
-      super(null);
-      x = MainFrame.WIDTH - 200;
-      y = 10;
-
-      actions = new HashMap<>();
-      actions.put(new Index("Finish turn"), e -> {
-        world.next();
-        dayPanel.setVisible(true);
-      });
-
-      actions.put(new Index("Wait"), e -> {});
-    }
-
+  private class ControllerPanel extends ActionPanel {
+  
     public void onOpen () {
       super.onOpen();
-      for (InterfaceUI com: InterfaceUI.components())
-        if (com != this) com.setVisible(false);
       mode = Mode.MENU;
+      focusedActionPanel = this;
     }
 
     public void onClose () {
       super.onClose();
-      for (InterfaceUI com: InterfaceUI.components())
-        // TODO: change condition by splitting components in 2 sets
-        if (com != this && com != dayPanel) com.setVisible(true);
       mode = Mode.MOVE;
     }
 
+    @Override
+    public boolean showOnClose(InterfaceUI com) {
+      return com != dayPanel;
+    }
   }
+
+  private class MainActionPanel extends ControllerPanel {
+
+    public MainActionPanel () {
+      super();
+      x = MainFrame.WIDTH - 200;
+      y = 10;
+
+      new Index("Finish turn", () -> {
+        world.next();
+        dayPanel.setVisible(true);
+      });
+
+      new Index("Wait", () -> {});
+    }
+
+  }
+
+  public class UnitActionPanel extends ControllerPanel {
+
+    private Unit unit;
+
+    public UnitActionPanel () {
+      super();
+      x = MainFrame.WIDTH - 200;
+      y = 10;
+      
+      new Index("Move", () -> {
+        path.apply();
+        mode = Mode.MOVE;
+        cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
+        path.visible = false;
+      });
+      
+      new Index("Attack", () -> {});
+      new Index("Supply", () -> {});
+      new Index("Heal", () -> {});
+
+      new Index("Hide", () -> {});
+      new Index("Unhide", () -> {});
+
+      new Index("Load", () -> {});
+      new Index("Unload", () -> {});
+
+      new Index("Cancel", () -> {});
+    }
+
+    public void onClose () {
+      super.onClose();
+      path.visible = false;
+    }
+
+  }
+
 
   public Controller (Player ps[]) {
     world      = new UniverseRenderer("maptest.map", this);
@@ -91,11 +132,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     };
 
-    mouse       = new Point(1,1);
-    actionPanel = new MainActionPanel();
-    dayPanel    = new DayPanel();
-    mode        = Mode.MOVE;
-    path        = new PathRenderer(camera);
+    mouse           = new Point(1,1);
+    actionPanel     = new MainActionPanel();
+    dayPanel        = new DayPanel();
+    mode            = Mode.MOVE;
+    path            = new PathRenderer(camera);
+    unitActionPanel = new UnitActionPanel();
 
     new PlayerPanel (cursor, camera);
     new Minimap (camera, new TerrainPanel (cursor, camera));
@@ -116,10 +158,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
         else if (key == KeyEvent.VK_ENTER) {
           if (mode == Mode.UNIT) {
-            path.apply();
-            mode = Mode.MOVE;
-            cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
-            path.visible = false;
+            unitActionPanel.setVisible(true);
           } else {
             Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
             if (unit == null || !world.isVisible(cursor.getX(), cursor.getY())) actionPanel.setVisible (true);
@@ -136,10 +175,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
           path.visible = false;
         }
       } else if (mode == Mode.MENU) {
-        if      (key == KeyEvent.VK_UP)     actionPanel.goUp();
-        else if (key == KeyEvent.VK_DOWN)   actionPanel.goDown();
-        else if (key == KeyEvent.VK_ENTER)  actionPanel.perform();
-        else if (key == KeyEvent.VK_ESCAPE) actionPanel.setVisible (false);
+        if      (key == KeyEvent.VK_UP)     focusedActionPanel.goUp();
+        else if (key == KeyEvent.VK_DOWN)   focusedActionPanel.goDown();
+        else if (key == KeyEvent.VK_ENTER)  focusedActionPanel.perform();
+        else if (key == KeyEvent.VK_ESCAPE) focusedActionPanel.setVisible (false);
       } else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
     }
   }

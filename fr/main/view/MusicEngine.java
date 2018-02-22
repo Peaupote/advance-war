@@ -25,17 +25,14 @@ public class MusicEngine {
         prefetch();  
     }  
       
-    //数据准备  
+    //preper the music data
     private void prefetch(){  
-        try{  
-        //获取音频输入流  
+        try{   
         audioStream = AudioSystem.getAudioInputStream(new File(musicPath));  
-        //获取音频的编码对象  
+        //get the format of the object  
         audioFormat = audioStream.getFormat();  
-        //包装音频信息  
         DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class,  
                 audioFormat,AudioSystem.NOT_SPECIFIED);  
-        //使用包装音频信息后的Info类创建源数据行，充当混频器的源  
         sourceDataLine = (SourceDataLine)AudioSystem.getLine(dataLineInfo);  
           
         sourceDataLine.open(audioFormat);  
@@ -120,6 +117,7 @@ public class MusicEngine {
         }  
     }  
  
+    //start with creat a new thread
     public void start(boolean loop){  
         mainThread = new Thread(new Runnable(){  
             public void run(){  
@@ -132,7 +130,8 @@ public class MusicEngine {
         });  
         mainThread.start();  
     }  
-      
+    
+    //stop music in the thread
     public void stop(){  
         new Thread(new Runnable(){  
             public void run(){  
@@ -142,6 +141,7 @@ public class MusicEngine {
         }).start();  
     }  
  
+    //continue the music
     public void continues(){  
         new Thread(new Runnable(){  
             public void run(){  

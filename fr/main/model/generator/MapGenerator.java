@@ -2,7 +2,6 @@ package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.naval.Sea;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -31,6 +30,7 @@ public class MapGenerator {
     public void setSeed(int seed) {
         setSeed((long) seed);
     }
+
     public void resetSeed() {
         rand = new Random(seed);
         System.out.println("Rand reset to : " + seed);
@@ -38,7 +38,7 @@ public class MapGenerator {
 
     public TerrainEnum[][] randMap(int x, int y) {
         int power = 4; // power * 10 = size% of cells that will serve as reference;
-        int smoothness = 3;
+        int smoothness = 2;
 
         return randMap(x, y, power, smoothness);
     }
@@ -50,7 +50,7 @@ public class MapGenerator {
         if(y < 0) y = 1;
         if(power < 1) power = 1;
         if(power > 10) power = 10;
-        if(smoothness < 0) smoothness = 0;
+        if(smoothness < 0) smoothness = 3;
 
         resetSeed();
         int size = x * y;
@@ -62,8 +62,8 @@ public class MapGenerator {
         System.out.println("Reference : " + referenceNb);
 
         int[] terrainPortion = new int[2];
-        terrainPortion[0] = 40; // Lowland
-        terrainPortion[1] = 50; // Sea
+        terrainPortion[0] = 20; // Lowland
+        terrainPortion[1] = 30; // Sea
         // Somme <= 100
 
         int[] terrainLeft = new int[2];
@@ -96,7 +96,7 @@ public class MapGenerator {
             }
         }
 
-        return placeBeach(refineMap(makeValidLowland(refineMap(map, smoothness)), 2));
+        return placeMountainsHills(placeBeach(surroundBySea(refineMap(map, smoothness), 4)));
     }
 
     private int distance(int x1 , int y1, int x2, int y2) {
@@ -178,27 +178,51 @@ public class MapGenerator {
                 if(j + 1 < map[0].length && map[i][j + 1] == sea) count ++;
 
                 switch (count) {
-                    case 1 : map[i][j] = beach; break;
+                    case 1 : if(rand.nextInt( 10) < 3) map[i][j] = beach; break;
                     case 2 :
                         if(isInMap(map, i - 1, j) && map[i - 1][j] == sea
                                 && isInMap(map, i + 1, j) && map[i + 1][j] == sea
                                 || isInMap(map, i, j - 1) && map[i][j - 1] == sea
                                 && isInMap(map, i, j + 1) && map[i][j + 1] == sea)
                             map[i][j] = bridge;
-                        else map[i][j] = beach;
+                        else if(rand.nextInt( 10) < 8) map[i][j] = beach;
                         break;
-                    case 3: map[i][j] = beach; break;
+                    case 3: if(rand.nextInt( 10) < 6) map[i][j] = beach; break;
                     case 4: map[i][j] = reef; break;
                 }
             }
         }
 
+        for(int i = 0; i < map.length; i ++)
+            for (int j = 0; j < map[0].length; j++) {
+                if(map[i][j] == beach
+                        && (getAdjacentTerrainNb(map, i, j, beach) == 0
+                        || getAdjacentTerrainNb(map, i, j, bridge) != 0))
+                    map[i][j] = lowland;
+                if(getAdjacentTerrainNb(map, i, j, beach) == 1 && getAdjacentTerrainNb(map, i, j, lowland) == 2)
+                    map[i][j] = lowland;
+
+            }
+
+        return map;
+    }
+
+    private TerrainEnum[][] placeMountainsHills(TerrainEnum[][] map) {
+        int mountains = 0;
+        for(int i = 0; i < map.length; i ++)
+            for(int j = 0; j < map[0].length; j ++) {
+                if(map[i][j] == lowland && getAdjacentTerrainNb(map, i, j, bridge) == 0) {
+                    mountains = getAdjacentTerrainNb(map, i, j, mountain);
+                    if(mountains == 0 && rand.nextInt(15) < 1) map[i][j] = mountain;
+                    else if(mountains > 0 && rand.nextInt(15) < 3) map[i][j] = mountain;
+                    else if(mountains == 0 && rand.nextInt(10) < 2) map[i][j] = hill;
+                    else if(mountains > 0 && rand.nextInt(10) < 4) map[i][j] = hill;
+                }
+            }
         return map;
     }
 
     private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
-        int countH, countV;
-
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
                 if(map[i][j] == sea) continue;
@@ -216,8 +240,100 @@ public class MapGenerator {
                   if(left + right == 1 || up + down == 1) map[i][j] = sea;
             }
         }
+        int[] terrainNb = new int[4];
+        for(int i = 0; i < map.length; i ++) {
+            for(int j = 0; j < map[0].length; j ++) {
+                if(map[i][j] == sea) continue;
+                terrainNb[0] = terrainTypeNb(map, i, j, lowland, 0, 1);
+                terrainNb[1] = terrainTypeNb(map, i, j, lowland, 1, 1);
+                terrainNb[2]= terrainTypeNb(map, i, j, lowland, 2, 1);
+                terrainNb[3]= terrainTypeNb(map, i, j, lowland, 3, 1);
+
+//                System.out.println("(" + i + ":" + j + ")" + "\n0 : " + terrainNb[0] + "\n1 : " + terrainNb[1] + "\n2 : " + terrainNb[2] + "\n3 : " + terrainNb[3]);
+//                System.out.println(terrainNb[0] + terrainNb[1] + terrainNb[2] + terrainNb[3]);
+
+                switch(terrainNb[0] + terrainNb[1] + terrainNb[2] + terrainNb[3]) {
+                    case 0 : map[i][j] = sea; break;
+                    case 1 : map[i][j] = sea; break;
+                    case 2 : validLowland2(map, terrainNb, i, j); break;
+                    case 3 : validLowland3(map, terrainNb, i, j); break;
+                }
+
+            }
+        }
+//        TerrainEnum[][] mapBis = map.clone();
+//
+//        boolean[] block = new boolean[4];
+//
+//        for(int i = 0; i < map.length; i ++) {
+//            for(int j = 0; j < map[0].length; j ++) {
+//                if(isSurrounded(map, lowland, i, j)) continue;
+//                for(int h = 0; h < 4; h ++)
+//                    block[h] = hasSide3x3Block(map, lowland, h, i, j);
+//
+//                if(block[0] && block[1] && isInMap(map, i + 2, j + 2)) mapBis[i + 2][j + 2] = lowland;
+//                else if(block[2] && block[1] && isInMap(map, i - 2, j + 2)) mapBis[i - 2][j + 2] = lowland;
+//                else if(block[2] && block[3] && isInMap(map, i - 2, j - 2)) mapBis[i - 2][j - 2] = lowland;
+//                else if(block[0] && block[3] && isInMap(map, i + 2, j - 2)) mapBis[i + 2][j - 2] = lowland;
+//                else map[i][j] = sea;
+//            }
+//        }
+
         return map;
     }
+
+    private void validLowland2 (TerrainEnum[][] map, int[] adj, int x, int y) {
+        if(adj[0] == adj[2]) return;
+        TerrainEnum[][] out = map.clone();
+        if(adj[0] + adj[1] == 2 && map[x + 1][y + 1] == sea
+                || adj[1] + adj[2] == 2 && map[x - 1][y + 1] == sea
+                || adj[2] + adj[3] == 2 && map[x - 1][y - 1] == sea
+                || adj[3] + adj[0] == 2 && map[x + 1][y - 1] == sea)
+            map[x][y] = sea;
+    }
+
+    private void validLowland3 (TerrainEnum[][] map, int[] adj, int x, int y) {
+        if(adj[0] == 0) {
+            if(isInMap(map,x - 1, y - 1)) map[x - 1][y - 1] = lowland;
+            if(isInMap(map,x - 1, y + 1)) map[x - 1][y + 1] = lowland;
+        } else if(adj[1] == 0) {
+            if(isInMap(map,x - 1, y - 1)) map[x - 1][y - 1] = lowland;
+            if(isInMap(map,x + 1, y - 1)) map[x + 1][y - 1] = lowland;
+        } else if(adj[2] == 0) {
+            if(isInMap(map,x + 1, y - 1)) map[x + 1][y - 1] = lowland;
+            if(isInMap(map,x + 1, y + 1)) map[x + 1][y + 1] = lowland;
+        } else if(adj[3] == 0) {
+            if(isInMap(map,x - 1, y + 1)) map[x - 1][y + 1] = lowland;
+            if(isInMap(map,x + 1, y + 1)) map[x + 1][y + 1] = lowland;
+        }
+    }
+
+    private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
+        for(int i = x - 1; i <= x + 1; i ++)
+            for(int j = y - 1; j <= y + 1; j ++)
+                if(isInMap(map, i, j) && map[i][j] != type)
+                    return false;
+        return true;
+    }
+
+//    private boolean hasSide3x3Block(TerrainEnum[][] map, TerrainEnum type, int direction, int x, int y) {
+//        switch (direction) {
+//            case 0: return isBlock(map, type, x, y - 1, 3);
+//            case 1: return isBlock(map, type, x - 1, y, 3);
+//            case 2: return isBlock(map, type, x - 2, y - 1, 3);
+//            case 3: return isBlock(map, type, x - 1, y - 2, 3);
+//            default: System.out.println("Wrong argument in 'hasSide3x3Block' : direction = " + direction);
+//            return false;
+//        }
+//    }
+//
+//    private boolean isBlock(TerrainEnum[][] map, TerrainEnum type, int x, int y, int size) {
+//        for(int i = x; i <= size; i ++)
+//            for(int j = y; j <= size; j ++)
+//                if(!isInMap(map, i, j) || map[i][j] != type)
+//                    return false;
+//        return true;
+//    }
 
 
     private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
@@ -261,8 +377,7 @@ public class MapGenerator {
     }
 
     private boolean isValidLowland(TerrainEnum[][] map, int x, int y) {
-
-        return getAdjacentTerrainNb(map, x, y, lowland) <= 2;
+        return getAdjacentTerrainNb(map, x, y, lowland) > 2;
     }
 
     private int getAdjacentTerrainNb(TerrainEnum[][] map, int x , int y, TerrainEnum type) {
@@ -278,5 +393,15 @@ public class MapGenerator {
 
     private boolean isInMap(TerrainEnum[][] map, int x, int y) {
         return x >= 0 && x < map.length && y >= 0 && y < map[0].length;
+    }
+
+    private TerrainEnum[][] surroundBySea(TerrainEnum[][] map, int size) {
+        for(int i = 0; i < map.length; i ++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if(i <= size || map.length - i <= size || j <= size || map[0].length - j <= size)
+                    map[i][j] = sea;
+            }
+        }
+        return map;
     }
 }

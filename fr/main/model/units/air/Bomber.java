@@ -48,6 +48,10 @@ public class Bomber extends Unit implements PlaneUnit {
     }
 
     public Bomber(Player player, Point point){
-        super(player,point,60,MoveType.AIRY,7,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME);
+        super(player,point,fuelName,60,true,MoveType.AIRY,7,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME,PRICE);
+    }
+
+    public int getFuelTurnCost(){
+        return 2;
     }
 }

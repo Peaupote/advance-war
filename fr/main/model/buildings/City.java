@@ -17,15 +17,6 @@ public class City extends OwnableBuilding implements RepairBuilding<LandUnit> {
 	}
 
 	public boolean canRepair(AbstractUnit u){
-		return u!=null && (u instanceof LandUnit);
+		return u.getPlayer()==getOwner() && (u instanceof LandUnit);
 	}
-
-	public void repair(LandUnit u){
-		if (canRepair(u)){
-			u.addLife(20);
-			if (u.getFuel()!=null)
-				u.getFuel().replenish();
-		}
-	}
-
 }

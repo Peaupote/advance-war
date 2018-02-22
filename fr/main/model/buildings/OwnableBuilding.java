@@ -40,6 +40,10 @@ public abstract class OwnableBuilding extends Building {
 		return life;
 	}
 
+	public int getIncome(){
+		return income;
+	}
+
 	/*
 	* @return true if and only if the building was captured
 	*/

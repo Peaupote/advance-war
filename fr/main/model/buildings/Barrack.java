@@ -17,14 +17,6 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding,RepairBu
 	}
 
 	public boolean canRepair(AbstractUnit u){
-		return u!=null && (u instanceof LandUnit);
-	}
-
-	public void repair(LandUnit u){
-		if (canRepair(u)){
-			u.addLife(20);
-			if (u.getFuel()!=null)
-				u.getFuel().replenish();
-		}
+		return u.getPlayer()==getOwner() && (u instanceof LandUnit);
 	}
 }

@@ -40,7 +40,7 @@ public class Recon extends Unit implements LandVehicleUnit{
     }
 
     public Recon(Player player, Point point){
-        super(player, point, 80, MoveType.WHEEL, 8, 5, null, new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player, point, fuelName, 80, false, MoveType.WHEEL, 8, 5, null, new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
     }
 
     public Recon(Player player, int x, int y){

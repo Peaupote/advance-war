@@ -54,7 +54,7 @@ public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 	}
 
 	public Stealth(Player player, Point point){
-		super(player,point,60,MoveType.AIRY,6,4,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME);
+		super(player,point,fuelName,60,true,MoveType.AIRY,6,4,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME,PRICE);
 		hidden=false;
 	}
 
@@ -68,4 +68,8 @@ public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 	public boolean hidden(){
 		return hidden;
 	}
+
+    public int getFuelTurnCost(){
+        return (hidden)?5:2;
+    }
 }

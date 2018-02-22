@@ -64,6 +64,6 @@ public class MTank extends Unit implements TankUnit{
 	}
 
 	public MTank(Player player, Point point){
-		super(player,point,50,MoveType.TREAD,5,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,8,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+		super(player,point,fuelName,50,false,MoveType.TREAD,5,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,8,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
 	}
 }

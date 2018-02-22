@@ -50,7 +50,7 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
     }
 
     public Cruiser(Player player, Point point){
-        super(player, point, 99, MoveType.NAVAL, 6, 3, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES), new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES), NAME);
+        super(player, point, fuelName, 99, true, MoveType.NAVAL, 6, 3, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES), new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES), NAME, PRICE);
     }
 
     public Cruiser(Player player, int x, int y){
@@ -81,5 +81,9 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
 
     public boolean remove(CopterUnit u){
         return units.remove(u);
+    }
+
+    public int getFuelTurnCost(){
+        return 1;        
     }
 }

@@ -64,6 +64,6 @@ public class Tank extends Unit implements TankUnit{
     }
 
     public Tank(Player player, Point point){
-        super(player,point,70,MoveType.TREAD,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,70,false,MoveType.TREAD,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
     }
 }

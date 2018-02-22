@@ -45,10 +45,10 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding<Ownabl
 	}
 
 	public Infantry(Player player, Point point){
-		super(player,point,WalkingUnit.FUEL_NAME,99,MoveType.INFANTRY,3,2,null,new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+		super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.INFANTRY,3,2,null,new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
 	}
 
-    public boolean capture(OwnableBuilding b){
-        return b.removeLife(this);
+    public boolean canCapture(OwnableBuilding b){
+        return b!=null && b.getOwner()!=getPlayer();
     }
 }

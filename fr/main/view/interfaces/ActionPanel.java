@@ -27,7 +27,7 @@ public class ActionPanel extends InterfaceUI {
       this.name = name;
       this.action = action;
       id = actions.size() + 1;
-      actions.put(new Integer(id), this);
+      actions.put(id, this);
     }
 
     public boolean equals (Object o) {

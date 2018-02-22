@@ -16,8 +16,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
-import fr.main.model.units.Unit;
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -78,7 +77,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   public class UnitActionPanel extends ControllerPanel {
 
-    private Unit unit;
+    private AbstractUnit unit;
 
     public UnitActionPanel () {
       super();
@@ -160,9 +159,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
           if (mode == Mode.UNIT) {
             unitActionPanel.setVisible(true);
           } else {
-            Unit unit = world.getUnit(cursor.getX(), cursor.getY()); 
+            AbstractUnit unit = world.getUnit(cursor.getX(), cursor.getY()); 
             if (unit == null || !world.isVisible(cursor.getX(), cursor.getY())) actionPanel.setVisible (true);
-            else if (unit.enable) {
+            else if (unit.isEnabled()) {
               mode = Mode.UNIT;
               path.rebase(unit);
               path.visible = true;

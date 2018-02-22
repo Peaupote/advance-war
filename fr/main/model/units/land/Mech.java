@@ -59,10 +59,11 @@ public class Mech extends Unit implements WalkingUnit,CaptureBuilding<OwnableBui
     }
 
     public Mech(Player player, Point point){
-        super(player,point,WalkingUnit.FUEL_NAME,99,MoveType.MECH,2,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.MECH,2,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
     }
 
-    public boolean capture(OwnableBuilding b){
-        return b.removeLife(this);
+    public boolean canCapture(OwnableBuilding b){
+        return b!=null && b.getOwner()!=getPlayer();
     }
+
 }

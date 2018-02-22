@@ -17,14 +17,6 @@ public class Dock extends OwnableBuilding implements FactoryBuilding,RepairBuild
 	}
 
 	public boolean canRepair(AbstractUnit u){
-		return u!=null && (u instanceof NavalUnit);
-	}
-
-	public void repair(NavalUnit u){
-		if (canRepair(u)){
-			u.addLife(20);
-			if (u.getFuel()!=null)
-				u.getFuel().replenish();
-		}
+		return u.getPlayer()==getOwner() && (u instanceof NavalUnit);
 	}
 }

@@ -21,7 +21,7 @@ public class BlackBoat extends Unit implements NavalUnit,HealerUnit<AbstractUnit
     private ArrayList<WalkingUnit> units = new ArrayList<WalkingUnit>();
 
     public BlackBoat(Player player, Point point){
-        super(player, point, 60, MoveType.LANDER, 7, 1, null, null, NAME);
+        super(player, point, fuelName, 60, true, MoveType.LANDER, 7, 1, null, null, NAME, PRICE);
     }
 
     public BlackBoat(Player player, int x, int y){
@@ -68,5 +68,9 @@ public class BlackBoat extends Unit implements NavalUnit,HealerUnit<AbstractUnit
 
     public boolean canSupply(AbstractUnit u){
         return u!=null && u.getPlayer()==this.getPlayer() && u.getFuel()!=null;
+    }
+
+    public int getFuelTurnCost(){
+        return 1;        
     }
 }

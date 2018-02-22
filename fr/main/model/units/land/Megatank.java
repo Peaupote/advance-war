@@ -64,6 +64,6 @@ public class Megatank extends Unit implements TankUnit{
     }
 
     public Megatank(Player player, Point point){
-        super(player,point,70,MoveType.TREAD,4,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,70,false,MoveType.TREAD,4,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
     }
 }

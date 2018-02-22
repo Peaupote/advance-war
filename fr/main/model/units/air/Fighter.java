@@ -35,6 +35,10 @@ public class Fighter extends Unit implements PlaneUnit{
     }
 
     public Fighter(Player player, Point point){
-        super(player,point,99,MoveType.AIRY,9,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME);
+        super(player,point,fuelName,99,true,MoveType.AIRY,9,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME,PRICE);
+    }
+
+    public int getFuelTurnCost(){
+        return 2;
     }
 }

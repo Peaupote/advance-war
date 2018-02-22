@@ -5,10 +5,11 @@ import java.lang.Iterable;
 import java.util.Iterator;
 import java.awt.Color;
 
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.commanders.Commander;
 
-public class Player implements java.io.Serializable, Iterable<Unit> {
+public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     private static final Color[] colors = new Color[]{
         Color.red,
@@ -23,15 +24,30 @@ public class Player implements java.io.Serializable, Iterable<Unit> {
     public final int id;
     public final Color color;
     public Commander commander;
+    private int funds;
 
-    private LinkedList<Unit> units;
+    private LinkedList<AbstractUnit> units;
+    private LinkedList<OwnableBuilding> buildings;
 
     public Player (String name) {
         this.name = name;
         id = ++increment_id;
-        units = new LinkedList<>();
+        units = new LinkedList<AbstractUnit>();
+        buildings=new LinkedList<OwnableBuilding>();
         color = colors[id - 1];
         commander=null;
+        funds=0;
+    }
+
+    public int getFunds(){
+        return funds;
+    }
+
+    public boolean spent(int m){
+        if (m>funds)
+            return false;
+        funds-=m;
+        return true;
     }
 
     public boolean setCommander(Commander c){
@@ -43,12 +59,23 @@ public class Player implements java.io.Serializable, Iterable<Unit> {
             return false;
     }
 
-    public void add(Unit u) {
+    public void add(AbstractUnit u) {
         if (u.setPlayer(this))
             units.add(u);
     }
 
-    public Iterator<Unit> iterator () {
+    public void remove(AbstractUnit u){
+        units.remove(u);
+    }
+
+    public Iterator<AbstractUnit> iterator () {
         return units.iterator();
+    }
+
+    public void turnBegins(){
+        for (OwnableBuilding b : buildings)
+            funds+=b.getIncome();
+        for (AbstractUnit u: units)
+            u.turnBegins();
     }
 }

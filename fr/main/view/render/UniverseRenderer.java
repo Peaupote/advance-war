@@ -6,7 +6,7 @@ import java.awt.Color;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
 
@@ -24,7 +24,7 @@ public class UniverseRenderer extends Universe {
         ((Renderer) t).update();
 
     for (Player p: map.players)
-      for (Unit u: p)
+      for (AbstractUnit u: p)
         ((Renderer)u).update();
 
     this.controller = controller;
@@ -41,7 +41,7 @@ public class UniverseRenderer extends Universe {
     Color tColor = null;
     boolean targets[][] = new boolean[map.board.length][map.board[0].length];
     if (controller.getMode() == Controller.Mode.UNIT) {
-      Unit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
+      AbstractUnit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
       unit.reachableLocation(targets);
       tColor = unit.getPlayer() == current ? moveColor : targetColor;
     }

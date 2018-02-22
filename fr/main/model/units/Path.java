@@ -6,13 +6,13 @@ import fr.main.model.Direction;
 
 public class Path extends LinkedList<Direction> {
 
-  protected Unit unit;
+  protected AbstractUnit unit;
 
   public Path () {
     super();
   }
 
-  public void rebase (Unit unit) {
+  public void rebase (AbstractUnit unit) {
     removeAll(this);
     this.unit = unit;
   }

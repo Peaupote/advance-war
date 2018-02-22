@@ -17,15 +17,6 @@ public class Airport extends OwnableBuilding implements FactoryBuilding,RepairBu
 	}
 
 	public boolean canRepair(AbstractUnit u){
-		return u!=null && (u instanceof AirUnit);
+		return u.getPlayer()==getOwner() && (u instanceof AirUnit);
 	}
-
-	public void repair(AirUnit u){
-		if (canRepair(u)){
-			u.addLife(20);
-			if (u.getFuel()!=null)
-				u.getFuel().replenish();
-		}
-	}
-
 }

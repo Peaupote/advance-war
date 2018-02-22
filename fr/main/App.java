@@ -1,14 +1,11 @@
 package fr.main;
 
 import java.awt.EventQueue;
-<<<<<<< Updated upstream
-=======
 import java.util.Random;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
->>>>>>> Stashed changes
 import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,7 +15,7 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.render.units.LanderRenderer;
 import fr.main.view.MainFrame;
 

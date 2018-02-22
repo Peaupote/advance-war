@@ -63,6 +63,10 @@ public class BCopter extends Unit implements CopterUnit {
     }
 
     public BCopter(Player player, Point point){
-        super(player,point,99,MoveType.AIRY,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,6,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,99,true,MoveType.AIRY,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,6,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
+    }
+
+    public int getFuelTurnCost(){
+        return 2;
     }
 }

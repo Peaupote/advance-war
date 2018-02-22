@@ -36,7 +36,7 @@ public class Carrier extends Unit implements NavalUnit,TransportUnit<AirUnit> {
     }
 
     public Carrier(Player player, Point point){
-        super(player, point, 99, MoveType.NAVAL, 5, 4, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,3,8,PRIMARYWEAPON_DAMAGES), null, NAME);
+        super(player, point, fuelName, 99, true, MoveType.NAVAL, 5, 4, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,3,8,PRIMARYWEAPON_DAMAGES), null, NAME, PRICE);
     }
 
     public Carrier(Player player, int x, int y){
@@ -74,5 +74,9 @@ public class Carrier extends Unit implements NavalUnit,TransportUnit<AirUnit> {
 
     public boolean remove(AirUnit u){
         return units.remove(u);
+    }
+
+    public int getFuelTurnCost(){
+        return 1;        
     }
 }

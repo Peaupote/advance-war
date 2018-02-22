@@ -25,7 +25,7 @@ public class MainFrame extends JFrame {
 
   public static final int WIDTH = 960, HEIGHT = 704, UNIT = 32;
   
-  boolean listenBackgroundMusic = false; 
+/*  boolean listenBackgroundMusic = false; 
   public BackgroundMusic bm;
   public MusicEngine bm2;
   
@@ -34,13 +34,13 @@ public class MainFrame extends JFrame {
   public JMenuBar menu;
   public JMenu setting;
   public JMenuItem bmItem;
-  
+*/  
 
   public MainFrame () throws UnsupportedAudioFileException, IOException, LineUnavailableException {
     super("Advance war");
     
     // For adding a menu bar above the game windows. For instance, we just add a menu 'setting' for open/close the backgroundmusic
-    menu = new JMenuBar();
+/*    menu = new JMenuBar();
     bm = new BackgroundMusic();
     bm2 = new MusicEngine("assets/bc.wav");
     setting = new JMenu("Setting");
@@ -62,7 +62,7 @@ public class MainFrame extends JFrame {
     setting.add(bmItem);
     menu.add(setting);
     //change it to 'true', we can play the music, and you can add new music in the filder assets. 
-   
+*/   
 
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setResizable(false);
@@ -98,7 +98,7 @@ public class MainFrame extends JFrame {
       }
     }).start();
     
-    this.setJMenuBar(menu);
+//    this.setJMenuBar(menu);
     pack();
     setLocationRelativeTo(null);
     setVisible(true);

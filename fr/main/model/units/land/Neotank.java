@@ -60,7 +60,7 @@ public class Neotank extends Unit implements TankUnit{
     }
 
     public Neotank(Player player, Point point){
-        super(player,point,99,MoveType.TREAD,6,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,99,false,MoveType.TREAD,6,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
     }
 
     public Neotank(Player p, int x, int y){

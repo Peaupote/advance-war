@@ -4,9 +4,13 @@ import java.awt.Point;
 import java.io.Serializable;
 
 import fr.main.model.Player;
+import fr.main.model.Weather;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.AbstractTerrain;
+import fr.main.model.terrains.Buildable;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.Universe;
 import fr.main.model.Direction;
 
@@ -21,7 +25,6 @@ public abstract class Unit implements AbstractUnit {
     private Point location;
     private Player player;
     private int life, moveQuantity;
-    public boolean enable;
 
     public final Fuel fuel;
     public final MoveType moveType;
@@ -29,30 +32,33 @@ public abstract class Unit implements AbstractUnit {
     private PrimaryWeapon primaryWeapon;
     private SecondaryWeapon secondaryWeapon;
 
-    public final int vision, maxMoveQuantity;
+    public final int vision, maxMoveQuantity, cost;
     public final String name;
 
     public class Fuel implements java.io.Serializable{
         public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
         public final int maximumQuantity;
         private int quantity;
+        public final boolean diesIfNoFuel;
 
-        public Fuel(int maximumQuantity){
-            this("Carburant",maximumQuantity);
-        }
-
-        public Fuel(String name, int maximumQuantity){
+        public Fuel(String name, int maximumQuantity, boolean diesIfNoFuel){
             this.name            = name;
             this.maximumQuantity = maximumQuantity;
             this.quantity        = maximumQuantity;
+            this.diesIfNoFuel    = diesIfNoFuel;
         }
 
         /*
-         *  @return true if the unit has no more fuel.
+         *  @return true if the unit has still has fuel.
          */
         public boolean consume(int quantity){
+            quantity*=Universe.get().getWeather().malusFuel;
             this.quantity=Math.max(0,this.quantity-quantity);
-            return this.quantity==0;
+            if (fuel.quantity==0 && diesIfNoFuel){
+                Universe.get().setUnit(location.x,location.y,null);
+                player.remove(Unit.this);
+            }
+            return quantity!=0;
         }
 
         public void replenish(){
@@ -67,19 +73,15 @@ public abstract class Unit implements AbstractUnit {
         this (null, location);
     }
 
-    public Unit (Player player, Point location, int maxFuel, MoveType moveType, int moveQuantity , int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name) {
-        this(player, location, "Carburant", maxFuel, moveType, moveQuantity, vision, primaryWeapon, secondaryWeapon, name);
-    }
-
     public Unit (Player player, Point location) {
-        this (player, location, "fuel", 0, MoveType.WHEEL, 5, 2, null, null, "unit");
+        this (player, location, "fuel", 0, false, MoveType.WHEEL, 5, 2, null, null, "unit",1);
     }
 
-    public Unit (Player player, Point location, String fuelName, int maxFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name) {
+    public Unit (Player player, Point location, String fuelName, int maxFuel, boolean diesIfNoFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name, int cost) {
         this.life            = 100;
         this.player          = player;
         this.location        = location;
-        this.fuel            = new Fuel(fuelName,maxFuel);
+        this.fuel            = new Fuel(fuelName,maxFuel,diesIfNoFuel);
         this.moveType        = moveType;
         this.maxMoveQuantity = moveQuantity;
         this.moveQuantity    = moveQuantity;
@@ -87,6 +89,7 @@ public abstract class Unit implements AbstractUnit {
         this.primaryWeapon   = primaryWeapon;
         this.secondaryWeapon = secondaryWeapon;
         this.name            = name;
+        this.cost            = cost;
         move(location.x, location.y);
     }
 
@@ -99,7 +102,7 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public void setMoveQuantity(int m){
-        this.moveQuantity=m;
+        this.moveQuantity=Math.min(m,getMaxMoveQuantity());
     }
 
     public Fuel getFuel(){
@@ -149,33 +152,58 @@ public abstract class Unit implements AbstractUnit {
         return true;
     }
 
-    public final void move(int x, int y) {
-      Universe u = Universe.get();
-      if (u != null && u.getUnit(x, y) == null) {
-        u.setUnit(location.x, location.y, null);
-        location.x = x;
-        location.y = y;
-        u.setUnit(x, y, this);
-        enable = false;
-        u.updateVision();
-      }
+    /*
+    * @return true if and only if the move was done.
+    */
+    public final boolean move(int x, int y) {
+        Universe u = Universe.get();
+        if (u != null && u.isValidPosition(x,y) && u.getUnit(x, y) == null) {
+            int q=u.getTerrain(x,y).moveCost(this);
+            if (q>=getMoveQuantity()){
+                return false;
+            }
+            removeMoveQuantity(q);
+            u.setUnit(location.x, location.y, null);
+            location.x = x;
+            location.y = y;
+            u.setUnit(x, y, this);
+            u.updateVision();
+            fuel.consume(1);
+            return true;
+        }
+        else
+            return false;
     }
 
-    public final void move (Direction d) {
-      Point t = (Point)location.clone();
-      d.move(t);
-      move(t.x, t.y);
+    /*
+    * @return true if and only if the move was done.
+    */
+    public final boolean move (Direction d) {
+        Point t = (Point)location.clone();
+        d.move(t);
+        return move(t.x, t.y);
     }
 
-    public final void move (Path path) {
-      for (Direction d: path) move(d);
+    /*
+    * @return true if and only if the move was done entirely.
+    */
+    public final boolean move (Path path) {
+        for (Direction d: path){
+            if (!move(d)){
+                setMoveQuantity(0);
+                return false;
+            }
+        }
+        return true;
     }
 
-    public final MoveType getMoveType() {
+    public MoveType getMoveType() {
         return moveType;
     }
 
     public final void renderVision (boolean[][] fog) {
+        //TODO : can see beyond a moutain or a forest if the unit is on a mountain
+        //TODO : can see beyond a forest if the unit is on a hill
         if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
             return;
 
@@ -304,5 +332,31 @@ public abstract class Unit implements AbstractUnit {
 
     public boolean canAttack(AbstractUnit u){
         return true;
+    }
+
+    public int getFuelTurnCost(){
+        return 0;
+    }
+
+    public void turnBegins(){
+        AbstractTerrain t=Universe.get().getTerrain(location.x,location.y);
+        boolean heal=false;
+        if (t instanceof Buildable){
+            AbstractBuilding b=((Buildable)t).getBuilding();
+            if (b instanceof RepairBuilding){
+                RepairBuilding rep=(RepairBuilding)b;
+                if (rep.canRepair(this)){
+                    rep.repair(this);
+                    heal=true;
+                }
+            }
+        }
+        if (!heal)
+            fuel.consume(getFuelTurnCost());
+        setMoveQuantity(getMaxMoveQuantity());
+    }
+
+    public int getCost(){
+        return cost;
     }
 }

@@ -8,8 +8,12 @@ import javax.swing.JApplet;
 
 public class BackgroundMusic {
 	
+	//We can use the music in asset.
+	AudioClip bm = loadSound("assets/bc.wav");  
+	
 	public static AudioClip loadSound(String filename) {  
         URL url = null;  
+        
         try {  
             url = new URL("file:" + filename);  
         }   
@@ -17,8 +21,12 @@ public class BackgroundMusic {
         return JApplet.newAudioClip(url);  
     }  
     public void play() {  
-        AudioClip christmas = loadSound("assets/bc.wav");  
-        christmas.play();  
+        
+        bm.play();  
     }  
+    
+    public void stop() {
+    	bm.stop();
+    }
 	 
 }

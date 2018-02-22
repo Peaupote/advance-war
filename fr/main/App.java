@@ -1,7 +1,17 @@
 package fr.main;
 
 import java.awt.EventQueue;
+<<<<<<< Updated upstream
+=======
+import java.util.Random;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+>>>>>>> Stashed changes
 import java.awt.Point;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
@@ -46,7 +56,19 @@ public class App {
     //System.out.println(word);
 
 
-
-    EventQueue.invokeLater(MainFrame::new);
+    
+    EventQueue.invokeLater(() -> {
+		try {
+			new MainFrame();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	});
   }
 }

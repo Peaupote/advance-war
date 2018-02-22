@@ -29,7 +29,7 @@ public class WoodRenderer extends Wood implements Renderer {
 
   public void draw (Graphics g, int x, int y) {
     if(image == null) {
-      g.setColor (Color.yellow);
+      g.setColor (Color.green);
       g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
       return;
     }

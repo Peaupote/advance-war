@@ -50,7 +50,7 @@ public class MapGenerator {
         if(y < 0) y = 1;
         if(power < 1) power = 1;
         if(power > 10) power = 10;
-        if(smoothness < 0) smoothness = 3;
+        if(smoothness < 0) smoothness = 6;
 
         resetSeed();
         int size = x * y;
@@ -96,7 +96,7 @@ public class MapGenerator {
             }
         }
 
-        return placeMountainsHills(placeBeach(surroundBySea(refineMap(map, smoothness), 4)));
+        return placeWood(placeMountainsHills(placeBeach(surroundBySea(refineMap(map, smoothness), 4))));
     }
 
     private int distance(int x1 , int y1, int x2, int y2) {
@@ -214,10 +214,22 @@ public class MapGenerator {
                 if(map[i][j] == lowland && getAdjacentTerrainNb(map, i, j, bridge) == 0) {
                     mountains = getAdjacentTerrainNb(map, i, j, mountain);
                     if(mountains == 0 && rand.nextInt(15) < 1) map[i][j] = mountain;
-                    else if(mountains > 0 && rand.nextInt(15) < 3) map[i][j] = mountain;
-                    else if(mountains == 0 && rand.nextInt(10) < 2) map[i][j] = hill;
-                    else if(mountains > 0 && rand.nextInt(10) < 4) map[i][j] = hill;
+                    else if(mountains > 0 && rand.nextInt(15) < 4) map[i][j] = mountain;
+                    else if(mountains == 0 && rand.nextInt(12) < 2) map[i][j] = hill;
+                    else if((mountains > 0 || getAdjacentTerrainNb(map, i, j, hill) > 0)
+                            && rand.nextInt(12) < 3) map[i][j] = hill;
                 }
+            }
+        return map;
+    }
+
+    private TerrainEnum[][] placeWood(TerrainEnum[][] map) {
+        for(int i = 0; i < map.length; i ++)
+            for(int j = 0; j < map[0].length; j ++) {
+                if(map[i][j] == lowland || map[i][j] == hill)
+                    if(getAdjacentTerrainNb(map, i, j, wood) == 0)
+                        map[i][j] = (rand.nextInt(12) < 2) ? wood : map[i][j];
+                    else map[i][j] = (rand.nextInt(10) < 2) ? wood: map[i][j];
             }
         return map;
     }

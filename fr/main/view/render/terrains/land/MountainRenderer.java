@@ -29,7 +29,7 @@ public class MountainRenderer extends Mountain implements Renderer {
 
   public void draw (Graphics g, int x, int y) {
     if(image == null) {
-      g.setColor (Color.pink);
+      g.setColor (Color.lightGray);
       g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
       return;
     }

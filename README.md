@@ -1,6 +1,6 @@
 Projet informatique - Advance war
 =================================
-*Yushen Bai, Félix Desmaretz, Maxime Flin, Pierre Gimalac*
+*Yuchen Bai, Félix Desmaretz, Maxime Flin, Pierre Gimalac*
 
 *Connais ton adversaire, connais-toi, et tu ne mettras pas ta victoire
 en danger. Connais le ciel et connais la terre, et ta victoire sera

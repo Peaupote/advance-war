@@ -12,6 +12,7 @@ public class Road extends Terrain implements LandTerrain {
 
     private static Road instance;
     protected static final Map<MoveType,Integer> sunnyWeatherMovementCosts=new HashMap<MoveType,Integer>();
+    public static final String name="Route";
 
     static{
         sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
@@ -22,7 +23,7 @@ public class Road extends Terrain implements LandTerrain {
     }
 
     protected Road() {
-        super("Route",0,0,0, sunnyWeatherMovementCosts);
+        super(name,0,0,0, sunnyWeatherMovementCosts);
     }
 
     public static Road get () {

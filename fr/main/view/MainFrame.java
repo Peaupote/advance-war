@@ -16,9 +16,17 @@ import fr.main.model.Player;
 public class MainFrame extends JFrame {
 
   public static final int WIDTH = 960, HEIGHT = 704, UNIT = 32;
+  public BackgroundMusic bm;
 
   public MainFrame () {
     super("Advance war");
+    
+    //change it to 'true', we can play the music, and you can add new music in the filder assets. 
+    boolean listenBackgroundMusic = false; 
+    bm = new BackgroundMusic();
+    if(listenBackgroundMusic) {
+    	bm.play();
+    }
 
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setResizable(false);

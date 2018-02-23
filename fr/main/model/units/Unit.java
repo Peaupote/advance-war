@@ -159,9 +159,8 @@ public abstract class Unit implements AbstractUnit {
         Universe u = Universe.get();
         if (u != null && u.isValidPosition(x,y) && u.getUnit(x, y) == null) {
             int q=u.getTerrain(x,y).moveCost(this);
-            if (q>=getMoveQuantity()){
+            if (q>getMoveQuantity())
                 return false;
-            }
             removeMoveQuantity(q);
             u.setUnit(location.x, location.y, null);
             location.x = x;
@@ -317,14 +316,17 @@ public abstract class Unit implements AbstractUnit {
     @Override
     public String toString() {
         String out = getName() +
-                "\nHP : " + Integer.toString(life);
+                "\nHP : " + life+"/100";
         if(player != null)
-            out += "\nPlayer : " + player.name;
-            out += "\nVision : " + Integer.toString(vision);
+            out += "\nJoueur : " + player.name;
+            out += "\nVision : " + vision;
+            out += "\nMouvement : " + moveQuantity+"/"+maxMoveQuantity;
         if(fuel != null)
-            out += "\nFuel : " + Integer.toString(fuel.getQuantity());
-        if(primaryWeapon != null)
-            out += "\nPrimary : " + primaryWeapon.name;
+            out += "\n"+fuel.name+" : " + fuel.getQuantity()+"/"+fuel.maximumQuantity;
+        if(primaryWeapon != null){
+            out += "\n" + primaryWeapon.name+" : "+primaryWeapon.getAmmunition()+"/"+primaryWeapon.maximumAmmo;
+            if (!primaryWeapon.isContactWeapon()) out+=", "+primaryWeapon.minimumRange+"~"+primaryWeapon.maximumRange;
+        }
         if(secondaryWeapon != null)
             out += "\nSecondary : " + secondaryWeapon.name;
         return out;
@@ -339,20 +341,11 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public void turnBegins(){
-        AbstractTerrain t = Universe.get().getTerrain(location.x,location.y);
-        boolean heal = false;
-        if (t instanceof Buildable){
-            AbstractBuilding b=((Buildable)t).getBuilding();
-            if (b instanceof RepairBuilding){
-                RepairBuilding rep = (RepairBuilding)b;
-                if (rep.canRepair(this)){
-                    rep.repair(this);
-                    heal = true;
-                }
-            }
-        }
-        if (!heal)
+        try{
+            ((RepairBuilding)((Buildable)Universe.get().getTerrain(location.x,location.y)).getBuilding()).repair(this);
+        }catch(java.lang.ClassCastException e){
             fuel.consume(getFuelTurnCost());
+        }
         setMoveQuantity(getMaxMoveQuantity());
     }
 

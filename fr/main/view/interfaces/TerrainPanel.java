@@ -44,7 +44,7 @@ public class TerrainPanel extends InterfaceUI {
     if(world.isVisible(cursor.getX(), cursor.getY()) && world.getUnit (cursor.getX(), cursor.getY()) != null) {
       String[] unitInfo = world.getUnit(cursor.getX(), cursor.getY()).toString().split("\n");
       for(int i = 0; i < unitInfo.length; i ++)
-        g.drawString(unitInfo[i], x + 20, y + 40 + i * 10);
+        g.drawString(unitInfo[i], x + 5, y + 40 + i * 10);
     } else
       g.drawString ("No Unit", x + 20, y + 40);
   }

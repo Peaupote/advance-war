@@ -339,15 +339,15 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public void turnBegins(){
-        AbstractTerrain t=Universe.get().getTerrain(location.x,location.y);
-        boolean heal=false;
+        AbstractTerrain t = Universe.get().getTerrain(location.x,location.y);
+        boolean heal = false;
         if (t instanceof Buildable){
             AbstractBuilding b=((Buildable)t).getBuilding();
             if (b instanceof RepairBuilding){
-                RepairBuilding rep=(RepairBuilding)b;
+                RepairBuilding rep = (RepairBuilding)b;
                 if (rep.canRepair(this)){
                     rep.repair(this);
-                    heal=true;
+                    heal = true;
                 }
             }
         }

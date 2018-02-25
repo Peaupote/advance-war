@@ -35,11 +35,11 @@ public class WoodRenderer extends Wood implements Renderer {
     }
 
     Graphics2D g2d = (Graphics2D) g;
-    g2d.drawImage(image, x, y, null);
+    g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
   }
 
   public static WoodRenderer get () {
-    if (instance == null) instance = new WoodRenderer ("./assets/aw_terrain_wood.png");
+    if (instance == null) instance = new WoodRenderer ("./assets/terrains/forest.png");
     return instance;
   }
 }

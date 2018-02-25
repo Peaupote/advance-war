@@ -39,7 +39,7 @@ public class BridgeRenderer extends Bridge implements Renderer {
   }
 
   public static BridgeRenderer get () {
-    if (instance == null) instance = new BridgeRenderer ("./assets/aw_terrain_bridge.png");
+    if (instance == null) instance = new BridgeRenderer ("./assets/terrains/bridge.png");
     return instance;
   }
 }

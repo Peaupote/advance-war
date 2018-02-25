@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Image;
 
 import fr.main.model.terrains.Terrain;
+import fr.main.model.units.Path;
+import fr.main.model.Direction;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.model.units.naval.Lander;
@@ -54,4 +56,5 @@ public class LanderRenderer extends Lander implements Renderer {
       System.err.println(e.getMessage());
     }
   }
+
 }

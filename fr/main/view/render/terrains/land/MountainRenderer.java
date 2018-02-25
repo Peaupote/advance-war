@@ -35,11 +35,11 @@ public class MountainRenderer extends Mountain implements Renderer {
     }
 
     Graphics2D g2d = (Graphics2D) g;
-    g2d.drawImage(image, x, y, null);
+    g2d.drawImage(image, x, y - 7, MainFrame.UNIT, MainFrame.UNIT + 7, null);
   }
 
   public static MountainRenderer get () {
-    if (instance == null) instance = new MountainRenderer ("./assets/aw_terrain_mountain.png");
+    if (instance == null) instance = new MountainRenderer ("./assets/terrains/mountain.png");
     return instance;
   }
 }

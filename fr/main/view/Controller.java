@@ -29,6 +29,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   private Point mouse;
   private Mode mode;
   private ActionPanel actionPanel, focusedActionPanel;
+  private AbstractUnit targetUnit;
   private UnitActionPanel unitActionPanel;
   private DayPanel dayPanel;
   public PathRenderer path;
@@ -86,7 +87,6 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       
       new Index("Move", () -> {
         path.apply();
-        mode = Mode.MOVE;
         cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
         path.visible = false;
       });
@@ -122,7 +122,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       public boolean canMove(Direction d) {
         if (!super.canMove(d)) return false;
         boolean[][] map = new boolean[size.height][size.width];
-        world.getUnit(cursor.getX(), cursor.getY()).reachableLocation(map);
+        targetUnit.reachableLocation(map);
 
         Point target = new Point(position.x, position.y);
         d.move(target);
@@ -156,14 +156,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
         else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
         else if (key == KeyEvent.VK_ENTER) {
-          if (mode == Mode.UNIT) {
-            unitActionPanel.setVisible(true);
-          } else {
-            AbstractUnit unit = world.getUnit(cursor.getX(), cursor.getY()); 
-            if (unit == null || !world.isVisible(cursor.getX(), cursor.getY())) actionPanel.setVisible (true);
-            else if (unit.isEnabled()) {
+          if (mode == Mode.UNIT) unitActionPanel.setVisible(true);
+          else {
+            targetUnit = world.getUnit(cursor.getX(), cursor.getY()); 
+            if (targetUnit == null || !world.isVisible(cursor.getX(), cursor.getY()))
+              actionPanel.setVisible (true);
+            else if (targetUnit.isEnabled()) {
               mode = Mode.UNIT;
-              path.rebase(unit);
+              path.rebase(targetUnit);
               path.visible = true;
               unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
             }
@@ -204,7 +204,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
    * Function called each loop turn
    */
   public void update () {
-    isListening = cursor.move() | camera.move() | (mode == Mode.UNIT && unitCursor.move());
+    isListening = cursor.move() | camera.move() |
+                  (mode == Mode.UNIT && unitCursor.move());
 
     if (!isListening && mode == Mode.MOVE && listenMouse) {
         if (mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
@@ -214,6 +215,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
         cursor.setPosition(mouse.x, mouse.y);
     }
+
   }
 
   private void move (Direction d) {

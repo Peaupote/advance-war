@@ -39,7 +39,7 @@ public class BeachRenderer extends Beach implements Renderer {
     }
 
     public static BeachRenderer get () {
-        if (instance == null) instance = new BeachRenderer ("./assets/Beach.png");
+        if (instance == null) instance = new BeachRenderer ("./assets/terrains/beach.png");
         return instance;
     }
 }

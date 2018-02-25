@@ -35,11 +35,11 @@ public class HillRenderer extends Hill implements Renderer {
     }
 
     Graphics2D g2d = (Graphics2D) g;
-    g2d.drawImage(image, x, y, null);
+    g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
   }
 
   public static HillRenderer get () {
-    if (instance == null) instance = new HillRenderer ("./assets/aw_terrain_hill.png");
+    if (instance == null) instance = new HillRenderer ("./assets/terrains/hill.png");
     return instance;
   }
 }

@@ -39,7 +39,7 @@ public class RoadRenderer extends Road implements Renderer{
   }
 
   public static RoadRenderer get () {
-    if (instance == null) instance = new RoadRenderer ("./assets/aw_terrain_road.png");
+    if (instance == null) instance = new RoadRenderer ("./assets/terrains/road.png");
     return instance;
   }
 }

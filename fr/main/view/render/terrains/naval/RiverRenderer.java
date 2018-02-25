@@ -39,7 +39,7 @@ public class RiverRenderer extends River implements Renderer {
   }
 
   public static RiverRenderer get () {
-    if (instance == null) instance = new RiverRenderer ("./assets/aw_terrain_river.png");
+    if (instance == null) instance = new RiverRenderer ("./assets/terrains/river.png");
     return instance;
   }
 }

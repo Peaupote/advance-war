@@ -4,7 +4,7 @@ import java.util.Map;
 
 import fr.main.model.units.AbstractUnit;
 
-public abstract class Weapon {
+public abstract class Weapon implements java.io.Serializable {
 
     public final String name;
     private final Map<Class<? extends AbstractUnit>,Integer> damages;

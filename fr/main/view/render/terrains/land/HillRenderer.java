@@ -6,13 +6,13 @@ import fr.main.view.render.Renderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
 public class HillRenderer extends Hill implements Renderer {
   private String imagePath;
-  private transient BufferedImage image;
+  private transient Image image;
   private transient static HillRenderer instance;
 
   private HillRenderer(String imagePath) {
@@ -20,12 +20,15 @@ public class HillRenderer extends Hill implements Renderer {
     update();
   }
 
-  @Override
-  public void update() {
-    try {
-      image = ImageIO.read(new File(imagePath));
-    } catch (IOException e) {}
-  }
+    @Override
+    public String getFilename () {
+        return imagePath;
+    }
+
+    @Override
+    public void setImage (Image image) {
+        this.image = image;
+    }
 
   public void draw (Graphics g, int x, int y) {
     if(image == null) {

@@ -18,6 +18,7 @@ import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
 import fr.main.view.render.units.LanderRenderer;
+import fr.main.view.render.units.land.InfantryRenderer;
 import fr.main.view.MainFrame;
 
 /**
@@ -43,10 +44,12 @@ public class App {
     units[0][0] = new LanderRenderer(new Point(0,0));
     units[1][1] = new LanderRenderer(new Point(1,1));
     units[3][6] = new LanderRenderer(new Point(6,3));
+    units[5][10] = new InfantryRenderer(new Point(10,5));
 
     players[0].add(units[0][0]);
     players[0].add(units[3][6]);
     players[1].add(units[1][1]);
+    players[0].add(units[5][10]);
 
     Universe.save("maptest.map", units, map, players);
 

@@ -6,13 +6,13 @@ import fr.main.view.render.Renderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
 public class BridgeRenderer extends Bridge implements Renderer {
   private String imagePath;
-  private transient BufferedImage image;
+  private transient Image image;
   private transient static BridgeRenderer instance;
 
   private BridgeRenderer(String imagePath) {
@@ -20,14 +20,17 @@ public class BridgeRenderer extends Bridge implements Renderer {
     update();
   }
 
-  @Override
-  public void update() {
-    try {
-      image = ImageIO.read(new File(imagePath));
-    } catch (IOException e) {}
-  }
+    @Override
+    public String getFilename () {
+        return imagePath;
+    }
 
-  public void draw (Graphics g, int x, int y) {
+    @Override
+    public void setImage (Image image) {
+        this.image = image;
+    }
+  
+    public void draw (Graphics g, int x, int y) {
     if(image == null) {
       g.setColor (Color.darkGray);
       g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);

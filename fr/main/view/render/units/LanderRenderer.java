@@ -34,15 +34,12 @@ public class LanderRenderer extends Lander implements UnitRenderer {
   }
 
   @Override
-  public void update() {
-    try {
-      // TODO: make real stuff here
-      String color = getPlayer().id == 1 ? "red" : "blue";
-      image = ImageIO.read(new File ("./assets/" + color + "/" + filename));
+  public String getFilename() {
+    return getDir() + filename;
+  }
 
-    } catch (IOException e) {
-      System.err.println(e.getMessage());
-    }
+  public void setImage (Image image) {
+    this.image = image;
   }
 
   @Override

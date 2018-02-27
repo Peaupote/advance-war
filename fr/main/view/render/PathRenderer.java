@@ -102,7 +102,7 @@ public class PathRenderer extends Path {
 
       UnitRenderer render = (UnitRenderer)unit;
       for (int i = 0; i < MainFrame.UNIT; i++) {
-        render.moveOffset(d);
+        if (!render.moveOffset(d)) return;
 
         try {
           Thread.sleep(5);

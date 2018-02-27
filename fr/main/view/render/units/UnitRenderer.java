@@ -5,7 +5,7 @@ import fr.main.view.render.Renderer;
 
 public interface UnitRenderer extends Renderer {
 
-  public void moveOffset (Direction d);
+  public boolean moveOffset (Direction d);
 
 }
 

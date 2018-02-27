@@ -7,8 +7,6 @@ import java.awt.Point;
 import java.awt.Image;
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.lang.Thread;
-import java.lang.InterruptedException;
 
 import fr.main.view.MainFrame;
 import fr.main.model.Direction;
@@ -87,10 +85,7 @@ public abstract class Position {
     }
 
     public void setPosition (int x, int y) {
-      if (x >= 0 && x < camera.width && y >= 0 && y < camera.height) {
-        x += camera.position.x;
-        y += camera.position.y;
-
+      if (x >= 0 && x < size.width && y >= 0 && y < size.height) {
         position.x = x;
         position.y = y;
         target.x = x;

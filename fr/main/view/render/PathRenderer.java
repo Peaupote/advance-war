@@ -7,6 +7,7 @@ import fr.main.model.units.Path;
 import fr.main.model.Direction;
 import fr.main.view.MainFrame;
 import fr.main.view.Position;
+import fr.main.view.render.units.UnitRenderer;
 
 public class PathRenderer extends Path {
 
@@ -93,6 +94,25 @@ public class PathRenderer extends Path {
                   (point.x - camera.getX()) * MainFrame.UNIT,
                   (point.y - camera.getY()) * MainFrame.UNIT,
                   MainFrame.UNIT, MainFrame.UNIT, null);
+  }
+
+  public void apply () {
+    while (!isEmpty()) {
+      Direction d = poll();
+
+      UnitRenderer render = (UnitRenderer)unit;
+      for (int i = 0; i < MainFrame.UNIT; i++) {
+        render.moveOffset(d);
+
+        try {
+          Thread.sleep(5);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+
+      unit.move(d);
+    }
   }
 
 }

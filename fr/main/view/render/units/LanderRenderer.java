@@ -62,7 +62,7 @@ public class LanderRenderer extends Lander implements UnitRenderer {
 
   public void moveOffset (Direction d) {
     d.move(offset);
-    if (offset.x == MainFrame.UNIT || offset.y == MainFrame.UNIT) {
+    if (Math.abs(offset.x) == MainFrame.UNIT || Math.abs(offset.y) == MainFrame.UNIT) {
       offset.x = 0;
       offset.y = 0;
     }

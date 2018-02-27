@@ -16,6 +16,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
+import fr.main.view.render.units.UnitRenderer;
 import fr.main.model.units.*;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
@@ -35,6 +36,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
   public PathRenderer path;
 
   public static enum Mode {
+    IDLE,
     MOVE,
     MENU,
     UNIT
@@ -84,8 +86,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       y = 10;
       
       new Index("Move", () -> {
+        mode = Mode.IDLE;
         path.apply();
-        cursor.setPosition(unitCursor.getX() - camera.getX(), unitCursor.getY() - camera.getY());
+        mode = Mode.MOVE;
+        cursor.setPosition(unitCursor.getX(), unitCursor.getY());
         path.visible = false;
       });
       
@@ -181,7 +185,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
               mode = Mode.UNIT;
               path.rebase(targetUnit);
               path.visible = true;
-              unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
+              unitCursor.setPosition(cursor.getX(), cursor.getY());
             }
           }
         } else if (key == KeyEvent.VK_ESCAPE) {
@@ -228,7 +232,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         else if (mouse.y <= moveRange) camera.setDirection(Direction.TOP);
         else if (camera.height - mouse.y <= moveRange) camera.setDirection(Direction.BOTTOM);
 
-        cursor.setPosition(mouse.x, mouse.y);
+        cursor.setPosition(mouse.x + camera.getX(), mouse.y + camera.getY());
     }
 
   }

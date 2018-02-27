@@ -111,7 +111,7 @@ public class ActionPanel extends InterfaceUI {
   public boolean hideOnOpen(InterfaceUI com) { return true; }
 
   public void perform () {
-    actions.get(selected).action.run();
+    new Thread(actions.get(selected).action::run).start();
     setVisible (false);
   }
 

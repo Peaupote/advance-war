@@ -110,9 +110,8 @@ public class PathRenderer extends Path {
           e.printStackTrace();
         }
       }
-
-      unit.move(d);
     }
+
   }
 
 }

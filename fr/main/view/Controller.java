@@ -16,7 +16,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
-import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.*;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -78,8 +78,6 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
   public class UnitActionPanel extends ControllerPanel {
 
-    private AbstractUnit unit;
-
     public UnitActionPanel () {
       super();
       x = MainFrame.WIDTH - 200;
@@ -104,6 +102,24 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       new Index("Cancel", () -> {});
     }
 
+    @Override
+    public void onOpen () {
+      targetUnit = world.getUnit(cursor.getX(), cursor.getY());
+      actions.forEach((key, value) -> value.setActive(false));
+
+      actions.get(9).setActive(true);
+      if (targetUnit.getMoveQuantity() > 0) actions.get(1).setActive(true);
+      if (targetUnit.canAttackAfterMove()) actions.get(2).setActive(true);
+      if (targetUnit instanceof SupplyUnit) actions.get(3).setActive(true);
+      if (targetUnit instanceof HealerUnit) actions.get(4).setActive(true);
+      if (targetUnit instanceof HideableUnit)
+        if (((HideableUnit)targetUnit).hidden()) actions.get(6).setActive(true);
+        else actions.get(5).setActive(true);
+
+      super.onOpen();
+    }
+
+    @Override
     public void onClose () {
       super.onClose();
       path.visible = false;
@@ -168,8 +184,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
               unitCursor.setPosition(cursor.getX() - camera.getX(), cursor.getY() - camera.getY());
             }
           }
-        }
-        else if (key == KeyEvent.VK_ESCAPE) {
+        } else if (key == KeyEvent.VK_ESCAPE) {
           mode = Mode.MOVE;
           path.visible = false;
         }

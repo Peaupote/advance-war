@@ -16,6 +16,8 @@ public class ActionPanel extends InterfaceUI {
 
   protected int x, y;
 
+  private int actives;
+
   public class Index {
     // TODO: add image for each index
 
@@ -23,16 +25,31 @@ public class ActionPanel extends InterfaceUI {
     final String name;
     final Runnable action;
 
+    private boolean active;
+
     public Index (String name, Runnable action) {
       this.name = name;
       this.action = action;
       id = actions.size() + 1;
       actions.put(id, this);
+
+      active = true;
+      actives++;
     }
 
     public boolean equals (Object o) {
       if (!(o instanceof Index)) return false;
       return ((Index)o).id == id;
+    }
+
+    public void setActive (boolean active) {
+      if (active && !this.active) actives++;
+      else if (!active && this.active) actives--;
+      this.active = active;
+    }
+
+    public boolean isActive () {
+      return active;
     }
 
   }
@@ -52,13 +69,15 @@ public class ActionPanel extends InterfaceUI {
   @Override
   protected void draw (Graphics g) {
     g.setColor(BACKGROUNDCOLOR);
-    g.fillRect (x, y, MainFrame.WIDTH - x - 10, 20 + actions.size() * 20);
+    g.fillRect (x, y, MainFrame.WIDTH - x - 10, 20 + actives * 20);
 
     g.setColor (FOREGROUNDCOLOR);
-    for (int i : actions.keySet()) {
-      Index index = actions.get(i);
-      g.drawString(index.name, x + 30, y + index.id * 20);
-    }
+    int j = 0;
+    for (Index index : actions.values())
+      if (index.active) {
+        j++;
+        g.drawString(index.name, x + 30, y + j * 20);
+      }
 
     // TODO: find a nice image for the arrow
     g.setColor(Color.red);
@@ -74,7 +93,7 @@ public class ActionPanel extends InterfaceUI {
   }
 
   public void goDown () {
-    selected = Math.min (actions.size(), selected + 1);
+    selected = Math.min (actives, selected + 1);
   }
 
   public void onOpen () {

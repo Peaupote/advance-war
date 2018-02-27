@@ -14,10 +14,13 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.model.units.naval.Lander;
 
-public class LanderRenderer extends Lander implements Renderer {
+public class LanderRenderer extends Lander implements UnitRenderer {
 
   private static String filename = "lander.png";
   private static int animationOffset = 0;
+
+  private Point offset;
+
   static {
     new Thread(() -> {
       while (true) {
@@ -37,12 +40,12 @@ public class LanderRenderer extends Lander implements Renderer {
   public LanderRenderer (Point location) {
     super (null, location);
 
-    animationOffset = 0;
+    offset = new Point(0, 0);
   }
 
   public void draw (Graphics g, int x, int y) {
-    if (image == null) g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
-    else g.drawImage (image, x, y + animationOffset - 5, MainFrame.UNIT, MainFrame.UNIT, null);
+    if (image == null) g.fillRect (x + offset.x, y + offset.y, MainFrame.UNIT, MainFrame.UNIT);
+    else g.drawImage (image, x + offset.x, y + offset.y + animationOffset - 5, MainFrame.UNIT, MainFrame.UNIT, null);
   }
 
   @Override
@@ -54,6 +57,14 @@ public class LanderRenderer extends Lander implements Renderer {
 
     } catch (IOException e) {
       System.err.println(e.getMessage());
+    }
+  }
+
+  public void moveOffset (Direction d) {
+    d.move(offset);
+    if (offset.x == MainFrame.UNIT || offset.y == MainFrame.UNIT) {
+      offset.x = 0;
+      offset.y = 0;
     }
   }
 

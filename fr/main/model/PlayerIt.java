@@ -60,4 +60,8 @@ public class PlayerIt implements Iterable<Player> {
     public Iterator<Player> iterator() {
         return players;
     }
+
+    public boolean isFirst(Player p){
+        return p==players.ps[0];
+    }
 }

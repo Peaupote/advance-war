@@ -75,7 +75,13 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     public void turnBegins(){
         for (OwnableBuilding b : buildings)
             funds+=b.getIncome();
-        for (AbstractUnit u: units)
+        for (AbstractUnit u : units)
             u.turnBegins();
+    }
+
+    public void turnEnds(){
+        for (AbstractUnit u : units){
+            u.turnEnds();
+        }
     }
 }

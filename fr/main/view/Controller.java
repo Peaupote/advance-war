@@ -21,239 +21,238 @@ import fr.main.model.units.*;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
-  public final Position.Cursor cursor, unitCursor;
-  public final Position.Camera camera;
-  public final UniverseRenderer world;
-  public final int moveRange = 3;
+    public final Position.Cursor cursor, unitCursor;
+    public final Position.Camera camera;
+    public final UniverseRenderer world;
+    public final int moveRange = 3;
 
-  private boolean isListening = false, listenMouse = false;
-  private Point mouse;
-  private Mode mode;
-  private ActionPanel actionPanel, focusedActionPanel;
-  private AbstractUnit targetUnit;
-  private UnitActionPanel unitActionPanel;
-  private DayPanel dayPanel;
-  public PathRenderer path;
+    private boolean isListening = false, listenMouse = false;
+    private Point mouse;
+    private Mode mode;
+    private ActionPanel actionPanel, focusedActionPanel;
+    private AbstractUnit targetUnit;
+    private UnitActionPanel unitActionPanel;
+    private DayPanel dayPanel;
+    public PathRenderer path;
 
-  public static enum Mode {
-    IDLE,
-    MOVE,
-    MENU,
-    UNIT
-  }
-
-  private class ControllerPanel extends ActionPanel {
-  
-    public void onOpen () {
-      super.onOpen();
-      mode = Mode.MENU;
-      focusedActionPanel = this;
+    public static enum Mode {
+        IDLE,
+        MOVE,
+        MENU,
+        UNIT
     }
 
-    public void onClose () {
-      super.onClose();
-      mode = Mode.MOVE;
+    private class ControllerPanel extends ActionPanel {
+    
+        public void onOpen () {
+            super.onOpen();
+            mode = Mode.MENU;
+            focusedActionPanel = this;
+        }
+
+        public void onClose () {
+            super.onClose();
+            mode = Mode.MOVE;
+        }
+
+        @Override
+        public boolean showOnClose(InterfaceUI com) {
+            return com != dayPanel;
+        }
     }
 
-    @Override
-    public boolean showOnClose(InterfaceUI com) {
-      return com != dayPanel;
-    }
-  }
+    private class MainActionPanel extends ControllerPanel {
 
-  private class MainActionPanel extends ControllerPanel {
+        public MainActionPanel () {
+            super();
+            x = MainFrame.WIDTH - 200;
+            y = 10;
 
-    public MainActionPanel () {
-      super();
-      x = MainFrame.WIDTH - 200;
-      y = 10;
+            new Index("Finish turn", () -> {
+                world.next();
+                dayPanel.setVisible(true);
+            });
 
-      new Index("Finish turn", () -> {
-        world.next();
-        dayPanel.setVisible(true);
-      });
+            new Index("Wait", () -> {});
+        }
 
-      new Index("Wait", () -> {});
     }
 
-  }
+    public class UnitActionPanel extends ControllerPanel {
 
-  public class UnitActionPanel extends ControllerPanel {
+        public UnitActionPanel () {
+            super();
+            x = MainFrame.WIDTH - 200;
+            y = 10;
+            
+            new Index("Move", () -> {
+              mode = Mode.IDLE;
+              path.apply();
+              mode = Mode.MOVE;
+              cursor.setPosition(unitCursor.getX(), unitCursor.getY());
+              path.visible = false;
+            });
 
-    public UnitActionPanel () {
-      super();
-      x = MainFrame.WIDTH - 200;
-      y = 10;
-      
-      new Index("Move", () -> {
-        mode = Mode.IDLE;
-        path.apply();
-        mode = Mode.MOVE;
-        cursor.setPosition(unitCursor.getX(), unitCursor.getY());
-        path.visible = false;
-      });
-      
-      new Index("Attack", () -> {});
-      new Index("Supply", () -> {});
-      new Index("Heal", () -> {});
+            new Index("Attack", () -> {});
+            new Index("Supply", () -> {});
+            new Index("Heal", () -> {});
 
-      new Index("Hide", () -> {});
-      new Index("Unhide", () -> {});
+            new Index("Load", () -> {});
+            new Index("Unload", () -> {});
 
-      new Index("Load", () -> {});
-      new Index("Unload", () -> {});
+            new Index("Cancel", () -> {});
+        }
+        
+        @Override
+        public void onOpen () {
+          targetUnit = world.getUnit(cursor.getX(), cursor.getY());
+          actions.forEach((key, value) -> value.setActive(false));
 
-      new Index("Cancel", () -> {});
-    }
+          actions.get(7).setActive(true);
+          if (targetUnit.getMoveQuantity() > 0) actions.get(1).setActive(true);
+          if (targetUnit.canAttack()) actions.get(2).setActive(true);
+          if (targetUnit instanceof SupplyUnit) actions.get(3).setActive(true);
+          if (targetUnit instanceof HealerUnit) actions.get(4).setActive(true);
+          if (targetUnit instanceof HideableUnit)
+            if (((HideableUnit)targetUnit).hidden()) actions.get(6).setActive(true);
+            else actions.get(5).setActive(true);
 
-    @Override
-    public void onOpen () {
-      targetUnit = world.getUnit(cursor.getX(), cursor.getY());
-      actions.forEach((key, value) -> value.setActive(false));
+          super.onOpen();
+        }
 
-      actions.get(9).setActive(true);
-      if (targetUnit.getMoveQuantity() > 0) actions.get(1).setActive(true);
-      if (targetUnit.canAttackAfterMove()) actions.get(2).setActive(true);
-      if (targetUnit instanceof SupplyUnit) actions.get(3).setActive(true);
-      if (targetUnit instanceof HealerUnit) actions.get(4).setActive(true);
-      if (targetUnit instanceof HideableUnit)
-        if (((HideableUnit)targetUnit).hidden()) actions.get(6).setActive(true);
-        else actions.get(5).setActive(true);
-
-      super.onOpen();
-    }
-
-    @Override
-    public void onClose () {
-      super.onClose();
-      path.visible = false;
-    }
-
-  }
-
-
-  public Controller (Player ps[]) {
-    world      = new UniverseRenderer("maptest.map", this);
-    camera     = new Position.Camera(world.getDimension());
-    cursor     = new Position.Cursor(camera, world.getDimension());
-    unitCursor = new Position.Cursor(camera, world.getDimension()) {
-
-      @Override
-      public boolean canMove(Direction d) {
-        if (!super.canMove(d)) return false;
-        boolean[][] map = new boolean[size.height][size.width];
-        targetUnit.reachableLocation(map);
-
-        Point target = new Point(position.x, position.y);
-        d.move(target);
-        return map[target.y][target.x];
-      }
-
-    };
-
-    mouse           = new Point(1,1);
-    actionPanel     = new MainActionPanel();
-    dayPanel        = new DayPanel();
-    mode            = Mode.MOVE;
-    path            = new PathRenderer(camera);
-    unitActionPanel = new UnitActionPanel();
-
-    new PlayerPanel (cursor, camera);
-    new Minimap (camera, new TerrainPanel (cursor, camera));
-    dayPanel.setVisible(true);
-  }
-
-  @Override
-  public void keyPressed (KeyEvent e) {
-    int key = e.getKeyCode();
-    if (!isListening) {
-      isListening = true;
-      if (mode == Mode.MOVE ||
-          (mode == Mode.UNIT &&
-           world.getCurrentPlayer() == world.getUnit(cursor.getX(), cursor.getY()).getPlayer())) {
-        if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
-        else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
-        else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
-        else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
-        else if (key == KeyEvent.VK_ENTER) {
-          if (mode == Mode.UNIT) unitActionPanel.setVisible(true);
-          else {
-            targetUnit = world.getUnit(cursor.getX(), cursor.getY()); 
-            if (targetUnit == null || !world.isVisible(cursor.getX(), cursor.getY()))
-              actionPanel.setVisible (true);
-            else if (targetUnit.isEnabled()) {
-              mode = Mode.UNIT;
-              path.rebase(targetUnit);
-              path.visible = true;
-              unitCursor.setPosition(cursor.getX(), cursor.getY());
-            }
-          }
-        } else if (key == KeyEvent.VK_ESCAPE) {
-          mode = Mode.MOVE;
+        @Override
+        public void onClose () {
+          super.onClose();
           path.visible = false;
         }
-      } else if (mode == Mode.MENU) {
-        if      (key == KeyEvent.VK_UP)     focusedActionPanel.goUp();
-        else if (key == KeyEvent.VK_DOWN)   focusedActionPanel.goDown();
-        else if (key == KeyEvent.VK_ENTER)  focusedActionPanel.perform();
-        else if (key == KeyEvent.VK_ESCAPE) focusedActionPanel.setVisible (false);
-      } else if (key == KeyEvent.VK_ESCAPE) mode = Mode.MOVE;
-    }
-  }
-
-  @Override
-  public void keyReleased (KeyEvent e) {
-  }
-
-  @Override
-  public void keyTyped(KeyEvent e) {
-  }
-
-  @Override
-  public void mouseDragged (MouseEvent e) {}
-
-  @Override
-  public void mouseMoved (MouseEvent e) {
-      mouse.x = e.getX()  / MainFrame.UNIT;
-      mouse.y = e.getY() / MainFrame.UNIT;
-      listenMouse = true;
-  }
-
-  /**
-   * Function called each loop turn
-   */
-  public void update () {
-    isListening = cursor.move() | camera.move() |
-                  (mode == Mode.UNIT && unitCursor.move());
-
-    if (!isListening && mode == Mode.MOVE && listenMouse) {
-        if (mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
-        else if (camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
-        else if (mouse.y <= moveRange) camera.setDirection(Direction.TOP);
-        else if (camera.height - mouse.y <= moveRange) camera.setDirection(Direction.BOTTOM);
-
-        cursor.setPosition(mouse.x + camera.getX(), mouse.y + camera.getY());
     }
 
-  }
 
-  private void move (Direction d) {
-    listenMouse = false;
-    Position.Cursor c = mode == Mode.MOVE ? cursor : unitCursor;
+    public Controller (Player ps[]) {
+        world      = new UniverseRenderer("maptest.map", this);
+        camera     = new Position.Camera(world.getDimension());
+        cursor     = new Position.Cursor(camera, world.getDimension());
+        unitCursor = new Position.Cursor(camera, world.getDimension()) {
 
-    if ((d == Direction.LEFT && c.getX() - camera.getX() <= moveRange) ||
-        (d == Direction.RIGHT && camera.getX() + camera.width - c.getX() <= moveRange + 1) ||
-        (d == Direction.TOP && c.getY() - camera.getY() <= moveRange) ||
-        (d == Direction.BOTTOM && camera.getY() + camera.height - c.getY() <= moveRange + 1))
-      camera.setDirection (d);
+          @Override
+          public boolean canMove(Direction d) {
+            if (!super.canMove(d)) return false;
+            boolean[][] map = new boolean[size.height][size.width];
+            targetUnit.reachableLocation(map);
 
-    c.setDirection (d);
-    
-    if (mode == Mode.UNIT && unitCursor.canMove(d)) path.add(d);
-  }
+            Point target = new Point(position.x, position.y);
+            d.move(target);
+            return map[target.y][target.x];
+          }
 
-  public Mode getMode () {
-    return mode;
-  }
+        };
+
+        mouse           = new Point(1,1);
+        actionPanel     = new MainActionPanel();
+        dayPanel        = new DayPanel();
+        mode            = Mode.MOVE;
+        path            = new PathRenderer(camera);
+        unitActionPanel = new UnitActionPanel();
+
+        new PlayerPanel (cursor, camera);
+        new Minimap (camera, new TerrainPanel (cursor, camera));
+        dayPanel.setVisible(true);
+    }
+
+    @Override
+    public void keyPressed (KeyEvent e) {
+        int key = e.getKeyCode();
+        if (!isListening) {
+            isListening = true;
+            if (mode == Mode.MOVE ||
+                (mode == Mode.UNIT &&
+                 world.getCurrentPlayer() == world.getUnit(cursor.getX(), cursor.getY()).getPlayer())) {
+              if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
+              else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
+              else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
+              else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
+              else if (key == KeyEvent.VK_ENTER) {
+                if (mode == Mode.UNIT) unitActionPanel.setVisible(true);
+                else {
+                  targetUnit = world.getUnit(cursor.getX(), cursor.getY()); 
+                  if (targetUnit == null || !world.isVisible(cursor.getX(), cursor.getY()))
+                    actionPanel.setVisible (true);
+                  else if (targetUnit.isEnabled()) {
+                    mode = Mode.UNIT;
+                    path.rebase(targetUnit);
+                    path.visible = true;
+                    unitCursor.setPosition(cursor.getX(), cursor.getY());
+                  }
+                }
+              } else if (key == KeyEvent.VK_ESCAPE) {
+                    mode = Mode.MOVE;
+                    path.visible = false;
+                }
+            } else if (mode == Mode.MENU) {
+                if      (key == KeyEvent.VK_UP)     focusedActionPanel.goUp();
+                else if (key == KeyEvent.VK_DOWN)   focusedActionPanel.goDown();
+                else if (key == KeyEvent.VK_ENTER)  focusedActionPanel.perform();
+                else if (key == KeyEvent.VK_ESCAPE) focusedActionPanel.setVisible (false);
+            } else if (key == KeyEvent.VK_ESCAPE) {
+                mode = Mode.MOVE;
+                path.visible = false;
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased (KeyEvent e) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void mouseDragged (MouseEvent e) {}
+
+    @Override
+    public void mouseMoved (MouseEvent e) {
+        mouse.x = e.getX()  / MainFrame.UNIT;
+        mouse.y = e.getY() / MainFrame.UNIT;
+        listenMouse = true;
+    }
+
+    /**
+     * Function called each loop turn
+     */
+    public void update () {
+      isListening = cursor.move() | camera.move() |
+                    (mode == Mode.UNIT && unitCursor.move());
+
+      if (!isListening && mode == Mode.MOVE && listenMouse) {
+          if (mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
+          else if (camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
+          else if (mouse.y <= moveRange) camera.setDirection(Direction.TOP);
+          else if (camera.height - mouse.y <= moveRange) camera.setDirection(Direction.BOTTOM);
+
+          cursor.setPosition(mouse.x + camera.getX(), mouse.y + camera.getY());
+      }
+    }
+
+    private void move (Direction d) {
+        listenMouse = false;
+        Position.Cursor c = mode == Mode.MOVE ? cursor : unitCursor;
+
+        if ((d == Direction.LEFT && c.getX() - camera.getX() <= moveRange) ||
+            (d == Direction.RIGHT && camera.getX() + camera.width - c.getX() <= moveRange + 1) ||
+            (d == Direction.TOP && c.getY() - camera.getY() <= moveRange) ||
+            (d == Direction.BOTTOM && camera.getY() + camera.height - c.getY() <= moveRange + 1))
+            camera.setDirection (d);
+
+          c.setDirection (d);
+          
+          if (mode == Mode.UNIT && unitCursor.canMove(d)) path.add(d);
+    }
+
+    public Mode getMode () {
+        return mode;
+    }
 
 }
+

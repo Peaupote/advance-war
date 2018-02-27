@@ -85,9 +85,12 @@ public class Universe {
   }
 
   public void next () {
-//        weather=Weather.random(true);
-    current = players.next();
+//    if (players.isFirst(current))
+//      weather=Weather.random(true);
+    if (current!=null)
+      current.turnEnds();
 
+    current = players.next();
     current.turnBegins();
 
     updateVision ();

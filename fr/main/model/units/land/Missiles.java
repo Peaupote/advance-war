@@ -30,7 +30,7 @@ public class Missiles extends Unit implements LandVehicleUnit{
     }
 
 	public Missiles(Player player, Point point){
-		super(player, point, fuelName, 50, false, MoveType.WHEEL, 4, 5, new PrimaryWeapon(PRIMARYWEAPON_NAME,6,3,5,PRIMARYWEAPON_DAMAGES), null, NAME, PRICE);
+		super(player, point, fuelName, 50, false, MoveType.WHEEL, 4, 5, new PrimaryWeapon(PRIMARYWEAPON_NAME,6,3,5,PRIMARYWEAPON_DAMAGES,false), null, NAME, PRICE);
 	}
 
 	public Missiles(Player player, int x, int y){

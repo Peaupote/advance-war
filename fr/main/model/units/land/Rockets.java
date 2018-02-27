@@ -43,7 +43,7 @@ public class Rockets extends Unit implements LandVehicleUnit{
     }
 
     public Rockets(Player player, Point point){
-        super(player, point, fuelName, 50, false, MoveType.WHEEL, 5, 1, new PrimaryWeapon(PRIMARYWEAPON_NAME,6,3,5,PRIMARYWEAPON_DAMAGES), null, NAME, PRICE);
+        super(player, point, fuelName, 50, false, MoveType.WHEEL, 5, 1, new PrimaryWeapon(PRIMARYWEAPON_NAME,6,3,5,PRIMARYWEAPON_DAMAGES,false), null, NAME, PRICE);
     }
 
     public Rockets(Player player, int x, int y){

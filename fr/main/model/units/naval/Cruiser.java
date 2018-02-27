@@ -33,6 +33,8 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    public static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         PRIMARYWEAPON_DAMAGES.put(Cruiser.class,25);
         PRIMARYWEAPON_DAMAGES.put(Sub.class,90);
@@ -47,10 +49,12 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,105);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,105);
         SECONDARYWEAPON_DAMAGES.put(BlackBomb.class,120);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
     public Cruiser(Player player, Point point){
-        super(player, point, fuelName, 99, true, MoveType.NAVAL, 6, 3, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES), new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES), NAME, PRICE);
+        super(player, point, fuelName, 99, true, MoveType.NAVAL, 6, 3, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,false), SECONDARYWEAPON, NAME, PRICE);
     }
 
     public Cruiser(Player player, int x, int y){

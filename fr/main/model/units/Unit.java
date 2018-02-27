@@ -1,10 +1,13 @@
 package fr.main.model.units;
 
 import java.awt.Point;
+import java.util.Random;
 import java.io.Serializable;
 
 import fr.main.model.Player;
 import fr.main.model.Weather;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.weapons.Weapon;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.AbstractTerrain;
@@ -109,20 +112,18 @@ public abstract class Unit implements AbstractUnit {
         return fuel;
     }
 
-    public final boolean removeLife(int life){
-        return setLife(this.life-life);
-    }
-
-    public final void addLife(int life){
-        setLife(this.life+life);
-    }
-
     /*
     * @return true if and only if the unit is still alive
     */
     public final boolean setLife (int life) {
         this.life = Math.max(0, Math.min(100, life));
-        return this.life!=0;
+        if (life==0){
+            player.remove(this);
+            Universe.get().setUnit(location.x,location.y,null);
+            return false;
+        }
+        else
+            return true;
     }
 
     public final int getLife () {
@@ -148,10 +149,6 @@ public abstract class Unit implements AbstractUnit {
         return location.y;
     }
 
-    public boolean canAttackAfterMove(){
-        return true;
-    }
-
     /*
     * @return true if and only if the move was done.
     */
@@ -162,38 +159,19 @@ public abstract class Unit implements AbstractUnit {
             if (q>getMoveQuantity())
                 return false;
             removeMoveQuantity(q);
+
+            int fuelQuantity=Math.abs(x-location.x)+Math.abs(y-location.y);
+
             u.setUnit(location.x, location.y, null);
             location.x = x;
             location.y = y;
             u.setUnit(x, y, this);
+            fuel.consume(fuelQuantity);
             u.updateVision();
-            fuel.consume(1);
             return true;
         }
         else
             return false;
-    }
-
-    /*
-    * @return true if and only if the move was done.
-    */
-    public final boolean move (Direction d) {
-        Point t = (Point)location.clone();
-        d.move(t);
-        return move(t.x, t.y);
-    }
-
-    /*
-    * @return true if and only if the move was done entirely.
-    */
-    public final boolean move (Path path) {
-        for (Direction d: path){
-            if (!move(d)){
-                setMoveQuantity(0);
-                return false;
-            }
-        }
-        return true;
     }
 
     public MoveType getMoveType() {
@@ -272,41 +250,33 @@ public abstract class Unit implements AbstractUnit {
             reachableLocation(map,x+1,y,movePoint);
     }
 
-    public void canTarget (boolean[][] map) {
-        if (map!=null && map.length!=0 && map[0]!=null && map[0].length!=0 && (primaryWeapon!=null || secondaryWeapon!=null)){
-            if (canAttackAfterMove())
-                canTarget (map,location.x,location.y,moveQuantity+Universe.get().getTerrain(location.x,location.y).moveCost(this));
-            else{
-                if (primaryWeapon!=null)
-                    primaryWeapon.canTarget(map,location.x,location.y);
-                if (secondaryWeapon!=null)
-                    secondaryWeapon.canTarget(map,location.x,location.y);
-            }
+    public void renderTarget (boolean[][] map) {
+        if (map!=null && map.length!=0 && map[0]!=null && map[0].length!=0)
+            if (primaryWeapon!=null || secondaryWeapon!=null){
+                renderTarget (map,location.x,location.y,moveQuantity+Universe.get().getTerrain(location.x,location.y).moveCost(this));
         }
     }
 
-    private void canTarget (boolean[][] map, int x, int y, int movePoint){
+    private void renderTarget (boolean[][] map, int x, int y, int movePoint){
         Integer mvP=Universe.get().getTerrain(x,y).moveCost(this);
         if (mvP!=null && movePoint>=mvP)
             movePoint-=mvP;
         else
             return;
 
-        if (movePoint>0){
-            if (primaryWeapon!=null)
-                primaryWeapon.canTarget(map,location.x,location.y);
-            if (secondaryWeapon!=null)
-                secondaryWeapon.canTarget(map,location.x,location.y);
-        }
+        if (primaryWeapon!=null)
+            primaryWeapon.renderTarget(map,x,y,movePoint!=0,movePoint==maxMoveQuantity);
+        if (secondaryWeapon!=null)
+            secondaryWeapon.renderTarget(map,x,y,movePoint!=0,movePoint==maxMoveQuantity);
 
         if (y!=0)
-            reachableLocation(map,x,y-1,movePoint);
+            renderTarget(map,x,y-1,movePoint);
         if (y!=map.length-1)
-            reachableLocation(map,x,y+1,movePoint);
+            renderTarget(map,x,y+1,movePoint);
         if (x!=0)
-            reachableLocation(map,x-1,y,movePoint);
+            renderTarget(map,x-1,y,movePoint);
         if (x!=map[0].length-1)
-            reachableLocation(map,x+1,y,movePoint);
+            renderTarget(map,x+1,y,movePoint);
     }
 
     public String getName (){
@@ -333,23 +303,37 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public boolean canAttack(AbstractUnit u){
-        return true;
+        return (primaryWeapon==null?false:primaryWeapon.canAttack(this,u)) || ((secondaryWeapon==null)?false:secondaryWeapon.canAttack(this,u));
+    }
+
+    public void attack(AbstractUnit u, boolean counter){
+        if (primaryWeapon!=null && primaryWeapon.canAttack(this,u)){
+            primaryWeapon.shoot();
+            u.removeLife(damage(this,primaryWeapon,u));
+        }
+        else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u))
+            damage(this,secondaryWeapon,u);
+        if (counter && u.getLife()!=0)
+            u.attack(this,false);
     }
 
     public int getFuelTurnCost(){
         return 0;
     }
 
-    public void turnBegins(){
-        try{
-            ((RepairBuilding)((Buildable)Universe.get().getTerrain(location.x,location.y)).getBuilding()).repair(this);
-        }catch(java.lang.ClassCastException e){
-            fuel.consume(getFuelTurnCost());
-        }
-        setMoveQuantity(getMaxMoveQuantity());
-    }
-
     public int getCost(){
         return cost;
+    }
+
+    public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){
+        int b       = w.damage(defender);
+        int aCO     = attacker.getPlayer().commander.getAttackValue(attacker);
+        Random rand = new Random(); int r = rand.nextInt(1000);
+        int aHP     = attacker.getLife();
+        int dCO     = defender.getPlayer().commander.getDefenseValue(defender);
+        int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender);
+        int dHP     = defender.getLife();
+
+        return Math.max(0,(b*aCO+r)*aHP*(2000-10*dCO-dTR*dHP)/10000000);
     }
 }

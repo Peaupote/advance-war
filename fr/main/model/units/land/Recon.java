@@ -22,6 +22,8 @@ public class Recon extends Unit implements LandVehicleUnit{
 
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    private static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         SECONDARYWEAPON_DAMAGES.put(Infantry.class,70);
         SECONDARYWEAPON_DAMAGES.put(Mech.class,65);
@@ -37,10 +39,12 @@ public class Recon extends Unit implements LandVehicleUnit{
         SECONDARYWEAPON_DAMAGES.put(APC.class,45);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,10);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,35);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
     public Recon(Player player, Point point){
-        super(player, point, fuelName, 80, false, MoveType.WHEEL, 8, 5, null, new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME,PRICE);
+        super(player, point, fuelName, 80, false, MoveType.WHEEL, 8, 5, null, SECONDARYWEAPON , NAME, PRICE);
     }
 
     public Recon(Player player, int x, int y){

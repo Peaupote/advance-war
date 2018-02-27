@@ -1,6 +1,7 @@
 package fr.main.model.commanders;
 
 import fr.main.model.Player;
+import fr.main.model.units.AbstractUnit;
 
 /*
 * A commander has at most two powers, he has a power bar that charges when he takes damages and he can improve or deteriorate any characteristic of any unit as a passive or active power.
@@ -73,5 +74,12 @@ public abstract class Commander{
 	//TODO : créer les fonctions qui donnent les modifications du commandant
 	// par exemple des fonctions prenant une unité du joueur et renvoyant sa nouvelle portée, attaque, vision, déplacement,...
 
+	public int getAttackValue(AbstractUnit u){
+		return 100;
+	}
+
+	public int getDefenseValue(AbstractUnit u){
+		return 100;
+	}
 
 }

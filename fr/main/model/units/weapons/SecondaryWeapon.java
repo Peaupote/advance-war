@@ -10,7 +10,7 @@ import fr.main.model.units.AbstractUnit;
 public class SecondaryWeapon extends Weapon{
 
     public SecondaryWeapon(String name, Map<Class<? extends AbstractUnit>,Integer> damages){
-        super(name,damages);
+        super(name,damages,true);
     }
 
     public void shoot(){}
@@ -19,12 +19,16 @@ public class SecondaryWeapon extends Weapon{
         return Math.abs(actualX-targetX)+Math.abs(actualY-targetY)==1;
     }
 
-    public void canTarget(boolean[][] map, int x, int y){
-        for (int i=-1;i<2;i++){
-            for (int j=-1;j<2;j++){
-                if (x+i>=0 && x+i<map.length && y+j>=0 && y+j<map[0].length && 2+i+j%2==1)
-                    map[y+j][x+i]=true;
-            }
-        }
+    public void renderTarget(boolean[][] map, int x, int y, boolean enabled, boolean fullMove){
+        if (enabled)
+            for (int i=-1;i<2;i++)
+                for (int j=-1;j<2;j++)
+                    if (x+i>=0 && x+i<map.length && y+j>=0 && y+j<map[0].length && 2+i+j%2==1)
+                        map[y+j][x+i]=true;
     }
+
+    public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
+        return shooter.isEnabled() && canShoot(target) && isInRange(shooter.getX(),shooter.getY(),target.getX(),target.getY());
+    }
+
 }

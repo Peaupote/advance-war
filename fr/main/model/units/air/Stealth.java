@@ -54,16 +54,19 @@ public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 	}
 
 	public Stealth(Player player, Point point){
-		super(player,point,fuelName,60,true,MoveType.AIRY,6,4,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME,PRICE);
+		super(player,point,fuelName,60,true,MoveType.AIRY,6,4,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),null,NAME,PRICE);
 		hidden=false;
 	}
 
 	private boolean hidden;
 
-	public boolean hide(){
-		hidden=!hidden;
-		return hidden;
-	}
+    public boolean hide(){
+        if (getMoveQuantity()!=0){
+            hidden=!hidden;
+            setMoveQuantity(0);
+        }
+        return hidden;
+    }
 
 	public boolean hidden(){
 		return hidden;

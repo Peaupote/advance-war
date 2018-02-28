@@ -29,7 +29,7 @@ public class Wood extends Terrain implements LandTerrain {
 
     @Override
     public boolean hideFrom(AbstractUnit from){
-        return AirUnit.class.isInstance(from);
+        return !AirUnit.class.isInstance(from);
     }
 
     @Override

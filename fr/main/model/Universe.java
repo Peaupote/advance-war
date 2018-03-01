@@ -174,4 +174,12 @@ public class Universe {
     return weather;
   }
 
+  public int getMapHeight(){
+    return map.board.length;
+  }
+
+  public int getMapWidth(){
+    return map.board[0].length;
+  }
+
 }

@@ -40,9 +40,6 @@ public class Bridge extends Terrain implements LandTerrain{
 
     @Override
     public boolean canStop(MoveType mt){
-        if (mt==MoveType.NAVAL || mt==MoveType.LANDER)
-            return false;
-        else
-            return super.canStop(mt);
+        return mt!=MoveType.NAVAL && mt!=MoveType.LANDER && super.canStop(mt);
     }
 }

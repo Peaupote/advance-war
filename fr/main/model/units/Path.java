@@ -139,7 +139,18 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void apply () {
+        makeAppliable();
         unit.move(this);
+    }
+
+    protected void makeAppliable(){
+        System.out.println(1);
+        Universe u=Universe.get();
+        Point p=new Point(unit.getX(),unit.getY());
+        for (Direction d : this)
+            d.move(p);
+        while (!u.getTerrain(p.x,p.y).canStop(unit))
+            removeLast().opposed().move(p);
     }
 
 }

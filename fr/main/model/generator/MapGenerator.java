@@ -408,12 +408,20 @@ public class MapGenerator {
     }
 
     private TerrainEnum[][] surroundBySea(TerrainEnum[][] map, int size) {
-        for(int i = 0; i < map.length; i ++) {
-            for (int j = 0; j < map[0].length; j++) {
+        for(int i = 0; i < map.length; i ++)
+            for (int j = 0; j < map[0].length; j++)
                 if(i <= size || map.length - i <= size || j <= size || map[0].length - j <= size)
                     map[i][j] = sea;
-            }
-        }
+        return map;
+    }
+
+    private TerrainEnum[][] placeRoads(TerrainEnum[][] map, int nb) {
+        while(nb > 0)
+            for(int i = 0; i < map.length; i ++)
+                for (int j = 0; j < map[0].length; j++) {
+
+                }
+
         return map;
     }
 }

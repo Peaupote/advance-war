@@ -16,6 +16,11 @@ public interface AbstractUnit extends Serializable {
 
     int getX();
     int getY();
+
+    default Point position() {
+        return new Point(getX(), getY());
+    }
+
     int getLife();
 
     default void addLife(int life){
@@ -42,6 +47,7 @@ public interface AbstractUnit extends Serializable {
     }
 
     void attack(AbstractUnit u, boolean counter);
+
     String getName();
     Unit.Fuel getFuel();
     int getFuelTurnCost();

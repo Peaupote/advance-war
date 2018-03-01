@@ -307,7 +307,7 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public boolean canAttack () {
-      return primaryWeapon != null && secondaryWeapon != null;
+      return primaryWeapon != null || secondaryWeapon != null;
     }
 
     public void attack(AbstractUnit u, boolean counter){
@@ -331,10 +331,10 @@ public abstract class Unit implements AbstractUnit {
 
     public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){
         int b       = w.damage(defender);
-        int aCO     = attacker.getPlayer().commander.getAttackValue(attacker);
+        int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
         Random rand = new Random(); int r = rand.nextInt(1000);
         int aHP     = attacker.getLife();
-        int dCO     = defender.getPlayer().commander.getDefenseValue(defender);
+        int dCO     = defender.getPlayer().getCommander().getDefenseValue(defender);
         int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender);
         int dHP     = defender.getLife();
 

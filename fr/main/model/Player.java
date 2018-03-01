@@ -23,7 +23,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     public final String name;
     public final int id;
     public final Color color;
-    public Commander commander;
+
+    private transient Commander commander;
     private int funds;
 
     private LinkedList<AbstractUnit> units;
@@ -31,12 +32,12 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     public Player (String name) {
         this.name = name;
-        id = ++increment_id;
-        units = new LinkedList<AbstractUnit>();
-        buildings=new LinkedList<OwnableBuilding>();
-        color = colors[id - 1];
-        commander=null;
-        funds=0;
+        id        = ++increment_id;
+        units     = new LinkedList<AbstractUnit>();
+        buildings = new LinkedList<OwnableBuilding>();
+        color     = colors[id - 1];
+        commander = null;
+        funds     = 0;
     }
 
     public int getFunds(){
@@ -44,19 +45,22 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     public boolean spent(int m){
-        if (m>funds)
-            return false;
-        funds-=m;
+        if (m > funds) return false;
+        funds -= m;
         return true;
     }
 
     public boolean setCommander(Commander c){
-        if (this.commander==null){
-            this.commander=c;
+        if (this.commander == null){
+            this.commander = c;
             return true;
         }
-        else
-            return false;
+        
+        return false;
+    }
+
+    public Commander getCommander () {
+        return commander;
     }
 
     public void add(AbstractUnit u) {
@@ -74,14 +78,13 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     public void turnBegins(){
         for (OwnableBuilding b : buildings)
-            funds+=b.getIncome();
+            funds += b.getIncome();
         for (AbstractUnit u : units)
             u.turnBegins();
     }
 
     public void turnEnds(){
-        for (AbstractUnit u : units){
+        for (AbstractUnit u : units)
             u.turnEnds();
-        }
     }
 }

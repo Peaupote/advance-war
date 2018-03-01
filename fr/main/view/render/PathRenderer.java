@@ -97,6 +97,7 @@ public class PathRenderer extends Path {
   }
 
   public void apply () {
+    makeAppliable();
     while (!isEmpty()) {
       Direction d = poll();
 

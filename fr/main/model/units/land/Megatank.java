@@ -25,6 +25,8 @@ public class Megatank extends Unit implements TankUnit{
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES    = new HashMap<Class<? extends AbstractUnit>, Integer>();
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    private static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         PRIMARYWEAPON_DAMAGES.put(Recon.class,135);
         PRIMARYWEAPON_DAMAGES.put(Tank.class,125);
@@ -57,6 +59,8 @@ public class Megatank extends Unit implements TankUnit{
         SECONDARYWEAPON_DAMAGES.put(APC.class,65);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,22);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,55);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
     public Megatank(Player p, int x, int y){
@@ -64,6 +68,6 @@ public class Megatank extends Unit implements TankUnit{
     }
 
     public Megatank(Player player, Point point){
-        super(player,point,70,MoveType.TREAD,4,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,70,false,MoveType.TREAD,4,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
     }
 }

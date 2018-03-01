@@ -43,7 +43,7 @@ public class Battleship extends Unit implements NavalUnit {
     }
 
     public Battleship(Player player, Point point){
-        super(player, point, 99, MoveType.NAVAL, 5, 2, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,2,6,PRIMARYWEAPON_DAMAGES), null, NAME);
+        super(player, point, fuelName, 99, true, MoveType.NAVAL, 5, 2, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,2,6,PRIMARYWEAPON_DAMAGES,false), null, NAME, PRICE);
     }
 
     public Battleship(Player player, int x, int y){
@@ -53,4 +53,9 @@ public class Battleship extends Unit implements NavalUnit {
     public boolean canAttackAfterMove(){
         return false;
     }
+
+    public int getFuelTurnCost(){
+        return 1;        
+    }
+
 }

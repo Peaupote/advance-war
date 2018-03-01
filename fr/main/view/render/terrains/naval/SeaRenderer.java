@@ -1,7 +1,6 @@
 package fr.main.view.render.terrains.naval;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -9,12 +8,11 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.model.terrains.naval.Sea;
 
-import javax.imageio.ImageIO;
 
 public class SeaRenderer extends Sea implements Renderer {
 
   private String imagePath;
-  private transient BufferedImage image;
+  private transient Image image;
   private transient static SeaRenderer instance;
 
   public SeaRenderer(String imagePath) {
@@ -22,13 +20,16 @@ public class SeaRenderer extends Sea implements Renderer {
     update();
   }
 
-  @Override
-  public void update() {
-    try {
-      image = ImageIO.read(new File(imagePath));
-    } catch (IOException e) {
+
+    @Override
+    public String getFilename () {
+        return imagePath;
     }
-  }
+
+    @Override
+    public void setImage (Image image) {
+        this.image = image;
+    }
 
   public void draw (Graphics g, int x, int y) {
     if(this.image == null) {
@@ -41,7 +42,7 @@ public class SeaRenderer extends Sea implements Renderer {
   }
 
   public static SeaRenderer get() {
-    if (instance == null) instance = new SeaRenderer("assets/aw_terrain_sea.png");
+    if (instance == null) instance = new SeaRenderer("assets/terrains/sea.png");
     return instance;
   }
 

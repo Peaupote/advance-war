@@ -24,6 +24,8 @@ public class BCopter extends Unit implements CopterUnit {
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    private static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         PRIMARYWEAPON_DAMAGES.put(Recon.class,55);
         PRIMARYWEAPON_DAMAGES.put(Tank.class,55);
@@ -56,6 +58,8 @@ public class BCopter extends Unit implements CopterUnit {
         SECONDARYWEAPON_DAMAGES.put(APC.class,20);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,65);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,95);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
     public BCopter(Player p, int x, int y){
@@ -63,6 +67,10 @@ public class BCopter extends Unit implements CopterUnit {
     }
 
     public BCopter(Player player, Point point){
-        super(player,point,99,MoveType.AIRY,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,6,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,99,true,MoveType.AIRY,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,6,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
+    }
+
+    public int getFuelTurnCost(){
+        return 2;
     }
 }

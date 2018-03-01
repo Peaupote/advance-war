@@ -20,7 +20,7 @@ public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
     private final ArrayList<LandUnit> units=new ArrayList<LandUnit>();
 
     public Lander(Player player, Point point){
-        super(player, point, 99, MoveType.LANDER, 6, 2, null, null, NAME);
+        super(player, point, fuelName, 99, true, MoveType.LANDER, 6, 2, null, null, NAME, PRICE);
     }
 
     public Lander(Player player, int x, int y){
@@ -50,4 +50,9 @@ public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
     public boolean remove(LandUnit u){
         return units.remove(u);
     }
+
+    public int getFuelTurnCost(){
+        return 1;        
+    }
+
 }

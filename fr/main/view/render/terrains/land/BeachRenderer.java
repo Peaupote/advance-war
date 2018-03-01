@@ -6,13 +6,13 @@ import fr.main.view.render.Renderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
 public class BeachRenderer extends Beach implements Renderer {
     private String imagePath;
-    private transient BufferedImage image;
+    private transient Image image;
     private transient static BeachRenderer instance;
 
     private BeachRenderer(String imagePath) {
@@ -21,10 +21,13 @@ public class BeachRenderer extends Beach implements Renderer {
     }
 
     @Override
-    public void update() {
-        try {
-            image = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {}
+    public String getFilename () {
+        return imagePath;
+    }
+
+    @Override
+    public void setImage (Image image) {
+        this.image = image;
     }
 
     public void draw (Graphics g, int x, int y) {
@@ -39,7 +42,7 @@ public class BeachRenderer extends Beach implements Renderer {
     }
 
     public static BeachRenderer get () {
-        if (instance == null) instance = new BeachRenderer ("./assets/Beach.png");
+        if (instance == null) instance = new BeachRenderer ("./assets/terrains/beach.png");
         return instance;
     }
 }

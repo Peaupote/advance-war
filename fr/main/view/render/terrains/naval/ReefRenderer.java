@@ -2,6 +2,7 @@ package fr.main.view.render.terrains.naval;
 
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Image;
 
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
@@ -18,9 +19,9 @@ public class ReefRenderer extends Reef implements Renderer {
     g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
   }
 
-  @Override
-  public void update() {
-  }
+  public void setImage (Image image) {}
+
+  public String getFilename () { return ""; }
 
   public static ReefRenderer get () {
     if (instance == null) instance = new ReefRenderer();

@@ -25,6 +25,8 @@ public class Neotank extends Unit implements TankUnit{
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES    = new HashMap<Class<? extends AbstractUnit>, Integer>();
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    private static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         PRIMARYWEAPON_DAMAGES.put(Recon.class,125);
         PRIMARYWEAPON_DAMAGES.put(Tank.class,105);
@@ -57,10 +59,12 @@ public class Neotank extends Unit implements TankUnit{
         SECONDARYWEAPON_DAMAGES.put(APC.class,65);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,22);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,55);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
     public Neotank(Player player, Point point){
-        super(player,point,99,MoveType.TREAD,6,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,fuelName,99,false,MoveType.TREAD,6,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
     }
 
     public Neotank(Player p, int x, int y){

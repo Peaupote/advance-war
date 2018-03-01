@@ -47,6 +47,6 @@ public class AntiAir extends Unit implements LandVehicleUnit{
     }
 
     public AntiAir(Player player, Point point){
-        super(player,point,60,MoveType.TREAD,6,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES),null,NAME);
+        super(player,point,fuelName,60,false,MoveType.TREAD,6,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),null,NAME,PRICE);
     }
 }

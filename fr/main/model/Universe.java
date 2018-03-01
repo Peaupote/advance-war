@@ -2,18 +2,21 @@ package fr.main.model;
 
 import java.io.*;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
 import fr.main.model.terrains.Terrain;
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.Weather;
 
 public class Universe {
 
   private static Universe instance;
   public static final String mapPath="maps/";
   public static boolean save=false;
+  private Weather weather;
 
   static{
       File maps=new File(mapPath);
@@ -27,9 +30,9 @@ public class Universe {
 
     public Terrain[][] board;
     public Player[] players;
-    public Unit[][] units;
+    public AbstractUnit[][] units;
 
-    public Board (Unit[][] units, Player[] ps, Terrain[][] board) {
+    public Board (AbstractUnit[][] units, Player[] ps, Terrain[][] board) {
       this.board = board;
       this.units = units;
       this.players = ps;
@@ -63,8 +66,7 @@ public class Universe {
     instance = this;
     players = new PlayerIt(map.players).iterator();
 
-    int i = 0;
-
+    weather=Weather.FOGGY;
     fogwar = new boolean[map.board.length][map.board[0].length];
     next();
   }
@@ -79,16 +81,19 @@ public class Universe {
   }
 
   public boolean isVisible (int x, int y) {
-    return fogwar[y][x];
+    return isValidPosition(x,y) && fogwar[y][x];
   }
 
   public void next () {
-    current = players.next();
-    updateVision ();
+//    if (players.isFirst(current))
+//      weather=Weather.random(true);
+    if (current!=null)
+      current.turnEnds();
 
-    for (Player p: map.players)
-      for (Unit u: p)
-        u.enable = true;
+    current = players.next();
+    current.turnBegins();
+
+    updateVision ();
   }
 
   public void updateVision () {
@@ -96,22 +101,39 @@ public class Universe {
       for (int j = 0; j < map.board[0].length; j++)
         fogwar[i][j] = false;
 
-    for (Unit u: current)
+    for (AbstractUnit u: current)
       u.renderVision(fogwar);
   }
 
   public final Terrain getTerrain (int x, int y) {
-    return map.board[y][x];
+    if (isValidPosition(x,y))
+      return map.board[y][x];
+    else
+      return null;
   }
 
-  public final Unit getUnit(int x, int y) {
-    if (y>=0 && x>=0 && y<map.units.length && x<map.units[0].length)
+  public final AbstractUnit getUnit(int x, int y) {
+    if (isValidPosition(x,y))
       return map.units[y][x];
-    return null;
+    else
+      return null;
   }
 
-  public final void setUnit(int x, int y, Unit u) {
-    map.units[y][x] = u;
+  public final boolean isValidPosition(int x, int y){
+    return y>=0 && x>=0 && y<map.units.length && x<map.units[0].length;
+  } 
+
+  public final boolean isValidPosition(Point p){
+    return isValidPosition(p.x,p.y);
+  }
+
+  public final boolean setUnit(int x, int y, AbstractUnit u) {
+    if (isValidPosition(x,y)){
+      map.units[y][x] = u;
+      return true;
+    }
+    else
+      return false;
   }
 
   public String toString () {
@@ -124,7 +146,7 @@ public class Universe {
     return ret;
   }
 
-  public static void save (String mapName, Unit[][] units, Terrain[][] map, Player[] ps) {
+  public static void save (String mapName, AbstractUnit[][] units, Terrain[][] map, Player[] ps) {
     if (!Universe.save){
       System.out.println("Impossible to save.");
       return;
@@ -146,6 +168,10 @@ public class Universe {
 
   public static Universe get () {
     return instance;
+  }
+
+  public Weather getWeather(){
+    return weather;
   }
 
 }

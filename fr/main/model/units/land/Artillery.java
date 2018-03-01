@@ -46,7 +46,7 @@ public class Artillery extends Unit implements LandVehicleUnit{
 	}
 
 	public Artillery(Player player, Point point){
-		super(player,point,50,MoveType.TREAD,5,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,2,3,PRIMARYWEAPON_DAMAGES),null,NAME);
+		super(player,point,fuelName,50,false,MoveType.TREAD,5,1,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,2,3,PRIMARYWEAPON_DAMAGES,false),null,NAME,PRICE);
 	}
 
     public boolean canAttackAfterMove(){

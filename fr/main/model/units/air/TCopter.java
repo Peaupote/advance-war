@@ -22,7 +22,7 @@ public class TCopter extends Unit implements CopterUnit,TransportUnit<WalkingUni
     }
 
     public TCopter(Player player, Point point){
-        super(player,point,99,MoveType.AIRY,6,2,null,null,NAME);
+        super(player,point,fuelName,99,true,MoveType.AIRY,6,2,null,null,NAME,PRICE);
     }
 
     public int getCapacity(){
@@ -48,4 +48,9 @@ public class TCopter extends Unit implements CopterUnit,TransportUnit<WalkingUni
     public boolean remove(WalkingUnit u){
         return units.remove(u);
     }
+
+    public int getFuelTurnCost(){
+        return 2;
+    }
+
 }

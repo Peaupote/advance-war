@@ -7,7 +7,7 @@ import fr.main.model.terrains.naval.*;
 import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.Universe;
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
@@ -40,7 +40,7 @@ public class Minimap extends InterfaceUI {
       for (int j = 0; j < w; j++) {
         int a = mx + j * size,
             b = my + i * size;
-        Unit unit = world.getUnit(j, i);
+        AbstractUnit unit = world.getUnit(j, i);
         if (unit != null && (unit.getPlayer() == world.getCurrentPlayer() || world.isVisible(j, i))) {
           g.setColor(unit.getPlayer().color);
           g.fillRect(a, b, size, size);

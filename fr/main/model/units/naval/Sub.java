@@ -39,7 +39,7 @@ public class Sub extends Unit implements NavalUnit, HideableUnit {
     }
 
     public Sub(Player player, Point point){
-        super(player, point, 60, MoveType.NAVAL, 5, 5, new PrimaryWeapon(PRIMARYWEAPON_NAME,6,PRIMARYWEAPON_DAMAGES), null, NAME);
+        super(player, point, fuelName, 60, true, MoveType.NAVAL, 5, 5, new PrimaryWeapon(PRIMARYWEAPON_NAME,6,PRIMARYWEAPON_DAMAGES,true), null, NAME, PRICE);
         hidden=false;
     }
 
@@ -48,12 +48,19 @@ public class Sub extends Unit implements NavalUnit, HideableUnit {
     }
 
     public boolean hide(){
-        hidden=!hidden;
+        if (getMoveQuantity()!=0){
+            hidden=!hidden;
+            setMoveQuantity(0);
+        }
         return hidden;
     }
 
     public boolean hidden(){
         return hidden;
+    }
+
+    public int getFuelTurnCost(){
+        return (hidden)?3:1;
     }
 
 }

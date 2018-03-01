@@ -19,7 +19,7 @@ public class APC extends Unit implements LandVehicleUnit,TransportUnit<WalkingUn
 	private final ArrayList<WalkingUnit> units=new ArrayList<WalkingUnit>();
 
 	public APC(Player player, Point point){
-		super(player, point, 70, MoveType.TREAD, 6, 1, null, null, NAME);
+		super(player, point, fuelName, 70, false, MoveType.TREAD, 6, 1, null, null, NAME, PRICE);
 	}
 
 	public APC(Player player, int x, int y){

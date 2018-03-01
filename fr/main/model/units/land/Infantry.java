@@ -23,6 +23,8 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding<Ownabl
 
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    private static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         SECONDARYWEAPON_DAMAGES.put(Infantry.class,55);
         SECONDARYWEAPON_DAMAGES.put(Mech.class,45);
@@ -38,6 +40,8 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding<Ownabl
         SECONDARYWEAPON_DAMAGES.put(APC.class,14);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,7);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,30);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
 	public Infantry(Player p, int x, int y){
@@ -45,10 +49,10 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding<Ownabl
 	}
 
 	public Infantry(Player player, Point point){
-		super(player,point,WalkingUnit.FUEL_NAME,99,MoveType.INFANTRY,3,2,null,new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+		super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.INFANTRY,3,2,null,SECONDARYWEAPON,NAME,PRICE);
 	}
 
-    public boolean capture(OwnableBuilding b){
-        return b.removeLife(this);
+    public boolean canCapture(OwnableBuilding b){
+        return b!=null && b.getOwner()!=getPlayer();
     }
 }

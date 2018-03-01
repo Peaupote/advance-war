@@ -26,6 +26,8 @@ public class Mech extends Unit implements WalkingUnit,CaptureBuilding<OwnableBui
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES    = new HashMap<Class<? extends AbstractUnit>, Integer>();
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
+    private static final SecondaryWeapon SECONDARYWEAPON;
+
     static{
         PRIMARYWEAPON_DAMAGES.put(Recon.class,85);
         PRIMARYWEAPON_DAMAGES.put(Tank.class,55);
@@ -52,6 +54,8 @@ public class Mech extends Unit implements WalkingUnit,CaptureBuilding<OwnableBui
         SECONDARYWEAPON_DAMAGES.put(APC.class,20);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,9);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,35);
+
+        SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
     public Mech(Player p, int x, int y){
@@ -59,10 +63,11 @@ public class Mech extends Unit implements WalkingUnit,CaptureBuilding<OwnableBui
     }
 
     public Mech(Player player, Point point){
-        super(player,point,WalkingUnit.FUEL_NAME,99,MoveType.MECH,2,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES),new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES),NAME);
+        super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.MECH,2,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
     }
 
-    public boolean capture(OwnableBuilding b){
-        return b.removeLife(this);
+    public boolean canCapture(OwnableBuilding b){
+        return b!=null && b.getOwner()!=getPlayer();
     }
+
 }

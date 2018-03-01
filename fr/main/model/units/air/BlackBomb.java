@@ -13,10 +13,14 @@ public class BlackBomb extends Unit implements AirUnit{
     public static final int PRICE   = 25000;
 
     public BlackBomb(Player player, Point point){
-        super(player, point, 45, MoveType.AIRY, 9, 3, null, null, NAME);
+        super(player, point, fuelName, 45, true, MoveType.AIRY, 9, 3, null, null, NAME, PRICE);
     }
 
     public BlackBomb(Player player, int x, int y){
         this(player, new Point(x,y));
+    }
+
+    public int getFuelTurnCost(){
+        return 2;
     }
 }

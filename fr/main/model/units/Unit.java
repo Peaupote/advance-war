@@ -117,7 +117,7 @@ public abstract class Unit implements AbstractUnit {
     */
     public final boolean setLife (int life) {
         this.life = Math.max(0, Math.min(100, life));
-        if (life==0){
+        if (this.life==0){
             player.remove(this);
             Universe.get().setUnit(location.x,location.y,null);
             return false;
@@ -311,14 +311,20 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public void attack(AbstractUnit u, boolean counter){
+        if (getMoveQuantity()==0)
+            return;
         if (primaryWeapon!=null && primaryWeapon.canAttack(this,u)){
             primaryWeapon.shoot();
             u.removeLife(damage(this,primaryWeapon,u));
         }
         else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u))
-            damage(this,secondaryWeapon,u);
-        if (counter && u.getLife()!=0)
-            u.attack(this,false);
+            secondaryWeapon.shoot();
+            u.removeLife(damage(this,secondaryWeapon,u));
+        if (counter){
+            this.setMoveQuantity(0);
+            if (u.getLife()!=0)
+                u.attack(this,false);
+        }
     }
 
     public int getFuelTurnCost(){

@@ -2,23 +2,24 @@ package fr.main.model.terrains;
 
 import java.util.Map;
 
+import fr.main.model.Weather;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.buildings.Building;
 
 public abstract class Terrain implements AbstractTerrain {
 
-    protected final Map<MoveType,Integer> sunnyWeatherMovementCosts;
+    protected final Map<Weather,Map<MoveType,Integer>> moveCost;
 
     protected int defense, bonusVision, bonusRange;
     protected String name;
 
-    protected Terrain(String name, int defense, int bonusVision, int bonusRange, Map<MoveType,Integer> sunny) {
+    protected Terrain(String name, int defense, int bonusVision, int bonusRange, Map<Weather,Map<MoveType,Integer>> moveCost) {
         this.defense     = defense;
         this.bonusRange  = bonusRange;
         this.bonusVision = bonusVision;
         this.name        = name;
-        this.sunnyWeatherMovementCosts = sunny;
+        this.moveCost = moveCost;
     }
 
     public int getDefense(AbstractUnit u) {
@@ -46,31 +47,25 @@ public abstract class Terrain implements AbstractTerrain {
         return name;
     }
 
-    public boolean canMoveIn(AbstractUnit u){
-        return canMoveIn(u.getMoveType());
-    }
-
-    public boolean canMoveIn(MoveType moveType){
-        for (MoveType mt : sunnyWeatherMovementCosts.keySet())
+    public boolean canMoveIn(Weather w, MoveType moveType){
+        if (w==Weather.FOGGY)
+            w=Weather.SUNNY;
+        for (MoveType mt : moveCost.get(w).keySet())
             if (moveType==mt)
                 return true;
         return false;
     }
 
-    public boolean canStop(AbstractUnit u){
-        return canStop(u.getMoveType());
+    public boolean canStop(Weather w, MoveType mt){
+        if (w==Weather.FOGGY)
+            w=Weather.SUNNY;
+        return canMoveIn(w,mt);
     }
 
-    public boolean canStop(MoveType mt){
-        return canMoveIn(mt);
-    }
-
-    public Integer moveCost(AbstractUnit u){
-        return moveCost(u.getMoveType());
-    }
-
-    public Integer moveCost(MoveType moveType){
-        for (Map.Entry<MoveType, Integer> entry : sunnyWeatherMovementCosts.entrySet())
+    public Integer moveCost(Weather w, MoveType moveType){
+        if (w==Weather.FOGGY)
+            w=Weather.SUNNY;
+        for (Map.Entry<MoveType, Integer> entry : moveCost.get(w).entrySet())
             if (entry.getKey()==moveType)
                 return entry.getValue();
         return null;

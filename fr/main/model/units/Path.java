@@ -144,7 +144,6 @@ public class Path extends LinkedList<Direction> {
     }
 
     protected void makeAppliable(){
-        System.out.println(1);
         Universe u=Universe.get();
         Point p=new Point(unit.getX(),unit.getY());
         for (Direction d : this)

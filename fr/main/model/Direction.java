@@ -46,7 +46,7 @@ public enum Direction {
         else                            return Direction.NONE;
     }
 
-    public static Direction[] notNullDirections(){
+    public static Direction[] cardinalDirections(){
         return new Direction[]{
             LEFT,TOP,RIGHT,BOTTOM
         };

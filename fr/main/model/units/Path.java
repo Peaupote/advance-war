@@ -57,7 +57,7 @@ public class Path extends LinkedList<Direction> {
         //  evaluation
         while (!unsettled.isEmpty()){
             Node actual=unsettled.removeFirst();
-            for (Direction d : Direction.notNullDirections()){
+            for (Direction d : Direction.cardinalDirections()){
                 if (actual.x+d.x<width && actual.x+d.x>=0 && actual.y+d.y<height && actual.y+d.y>=0){
                     Node target = map[actual.x+d.x][actual.y+d.y];
                     if (actual.lowestCost + target.moveCost < target.lowestCost){

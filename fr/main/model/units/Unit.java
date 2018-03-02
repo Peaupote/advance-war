@@ -240,43 +240,32 @@ public abstract class Unit implements AbstractUnit {
 
         map[y][x]=true;
 
-        if (y!=0)
-            reachableLocation(map,x,y-1,movePoint);
-        if (y!=map.length-1)
-            reachableLocation(map,x,y+1,movePoint);
-        if (x!=0)
-            reachableLocation(map,x-1,y,movePoint);
-        if (x!=map[0].length-1)
-            reachableLocation(map,x+1,y,movePoint);
+        for (Direction d : Direction.cardinalDirections())
+            if (x+d.x>=0 && x+d.x<map[0].length && y+d.y>=0 && y+d.y<map.length)
+                reachableLocation(map,x+d.x,y+d.y,movePoint);
     }
 
-    public void renderTarget (boolean[][] map) {
-        if (map!=null && map.length!=0 && map[0]!=null && map[0].length!=0)
-            if (primaryWeapon!=null || secondaryWeapon!=null){
-                renderTarget (map,location.x,location.y,moveQuantity+Universe.get().getTerrain(location.x,location.y).moveCost(this));
-        }
-    }
-
-    private void renderTarget (boolean[][] map, int x, int y, int movePoint){
-        Integer mvP=Universe.get().getTerrain(x,y).moveCost(this);
-        if (mvP!=null && movePoint>=mvP)
-            movePoint-=mvP;
-        else
-            return;
-
+    public void renderTarget (boolean[][] map, int x, int y) {
         if (primaryWeapon!=null)
-            primaryWeapon.renderTarget(map,x,y,movePoint!=0,movePoint==maxMoveQuantity);
+            primaryWeapon.renderTarget(map,x,y,isEnabled(),getMoveQuantity()==getMaxMoveQuantity());
         if (secondaryWeapon!=null)
-            secondaryWeapon.renderTarget(map,x,y,movePoint!=0,movePoint==maxMoveQuantity);
+            secondaryWeapon.renderTarget(map,x,y,isEnabled(),getMoveQuantity()==getMaxMoveQuantity());
+    }
 
-        if (y!=0)
-            renderTarget(map,x,y-1,movePoint);
-        if (y!=map.length-1)
-            renderTarget(map,x,y+1,movePoint);
-        if (x!=0)
-            renderTarget(map,x-1,y,movePoint);
-        if (x!=map[0].length-1)
-            renderTarget(map,x+1,y,movePoint);
+    public void renderAllTargets(boolean[][] map, int x, int y){
+        renderAllTargets(map,x,y,moveQuantity);
+    }
+
+    private void renderAllTargets(boolean[][] map, int x, int y, int movePoint){
+        if (Universe.get().getTerrain(x,y).canStop(this))
+            renderTarget(map,x,y);
+
+        for (Direction d : Direction.cardinalDirections())
+            if (x+d.x>=0 && x+d.x<map[0].length && y+d.y>=0 && y+d.y<map.length){
+                Integer mvP=Universe.get().getTerrain(x+d.x,y+d.y).moveCost(this);
+                if (mvP==null?false:movePoint>mvP)
+                    renderAllTargets(map,x+d.x,y+d.y,movePoint-mvP);
+            }
     }
 
     public String getName (){

@@ -49,11 +49,15 @@ public class PrimaryWeapon extends Weapon{
     }
 
     public void renderTarget(boolean[][] map, int x, int y, boolean enabled, boolean fullMove){
+        int[][] t = {
+            {1,1},{1,-1},{-1,-1},{-1,1}
+        };
         if (canAttackAfterMove?enabled:fullMove)
-            for (int i=-getMaximumRange();i<=getMaximumRange();i++)
-                for (int j=-getMaximumRange();j<=getMaximumRange();j++)
-                    if (isInRange(x,y,x+i,y+j) && x+i>=0 && x+i<map.length && y+j>=0 && y+j<map[0].length)
-                        map[y+j][x+i]=true;
+            for (int i=getMinimumRange();i<=getMaximumRange();i++)
+                for (int j=0;j<=i;j++)
+                    for (int[] d : t)
+                        if (x+d[0]*(i-j)>=0 && x+d[0]*(i-j)<map[0].length && y+d[1]*j>=0 && y+d[1]*j<map.length)
+                            map[y+d[1]*j][x+d[0]*(i-j)]=true;
     }
 
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){

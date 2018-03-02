@@ -3,6 +3,7 @@ package fr.main.model.units.weapons;
 import java.util.Map;
 
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.Direction;
 
 /*
 * Secondary weapons have infinite ammunition and are contact weapons.
@@ -21,10 +22,9 @@ public class SecondaryWeapon extends Weapon{
 
     public void renderTarget(boolean[][] map, int x, int y, boolean enabled, boolean fullMove){
         if (enabled)
-            for (int i=-1;i<2;i++)
-                for (int j=-1;j<2;j++)
-                    if (x+i>=0 && x+i<map.length && y+j>=0 && y+j<map[0].length && 2+i+j%2==1)
-                        map[y+j][x+i]=true;
+            for (Direction d : Direction.cardinalDirections())
+                if (y+d.x>=0 && y+d.x<map.length && x+d.y>=0 && x+d.y<map.length)
+                    map[y+d.x][x+d.y]=true;
     }
 
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){

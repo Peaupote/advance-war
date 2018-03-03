@@ -90,6 +90,9 @@ public class Path extends LinkedList<Direction> {
     * @param p is the objective in the relative map
     */
     protected void shorten(Point p){
+        if (p.x < 0 || p.y < 0 || p.x >= map.length || p.y >= map[0].length)
+            return;
+
         removeAll(this);
         Direction d;
         while ((d=map[p.x][p.y].previous)!=Direction.NONE){

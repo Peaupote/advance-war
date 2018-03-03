@@ -80,7 +80,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void shorten(){
-        Point p = new Point(unit.getX() - offset.x, unit.getY() - offset.y);
+        Point p = new Point(unit.getX(), unit.getY());
         for (Direction d : this)
             d.move(p);
         shorten(p);
@@ -90,9 +90,9 @@ public class Path extends LinkedList<Direction> {
     * @param p is the objective in the relative map
     */
     protected void shorten(Point p){
+        p.translate(-offset.x,-offset.y);
         if (p.x < 0 || p.y < 0 || p.x >= map.length || p.y >= map[0].length)
             return;
-
         removeAll(this);
         Direction d;
         while ((d=map[p.x][p.y].previous)!=Direction.NONE){
@@ -148,6 +148,7 @@ public class Path extends LinkedList<Direction> {
 
 
         if (pathMoveCost>unit.getMoveQuantity()){
+            t.translate(offset.x,offset.y);
             shorten(t);
             return true;
         }

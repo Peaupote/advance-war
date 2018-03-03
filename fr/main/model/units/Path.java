@@ -37,6 +37,15 @@ public class Path extends LinkedList<Direction> {
         shortestCalculus();
     }
 
+    private final Node removeMin(LinkedList<Node> l){
+        Node node=l.getFirst();
+        for (Node n : l)
+            if (n.compareTo(node)<0)
+                node=n;
+        l.remove(node);        
+        return node;
+    }
+
     public void shortestCalculus(){
         int width  = map.length,
             height = map[0].length,
@@ -56,18 +65,16 @@ public class Path extends LinkedList<Direction> {
 
         //  evaluation
         while (!unsettled.isEmpty()){
-            Node actual=unsettled.removeFirst();
-            for (Direction d : Direction.cardinalDirections()){
+            Node actual=removeMin(unsettled);
+            for (Direction d : Direction.cardinalDirections())
                 if (actual.x+d.x<width && actual.x+d.x>=0 && actual.y+d.y<height && actual.y+d.y>=0){
                     Node target = map[actual.x+d.x][actual.y+d.y];
-                    if (actual.lowestCost + target.moveCost < target.lowestCost){
+                    if (!settled.contains(target) && actual.lowestCost + target.moveCost < target.lowestCost){
                         target.previous = d;
                         target.lowestCost = actual.lowestCost + target.moveCost;
-                        if (!settled.contains(target))
-                            unsettled.add(target);
+                        unsettled.add(target);
                     }
                 }
-            }
             settled.add(actual);
         }
     }
@@ -91,7 +98,7 @@ public class Path extends LinkedList<Direction> {
         }
     }
 
-    private class Node{
+    private class Node implements Comparable<Node>{
         public Direction previous;
         public final int x,y,moveCost;
         public int lowestCost;
@@ -103,6 +110,13 @@ public class Path extends LinkedList<Direction> {
             this.moveCost   = (i==null?lowestCost:i);
             this.lowestCost = lowestCost;
             this.previous   = Direction.NONE;
+        }
+
+        /*
+        * return 0 if distances and the same, <0 if this is closer than n and >0 otherwise
+        */
+        public int compareTo(Node n){
+            return this.lowestCost-n.lowestCost;
         }
     }
 

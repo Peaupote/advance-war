@@ -1,5 +1,8 @@
 package fr.main.view.render;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import fr.main.view.render.terrains.TerrainImage;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -22,6 +25,5 @@ public interface Renderer {
             System.err.println(e.getMessage());
         }
     }
-
 }
 

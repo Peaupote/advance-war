@@ -45,11 +45,13 @@ public class App {
     units[1][1] = new LanderRenderer(new Point(1,1));
     units[3][6] = new LanderRenderer(new Point(6,3));
     units[5][10] = new InfantryRenderer(new Point(10,5));
+    units[6][10] = new InfantryRenderer(new Point(10,6));
 
     players[0].add(units[0][0]);
     players[0].add(units[3][6]);
     players[1].add(units[1][1]);
     players[0].add(units[5][10]);
+    players[1].add(units[6][10]);
 
     Universe.save("maptest.map", units, map, players);
 

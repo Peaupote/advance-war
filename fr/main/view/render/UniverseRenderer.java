@@ -40,10 +40,14 @@ public class UniverseRenderer extends Universe {
 
     Color tColor = null;
     boolean targets[][] = new boolean[map.board.length][map.board[0].length];
+
+    AbstractUnit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
     if (controller.getMode() == Controller.Mode.UNIT) {
-      AbstractUnit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
       unit.reachableLocation(targets);
       tColor = unit.getPlayer() == current ? moveColor : targetColor;
+    } else if (controller.getMode() == Controller.Mode.ATTACK) {
+      unit.renderTarget(targets);
+      tColor = targetColor;
     }
 
     for (int i = firstY; i < Math.min(lastY, map.board.length); i++)

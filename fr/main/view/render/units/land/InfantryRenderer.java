@@ -9,8 +9,6 @@ import fr.main.view.render.units.UnitRenderer;
 
 public class InfantryRenderer extends Infantry implements UnitRenderer {
 
-  public static String filename = "machine-gun.png";
-
   private Point offset;
   private transient Image image;
 
@@ -27,7 +25,7 @@ public class InfantryRenderer extends Infantry implements UnitRenderer {
 
   @Override
   public String getFilename () {
-    return getDir() + filename;
+    return getDir() + "infantry.png";
   }
 
   @Override

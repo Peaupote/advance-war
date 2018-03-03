@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import fr.main.model.terrains.Terrain;
+import fr.main.model.commanders.FakeCommander;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.Weather;
 
@@ -66,6 +67,8 @@ public class Universe {
     instance = this;
     players = new PlayerIt(map.players).iterator();
 
+    for (Player p: map.players) new FakeCommander(p);
+
     weather=Weather.FOGGY;
     fogwar = new boolean[map.board.length][map.board[0].length];
     next();
@@ -82,6 +85,10 @@ public class Universe {
 
   public boolean isVisible (int x, int y) {
     return isValidPosition(x,y) && fogwar[y][x];
+  }
+
+  public boolean isVisible (Point pt) {
+    return isVisible(pt.x, pt.y);
   }
 
   public void next () {
@@ -112,11 +119,16 @@ public class Universe {
       return null;
   }
 
+  public final Terrain getTerrain (Point pt) {
+    return getTerrain(pt.x, pt.y);
+  }
+
   public final AbstractUnit getUnit(int x, int y) {
-    if (isValidPosition(x,y))
-      return map.units[y][x];
-    else
-      return null;
+    return isValidPosition(x,y) ? map.units[y][x] : null;
+  }
+
+  public final AbstractUnit getUnit (Point pt) {
+    return getUnit(pt.x, pt.y);
   }
 
   public final boolean isValidPosition(int x, int y){
@@ -132,8 +144,8 @@ public class Universe {
       map.units[y][x] = u;
       return true;
     }
-    else
-      return false;
+
+    return false;
   }
 
   public String toString () {
@@ -172,6 +184,14 @@ public class Universe {
 
   public Weather getWeather(){
     return weather;
+  }
+
+  public int getMapHeight(){
+    return map.board.length;
+  }
+
+  public int getMapWidth(){
+    return map.board[0].length;
   }
 
 }

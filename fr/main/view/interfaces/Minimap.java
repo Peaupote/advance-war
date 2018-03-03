@@ -45,7 +45,7 @@ public class Minimap extends InterfaceUI {
           g.setColor(unit.getPlayer().color);
           g.fillRect(a, b, size, size);
         } else {
-        Terrain t = world.getTerrain(j, i);
+          Terrain t = world.getTerrain(j, i);
           if (t instanceof LandTerrain) g.setColor(Color.green);
           else if (t instanceof NavalTerrain) g.setColor(Color.cyan);
           else g.setColor(Color.black);

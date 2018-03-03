@@ -84,7 +84,7 @@ public abstract class Position {
       draw (g, Color.black);
     }
 
-    public void setPosition (int x, int y) {
+    public void setLocation (int x, int y) {
       if (x >= 0 && x < size.width && y >= 0 && y < size.height) {
         position.x = x;
         position.y = y;
@@ -94,6 +94,10 @@ public abstract class Position {
         real.x = x * MainFrame.UNIT;
         real.y = y * MainFrame.UNIT;
       }
+    }
+
+    public void setLocation (Point pt) {
+      setLocation (pt.x, pt.y);
     }
 
   }
@@ -164,6 +168,10 @@ public abstract class Position {
 
   public final int getY () {
     return position.y;
+  }
+
+  public final Point position () {
+    return position.getLocation();
   }
 
   public final int getOffsetX () {

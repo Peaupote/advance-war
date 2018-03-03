@@ -16,6 +16,11 @@ public interface AbstractUnit extends Serializable {
 
     int getX();
     int getY();
+
+    default Point position() {
+        return new Point(getX(), getY());
+    }
+
     int getLife();
 
     default void addLife(int life){
@@ -32,7 +37,23 @@ public interface AbstractUnit extends Serializable {
     int getCost();
     void renderVision(boolean[][] fog);
     void reachableLocation (boolean[][] map);
-    void renderTarget (boolean[][] map);
+
+    /*
+    * set all tiles of the map that can be attacked (with the main or secondary weapon) from the position (x,y) to true, whatever the unit on it
+    */
+    void renderTarget (boolean[][] map, int x, int y);
+    /*
+    * set all tiles of the map that can be attacked (with the main or secondary weapon) from any position attainable from (x,y) to true, whatever the unit on it
+    */
+    void renderAllTargets(boolean[][] map, int x, int y);
+
+    default void renderTarget(boolean[][] map){
+        renderTarget(map,getX(),getY());
+    }
+    default void renderAllTargets(boolean[][] map){
+        renderAllTargets(map,getX(),getY());
+    }
+
     MoveType getMoveType();
     boolean canAttack(AbstractUnit u);
     boolean canAttack();
@@ -42,6 +63,7 @@ public interface AbstractUnit extends Serializable {
     }
 
     void attack(AbstractUnit u, boolean counter);
+
     String getName();
     Unit.Fuel getFuel();
     int getFuelTurnCost();

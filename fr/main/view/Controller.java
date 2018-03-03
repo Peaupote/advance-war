@@ -7,6 +7,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.Point;
+import java.awt.Dimension;
 import java.util.LinkedList;
 
 import fr.main.model.Universe;
@@ -147,28 +148,36 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         world      = new UniverseRenderer("maptest.map", this);
         camera     = new Position.Camera(world.getDimension());
         cursor     = new Position.Cursor(camera, world.getDimension());
-        unitCursor = new Position.Cursor(camera, world.getDimension()) {
-
-          @Override
-          public boolean canMove(Direction d) {
-            if (!super.canMove(d)) return false;
-            boolean[][] map = new boolean[size.height][size.width];
-            
-            if (mode == Mode.UNIT) targetUnit.reachableLocation(map);
-            else if (mode == Mode.ATTACK) targetUnit.renderTarget(map);
-
-            Point target = position();
-            d.move(target);
-            return map[target.y][target.x];
-          }
-
-        };
+        unitCursor = new Position.Cursor(camera, world.getDimension());
 
         mouse           = new Point(1,1);
         actionPanel     = new MainActionPanel();
         dayPanel        = new DayPanel();
         mode            = Mode.MOVE;
-        path            = new PathRenderer(camera);
+        path            = new PathRenderer(camera) {
+         
+          Point last = null;
+
+          @Override
+          public boolean add (Direction dir) {
+            Dimension size = world.getDimension();
+            boolean[][] area = new boolean[size.height][size.width];
+            
+            if (mode == Mode.UNIT) targetUnit.reachableLocation(area);
+            else if (mode == Mode.ATTACK) targetUnit.renderTarget(area);
+
+            Point pt = unitCursor.position();
+            dir.move(pt);
+
+            if (area[pt.y][pt.x]) {
+              if (last == null) return super.add(dir);
+              if (!last.equals(pt)) shorten(pt);
+              last = null;
+            } else last = pt;
+            return false;
+          }
+
+        };
         unitActionPanel = new UnitActionPanel();
 
         new PlayerPanel (cursor, camera);
@@ -204,9 +213,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                   }
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
-                    mode = Mode.MOVE;
-                    path.visible = false;
-                }
+                  mode = Mode.MOVE;
+                  path.visible = false;
+              }
             } else if (mode == Mode.MENU) {
                 if      (key == KeyEvent.VK_UP)     focusedActionPanel.goUp();
                 else if (key == KeyEvent.VK_DOWN)   focusedActionPanel.goDown();
@@ -232,7 +241,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     @Override
     public void mouseMoved (MouseEvent e) {
-        mouse.x = e.getX()  / MainFrame.UNIT;
+        mouse.x = e.getX() / MainFrame.UNIT;
         mouse.y = e.getY() / MainFrame.UNIT;
         listenMouse = true;
     }

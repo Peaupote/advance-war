@@ -18,8 +18,8 @@ public enum Direction {
     public final int x,y;
 
     private Direction (int valueX, int valuxY) {
-        x=valueX;
-        y=valuxY;
+        x = valueX;
+        y = valuxY;
     }
 
     /**
@@ -27,7 +27,7 @@ public enum Direction {
      * @param Point point to move
      */
     public void move (Point pt, int incr) {
-        pt.translate (x*incr, y*incr);
+        pt.translate (x * incr, y * incr);
     }
 
     public void move (Point pt) {

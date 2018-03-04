@@ -157,13 +157,16 @@ public abstract class Unit implements AbstractUnit {
         if (u != null && u.isValidPosition(x, y)) {
             AbstractUnit unit = u.getUnit(x, y);
             if (unit != null) {
-              if (unit.canAttack(this)) unit.attack(this, false);
-              return false;
+                if (unit.canAttack(this)) unit.attack(this, false);
+                setMoveQuantity(0);
+                return false;
             }
 
             int q = u.getTerrain(x,y).moveCost(this);
-            if (q>getMoveQuantity())
+            if (q>getMoveQuantity()){
+                setMoveQuantity(0);
                 return false;
+            }
             removeMoveQuantity(q);
 
             int fuelQuantity=Math.abs(x-location.x)+Math.abs(y-location.y);

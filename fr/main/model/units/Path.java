@@ -87,7 +87,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     /*
-    * @param p is the objective in the relative map
+    * @param p is the objective in the absolute map
     */
     protected void shorten(Point p){
         p.translate(-offset.x,-offset.y);

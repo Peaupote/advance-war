@@ -70,6 +70,14 @@ public abstract class Commander {
 	//TODO : créer les fonctions qui donnent les modifications du commandant
 	// par exemple des fonctions prenant une unité du joueur et renvoyant sa nouvelle portée, attaque, vision, déplacement,...
 
+  public int getSmallCost () {
+    return small.value;
+  }
+
+  public int getBigCost () {
+    return big.value;
+  }
+
 	public int getAttackValue(AbstractUnit u){
 		return 100;
 	}

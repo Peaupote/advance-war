@@ -5,6 +5,8 @@ import java.awt.Color;
 
 import fr.main.view.MainFrame;
 import fr.main.model.Universe;
+import fr.main.model.Player;
+import fr.main.model.commanders.Commander;
 import fr.main.view.Position;
 
 public class PlayerPanel extends InterfaceUI {
@@ -33,7 +35,26 @@ public class PlayerPanel extends InterfaceUI {
     g.fillRect (x, y, WIDTH, HEIGHT);
 
     g.setColor (FOREGROUNDCOLOR);
-    g.drawString (world.getCurrentPlayer().name, x + 20, y + 20);
+    Player p = world.getCurrentPlayer();
+    Commander c = p.getCommander();
+
+    // TODO: don't re-evaluate all values each frames
+    g.drawString (p.name, x + 20, y + 20);
+    g.drawString (p.getFunds() + "", x + 20, y + 40);
+    
+    g.setColor(Color.white);
+    g.fillRect(x, y + HEIGHT - 20, WIDTH, 20);
+    g.setColor(Color.green);
+    g.fillRect(x, y + HEIGHT - 20, c.powerBar.getValue() * WIDTH / c.powerBar.maxValue, 20);
+    g.setColor(Color.black);
+
+    if (c.getSmallCost() <= c.powerBar.getValue()) g.setColor(Color.blue);
+    int r = x + c.getSmallCost() * WIDTH / c.powerBar.maxValue;
+    g.drawLine(r, y + HEIGHT - 20, r, y + HEIGHT);
+
+    if (c.getBigCost() > c.powerBar.getValue()) g.setColor(Color.black);
+    r = x + c.getBigCost() * WIDTH / c.powerBar.maxValue;
+    g.drawLine(r, y + HEIGHT - 20, r, y + HEIGHT);
   }
 
 }

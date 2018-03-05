@@ -94,7 +94,7 @@ public class Universe {
   public void next () {
 //    if (players.isFirst(current))
 //      weather=Weather.random(true);
-    if (current!=null)
+    if (current != null)
       current.turnEnds();
 
     current = players.next();

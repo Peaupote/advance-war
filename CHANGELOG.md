@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
   - Animation while moving
   - Fight implemented in the view
-  - Infantry unit
+  - Infantry, AirFighter unit
+  - Commander Powerbar in PlayerPanel
 ### Changed
   - Path finding for the shortest path for unit move
 

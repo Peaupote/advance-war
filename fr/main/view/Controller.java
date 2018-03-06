@@ -209,8 +209,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     mode = Mode.UNIT;
                     path.rebase(targetUnit);
                     path.visible = true;
-                    unitCursor.setLocation(cursor.position());
                   }
+                  unitCursor.setLocation(cursor.position());
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
                   mode = Mode.MOVE;

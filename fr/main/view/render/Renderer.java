@@ -16,7 +16,7 @@ public interface Renderer {
     String getFilename ();
     void setImage (Image image);
 
-    default public void update() {
+    default void update() {
         try {
             // TODO: make real stuff here
             setImage(ImageIO.read(new File (getFilename())));

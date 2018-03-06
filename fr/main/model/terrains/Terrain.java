@@ -10,6 +10,7 @@ import fr.main.model.buildings.Building;
 public abstract class Terrain implements AbstractTerrain {
 
     protected final Map<Weather,Map<MoveType,Integer>> moveCost;
+    protected TerrainLocation tLocation;
 
     protected int defense, bonusVision, bonusRange;
     protected String name;
@@ -20,6 +21,7 @@ public abstract class Terrain implements AbstractTerrain {
         this.bonusVision = bonusVision;
         this.name        = name;
         this.moveCost = moveCost;
+        this.tLocation = null;
     }
 
     public int getDefense(AbstractUnit u) {
@@ -29,11 +31,11 @@ public abstract class Terrain implements AbstractTerrain {
     public int getBonusVision(AbstractUnit u) {
         return bonusVision;
     }
-    
+
     public int getBonusRange(AbstractUnit u) {
         return bonusRange;
     }
-    
+
     public boolean hideFrom(AbstractUnit from) {
         return false;
     }
@@ -41,7 +43,7 @@ public abstract class Terrain implements AbstractTerrain {
     public boolean blockVision(AbstractUnit u){
         return false;
     }
-    
+
     @Override
     public String toString() {
         return name;

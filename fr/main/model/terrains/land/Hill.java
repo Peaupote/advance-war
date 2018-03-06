@@ -4,12 +4,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
+import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.units.Unit;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.Buildable;
 import fr.main.model.buildings.Building;
 import fr.main.model.buildings.Dock;
 import fr.main.model.terrains.Terrain;
+import fr.main.view.render.terrains.TerrainImage;
 
 public class Hill extends Buildable implements LandTerrain {
 
@@ -67,7 +69,7 @@ public class Hill extends Buildable implements LandTerrain {
         if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
             return true;
         else
-            return super.canMoveIn(mt);        
+            return super.canMoveIn(mt);
     }
 
     @Override

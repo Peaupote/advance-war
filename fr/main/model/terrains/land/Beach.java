@@ -4,13 +4,15 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
+import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.units.Unit;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.naval.NavalTerrain;
 import fr.main.model.terrains.Terrain;
+import fr.main.view.render.terrains.TerrainImage;
 
 public class Beach extends Terrain implements LandTerrain,NavalTerrain {
-  
+
     private static Beach instance;
     public static final String name="Plage";
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
@@ -38,13 +40,14 @@ public class Beach extends Terrain implements LandTerrain,NavalTerrain {
         weatherMovementCosts.put(Weather.SNOWY,snowyWeatherMovementCosts);
     }
 
-    protected Beach() {
+    public Beach() {
         super(name,0,0,0,weatherMovementCosts);
     }
 
     public static Beach get () {
-        if (instance == null)
-            instance = new Beach();
+        if (instance == null) instance = new Beach();
         return instance;
     }
+
+
 }

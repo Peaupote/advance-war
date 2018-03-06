@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
+import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.Terrain;
+import fr.main.view.render.terrains.TerrainImage;
 
 public class River extends Terrain implements LandTerrain {
 
@@ -38,5 +40,4 @@ public class River extends Terrain implements LandTerrain {
         if (instance == null) instance = new River();
         return instance;
     }
-
 }

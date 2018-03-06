@@ -1,21 +1,26 @@
 package fr.main.model;
 
 import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.land.*;
+import fr.main.model.terrains.naval.Reef;
+import fr.main.model.terrains.naval.Sea;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.*;
 
+import java.time.temporal.TemporalAccessor;
+
 public enum TerrainEnum {
-  none    (-1,  null),
-  lowland (0,   LowlandRenderer.get()),
-  sea     (1,   SeaRenderer.get()),
-  beach   (3,   BeachRenderer.get()),
-  reef    (4,   ReefRenderer.get()),
-  hill    (5,   HillRenderer.get()),
-  mountain(6,   MountainRenderer.get()),
-  river   (7,   RiverRenderer.get()),
-  road    (8,   RoadRenderer.get()),
-  wood    (9,   WoodRenderer.get()),
-  bridge  (10,  BridgeRenderer.get());
+  none     (-1, null),
+  lowland  (0,  Lowland.get()),
+  sea      (1,  Sea.get()),
+  beach    (3,  Beach.get()),
+  reef     (4,  Reef.get()),
+  hill     (5,  Hill.get()),
+  mountain (6,  Mountain.get()),
+  river    (7,  River.get()),
+  road     (8,  Road.get()),
+  wood     (9,  Wood.get()),
+  bridge   (10, Bridge.get());
 
   public final int value;
   public final Terrain terrain;
@@ -39,5 +44,19 @@ public enum TerrainEnum {
       case 10:  return bridge;
       default:  return none;
     }
+  }
+
+  public static TerrainEnum getTerrainEnum(Terrain t) {
+  	if (t instanceof Lowland) 	return lowland;
+  	if (t instanceof Sea) 		return sea;
+  	if (t instanceof Beach) 	return beach;
+  	if (t instanceof Reef) 		return reef;
+  	if (t instanceof Hill) 		return hill;
+  	if (t instanceof Mountain) 	return mountain;
+  	if (t instanceof River) 	return river;
+  	if (t instanceof Road) 		return road;
+  	if (t instanceof Wood) 		return wood;
+  	if (t instanceof Bridge) 	return bridge;
+  	return none;
   }
 }

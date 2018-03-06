@@ -1,41 +1,33 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Beach;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.view.render.terrains.TerrainImage;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.HashMap;
 
 public class BeachRenderer extends Beach implements Renderer {
-    private BeachLocation bLocation;
     private transient Image image;
     private transient static HashMap<BeachLocation, BeachRenderer> instances;
 
-    private BeachRenderer(BeachLocation location) {
-        if(!instances.containsKey(location)) instances.put(location, this);
-        this.bLocation = location;
+    private BeachRenderer(BeachLocation loc) {
+    	if(instances == null) instances = new HashMap<>();
+		if (!instances.containsKey(loc)) instances.put(loc, this);
+		this.tLocation = loc;
         update();
-    }
-
-    private BeachRenderer(Image image) {
-        this.image = image;
     }
 
     @Override
     public String getFilename () {
-        return bLocation.getPath();
+        return tLocation.getPath();
     }
 
     @Override
     public void update() {
-        this.image = TerrainImage.get(bLocation.getPath()).getSubImg(bLocation.location);
+        this.image = TerrainImage.get(tLocation.getPath()).getSubImg(tLocation.location());
     }
 
     @Override
@@ -51,35 +43,39 @@ public class BeachRenderer extends Beach implements Renderer {
         }
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(image, x, y, null);
+		g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
     }
 
     public static BeachRenderer get (BeachLocation loc) {
-        if(!instances.containsKey(loc)) instances.put(loc, new BeachRenderer(loc));
+		if(instances == null) instances = new HashMap<>();
+		if(!instances.containsKey(loc)) new BeachRenderer(loc);
         return instances.get(loc);
     }
 
-    enum BeachLocation {
-        LEFT(1, TerrainImage.Location.LEFT), RIGHT(1, TerrainImage.Location.RIGHT),
-        TOP(1, TerrainImage.Location.TOP), BOTTOM(1, TerrainImage.Location.BOTTOM),
-        FILLED_LEFT(0, TerrainImage.Location.LEFT), FILLED_RIGHT(0, TerrainImage.Location.RIGHT),
-        FILLED_TOP(0, TerrainImage.Location.TOP), FILLED_BOTTOM(0, TerrainImage.Location.BOTTOM),
-        INNER_BOTTOM_RIGHT(1, TerrainImage.Location.BOTTOM_RIGHT), INNER_BOTTOM_LEFT(1, TerrainImage.Location.BOTTOM_LEFT),
-        INNER_UPPER_RIGHT(1, TerrainImage.Location.TOP_RIGHT), INNER_UPPER_LEFT(1, TerrainImage.Location.TOP_LEFT),
-        OUTER_BOTTOM_RIGHT(0, TerrainImage.Location.BOTTOM_RIGHT), OUTER_BOTTOM_LEFT(0, TerrainImage.Location.BOTTOM_LEFT),
-        OUTER_UPPER_RIGHT(0, TerrainImage.Location.TOP_RIGHT), OUTER_UPPER_LEFT(0, TerrainImage.Location.TOP_LEFT);
+	public enum BeachLocation implements TerrainLocation {
+		LEFT(1, TerrainImage.Location.LEFT), RIGHT(1, TerrainImage.Location.RIGHT),
+		TOP(1, TerrainImage.Location.TOP), BOTTOM(1, TerrainImage.Location.BOTTOM),
+		FILLED_LEFT(0, TerrainImage.Location.LEFT), FILLED_RIGHT(0, TerrainImage.Location.RIGHT),
+		FILLED_TOP(0, TerrainImage.Location.TOP), FILLED_BOTTOM(0, TerrainImage.Location.BOTTOM),
+		INNER_BOTTOM_RIGHT(1, TerrainImage.Location.BOTTOM_RIGHT), INNER_BOTTOM_LEFT(1, TerrainImage.Location.BOTTOM_LEFT),
+		INNER_UPPER_RIGHT(1, TerrainImage.Location.TOP_RIGHT), INNER_UPPER_LEFT(1, TerrainImage.Location.TOP_LEFT),
+		OUTER_BOTTOM_RIGHT(0, TerrainImage.Location.BOTTOM_RIGHT), OUTER_BOTTOM_LEFT(0, TerrainImage.Location.BOTTOM_LEFT),
+		OUTER_UPPER_RIGHT(0, TerrainImage.Location.TOP_RIGHT), OUTER_UPPER_LEFT(0, TerrainImage.Location.TOP_LEFT);
 
-        private static final String[] paths = {"assets/terrains/beach1.png", "assets/terrains/beach2.png"};
-        public final TerrainImage.Location location;
-        private final int index;
+		private static final String[] paths = {"assets/terrains/beach1.png", "assets/terrains/beach2.png"};
+		private final TerrainImage.Location location;
+		private final int index;
 
-        BeachLocation(int index, TerrainImage.Location loc) {
-            this.index = index;
-            this.location = loc;
-        }
+		BeachLocation(int index, TerrainImage.Location loc) {
+			this.index = index;
+			this.location = loc;
+		}
 
-        public String getPath() {
-          return paths[index];
-        }
-    }
+		public String getPath() {
+			return paths[index];
+		}
+		public TerrainImage.Location location() {
+			return location;
+		}
+	}
 }

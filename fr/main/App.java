@@ -33,7 +33,7 @@ public class App {
 
     for (int i = 0; i < eMap.length; i++)
       for (int j = 0; j < eMap[0].length; j++)
-        map[i][j] = eMap[i][j].terrain;
+		  map[i][j] = eMap[i][j].terrain;
 
 
     Player[] players = new Player[]{
@@ -59,7 +59,7 @@ public class App {
     //System.out.println(world);
 
 
-    
+
     EventQueue.invokeLater(() -> {
 		try {
 			new MainFrame();

@@ -2,6 +2,11 @@ package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.land.*;
+import fr.main.view.render.terrains.naval.ReefRenderer;
+import fr.main.view.render.terrains.naval.RiverRenderer;
+import fr.main.view.render.terrains.naval.SeaRenderer;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -11,6 +16,10 @@ import static fr.main.model.TerrainEnum.*;
 public class MapGenerator {
     private long seed;
     private Random rand;
+
+    public MapGenerator() {
+    	this(1);
+	}
 
     public MapGenerator(long seed) {
         this.seed = seed;
@@ -42,7 +51,7 @@ public class MapGenerator {
 
         return randMap(x, y, power, smoothness);
     }
-
+	/* x = vertical, y = horizontal */
     // Voivonoi
     public TerrainEnum[][] randMap(int x, int y, int power, int smoothness) {
         System.out.println("Map size : " + x + "x" + y);
@@ -320,6 +329,30 @@ public class MapGenerator {
         }
     }
 
+    private void placeRivers (TerrainEnum[][] map) {
+    	/*** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
+//    	int nSea, nLowland, nBridge, nBeach, nRiver;
+    	TerrainEnum[] land = {lowland, bridge, beach}, naval = {sea, river};
+
+    	for(int i = 0; i < map.length; i ++)
+    		for(int j = 0; j < map[0].length; j ++)
+    			if(map[i][j] == sea) {
+    				if(isSandwiched(map, i, j, land)
+							&& getAdjacentTerrainNb(map, i, j, lowland)
+							+ getAdjacentTerrainNb(map, i, j, beach) < 3)
+    					map[i][j] = river; //continue;
+//    				nSea = getAdjacentTerrainNb(map, i , j, sea);
+//    				nLowland = getAdjacentTerrainNb(map, i, j, lowland);
+//					nBridge = getAdjacentTerrainNb(map, i, j, bridge);
+//					nRiver = getAdjacentTerrainNb(map, i, j , river);
+//					nBeach = getAdjacentTerrainNb(map, i, j, beach);
+				}
+		for(int i = 0; i < map.length; i ++)
+			for(int j = 0; j < map[0].length; j ++)
+				if(map[i][j] == sea && getAdjacentTerrainNb(map, i, j, river) >= 2)
+					map[i][j] = river;
+	}
+
     private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
         for(int i = x - 1; i <= x + 1; i ++)
             for(int j = y - 1; j <= y + 1; j ++)
@@ -371,6 +404,30 @@ public class MapGenerator {
 
         return count;
     }
+
+    private boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
+    	return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
+	}
+
+	private boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type[]) {
+		return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
+	}
+
+	private boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type, boolean horizontal) {
+		TerrainEnum[] ts = {type};
+    	return isSandwiched(map, x, y, ts, horizontal);
+	}
+
+    private boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type[], boolean horizontal) {
+    	return (!horizontal && isInMap(map, x - 1, y) && isInMap(map, x + 1, y) && hasMatch(type, map[x - 1][y]) && hasMatch(type, map[x + 1][y]))
+				|| (horizontal && isInMap(map, x, y - 1) && isInMap(map, x, y + 1) && hasMatch(type, map[x][y - 1]) && hasMatch(type, map[x][y + 1])	);
+	}
+
+	private boolean hasMatch(TerrainEnum ts[], TerrainEnum type) {
+		for (TerrainEnum t : ts)
+			if(t == type) return true;
+		return false;
+	}
 
     private int terrainTypeNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, int direction, int range) {
         int count = 0;
@@ -424,4 +481,41 @@ public class MapGenerator {
 
         return map;
     }
+
+    private TerrainLocation[][] getLocations(TerrainEnum[][] map) {
+    	TerrainLocation[][] out = new TerrainLocation[map.length][map[0].length];
+		//TODO finish this function.
+    	for(int i = 0; i < map.length; i ++)
+    		for(int j = 0; j < map[0].length; j ++)
+    			switch (map[i][j]) {
+					case lowland:
+						if(isInMap(map, i - 1, j) && (map[i - 1][j] == mountain || map[i - 1][j] == hill))
+							out[i][j] = LowlandRenderer.LowlandLocation.SHADOW;
+						else out[i][j] = LowlandRenderer.LowlandLocation.NORMAL;
+						break;
+					case sea: 		out[i][j] = SeaRenderer.SeaLocation.NORMAL; 			break; 	//TODO
+					case wood:		out[i][j] = WoodRenderer.WoodLocation.NORMAL; 			break;
+					case reef:		out[i][j] = ReefRenderer.ReefLocation.NORMAL; 			break;
+					case road:		out[i][j] = RoadRenderer.RoadLocation.CENTER; 			break; 	//TODO
+					case mountain: 	out[i][j] = MountainRenderer.MountainLocation.NORMAL; 	break;
+					case hill: 		out[i][j] = HillRenderer.HillLocation.NORMAL; 			break;
+					case beach: 	out[i][j] = BeachRenderer.BeachLocation.LEFT; 			break; 	//TODO
+					case river: 	out[i][j] = RiverRenderer.RiverLocation.CENTER; 		break; 	//TODO
+					case bridge:
+						if(isInMap(map, i - 1, j) && map[i - 1][j] == sea)
+							out[i][j] = BridgeRenderer.BridgeLocation.HORIZONTAL;
+						else out[i][j] = BridgeRenderer.BridgeLocation.VERTICAL;
+						break;
+				}
+		return out;
+	}
+
+
+	public TerrainLocation[][] getLocations(Terrain[][] map) {
+    	TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
+		for(int i = 0; i < map.length; i ++)
+			for(int j = 0; j < map[0].length; j ++)
+				mapBis[i][j] = TerrainEnum.getTerrainEnum(map[i][j]);
+		return getLocations(mapBis);
+	}
 }

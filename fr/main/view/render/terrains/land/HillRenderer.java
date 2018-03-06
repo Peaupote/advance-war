@@ -1,8 +1,10 @@
 package fr.main.view.render.terrains.land;
 
+import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Hill;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
+import fr.main.view.render.terrains.TerrainImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,38 +13,71 @@ import java.io.File;
 import java.io.IOException;
 
 public class HillRenderer extends Hill implements Renderer {
-  private String imagePath;
-  private transient Image image;
-  private transient static HillRenderer instance;
+	private transient Image image;
+	private transient static HillRenderer instance;
 
-  private HillRenderer(String imagePath) {
-    this.imagePath = imagePath;
-    update();
-  }
+	private HillRenderer(HillLocation location) {
+		if (instance == null) instance = this;
+		this.tLocation = location;
+		update();
+	}
 
-    @Override
-    public String getFilename () {
-        return imagePath;
-    }
+	private HillRenderer() {
+		this(HillLocation.NORMAL);
+	}
 
-    @Override
-    public void setImage (Image image) {
-        this.image = image;
-    }
+	@Override
+	public String getFilename() {
+		return tLocation.getPath();
+	}
 
-  public void draw (Graphics g, int x, int y) {
-    if(image == null) {
-      g.setColor (Color.pink);
-      g.fillRect (x, y, MainFrame.UNIT, MainFrame.UNIT);
-      return;
-    }
+	@Override
+	public void setImage(Image image) {
+		this.image = image;
+	}
 
-    Graphics2D g2d = (Graphics2D) g;
-    g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
-  }
+	@Override
+	public void update() {
+		this.image = TerrainImage.get(tLocation.getPath()).getSubImg(tLocation.location());
+	}
 
-  public static HillRenderer get () {
-    if (instance == null) instance = new HillRenderer ("./assets/terrains/hill.png");
-    return instance;
-  }
+	public void draw(Graphics g, int x, int y) {
+		if (image == null) {
+			g.setColor(Color.pink);
+			g.fillRect(x, y, MainFrame.UNIT, MainFrame.UNIT);
+			return;
+		}
+
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
+	}
+
+	public static HillRenderer get() {
+		if (instance == null) instance = new HillRenderer();
+		return instance;
+	}
+
+	public static HillRenderer get(HillLocation loc) {
+		return get();
+	}
+
+	public enum HillLocation implements TerrainLocation {
+		NORMAL(TerrainImage.Location.TOP_LEFT);
+
+		private TerrainImage.Location location;
+		private String path = "assets/terrains/hill.png";
+
+		HillLocation(TerrainImage.Location loc) {
+			this.location = loc;
+		}
+
+		@Override
+		public String getPath() {
+			return path;
+		}
+
+		public TerrainImage.Location location() {
+			return location;
+		}
+	}
 }

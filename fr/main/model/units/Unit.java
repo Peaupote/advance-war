@@ -241,12 +241,15 @@ public abstract class Unit implements AbstractUnit {
     }
 
     private void reachableLocation (boolean[][] map, int x, int y, int movePoint){
-        Integer mvP = Universe.get().getTerrain(x,y).moveCost(this);
+        AbstractTerrain terrain = Universe.get().getTerrain(x,y);
+        Integer mvP     = terrain.moveCost(this);
+
         if (mvP == null || movePoint < mvP)
             return;
         
         movePoint -= mvP;
-        map[y][x] = true;
+        if (terrain.canStop(this))
+            map[y][x] = true;
 
         for (Direction d : Direction.cardinalDirections())
             if (x + d.x >= 0 && x + d.x < map[0].length && y + d.y >= 0 && y + d.y < map.length)

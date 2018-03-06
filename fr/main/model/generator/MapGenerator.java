@@ -489,7 +489,8 @@ public class MapGenerator {
     		for(int j = 0; j < map[0].length; j ++)
     			switch (map[i][j]) {
 					case lowland:
-						if(isInMap(map, i - 1, j) && (map[i - 1][j] == mountain || map[i - 1][j] == hill))
+						if(isInMap(map, i, j - 1)
+								&& (map[i][j - 1] == mountain || map[i][j - 1] == hill || map[i][j - 1] == wood))
 							out[i][j] = LowlandRenderer.LowlandLocation.SHADOW;
 						else out[i][j] = LowlandRenderer.LowlandLocation.NORMAL;
 						break;

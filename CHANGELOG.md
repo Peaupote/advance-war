@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Fight implemented in the view
   - Infantry, AirFighter unit
   - Commander Powerbar in PlayerPanel
+  - Different images for Terrain cells (Multiple singleton per Terrain)
+  
 ### Changed
   - Path finding for the shortest path for unit move
 

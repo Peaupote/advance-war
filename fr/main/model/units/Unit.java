@@ -154,10 +154,19 @@ public abstract class Unit implements AbstractUnit {
     */
     public final boolean move(int x, int y) {
         Universe u = Universe.get();
-        if (u != null && u.isValidPosition(x,y) && u.getUnit(x, y) == null) {
-            int q=u.getTerrain(x,y).moveCost(this);
-            if (q>getMoveQuantity())
+        if (u != null && u.isValidPosition(x, y)) {
+            AbstractUnit unit = u.getUnit(x, y);
+            if (unit != null) {
+                if (unit.canAttack(this)) unit.attack(this, false);
+                setMoveQuantity(0);
                 return false;
+            }
+
+            int q = u.getTerrain(x,y).moveCost(this);
+            if (q>getMoveQuantity()){
+                setMoveQuantity(0);
+                return false;
+            }
             removeMoveQuantity(q);
 
             int fuelQuantity=Math.abs(x-location.x)+Math.abs(y-location.y);
@@ -170,8 +179,8 @@ public abstract class Unit implements AbstractUnit {
             u.updateVision();
             return true;
         }
-        else
-            return false;
+        
+        return false;
     }
 
     public MoveType getMoveType() {
@@ -181,30 +190,30 @@ public abstract class Unit implements AbstractUnit {
     public final void renderVision (boolean[][] fog) {
         //TODO : can see beyond a moutain or a forest if the unit is on a mountain
         //TODO : can see beyond a forest if the unit is on a hill
-        if (fog==null || fog.length==0 || fog[0]==null || fog[0].length==0)
+        if (fog == null || fog.length == 0 || fog[0] == null || fog[0].length == 0)
             return;
 
-        int x=location.x;
-        int y=location.y;
+        int x = location.x,
+            y = location.y;
 
-        fog[y][x]=true;
+        fog[y][x] = true;
 
-        if (vision!=0){
-            if (y!=0){
-                fog[y-1][x]=true;
-                renderVision (fog,x,y-1,vision);
+        if (vision != 0){
+            if (y != 0){
+                fog[y - 1][x] = true;
+                renderVision (fog, x, y - 1, vision);
             }
-            if (y!=fog.length-1){
-                fog[y+1][x]=true;
-                renderVision (fog,x,y+1,vision);
+            if (y != fog.length - 1){
+                fog[y + 1][x] = true;
+                renderVision (fog, x, y + 1, vision);
             }
-            if (x!=0){
-                fog[y][x-1]=true;
-                renderVision (fog,x-1,y,vision);
+            if (x != 0){
+                fog[y][x - 1] = true;
+                renderVision (fog, x - 1, y, vision);
             }
-            if (x!=fog[0].length-1){
-                fog[y][x+1]=true;
-                renderVision (fog,x+1,y,vision);
+            if (x != fog[0].length - 1){
+                fog[y][x + 1] = true;
+                renderVision (fog, x + 1, y, vision);
             }
         }
     }
@@ -232,28 +241,30 @@ public abstract class Unit implements AbstractUnit {
     }
 
     private void reachableLocation (boolean[][] map, int x, int y, int movePoint){
-        Integer mvP=Universe.get().getTerrain(x,y).moveCost(this);
-        if (mvP!=null && movePoint>=mvP)
-            movePoint-=mvP;
-        else
-            return;
+        AbstractTerrain terrain = Universe.get().getTerrain(x,y);
+        Integer mvP     = terrain.moveCost(this);
 
-        map[y][x]=true;
+        if (mvP == null || movePoint < mvP)
+            return;
+        
+        movePoint -= mvP;
+        if (terrain.canStop(this))
+            map[y][x] = true;
 
         for (Direction d : Direction.cardinalDirections())
-            if (x+d.x>=0 && x+d.x<map[0].length && y+d.y>=0 && y+d.y<map.length)
-                reachableLocation(map,x+d.x,y+d.y,movePoint);
+            if (x + d.x >= 0 && x + d.x < map[0].length && y + d.y >= 0 && y + d.y < map.length)
+                reachableLocation(map, x + d.x, y + d.y, movePoint);
     }
 
     public void renderTarget (boolean[][] map, int x, int y) {
-        if (primaryWeapon!=null)
-            primaryWeapon.renderTarget(map,x,y,isEnabled(),getMoveQuantity()==getMaxMoveQuantity());
-        if (secondaryWeapon!=null)
-            secondaryWeapon.renderTarget(map,x,y,isEnabled(),getMoveQuantity()==getMaxMoveQuantity());
+        if (primaryWeapon != null)
+            primaryWeapon.renderTarget(map, x, y, isEnabled(), getMoveQuantity() == getMaxMoveQuantity());
+        if (secondaryWeapon != null)
+            secondaryWeapon.renderTarget(map, x, y, isEnabled(), getMoveQuantity() == getMaxMoveQuantity());
     }
 
     public void renderAllTargets(boolean[][] map, int x, int y){
-        renderAllTargets(map,x,y,moveQuantity);
+        renderAllTargets(map, x, y, moveQuantity);
     }
 
     private void renderAllTargets(boolean[][] map, int x, int y, int movePoint){
@@ -292,7 +303,8 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public boolean canAttack(AbstractUnit u){
-        return (primaryWeapon==null?false:primaryWeapon.canAttack(this,u)) || ((secondaryWeapon==null)?false:secondaryWeapon.canAttack(this,u));
+        return (primaryWeapon == null ? false : primaryWeapon.canAttack(this,u)) ||
+                (secondaryWeapon==null ? false : secondaryWeapon.canAttack(this,u));
     }
 
     public boolean canAttack () {
@@ -300,15 +312,15 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public void attack(AbstractUnit u, boolean counter){
-        if (getMoveQuantity()==0)
-            return;
+        if (getMoveQuantity()==0) return;
         if (primaryWeapon!=null && primaryWeapon.canAttack(this,u)){
             primaryWeapon.shoot();
             u.removeLife(damage(this,primaryWeapon,u));
-        }
-        else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u))
+        } else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u)) {
             secondaryWeapon.shoot();
             u.removeLife(damage(this,secondaryWeapon,u));
+        }
+
         if (counter){
             this.setMoveQuantity(0);
             if (u.getLife()!=0)

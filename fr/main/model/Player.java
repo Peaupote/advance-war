@@ -81,6 +81,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
             funds += b.getIncome();
         for (AbstractUnit u : units)
             u.turnBegins();
+
+        if (commander != null) commander.powerBar.addValue(100);
     }
 
     public void turnEnds(){

@@ -1,4 +1,4 @@
-package fr.main.view.render.units;
+package fr.main.view.render.units.air;
 
 import java.io.*;
 import javax.imageio.ImageIO;
@@ -11,18 +11,17 @@ import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Path;
 import fr.main.model.Direction;
 import fr.main.view.MainFrame;
-import fr.main.view.render.Renderer;
-import fr.main.model.units.naval.Lander;
+import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.render.units.UnitAnimationManager;
+import fr.main.model.units.air.Fighter;
 
-public class LanderRenderer extends Lander implements UnitRenderer {
-
-  private static String filename = "lander.png";
+public class FighterRenderer extends Fighter implements UnitRenderer {
 
   private Point offset;
 
   private transient Image image;
 
-  public LanderRenderer (Point location) {
+  public FighterRenderer (Point location) {
     super (null, location);
 
     offset = new Point(0, 0);
@@ -35,7 +34,7 @@ public class LanderRenderer extends Lander implements UnitRenderer {
 
   @Override
   public String getFilename() {
-    return getDir() + filename;
+    return getDir() + "fighter.png";
   }
 
   public void setImage (Image image) {

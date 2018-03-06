@@ -22,6 +22,8 @@ public class Bridge extends Terrain implements LandTerrain{
         sunnyWeatherMovementCosts.put(MoveType.MECH,1);
         sunnyWeatherMovementCosts.put(MoveType.WHEEL,1);
         sunnyWeatherMovementCosts.put(MoveType.TREAD,1);
+        sunnyWeatherMovementCosts.put(MoveType.LANDER,1);
+        sunnyWeatherMovementCosts.put(MoveType.NAVAL,1);
 
         Map<MoveType,Integer> snowyWeatherMovementCosts=new HashMap<MoveType,Integer>();
         snowyWeatherMovementCosts.put(MoveType.AIRY,2);
@@ -29,6 +31,8 @@ public class Bridge extends Terrain implements LandTerrain{
         snowyWeatherMovementCosts.put(MoveType.MECH,1);
         snowyWeatherMovementCosts.put(MoveType.WHEEL,1);
         snowyWeatherMovementCosts.put(MoveType.TREAD,1);
+        snowyWeatherMovementCosts.put(MoveType.LANDER,1);
+        snowyWeatherMovementCosts.put(MoveType.NAVAL,1);
 
         weatherMovementCosts.put(Weather.SUNNY,sunnyWeatherMovementCosts);
         weatherMovementCosts.put(Weather.RAINY,sunnyWeatherMovementCosts);

@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+  - Animation while moving
+  - Fight implemented in the view
+  - Infantry, AirFighter unit
+  - Commander Powerbar in PlayerPanel
+### Changed
+  - Path finding for the shortest path for unit move
 
 ## [0.0.6] - 2018-22-02
 ### Added

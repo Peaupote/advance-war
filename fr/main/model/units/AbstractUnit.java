@@ -105,9 +105,8 @@ public interface AbstractUnit extends Serializable {
 
     default void turnBegins(){
         try{
-            RepairBuilding rep = ((RepairBuilding)((Buildable)Universe.get().getTerrain(getX(),getY())).getBuilding());
-            if (rep != null) rep.repair(this);
-        }catch(java.lang.ClassCastException e){
+            ((RepairBuilding)((Buildable)Universe.get().getTerrain(getX(),getY())).getBuilding()).repair(this);
+        }catch(java.lang.ClassCastException | NullPointerException e){
             getFuel().consume(getFuelTurnCost());
         }
     }

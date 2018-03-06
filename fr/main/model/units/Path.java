@@ -47,9 +47,9 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void shortestCalculus(){
-        int width  = map.length;
-        int height = map[0].length;
-        int move=unit.getMoveQuantity();
+        int width  = map.length,
+            height = map[0].length,
+            move   = unit.getMoveQuantity();
 
         // initialization
         for (int i=0;i<width;i++)
@@ -80,16 +80,19 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void shorten(){
-        Point p=new Point(unit.getX()-offset.x,unit.getY()-offset.y);
+        Point p = new Point(unit.getX(), unit.getY());
         for (Direction d : this)
             d.move(p);
         shorten(p);
     }
 
     /*
-    * @param p is the objective in the relative map
+    * @param p is the objective in the absolute map
     */
-    private void shorten(Point p){
+    protected void shorten(Point p){
+        p.translate(-offset.x,-offset.y);
+        if (p.x < 0 || p.y < 0 || p.x >= map.length || p.y >= map[0].length)
+            return;
         removeAll(this);
         Direction d;
         while ((d=map[p.x][p.y].previous)!=Direction.NONE){
@@ -145,6 +148,7 @@ public class Path extends LinkedList<Direction> {
 
 
         if (pathMoveCost>unit.getMoveQuantity()){
+            t.translate(offset.x,offset.y);
             shorten(t);
             return true;
         }

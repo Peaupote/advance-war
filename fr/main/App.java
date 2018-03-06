@@ -17,7 +17,8 @@ import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
-import fr.main.view.render.units.LanderRenderer;
+import fr.main.view.render.units.air.FighterRenderer;
+import fr.main.view.render.units.naval.LanderRenderer;
 import fr.main.view.render.units.land.InfantryRenderer;
 import fr.main.view.MainFrame;
 
@@ -43,15 +44,17 @@ public class App {
     AbstractUnit[][] units = new Unit[s][s];
     units[0][0] = new LanderRenderer(new Point(0,0));
     units[1][1] = new LanderRenderer(new Point(1,1));
-    units[3][6] = new LanderRenderer(new Point(6,3));
+    units[17][3] = new LanderRenderer(new Point(3,17));
     units[5][10] = new InfantryRenderer(new Point(10,5));
     units[6][10] = new InfantryRenderer(new Point(10,6));
+    units[10][10] = new FighterRenderer(new Point(10,10));
 
     players[0].add(units[0][0]);
-    players[0].add(units[3][6]);
+    players[0].add(units[17][3]);
     players[1].add(units[1][1]);
     players[0].add(units[5][10]);
     players[1].add(units[6][10]);
+    players[0].add(units[10][10]);
 
     Universe.save("maptest.map", units, map, players);
 
@@ -61,17 +64,17 @@ public class App {
 
 
     EventQueue.invokeLater(() -> {
-		try {
-			new MainFrame();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
+      try {
+        new MainFrame();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      } catch (UnsupportedAudioFileException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (LineUnavailableException e) {
+        e.printStackTrace();
+      }
 	});
   }
 }

@@ -44,7 +44,7 @@ public class PathRenderer extends Path {
     public void draw (Graphics g) {
         g.setColor(Color.red);
         Point point = new Point(unit.getX(), unit.getY());
-
+        
         int size = size();
         if (size == 0) return;
         if (size > 1) {
@@ -73,9 +73,9 @@ public class PathRenderer extends Path {
 
                 if (image != null)
                     g.drawImage(image,
-                                            (point.x - camera.getX()) * MainFrame.UNIT,
-                                            (point.y - camera.getY()) * MainFrame.UNIT,
-                                            MainFrame.UNIT, MainFrame.UNIT, null);
+                                (point.x - camera.getX()) * MainFrame.UNIT,
+                                (point.y - camera.getY()) * MainFrame.UNIT,
+                                MainFrame.UNIT, MainFrame.UNIT, null);
 
                 d = next;
             }

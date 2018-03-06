@@ -157,14 +157,20 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         path            = new PathRenderer(camera) {
          
           Point last = null;
+          boolean[][] area;
+
+          @Override
+          public void rebase (AbstractUnit unit) {
+              Dimension size = world.getDimension();
+              area = new boolean[size.height][size.width];
+              
+              if (mode == Mode.UNIT) unit.reachableLocation(area);
+              else if (mode == Mode.ATTACK) unit.renderTarget(area);
+              super.rebase(unit);
+          }
 
           @Override
           public boolean add (Direction dir) {
-            Dimension size = world.getDimension();
-            boolean[][] area = new boolean[size.height][size.width];
-            
-            if (mode == Mode.UNIT) targetUnit.reachableLocation(area);
-            else if (mode == Mode.ATTACK) targetUnit.renderTarget(area);
 
             Point pt = unitCursor.position();
             dir.move(pt);

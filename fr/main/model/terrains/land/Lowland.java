@@ -56,27 +56,4 @@ public class Lowland extends Buildable implements LandTerrain {
         return instance;
     }
 
-    @Override
-    public boolean canStop(MoveType mt){
-        if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
-            return true;
-        else
-            return super.canStop(mt);
-    }
-
-    @Override
-    public boolean canMoveIn(MoveType mt){
-        if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
-            return true;
-        else
-            return super.canMoveIn(mt);
-    }
-
-    @Override
-    public Integer moveCost(MoveType mt){
-        if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
-            return 1;
-        else
-            return super.moveCost(mt);
-    }
 }

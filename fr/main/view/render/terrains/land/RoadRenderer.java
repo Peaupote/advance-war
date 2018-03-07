@@ -20,18 +20,18 @@ public class RoadRenderer extends Road implements Renderer {
 	private RoadRenderer(RoadLocation location) {
 		if (instances == null) instances = new HashMap<>();
 		if (!instances.containsKey(location)) instances.put(location, this);
-		this.tLocation = location;
+		this.location = location;
 		update();
 	}
 
 	@Override
 	public String getFilename() {
-		return tLocation.getPath();
+		return location.getPath();
 	}
 
 	@Override
 	public void update() {
-		this.image = TerrainImage.get(tLocation.getPath()).getSubImg(tLocation.location());
+		this.image = TerrainImage.get(location.getPath()).getSubImg(location.location());
 	}
 
 	@Override

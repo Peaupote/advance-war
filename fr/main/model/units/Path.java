@@ -95,7 +95,7 @@ public class Path extends LinkedList<Direction> {
             return;
         removeAll(this);
         Direction d;
-        while ((d=map[p.x][p.y].previous)!=Direction.NONE){
+        while ((d = map[p.x][p.y].previous) != Direction.NONE){
             addFirst(d);
             d.opposed().move(p);
         }
@@ -134,12 +134,12 @@ public class Path extends LinkedList<Direction> {
             t = (Point)t.clone();
             d.move(t);
             pts.add(t);
-            pathMoveCost+=map[t.x][t.y].moveCost;
+            pathMoveCost += map[t.x][t.y].moveCost;
         }
 
         t = (Point)t.clone();
         dir.move(t);
-        pathMoveCost+=map[t.x][t.y].moveCost;
+        pathMoveCost += map[t.x][t.y].moveCost;
         int i = pts.indexOf(t);
         if (i != -1) {
             for (int j = i; j < pts.size() - 1; j++) removeLast();
@@ -147,7 +147,7 @@ public class Path extends LinkedList<Direction> {
         }
 
 
-        if (pathMoveCost>unit.getMoveQuantity()){
+        if (pathMoveCost > unit.getMoveQuantity()){
             t.translate(offset.x,offset.y);
             shorten(t);
             return true;
@@ -162,10 +162,9 @@ public class Path extends LinkedList<Direction> {
     }
 
     protected void makeAppliable(){
-        Universe u=Universe.get();
-        Point p=new Point(unit.getX(),unit.getY());
-        for (Direction d : this)
-            d.move(p);
+        Universe u = Universe.get();
+        Point p    = new Point(unit.getX(),unit.getY());
+        for (Direction d : this) d.move(p);
         while (!u.getTerrain(p.x,p.y).canStop(unit))
             removeLast().opposed().move(p);
     }

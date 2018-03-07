@@ -16,18 +16,18 @@ public class BeachRenderer extends Beach implements Renderer {
     private BeachRenderer(BeachLocation loc) {
     	if(instances == null) instances = new HashMap<>();
 		if (!instances.containsKey(loc)) instances.put(loc, this);
-		this.tLocation = loc;
+		this.location = loc;
         update();
     }
 
     @Override
     public String getFilename () {
-        return tLocation.getPath();
+        return location.getPath();
     }
 
     @Override
     public void update() {
-        this.image = TerrainImage.get(tLocation.getPath()).getSubImg(tLocation.location());
+        this.image = TerrainImage.get(location.getPath()).getSubImg(location.location());
     }
 
     @Override

@@ -482,7 +482,7 @@ public class MapGenerator {
         return map;
     }
 
-    private TerrainLocation[][] gelocations(TerrainEnum[][] map) {
+    private TerrainLocation[][] getLocations(TerrainEnum[][] map) {
     	TerrainLocation[][] out = new TerrainLocation[map.length][map[0].length];
 		//TODO finish this function.
     	for(int i = 0; i < map.length; i ++)
@@ -512,11 +512,11 @@ public class MapGenerator {
 	}
 
 
-	public TerrainLocation[][] gelocations(Terrain[][] map) {
+	public TerrainLocation[][] getLocations(Terrain[][] map) {
     	TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++)
 				mapBis[i][j] = TerrainEnum.getTerrainEnum(map[i][j]);
-		return gelocations(mapBis);
+		return getLocations(mapBis);
 	}
 }

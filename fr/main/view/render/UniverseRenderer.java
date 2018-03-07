@@ -25,10 +25,14 @@ public class UniverseRenderer extends Universe {
                       moveColor   = new Color (0, 255, 0, 50),
                       targetColor = new Color (255, 0, 0, 100);
 
+  private final int[][][] coords; 
+  private final boolean[][] targets;
+  private Color tColor;
+
   public UniverseRenderer (String mapName, Controller controller) {
     super (mapName);
 
-    locations = new MapGenerator().gelocations(map.board);
+    locations = new MapGenerator().getLocations(map.board);
 
 	  for(int i = 0; i < map.board.length; i ++)
 	  	for(int j = 0; j < map.board.length; j ++)
@@ -39,6 +43,8 @@ public class UniverseRenderer extends Universe {
         ((Renderer)u).update();
 
     this.controller = controller;
+    coords = new int[map.board.length][map.board[0].length][2];
+    targets = new boolean[map.board.length][map.board[0].length];
   }
 
 	private void updateTerrainRenderer(int x, int y) {
@@ -66,7 +72,6 @@ public class UniverseRenderer extends Universe {
 		}
 	}
 
-
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
     int w = map.board.length,
         h = map.board[0].length,
@@ -74,20 +79,6 @@ public class UniverseRenderer extends Universe {
         firstY = y - (offsetY < 0 ? 1 : 0),
         lastX  = x + w + (offsetX > 0 ? 1 : 0),
         lastY  = y + h + (offsetY > 0 ? 1 : 0);
-
-    Color tColor = null;
-    boolean targets[][] = new boolean[map.board.length][map.board[0].length];
-
-    AbstractUnit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
-    if (controller.getMode() == Controller.Mode.UNIT) {
-      unit.reachableLocation(targets);
-      tColor = unit.getPlayer() == current ? moveColor : targetColor;
-    } else if (controller.getMode() == Controller.Mode.ATTACK) {
-      unit.renderTarget(targets);
-      tColor = targetColor;
-    }
-
-    int[][][] coords = new int[map.board.length][map.board[0].length][2];
 
 	  for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
 		  for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
@@ -118,5 +109,23 @@ public class UniverseRenderer extends Universe {
             ((Renderer)map.units[i][j]).draw(g, coords[i][j][0], coords[i][j][1]);
       }
   }
+
+  public void updateTarget (AbstractUnit unit) {
+      clearTarget();
+      if (controller.getMode() == Controller.Mode.UNIT) {
+        unit.reachableLocation(targets);
+        tColor = unit.getPlayer() == current ? moveColor : targetColor;
+      } else if (controller.getMode() == Controller.Mode.ATTACK) {
+        unit.renderTarget(targets);
+        tColor = targetColor;
+      }
+  }
+
+  public void clearTarget () {
+      for (int i = 0; i < targets.length; i++)
+        for (int j = 0; j < targets[i].length; j++)
+          targets[i][j] = false;
+  }
+
 }
 

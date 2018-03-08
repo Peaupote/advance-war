@@ -3,7 +3,7 @@ TODO
 
 - [ ] Buildings
 - [ ] Rework renderers
-- [ ] Animations
+- [x] Animations
 - [x] Sprites
 - [ ] Cliff
 - [ ] Sound Manager

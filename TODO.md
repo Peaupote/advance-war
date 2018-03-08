@@ -4,7 +4,7 @@ TODO
 - [ ] Buildings
 - [ ] Rework renderers
 - [ ] Animations
-- [ ] Sprites
+- [x] Sprites
 - [ ] Cliff
 - [ ] Sound Manager
 - [ ] Multiples pages (multiple controllers)

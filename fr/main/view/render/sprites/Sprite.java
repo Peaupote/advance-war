@@ -1,6 +1,7 @@
 package fr.main.view.render.sprites;
 
 import java.util.HashMap;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.io.*;
@@ -27,7 +28,7 @@ public class Sprite {
     return new Sprite(path);
   }
 
-  public BufferedImage getImage (int x, int y, int w, int h) {
+  public Image getImage (int x, int y, int w, int h) {
     if (sprite == null) return null;
     
     BufferedImage out = null;
@@ -38,6 +39,11 @@ public class Sprite {
     }
 
     return out;
+  }
+
+  public Image getImage (int x, int y, int w, int h, int scale) {
+    Image img = getImage(x, y, w, h);
+    return img.getScaledInstance(w * scale, h * scale, Image.SCALE_SMOOTH);
   }
 
 }

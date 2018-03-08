@@ -12,7 +12,6 @@ import fr.main.model.units.Path;
 import fr.main.model.Direction;
 import fr.main.view.MainFrame;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.render.units.UnitAnimationManager;
 import fr.main.model.units.naval.Lander;
 
 public class LanderRenderer extends Lander implements UnitRenderer {
@@ -31,7 +30,7 @@ public class LanderRenderer extends Lander implements UnitRenderer {
 
   public void draw (Graphics g, int x, int y) {
     if (image == null) g.fillRect (x + offset.x, y + offset.y, MainFrame.UNIT, MainFrame.UNIT);
-    else g.drawImage (image, x + offset.x, y + offset.y + UnitAnimationManager.getOffset() - 5, MainFrame.UNIT, MainFrame.UNIT, null);
+    else g.drawImage (image, x + offset.x, y + offset.y - 5, MainFrame.UNIT, MainFrame.UNIT, null);
   }
 
   @Override

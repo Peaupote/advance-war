@@ -100,7 +100,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Move", () -> {
               mode = Mode.IDLE;
               world.clearTarget();
+              ((UnitRenderer)targetUnit).setState("run");
               path.apply();
+              ((UnitRenderer)targetUnit).setState("idle");
               mode = Mode.MOVE;
               cursor.setLocation(unitCursor.position());
               path.visible = false;
@@ -224,6 +226,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
                   mode = Mode.MOVE;
+                  world.clearTarget();
                   path.visible = false;
               }
             } else if (mode == Mode.MENU) {
@@ -233,6 +236,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 else if (key == KeyEvent.VK_ESCAPE) focusedActionPanel.setVisible (false);
             } else if (key == KeyEvent.VK_ESCAPE) {
                 mode = Mode.MOVE;
+                world.clearTarget();
                 path.visible = false;
             }
         }

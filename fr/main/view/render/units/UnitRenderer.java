@@ -26,5 +26,7 @@ public interface UnitRenderer extends Renderer, AbstractUnit {
   default String getDir () {
     return "./assets/" + (getPlayer().id == 1 ? "red" : "blue") + "/";
   }
+
+  default void setState (String state) {}
 }
 

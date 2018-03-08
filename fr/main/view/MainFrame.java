@@ -24,6 +24,8 @@ import fr.main.model.Player;
 public class MainFrame extends JFrame {
 
   public static final int WIDTH = 960, HEIGHT = 704, UNIT = 32;
+
+  private static int timer = 0;
   
   public MainFrame () throws UnsupportedAudioFileException, IOException, LineUnavailableException {
     super("Advance war");
@@ -50,6 +52,7 @@ public class MainFrame extends JFrame {
     // main loop
     new Thread(() -> {
       while (true) {
+        timer++;
         controller.update();
         view.repaint();
         
@@ -62,10 +65,13 @@ public class MainFrame extends JFrame {
       }
     }).start();
     
-//    this.setJMenuBar(menu);
     pack();
     setLocationRelativeTo(null);
     setVisible(true);
+  }
+
+  public static int getTimer () {
+    return timer;
   }
 
 }

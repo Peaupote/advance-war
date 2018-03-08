@@ -1,0 +1,43 @@
+package fr.main.view.render.sprites;
+
+import java.util.HashMap;
+import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
+import java.io.*;
+import javax.imageio.*;
+
+public class Sprite {
+
+  private static HashMap<String, Sprite> instances = new HashMap<>();
+
+  private BufferedImage sprite;
+
+  private Sprite (String path) {
+    instances.put(path, this);
+
+    try {
+      sprite = ImageIO.read(new File(path));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static Sprite get (String path) {
+    if (instances.containsKey(path)) return instances.get(path);
+    return new Sprite(path);
+  }
+
+  public BufferedImage getImage (int x, int y, int w, int h) {
+    if (sprite == null) return null;
+    
+    BufferedImage out = null;
+    try {
+      out = sprite.getSubimage(x, y, w, h);
+    } catch (RasterFormatException e) {
+      e.printStackTrace();
+    }
+
+    return out;
+  }
+
+}

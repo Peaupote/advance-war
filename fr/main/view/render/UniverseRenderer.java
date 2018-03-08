@@ -119,8 +119,6 @@ public class UniverseRenderer extends Universe {
 
 	  for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
 		  for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++)
-//    for (int i = Math.min(lastY, map.board.length); i >= firstY ; i--)
-//      for (int j = Math.min(lastX, map.board[i].length); j >= firstX; j--)
 		  {
         int a = (j - x) * MainFrame.UNIT - offsetX,
             b = (i - y) * MainFrame.UNIT - offsetY;

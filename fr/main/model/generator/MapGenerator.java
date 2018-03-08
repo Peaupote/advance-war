@@ -105,7 +105,9 @@ public class MapGenerator {
             }
         }
 
-        return placeWood(placeMountainsHills(placeBeach(surroundBySea(refineMap(map, smoothness), 4))));
+        map = placeBeach(surroundBySea(refineMap(map, smoothness), 4));
+        placeRivers(map);
+        return placeWood(placeMountainsHills(map));
     }
 
     private int distance(int x1 , int y1, int x2, int y2) {
@@ -331,22 +333,17 @@ public class MapGenerator {
 
     private void placeRivers (TerrainEnum[][] map) {
     	/*** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
-//    	int nSea, nLowland, nBridge, nBeach, nRiver;
-    	TerrainEnum[] land = {lowland, bridge, beach}, naval = {sea, river};
+
+    	TerrainEnum[] land = {lowland, beach};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
-    			if(map[i][j] == sea) {
+    			if(map[i][j] == sea)
     				if(isSandwiched(map, i, j, land)
 							&& getAdjacentTerrainNb(map, i, j, lowland)
 							+ getAdjacentTerrainNb(map, i, j, beach) < 3)
     					map[i][j] = river; //continue;
-//    				nSea = getAdjacentTerrainNb(map, i , j, sea);
-//    				nLowland = getAdjacentTerrainNb(map, i, j, lowland);
-//					nBridge = getAdjacentTerrainNb(map, i, j, bridge);
-//					nRiver = getAdjacentTerrainNb(map, i, j , river);
-//					nBeach = getAdjacentTerrainNb(map, i, j, beach);
-				}
+//
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++)
 				if(map[i][j] == sea && getAdjacentTerrainNb(map, i, j, river) >= 2)

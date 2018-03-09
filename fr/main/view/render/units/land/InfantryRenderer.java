@@ -41,7 +41,7 @@ public class InfantryRenderer extends Infantry implements UnitRenderer {
 
     anim = new Animation();
     anim.put("idle", idle);
-    anim.put("run", run);
+    anim.put("move", run);
     anim.setState("idle");
   }
 

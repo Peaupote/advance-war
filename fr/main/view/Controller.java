@@ -101,7 +101,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Move", () -> {
               mode = Mode.IDLE;
               world.clearTarget();
-              ((UnitRenderer)targetUnit).setState("run");
+              ((UnitRenderer)targetUnit).setState("move");
               path.apply();
               ((UnitRenderer)targetUnit).setState("idle");
               mode = Mode.MOVE;

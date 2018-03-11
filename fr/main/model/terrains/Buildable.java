@@ -13,8 +13,8 @@ import fr.main.model.units.MoveType;
 public abstract class Buildable extends Terrain implements AbstractBuildable<Building> {
     protected Building building;
 
-    public Buildable (String name, int defense, int bonusVision, int bonusRange, Map<Weather,Map<MoveType,Integer>> sunny) {
-        super(name, defense, bonusVision, bonusRange,sunny);
+    public Buildable (String name, int defense, int height, Map<Weather,Map<MoveType,Integer>> sunny) {
+        super(name, defense, height, sunny);
         this.building = null;
     }
 

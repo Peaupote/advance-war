@@ -16,19 +16,20 @@ public class SecondaryWeapon extends Weapon{
 
     public void shoot(){}
 
-    public boolean isInRange(int actualX, int actualY, int targetX, int targetY){
-        return Math.abs(actualX-targetX)+Math.abs(actualY-targetY)==1;
+    public boolean isInRange(AbstractUnit shooter, AbstractUnit target){
+        return Math.abs(shooter.getX()-target.getX())+Math.abs(shooter.getY()-target.getY())==1;
     }
 
-    public void renderTarget(boolean[][] map, int x, int y, boolean enabled, boolean fullMove){
-        if (enabled)
+    public void renderTarget(boolean[][] map, AbstractUnit u){
+        int x = u.getX(), y = u.getY();
+        if (u.getMoveQuantity() != 0)
             for (Direction d : Direction.cardinalDirections())
                 if (y+d.x>=0 && y+d.x<map.length && x+d.y>=0 && x+d.y<map.length)
                     map[y+d.x][x+d.y]=true;
     }
 
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
-        return shooter.isEnabled() && canShoot(target) && isInRange(shooter.getX(),shooter.getY(),target.getX(),target.getY());
+        return shooter.isEnabled() && canShoot(target) && isInRange(shooter, target);
     }
 
 }

@@ -47,7 +47,7 @@ public class Lowland extends Buildable implements LandTerrain {
     }
 
     protected Lowland() {
-        super(name, 1, 0, 0, weatherMovementCosts);
+        super(name, 1, 0, weatherMovementCosts);
     }
 
     public static Lowland get () {

@@ -43,36 +43,47 @@ public class PrimaryWeapon extends Weapon{
             ammo--;
     }
 
-    public boolean isInRange(int actualX, int actualY, int targetX, int targetY){
-        int i=Math.abs(actualX-targetX)+Math.abs(actualY-targetY);
-        return i<=getMaximumRange() && i>=getMinimumRange();
+    public boolean isInRange(AbstractUnit unit, AbstractUnit target){
+        int i=Math.abs(unit.getX()-target.getX())+Math.abs(unit.getY()-target.getY());
+        return i <= getMaximumRange(unit) && i >= getMinimumRange(unit);
     }
 
-    public void renderTarget(boolean[][] map, int x, int y, boolean enabled, boolean fullMove){
+    public void renderTarget(boolean[][] map, AbstractUnit u){
         int[][] t = {
             {1,1},{1,-1},{-1,-1},{-1,1}
         };
-        if (canAttackAfterMove?enabled:fullMove)
-            for (int i=getMinimumRange();i<=getMaximumRange();i++)
+        int x = u.getX(), y = u.getY(), maxRange = getMaximumRange(u);
+        if (canAttackAfterMove ? u.getMoveQuantity() != 0 : u.getMoveQuantity() == u.getMaxMoveQuantity())
+            for (int i=getMinimumRange(u);i<=maxRange;i++)
                 for (int j=0;j<=i;j++)
-                    for (int[] d : t)
-                        if (x+d[0]*(i-j)>=0 && x+d[0]*(i-j)<map[0].length && y+d[1]*j>=0 && y+d[1]*j<map.length)
-                            map[y+d[1]*j][x+d[0]*(i-j)]=true;
+                    for (int[] d : t){
+                        int xx = x+d[0]*(i-j), yy = y+d[1]*j;
+                        if (yy >= 0 && yy < map.length && xx >= 0 && xx < map[0].length)
+                            map[yy][xx]=true;
+                    }
     }
 
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
-        return ammo!=0 && (canAttackAfterMove?shooter.isEnabled():shooter.getMoveQuantity()==shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter.getX(),shooter.getY(),target.getX(),target.getY());
+        return ammo!=0 && (canAttackAfterMove?shooter.isEnabled():shooter.getMoveQuantity()==shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter,target);
     }
 
-    public int getMinimumRange(){
+    public int getBaseMinimumRange(){
         return minimumRange;
     }
 
-    public int getMaximumRange(){
+    public int getMinimumRange(AbstractUnit u){
+        return u.getPlayer().getCommander().getMinimumRange(u, this);
+    }
+
+    public int getBaseMaximumRange(){
         return maximumRange;
     }
 
+    public int getMaximumRange(AbstractUnit u){
+        return u.getPlayer().getCommander().getMaximumRange(u, this);
+    }
+
     public final boolean isContactWeapon(){
-        return getMinimumRange()==1 && getMaximumRange()==1;
+        return getBaseMinimumRange()==1 && getBaseMaximumRange()==1;
     }
 }

@@ -6,7 +6,9 @@ import java.util.HashMap;
 import fr.main.model.Weather;
 import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.units.MoveType;
+import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.terrains.Terrain;
 import fr.main.view.render.terrains.TerrainImage;
 
@@ -34,17 +36,13 @@ public class Mountain extends Terrain implements LandTerrain {
     }
 
     protected Mountain () {
-        super(name, 4, 3, 2, weatherMovementCosts);
+        super(name, 4, 2, weatherMovementCosts);
     }
 
     public static Mountain get () {
         if (instance == null)
             instance = new Mountain();
         return instance;
-    }
-
-    public boolean blockVision(AbstractUnit u){
-        return true;
     }
 
 	public enum MountainLocation implements TerrainLocation {
@@ -67,4 +65,13 @@ public class Mountain extends Terrain implements LandTerrain {
 		}
 	}
 
+    @Override
+    public int getBonusVision(AbstractUnit u){
+        return u instanceof AirUnit ? 0 : 3;
+    }
+
+    @Override
+    public int getBonusRange(AbstractUnit u, PrimaryWeapon p){
+        return u instanceof AirUnit ? 0 : 2;
+    }
 }

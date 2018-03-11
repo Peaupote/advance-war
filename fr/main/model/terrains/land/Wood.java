@@ -44,7 +44,7 @@ public class Wood extends Terrain implements LandTerrain {
     }
 
     protected Wood() {
-        super(name,2, 0, 0, weatherMovementCosts);
+        super(name, 2, 0, weatherMovementCosts);
     }
 
     @Override
@@ -52,11 +52,6 @@ public class Wood extends Terrain implements LandTerrain {
         return !AirUnit.class.isInstance(from);
     }
 
-    @Override
-    public boolean blockVision(AbstractUnit unit){
-        return !AirUnit.class.isInstance(unit);
-    }
-    
     public static Wood get () {
         if (instance == null) instance = new Wood();
         return instance;

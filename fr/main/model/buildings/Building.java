@@ -1,6 +1,7 @@
 package fr.main.model.buildings;
 
 import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractBuildable;
 
 import java.io.Serializable;
 

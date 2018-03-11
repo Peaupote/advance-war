@@ -28,7 +28,7 @@ public class View extends JPanel {
     if (controller.getMode() != Controller.Mode.MOVE) controller.unitCursor.draw(g);
     else controller.cursor.draw(g);
 
-    if (controller.path.visible) controller.path.draw(g);
+    if (controller.path.visible) controller.path.draw(g, offsetX, offsetY);
     
     for (InterfaceUI comp: InterfaceUI.components())
       comp.render(g);

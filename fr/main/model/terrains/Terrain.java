@@ -12,7 +12,7 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 public abstract class Terrain implements AbstractTerrain {
 
     protected final Map<Weather,Map<MoveType,Integer>> moveCost;
-    protected TerrainLocation tLocation;
+    protected TerrainLocation location;
 
     public final int height, defense;
     public final String name;
@@ -22,7 +22,7 @@ public abstract class Terrain implements AbstractTerrain {
         this.height      = height;
         this.name        = name;
         this.moveCost    = moveCost;
-        this.tLocation   = null;
+        this.location    = null;
     }
 
     @Override

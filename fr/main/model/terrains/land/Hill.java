@@ -59,30 +59,6 @@ public class Hill extends Buildable implements LandTerrain {
     }
 
     @Override
-    public boolean canStop(MoveType mt){
-        if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
-            return true;
-        else
-            return super.canStop(mt);
-    }
-
-    @Override
-    public boolean canMoveIn(MoveType mt){
-        if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
-            return true;
-        else
-            return super.canMoveIn(mt);
-    }
-
-    @Override
-    public Integer moveCost(MoveType mt){
-        if (getBuilding() instanceof Dock && (mt==MoveType.NAVAL || mt==MoveType.LANDER))
-            return 2;
-        else
-            return super.moveCost(mt);
-    }
-
-    @Override
     public int getBonusVision(AbstractUnit u){
         return u instanceof AirUnit ? 0 : 1;
     }

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   
 ### Changed
   - Path finding for the shortest path for unit move
+  - Optimization in the view
 
 ## [0.0.6] - 2018-22-02
 ### Added

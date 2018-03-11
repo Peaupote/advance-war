@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import fr.main.model.Universe;
 import fr.main.model.terrains.Buildable;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.Player;
 import fr.main.model.Direction;
@@ -118,11 +119,10 @@ public interface AbstractUnit extends Serializable {
     }
 
     default void turnBegins(){
-        try{
-            ((RepairBuilding)((Buildable)Universe.get().getTerrain(getX(),getY())).getBuilding()).repair(this);
-        }catch(java.lang.ClassCastException | NullPointerException e){
-            getFuel().consume(getFuelTurnCost());
-        }
+        AbstractBuilding building = Universe.get().getBuilding(getX(), getY());
+        if (building != null && building instanceof RepairBuilding)
+          ((RepairBuilding)building).repair(this);
+        else getFuel().consume(getFuelTurnCost());
     }
 
     default void turnEnds(){

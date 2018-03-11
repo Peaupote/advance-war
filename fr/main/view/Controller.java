@@ -28,6 +28,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     public final int moveRange = 3;
 
     private boolean isListening = false, listenMouse = false;
+    private final Dimension size;
     private Point mouse;
     private Mode mode;
     private ActionPanel actionPanel, focusedActionPanel;
@@ -99,6 +100,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             
             new Index("Move", () -> {
               mode = Mode.IDLE;
+              world.clearTarget();
               path.apply();
               mode = Mode.MOVE;
               cursor.setLocation(unitCursor.position());
@@ -107,6 +109,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
             new Index("Attack", () -> {
               mode = Mode.ATTACK;
+              world.updateTarget(targetUnit);
               unitCursor.setLocation(cursor.position());
             });
 
@@ -146,9 +149,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public Controller (Player ps[]) {
         world      = new UniverseRenderer("maptest.map", this);
-        camera     = new Position.Camera(world.getDimension());
-        cursor     = new Position.Cursor(camera, world.getDimension());
-        unitCursor = new Position.Cursor(camera, world.getDimension());
+        size       = world.getDimension();
+        camera     = new Position.Camera(size);
+        cursor     = new Position.Cursor(camera, size);
+        unitCursor = new Position.Cursor(camera, size);
 
         mouse           = new Point(1,1);
         actionPanel     = new MainActionPanel();
@@ -161,7 +165,6 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
           @Override
           public void rebase (AbstractUnit unit) {
-              Dimension size = world.getDimension();
               area = new boolean[size.height][size.width];
               
               if (mode == Mode.UNIT) unit.reachableLocation(area);
@@ -208,11 +211,13 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     AbstractUnit target = world.getUnit(unitCursor.position());
                     if (targetUnit.canAttack(target)) targetUnit.attack(target);
                     mode = Mode.MOVE;
+                    world.clearTarget();
                 } else {
                   if (targetUnit == null || !world.isVisible(cursor.position()))
                     actionPanel.setVisible (true);
                   else if (targetUnit.getPlayer() == world.getCurrentPlayer() && targetUnit.isEnabled()) {
                     mode = Mode.UNIT;
+                    world.updateTarget(targetUnit);
                     path.rebase(targetUnit);
                     path.visible = true;
                   }
@@ -259,9 +264,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
       isListening = cursor.move() | camera.move() |
                     (mode != Mode.MOVE && mode.canMove() && unitCursor.move());
 
-      if (!isListening && mode == Mode.MOVE && listenMouse) {
-          if (mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
-          else if (camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
+      if (!isListening && mode.canMove() && listenMouse) {
+          if (camera.getX() > 0 && mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
+          else if (camera.getX() + camera.width < size.width && camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
           else if (mouse.y <= moveRange) camera.setDirection(Direction.TOP);
           else if (camera.height - mouse.y <= moveRange) camera.setDirection(Direction.BOTTOM);
 

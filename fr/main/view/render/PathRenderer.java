@@ -41,7 +41,7 @@ public class PathRenderer extends Path {
         }
     }
 
-    public void draw (Graphics g) {
+    public void draw (Graphics g, int offsetX, int offsetY) {
         g.setColor(Color.red);
         Point point = new Point(unit.getX(), unit.getY());
         
@@ -73,8 +73,8 @@ public class PathRenderer extends Path {
 
                 if (image != null)
                     g.drawImage(image,
-                                (point.x - camera.getX()) * MainFrame.UNIT,
-                                (point.y - camera.getY()) * MainFrame.UNIT,
+                                (point.x - camera.getX()) * MainFrame.UNIT - offsetX,
+                                (point.y - camera.getY()) * MainFrame.UNIT - offsetY,
                                 MainFrame.UNIT, MainFrame.UNIT, null);
 
                 d = next;
@@ -91,8 +91,8 @@ public class PathRenderer extends Path {
 
         if (arrow != null)
             g.drawImage(arrow,
-                (point.x - camera.getX()) * MainFrame.UNIT,
-                (point.y - camera.getY()) * MainFrame.UNIT,
+                (point.x - camera.getX()) * MainFrame.UNIT - offsetX,
+                (point.y - camera.getY()) * MainFrame.UNIT - offsetY,
                 MainFrame.UNIT, MainFrame.UNIT, null);
     }
 

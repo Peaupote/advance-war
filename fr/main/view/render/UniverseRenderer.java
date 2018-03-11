@@ -7,18 +7,15 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.generator.MapGenerator;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.TerrainLocation;
-import fr.main.model.terrains.land.Beach;
-import fr.main.model.terrains.land.Lowland;
-import fr.main.model.terrains.land.Mountain;
+import fr.main.model.terrains.*;
+import fr.main.model.buildings.*;
+import fr.main.model.terrains.land.*;
 import fr.main.model.units.AbstractUnit;
+
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
 import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.ReefRenderer;
-import fr.main.view.render.terrains.naval.RiverRenderer;
-import fr.main.view.render.terrains.naval.SeaRenderer;
+import fr.main.view.render.terrains.naval.*;
 
 public class UniverseRenderer extends Universe {
 
@@ -28,14 +25,14 @@ public class UniverseRenderer extends Universe {
                       moveColor   = new Color (0, 255, 0, 50),
                       targetColor = new Color (255, 0, 0, 100);
 
+  private final int[][][] coords; 
+  private final boolean[][] targets;
+  private Color tColor;
+
   public UniverseRenderer (String mapName, Controller controller) {
     super (mapName);
 
     locations = new MapGenerator().getLocations(map.board);
-
-//    for(Terrain[] line : map.board)
-//      for(Terrain t : line)
-//        ((Renderer) t).update();
 
 	  for(int i = 0; i < map.board.length; i ++)
 	  	for(int j = 0; j < map.board.length; j ++)
@@ -46,30 +43,9 @@ public class UniverseRenderer extends Universe {
         ((Renderer)u).update();
 
     this.controller = controller;
+    coords = new int[map.board.length][map.board[0].length][2];
+    targets = new boolean[map.board.length][map.board[0].length];
   }
-
-//    private TerrainLocation[][] setLocations () {
-//		if (map == null) return null;
-//
-//		//TODO set all TerrainLocation.
-//
-//		TerrainLocation[][] out = new TerrainLocation[map.board.length][map.board[0].length];
-//
-//		for (int i = 0; i < map.board.length; i++)
-//			for (int j = 0; j < map.board[0].length; j++) {
-//
-//			}
-//
-//		return null;
-//	}
-//
-//	private TerrainLocation getTerrainLocationFrom(Terrain[][] map, int i, int j) {
-//  		if ()
-//	}
-//
-//	private boolean isInMap(Terrain[][] map, int x, int y) {
-//		return x >= 0 && x < map.length && y >= 0 && y < map[0].length;
-//	}
 
 	private void updateTerrainRenderer(int x, int y) {
   		switch (TerrainEnum.getTerrainEnum(map.board[x][y])) {
@@ -96,7 +72,6 @@ public class UniverseRenderer extends Universe {
 		}
 	}
 
-
   public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
     int w = map.board.length,
         h = map.board[0].length,
@@ -105,46 +80,52 @@ public class UniverseRenderer extends Universe {
         lastX  = x + w + (offsetX > 0 ? 1 : 0),
         lastY  = y + h + (offsetY > 0 ? 1 : 0);
 
-    Color tColor = null;
-    boolean targets[][] = new boolean[map.board.length][map.board[0].length];
-
-    AbstractUnit unit = controller.world.getUnit(controller.cursor.getX(), controller.cursor.getY());
-    if (controller.getMode() == Controller.Mode.UNIT) {
-      unit.reachableLocation(targets);
-      tColor = unit.getPlayer() == current ? moveColor : targetColor;
-    } else if (controller.getMode() == Controller.Mode.ATTACK) {
-      unit.renderTarget(targets);
-      tColor = targetColor;
-    }
-
 	  for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
-		  for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++)
-//    for (int i = Math.min(lastY, map.board.length); i >= firstY ; i--)
-//      for (int j = Math.min(lastX, map.board[i].length); j >= firstX; j--)
-		  {
-        int a = (j - x) * MainFrame.UNIT - offsetX,
-            b = (i - y) * MainFrame.UNIT - offsetY;
-        ((Renderer)map.board[i][j]).draw(g, a, b);
+		  for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
+        coords[i][j][0] = (j - x) * MainFrame.UNIT - offsetX;
+        coords[i][j][1] = (i - y) * MainFrame.UNIT - offsetY;
 
-        if (!fogwar[i][j]) {
-          g.setColor(fogColor);
-          g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
+        if (map.buildings[i][j] != null) {
+          g.setColor(Color.red);
+          g.fillRect(coords[i][j][0], coords[i][j][1], MainFrame.UNIT, MainFrame.UNIT);
         }
+        else ((Renderer)map.board[i][j]).draw(g, coords[i][j][0], coords[i][j][1]);
 
         if (targets[i][j]) {
           g.setColor(tColor);
-          g.fillRect(a, b, MainFrame.UNIT, MainFrame.UNIT);
+          g.fillRect(coords[i][j][0], coords[i][j][1], MainFrame.UNIT, MainFrame.UNIT);
         }
       }
 
     for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
       for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
-        int a = (j - x) * MainFrame.UNIT - offsetX,
-            b = (i - y) * MainFrame.UNIT - offsetY;
+        if (!fogwar[i][j]) {
+          g.setColor(fogColor);
+          g.fillRect(coords[i][j][0], coords[i][j][1], MainFrame.UNIT, MainFrame.UNIT);
+        }
+
         if (map.units[i][j] != null)
           if (map.units[i][j].getPlayer() == current || fogwar[i][j])
-            ((Renderer)map.units[i][j]).draw(g, a, b);
+            ((Renderer)map.units[i][j]).draw(g, coords[i][j][0], coords[i][j][1]);
       }
   }
+
+  public void updateTarget (AbstractUnit unit) {
+      clearTarget();
+      if (controller.getMode() == Controller.Mode.UNIT) {
+        unit.reachableLocation(targets);
+        tColor = unit.getPlayer() == current ? moveColor : targetColor;
+      } else if (controller.getMode() == Controller.Mode.ATTACK) {
+        unit.renderTarget(targets);
+        tColor = targetColor;
+      }
+  }
+
+  public void clearTarget () {
+      for (int i = 0; i < targets.length; i++)
+        for (int j = 0; j < targets[i].length; j++)
+          targets[i][j] = false;
+  }
+
 }
 

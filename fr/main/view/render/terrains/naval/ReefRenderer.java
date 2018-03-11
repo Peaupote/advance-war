@@ -15,12 +15,12 @@ public class ReefRenderer extends Reef implements Renderer {
 
 	private ReefRenderer() {
 		if (instance == null) instance = this;
-		this.tLocation = ReefLocation.NORMAL;
+		this.location = ReefLocation.NORMAL;
 	}
 
 	@Override
 	public void update() {
-		this.image = TerrainImage.get(tLocation.getPath()).getSubImg(tLocation.location());
+		this.image = TerrainImage.get(location.getPath()).getSubImg(location.location());
 	}
 
 	public void draw(Graphics g, int x, int y) {
@@ -38,7 +38,7 @@ public class ReefRenderer extends Reef implements Renderer {
 	}
 
 	public String getFilename() {
-		return tLocation.getPath();
+		return location.getPath();
 	}
 
 	public static ReefRenderer get() {

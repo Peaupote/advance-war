@@ -8,6 +8,8 @@ import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.terrains.AbstractBuildable;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
@@ -46,6 +48,7 @@ public class Minimap extends InterfaceUI {
           g.fillRect(a, b, size, size);
         } else {
           Terrain t = world.getTerrain(j, i);
+
           if (t instanceof LandTerrain) g.setColor(Color.green);
           else if (t instanceof NavalTerrain) g.setColor(Color.cyan);
           else g.setColor(Color.black);

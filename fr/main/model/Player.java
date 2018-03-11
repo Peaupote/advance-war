@@ -24,7 +24,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     public final int id;
     public final Color color;
 
-    private transient Commander commander;
+    private Commander commander;
     private int funds;
 
     private LinkedList<AbstractUnit> units;
@@ -81,8 +81,6 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
             funds += b.getIncome();
         for (AbstractUnit u : units)
             u.turnBegins();
-
-        if (commander != null) commander.powerBar.addValue(100);
     }
 
     public void turnEnds(){

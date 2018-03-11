@@ -7,6 +7,7 @@ import java.io.Serializable;
 import fr.main.model.Player;
 import fr.main.model.Weather;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.weapons.Weapon;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
@@ -84,7 +85,7 @@ public abstract class Unit implements AbstractUnit {
         this.life            = 100;
         this.player          = player;
         this.location        = location;
-        this.fuel            = new Fuel(fuelName,maxFuel,diesIfNoFuel);
+        this.fuel            = new Fuel(fuelName, maxFuel, diesIfNoFuel);
         this.moveType        = moveType;
         this.maxMoveQuantity = moveQuantity;
         this.moveQuantity    = moveQuantity;
@@ -94,6 +95,10 @@ public abstract class Unit implements AbstractUnit {
         this.name            = name;
         this.cost            = cost;
         move(location.x, location.y);
+    }
+
+    public int getBaseVision(){
+        return vision;
     }
 
     public int getMoveQuantity(){
@@ -187,62 +192,96 @@ public abstract class Unit implements AbstractUnit {
         return moveType;
     }
 
-    public final void renderVision (boolean[][] fog) {
-        //TODO : can see beyond a moutain or a forest if the unit is on a mountain
-        //TODO : can see beyond a forest if the unit is on a hill
-        if (fog == null || fog.length == 0 || fog[0] == null || fog[0].length == 0)
-            return;
+    public final void renderVision (boolean[][] fog, boolean linearRegression) {
+        int x = location.x, y = location.y, visionT = getVision(),
+            height = this instanceof AirUnit ? 2 : Universe.get().getTerrain(x,y).getHeight();
 
-        int x = location.x,
-            y = location.y;
-
-        fog[y][x] = true;
-
-        if (vision != 0){
-            if (y != 0){
-                fog[y - 1][x] = true;
-                renderVision (fog, x, y - 1, vision);
-            }
-            if (y != fog.length - 1){
-                fog[y + 1][x] = true;
-                renderVision (fog, x, y + 1, vision);
-            }
-            if (x != 0){
-                fog[y][x - 1] = true;
-                renderVision (fog, x - 1, y, vision);
-            }
-            if (x != fog[0].length - 1){
-                fog[y][x + 1] = true;
-                renderVision (fog, x + 1, y, vision);
-            }
+        Point start = (Point)location.clone();
+        fog[y][x]=true;
+        if (visionT != 0){
+            for (int i = 1 ; i <= visionT ; i++)
+                for (Direction d : Direction.cardinalDirections()){
+                    int xx = x + i * d.x, yy = y + i * d.y;
+                    if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && (i == 1 || !Universe.get().getTerrain(xx, yy).hideFrom(this)) && (height == 2 || linearRegression(x, y, xx, yy, height)))
+                        fog[yy][xx]=true;
+                }
+            int[][] t = {
+                {1,1},{1,-1},{-1,-1},{-1,1}
+            };
+            for (int i = 2 ; i <= visionT ; i++)
+                for (int j = 1 ; j <= i ; j ++)
+                    for (int[] tab : t){
+                        int xx = x + j * tab[0], yy = y + (i - j) * tab[1];
+                        if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && !Universe.get().getTerrain(xx, yy).hideFrom(this) && (height == 2 || linearRegression(x, y, xx, yy, height)))
+                             fog[yy][xx]=true;
+                    }
         }
     }
 
-    private void renderVision (boolean[][] fog, int x, int y, int vision){
-        vision--;
-        AbstractTerrain t = Universe.get().getTerrain(x,y);
-        if (!fog[y][x] && !t.hideFrom(this))
-            fog[y][x]=true;
-        if (vision!=0 && !t.blockVision(this)){
-            if (y!=0)
-                renderVision(fog,x,y-1,vision);
-            if (y!=fog.length-1)
-                renderVision(fog,x,y+1,vision);
-            if (x!=0)
-                renderVision(fog,x-1,y,vision);
-            if (x!=fog[0].length-1)
-                renderVision(fog,x+1,y,vision);
+    private boolean linearRegression(int startX, int startY, int x, int y, int height){
+        x = 2 * (x - startX); y = 2 * (y - startY);
+        if (Math.abs(x) + Math.abs(y) <= 2) return true;
+        Universe u = Universe.get();
+
+        int epsilonX = x > 0 ? 1 : -1, epsilonY = y > 0 ? 1 : -1;
+
+        int a = 0, b = 0, c = x, d = y;
+
+        if (x * x >= y * y){ // mainly horizontal
+            a = 2 * epsilonX; c = x - 2 * epsilonX;
         }
+        if (x * x <= y * y){ // mainly vertical
+            b = 2 * epsilonY; d = y - 2 * epsilonY;
+        }
+
+        AbstractTerrain t;
+
+        if (x * x == y * y){ // diagonal path, check first and last tiles
+                if (!canSeeThrough(startX, startY, 2 * epsilonX, 0, height) && !canSeeThrough(startX, startY, 0, 2 * epsilonY, height))
+                        return false;
+                if (!canSeeThrough(startX, startY, x - 2 * epsilonX, y, height) && !canSeeThrough(startX, startY, x, y - 2 * epsilonY, height))
+                        return false;
+        }
+
+        while (a * epsilonX < c * epsilonX || b * epsilonY < d * epsilonY){
+            if (!canSeeThrough(startX, startY, a, b, height) || !canSeeThrough(startX, startY, c, d, height)) // check actual
+                return false;
+
+            if (y * (a + epsilonX) == x * (b + epsilonY)){ // diagonal
+                if (!canSeeThrough(startX, startY, a + 2 * epsilonX, b, height) && !canSeeThrough(startX, startY, a, b + 2 * epsilonY, height))
+                        return false;
+
+                if (!canSeeThrough(startX, startY, c - 2 * epsilonX, d, height) && !canSeeThrough(startX, startY, c, d - 2 * epsilonY, height))
+                        return false;
+            }
+
+            boolean sup = epsilonX * epsilonY * y * (a + epsilonX) >= epsilonX * epsilonY * x * (b + epsilonY),
+                    inf = epsilonX * epsilonY * y * (a + epsilonX) <= epsilonX * epsilonY * x * (b + epsilonY);
+            if (sup){ // vertical 
+                b += 2 * epsilonY;
+                d -= 2 * epsilonY;
+            }
+            if (inf) { // horizontal
+                a += 2 * epsilonX;
+                c -= 2 * epsilonX;
+            }
+        }
+        return a != c || b != d || canSeeThrough(startX, startY, a, b, height);
+    }
+
+    private final boolean canSeeThrough(int startX, int startY, int x, int y, int height){ // especially written for linearRegression, should probably not be used in any other method
+        AbstractTerrain t = Universe.get().getTerrain(x / 2 + startX, y / 2 + startY);
+        return t.hideFrom(this) ? t.getHeight() < height : t.getHeight() <= height;
     }
 
     public void reachableLocation (boolean[][] map) {
-        if (map!=null && map.length!=0 && map[0]!=null && map[0].length!=0)
-            reachableLocation (map,location.x,location.y,moveQuantity+Universe.get().getTerrain(location.x,location.y).moveCost(this));
+        if (map != null && map.length != 0 && map[0] != null && map[0].length != 0)
+            reachableLocation (map, location.x, location.y, moveQuantity+Universe.get().getTerrain(location.x, location.y).moveCost(this));
     }
 
     private void reachableLocation (boolean[][] map, int x, int y, int movePoint){
-        AbstractTerrain terrain = Universe.get().getTerrain(x,y);
-        Integer mvP     = terrain.moveCost(this);
+        AbstractTerrain terrain = Universe.get().getTerrain(x, y);
+        Integer mvP             = terrain.moveCost(this);
 
         if (mvP == null || movePoint < mvP)
             return;
@@ -251,16 +290,18 @@ public abstract class Unit implements AbstractUnit {
         if (terrain.canStop(this))
             map[y][x] = true;
 
-        for (Direction d : Direction.cardinalDirections())
-            if (x + d.x >= 0 && x + d.x < map[0].length && y + d.y >= 0 && y + d.y < map.length)
-                reachableLocation(map, x + d.x, y + d.y, movePoint);
+        for (Direction d : Direction.cardinalDirections()){
+            int xx = x + d.x, yy = y + d.y;
+            if (yy >= 0 && xx >= 0 && yy < map.length && xx < map[yy].length)
+                reachableLocation(map, xx, yy, movePoint);
+        }
     }
 
     public void renderTarget (boolean[][] map, int x, int y) {
         if (primaryWeapon != null)
-            primaryWeapon.renderTarget(map, x, y, isEnabled(), getMoveQuantity() == getMaxMoveQuantity());
+            primaryWeapon.renderTarget(map, this);
         if (secondaryWeapon != null)
-            secondaryWeapon.renderTarget(map, x, y, isEnabled(), getMoveQuantity() == getMaxMoveQuantity());
+            secondaryWeapon.renderTarget(map, this);
     }
 
     public void renderAllTargets(boolean[][] map, int x, int y){
@@ -268,15 +309,17 @@ public abstract class Unit implements AbstractUnit {
     }
 
     private void renderAllTargets(boolean[][] map, int x, int y, int movePoint){
-        if (Universe.get().getTerrain(x,y).canStop(this))
-            renderTarget(map,x,y);
+        if (Universe.get().getTerrain(x, y).canStop(this))
+            renderTarget(map, x, y);
 
-        for (Direction d : Direction.cardinalDirections())
-            if (x+d.x>=0 && x+d.x<map[0].length && y+d.y>=0 && y+d.y<map.length){
-                Integer mvP=Universe.get().getTerrain(x+d.x,y+d.y).moveCost(this);
+        for (Direction d : Direction.cardinalDirections()){
+            int xx = x + d.x, yy = y + d.y;
+            if (yy >= 0 && xx >= 0 && yy < map.length && xx < map[yy].length){
+                Integer mvP=Universe.get().getTerrain(xx, yy).moveCost(this);
                 if (mvP==null?false:movePoint>mvP)
-                    renderAllTargets(map,x+d.x,y+d.y,movePoint-mvP);
+                    renderAllTargets(map, xx, yy, movePoint-mvP);
             }
+        }
     }
 
     public String getName (){
@@ -289,7 +332,7 @@ public abstract class Unit implements AbstractUnit {
                 "\nHP : " + life+"/100";
         if(player != null)
             out += "\nJoueur : " + player.name;
-            out += "\nVision : " + vision;
+            out += "\nVision : " + getVision();
             out += "\nMouvement : " + moveQuantity+"/"+maxMoveQuantity;
         if(fuel != null)
             out += "\n"+fuel.name+" : " + fuel.getQuantity()+"/"+fuel.maximumQuantity;
@@ -317,8 +360,10 @@ public abstract class Unit implements AbstractUnit {
             primaryWeapon.shoot();
             u.removeLife(damage(this,primaryWeapon,u));
         } else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u)) {
+            int damages=damage(this,secondaryWeapon,u);
             secondaryWeapon.shoot();
-            u.removeLife(damage(this,secondaryWeapon,u));
+            u.getPlayer().getCommander().powerBar.addValue(damages);
+            u.removeLife(damages);
         }
 
         if (counter){

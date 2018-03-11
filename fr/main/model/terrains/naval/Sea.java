@@ -31,7 +31,7 @@ public class Sea extends Terrain implements NavalTerrain {
     }
 
     protected Sea () {
-        super(name, 1, 0, 0, weatherMovementCosts);
+        super(name, 1, 0, weatherMovementCosts);
     }
 
     public static Sea get () {

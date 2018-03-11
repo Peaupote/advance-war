@@ -33,17 +33,12 @@ public class Reef extends Terrain implements NavalTerrain {
     }
 
     protected Reef () {
-        super("Récif", 2, 0, 0, weatherMovementCosts);
+        super("Récif", 2, 0, weatherMovementCosts);
     }
 
     @Override
     public boolean hideFrom(AbstractUnit from){
         return AirUnit.class.isInstance(from);
-    }
-
-    @Override
-    public boolean blockVision(AbstractUnit unit){
-        return !AirUnit.class.isInstance(unit);
     }
 
     public static Reef get () {

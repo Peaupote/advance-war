@@ -202,7 +202,7 @@ public abstract class Unit implements AbstractUnit {
             for (int i = 1 ; i <= visionT ; i++)
                 for (Direction d : Direction.cardinalDirections()){
                     int xx = x + i * d.x, yy = y + i * d.y;
-                    if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && (i == 1 || !Universe.get().getTerrain(xx, yy).hideFrom(this)) && (height == 2 || linearRegression(x, y, xx, yy, height)))
+                    if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && (i == 1 || !Universe.get().getTerrain(xx, yy).hideFrom(this)) && (!linearRegression || height == 2 || linearRegression(x, y, xx, yy, height)))
                         fog[yy][xx]=true;
                 }
             int[][] t = {

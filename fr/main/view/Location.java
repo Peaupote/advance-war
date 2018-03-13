@@ -1,4 +1,6 @@
 package fr.main.view;
 
-public enum Location {
+public interface Location {
+	String getPath();
+
 }

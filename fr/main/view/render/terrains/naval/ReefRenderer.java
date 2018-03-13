@@ -2,7 +2,7 @@ package fr.main.view.render.terrains.naval;
 
 import java.awt.*;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.model.terrains.naval.Reef;
@@ -15,7 +15,7 @@ public class ReefRenderer extends Reef implements Renderer {
 
 	private ReefRenderer() {
 		if (instance == null) instance = this;
-		this.location = ReefLocation.NORMAL;
+		this.location = TerrainLocation.ReefLocation.NORMAL;
 	}
 
 	@Override
@@ -46,23 +46,6 @@ public class ReefRenderer extends Reef implements Renderer {
 		return instance;
 	}
 
-	public enum ReefLocation implements TerrainLocation {
-		NORMAL(TerrainImage.Location.CENTER);
 
-		private static final String path = "assets/terrains/cliffs.png";
-		private final TerrainImage.Location location;
-
-		ReefLocation(TerrainImage.Location loc) {
-			this.location = loc;
-		}
-
-		public String getPath() {
-			return path;
-		}
-
-		public TerrainImage.Location location() {
-			return location;
-		}
-	}
 }
 

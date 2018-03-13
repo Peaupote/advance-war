@@ -1,29 +1,26 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Hill;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.view.render.terrains.TerrainImage;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 
 public class HillRenderer extends Hill implements Renderer {
 	private transient Image image;
 	private transient static HillRenderer instance;
 
-	private HillRenderer(HillLocation location) {
+	private HillRenderer(TerrainLocation.HillLocation location) {
 		if (instance == null) instance = this;
 		this.location = location;
 		update();
 	}
 
 	private HillRenderer() {
-		this(HillLocation.NORMAL);
+		this(TerrainLocation.HillLocation.NORMAL);
 	}
 
 	@Override
@@ -57,27 +54,9 @@ public class HillRenderer extends Hill implements Renderer {
 		return instance;
 	}
 
-	public static HillRenderer get(HillLocation loc) {
+	public static HillRenderer get(TerrainLocation.HillLocation loc) {
 		return get();
 	}
 
-	public enum HillLocation implements TerrainLocation {
-		NORMAL(TerrainImage.Location.TOP_LEFT);
 
-		private TerrainImage.Location location;
-		private String path = "assets/terrains/hill.png";
-
-		HillLocation(TerrainImage.Location loc) {
-			this.location = loc;
-		}
-
-		@Override
-		public String getPath() {
-			return path;
-		}
-
-		public TerrainImage.Location location() {
-			return location;
-		}
-	}
 }

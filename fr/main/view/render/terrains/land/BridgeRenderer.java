@@ -1,6 +1,6 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Bridge;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
@@ -12,9 +12,9 @@ import java.util.HashMap;
 
 public class BridgeRenderer extends Bridge implements Renderer {
 	private transient Image image;
-	private transient static HashMap<BridgeLocation, BridgeRenderer> instances;
+	private transient static HashMap<TerrainLocation.BridgeLocation, BridgeRenderer> instances;
 
-	private BridgeRenderer(BridgeLocation location) {
+	private BridgeRenderer(TerrainLocation.BridgeLocation location) {
 		if (instances == null) instances = new HashMap<>();
 		if (!instances.containsKey(location)) instances.put(location, this);
 		this.location = location;
@@ -47,7 +47,7 @@ public class BridgeRenderer extends Bridge implements Renderer {
 		g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
 	}
 
-	public static BridgeRenderer get(BridgeLocation loc) {
+	public static BridgeRenderer get(TerrainLocation.BridgeLocation loc) {
 		if (instances == null) instances = new HashMap<>();
 		if (!instances.containsKey(loc)) new BridgeRenderer(loc);
 		return instances.get(loc);

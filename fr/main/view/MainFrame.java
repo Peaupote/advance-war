@@ -9,6 +9,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import java.awt.Graphics;
+import java.awt.CardLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
@@ -24,6 +26,8 @@ import fr.main.model.Player;
 public class MainFrame extends JFrame {
 
   public static final int WIDTH = 960, HEIGHT = 704, UNIT = 32;
+  Controller controller;
+  View view;
   
   public MainFrame () throws UnsupportedAudioFileException, IOException, LineUnavailableException {
     super("Advance war");
@@ -36,9 +40,9 @@ public class MainFrame extends JFrame {
       new Player("P2")
     };
 
-    Controller controller = new Controller(players);
-    View view = new View(controller);
-
+    controller = new Controller(players);
+    view = new View(controller);
+    
     // set view to listen key events
     setFocusable(false);
     view.setFocusable(true);
@@ -46,14 +50,12 @@ public class MainFrame extends JFrame {
     // set view content
     view.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     setContentPane(view);
-
     // main loop
+    
     new Thread(() -> {
       while (true) {
         controller.update();
         view.repaint();
-        
-        
         try {
           Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -62,10 +64,12 @@ public class MainFrame extends JFrame {
       }
     }).start();
     
-//    this.setJMenuBar(menu);
     pack();
     setLocationRelativeTo(null);
     setVisible(true);
   }
+  
+  
+ 
 
 }

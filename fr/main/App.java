@@ -1,13 +1,10 @@
 package fr.main;
 
 import java.awt.EventQueue;
-import java.util.Random;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import java.awt.Point;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import fr.main.model.generator.MapGenerator;
@@ -22,6 +19,7 @@ import fr.main.view.render.units.air.FighterRenderer;
 import fr.main.view.render.units.naval.LanderRenderer;
 import fr.main.view.render.units.land.InfantryRenderer;
 import fr.main.view.MainFrame;
+import fr.main.view.MainMenu;
 
 /**
  * Classe qui lance le projet
@@ -40,14 +38,17 @@ public class App {
     }
   }
 
-  public static void play () {
+  public static void play (){
+	  new MainMenu();
+	  /**
     EventQueue.invokeLater(() -> {
       try {
-        new MainFrame();
+          new MainFrame();
       } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e){
         e.printStackTrace();
       }
     });
+    **/
   }
 
   public static void save () {

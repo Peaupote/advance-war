@@ -6,41 +6,48 @@ import fr.main.model.Weather;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.view.render.terrains.TerrainLocation;
+import fr.main.model.units.air.AirUnit;
+import fr.main.model.buildings.Building;
+import fr.main.model.units.weapons.PrimaryWeapon;
 
 public abstract class Terrain implements AbstractTerrain {
 
     protected final Map<Weather,Map<MoveType,Integer>> moveCost;
     protected TerrainLocation location;
 
-    protected int defense, bonusVision, bonusRange;
-    protected String name;
+    public final int height, defense;
+    public final String name;
 
-    protected Terrain(String name, int defense, int bonusVision, int bonusRange, Map<Weather,Map<MoveType,Integer>> moveCost) {
+    protected Terrain(String name, int defense, int height, Map<Weather,Map<MoveType,Integer>> moveCost) {
         this.defense     = defense;
-        this.bonusRange  = bonusRange;
-        this.bonusVision = bonusVision;
+        this.height      = height;
         this.name        = name;
         this.moveCost    = moveCost;
         this.location    = null;
     }
 
+    @Override
+    public int getHeight(){
+        return height;
+    }
+
+    @Override
     public int getDefense(AbstractUnit u) {
-        return defense;
+        return (u instanceof AirUnit)?0:defense;
     }
 
+    @Override
     public int getBonusVision(AbstractUnit u) {
-        return bonusVision;
+        return 0;
     }
 
-    public int getBonusRange(AbstractUnit u) {
-        return bonusRange;
+    @Override
+    public int getBonusRange(AbstractUnit u, PrimaryWeapon p) {
+        return 0;
     }
 
+    @Override
     public boolean hideFrom(AbstractUnit from) {
-        return false;
-    }
-
-    public boolean blockVision(AbstractUnit u){
         return false;
     }
 
@@ -49,6 +56,7 @@ public abstract class Terrain implements AbstractTerrain {
         return name;
     }
 
+    @Override
     public boolean canMoveIn(Weather w, MoveType moveType){
         if (w==Weather.FOGGY)
             w=Weather.SUNNY;
@@ -58,12 +66,14 @@ public abstract class Terrain implements AbstractTerrain {
         return false;
     }
 
+    @Override
     public boolean canStop(Weather w, MoveType mt){
         if (w==Weather.FOGGY)
             w=Weather.SUNNY;
         return canMoveIn(w,mt);
     }
 
+    @Override
     public Integer moveCost(Weather w, MoveType moveType){
         if (w==Weather.FOGGY)
             w=Weather.SUNNY;

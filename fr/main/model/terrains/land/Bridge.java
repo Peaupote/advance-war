@@ -39,7 +39,7 @@ public class Bridge extends Terrain implements LandTerrain{
     }
 
     protected Bridge() {
-        super(name,0,0,0, weatherMovementCosts);
+        super(name, 0, 0, weatherMovementCosts);
     }
 
     public static Bridge get () {

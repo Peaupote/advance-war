@@ -38,7 +38,7 @@ public class Beach extends Terrain implements LandTerrain,NavalTerrain {
     }
 
     public Beach() {
-        super(name,0,0,0,weatherMovementCosts);
+        super(name, 0, 0, weatherMovementCosts);
     }
 
     public static Beach get () {

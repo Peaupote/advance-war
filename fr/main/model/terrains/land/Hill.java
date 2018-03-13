@@ -4,8 +4,15 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
+import fr.main.model.units.air.AirUnit;
+import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.terrains.Buildable;
+import fr.main.model.buildings.Building;
+import fr.main.model.buildings.Dock;
+import fr.main.model.terrains.Terrain;
+import fr.main.view.render.terrains.TerrainImage;
 
 public class Hill extends Buildable implements LandTerrain {
 
@@ -41,7 +48,7 @@ public class Hill extends Buildable implements LandTerrain {
     }
 
     protected Hill() {
-        super(name, 2, 0, 0, weatherMovementCosts);
+        super(name, 2, 1, weatherMovementCosts);
     }
 
     public static Hill get () {
@@ -50,4 +57,13 @@ public class Hill extends Buildable implements LandTerrain {
         return instance;
     }
 
+    @Override
+    public int getBonusVision(AbstractUnit u){
+        return u instanceof AirUnit ? 0 : 1;
+    }
+
+    @Override
+    public int getBonusRange(AbstractUnit u, PrimaryWeapon p){
+        return u instanceof AirUnit ? 0 : 1;
+    }
 }

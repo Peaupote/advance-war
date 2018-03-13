@@ -109,8 +109,8 @@ public class Path extends LinkedList<Direction> {
         public Node(int x, int y, int lowestCost){
             this.x=x;
             this.y=y;
-            Integer i = Universe.get().getTerrain(offset.x+x,offset.y+y).moveCost(unit);
-            this.moveCost   = (i==null?lowestCost:i);
+            Integer i = unit.moveCost(offset.x+x,offset.y+y);
+            this.moveCost   = i == null ? lowestCost : i;
             this.lowestCost = lowestCost;
             this.previous   = Direction.NONE;
         }

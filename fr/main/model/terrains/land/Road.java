@@ -35,7 +35,7 @@ public class Road extends Terrain implements LandTerrain {
     }
 
     protected Road() {
-        super(name,0,0,0, weatherMovementCosts);
+        super(name, 0, 0, weatherMovementCosts);
     }
 
     public static Road get () {

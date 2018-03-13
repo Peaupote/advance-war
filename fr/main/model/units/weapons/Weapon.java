@@ -22,8 +22,8 @@ public abstract class Weapon implements java.io.Serializable {
     * @return true if and only if the shooter can shoot the target with this weapon (so if and only if it still has ammo, the unit is in range and can be shot).
     */
     public abstract boolean canAttack(AbstractUnit shooter, AbstractUnit target);
-    public abstract boolean isInRange(int actualX, int actualY, int targetX, int targetY);
-    public abstract void renderTarget(boolean[][] map, int x, int y, boolean enabled, boolean fullMove);
+    public abstract boolean isInRange(AbstractUnit shooter, AbstractUnit target);
+    public abstract void renderTarget(boolean[][] map, AbstractUnit u);
 
     public String toString(){
         return name;

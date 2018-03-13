@@ -29,10 +29,14 @@ import fr.main.view.MainFrame;
 public class App {
 
   public static void main (String[] args) {
-    switch (args[0]) {
+    String s = args == null || args.length == 0 ? "undefined" : args[0];
+    switch (s) {
       case "play": play();break;
       case "save": save();break;
-      default: play(); break;
+      default: 
+        save();
+        play();
+        break;
     }
   }
 
@@ -40,13 +44,7 @@ public class App {
     EventQueue.invokeLater(() -> {
       try {
         new MainFrame();
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (UnsupportedAudioFileException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (LineUnavailableException e) {
+      } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e){
         e.printStackTrace();
       }
     });

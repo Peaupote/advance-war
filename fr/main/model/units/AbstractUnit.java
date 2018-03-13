@@ -3,9 +3,11 @@ package fr.main.model.units;
 import java.awt.Point;
 
 import fr.main.model.Universe;
+import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.terrains.Buildable;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
+import fr.main.model.buildings.Dock;
 import fr.main.model.Player;
 import fr.main.model.Direction;
 
@@ -36,13 +38,23 @@ public interface AbstractUnit extends Serializable {
     Player getPlayer();
     boolean setPlayer(Player p);
     int getCost();
-    void renderVision(boolean[][] fog);
+
+    /*
+    * Airunits can see every tiles in range of their vision.
+    * For navalunits and landunits, it depends on the height of the terrain compared to the one of the unit, and if the terrain hide its content from the unit  
+    */
+    void renderVision(boolean[][] fog, boolean l);
+    default void renderVision (boolean[][] fog){
+        renderVision(fog, true);
+    }
+
     void reachableLocation (boolean[][] map);
 
     /*
     * set all tiles of the map that can be attacked (with the main or secondary weapon) from the position (x,y) to true, whatever the unit on it
     */
     void renderTarget (boolean[][] map, int x, int y);
+
     /*
     * set all tiles of the map that can be attacked (with the main or secondary weapon) from any position attainable from (x,y) to true, whatever the unit on it
     */
@@ -67,6 +79,10 @@ public interface AbstractUnit extends Serializable {
 
     String getName();
     Unit.Fuel getFuel();
+    default int getVision(){
+        return getPlayer().getCommander().getVision(this);
+    }
+    int getBaseVision();
     int getFuelTurnCost();
     int getMoveQuantity();
     int getMaxMoveQuantity();
@@ -113,5 +129,12 @@ public interface AbstractUnit extends Serializable {
 
     default void turnEnds(){
         setMoveQuantity(getMaxMoveQuantity());        
+    }
+
+    default Integer moveCost(int x, int y){
+        if (this instanceof NavalUnit && Universe.get().getBuilding(x,y) instanceof Dock)
+            return 1;
+        else
+            return Universe.get().getTerrain(x,y).moveCost(this);
     }
 }

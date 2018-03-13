@@ -31,7 +31,7 @@ public class River extends Terrain implements LandTerrain {
     }
 
     protected River() {
-        super(name, 0, 0, 0, weatherMovementCosts);
+        super(name, 0, 0, weatherMovementCosts);
     }
 
     public static River get () {

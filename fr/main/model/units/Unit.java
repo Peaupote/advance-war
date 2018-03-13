@@ -167,14 +167,14 @@ public abstract class Unit implements AbstractUnit {
                 return false;
             }
 
-            int q = u.getTerrain(x,y).moveCost(this);
-            if (q>getMoveQuantity()){
+            Integer q = moveCost(x,y);
+            if (q == null || q > getMoveQuantity()){
                 setMoveQuantity(0);
                 return false;
             }
             removeMoveQuantity(q);
 
-            int fuelQuantity=Math.abs(x-location.x)+Math.abs(y-location.y);
+            int fuelQuantity = Math.abs(x-location.x)+Math.abs(y-location.y);
 
             u.setUnit(location.x, location.y, null);
             location.x = x;
@@ -202,7 +202,7 @@ public abstract class Unit implements AbstractUnit {
             for (int i = 1 ; i <= visionT ; i++)
                 for (Direction d : Direction.cardinalDirections()){
                     int xx = x + i * d.x, yy = y + i * d.y;
-                    if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && (i == 1 || !Universe.get().getTerrain(xx, yy).hideFrom(this)) && (height == 2 || linearRegression(x, y, xx, yy, height)))
+                    if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && (i == 1 || !Universe.get().getTerrain(xx, yy).hideFrom(this)) && (!linearRegression || height == 2 || linearRegression(x, y, xx, yy, height)))
                         fog[yy][xx]=true;
                 }
             int[][] t = {
@@ -276,12 +276,12 @@ public abstract class Unit implements AbstractUnit {
 
     public void reachableLocation (boolean[][] map) {
         if (map != null && map.length != 0 && map[0] != null && map[0].length != 0)
-            reachableLocation (map, location.x, location.y, moveQuantity+Universe.get().getTerrain(location.x, location.y).moveCost(this));
+            reachableLocation (map, location.x, location.y, moveQuantity+moveCost(location.x, location.y));
     }
 
     private void reachableLocation (boolean[][] map, int x, int y, int movePoint){
         AbstractTerrain terrain = Universe.get().getTerrain(x, y);
-        Integer mvP             = terrain.moveCost(this);
+        Integer mvP             = moveCost(x,y);
 
         if (mvP == null || movePoint < mvP)
             return;
@@ -315,7 +315,7 @@ public abstract class Unit implements AbstractUnit {
         for (Direction d : Direction.cardinalDirections()){
             int xx = x + d.x, yy = y + d.y;
             if (yy >= 0 && xx >= 0 && yy < map.length && xx < map[yy].length){
-                Integer mvP=Universe.get().getTerrain(xx, yy).moveCost(this);
+                Integer mvP=moveCost(xx,yy);
                 if (mvP==null?false:movePoint>mvP)
                     renderAllTargets(map, xx, yy, movePoint-mvP);
             }
@@ -387,7 +387,8 @@ public abstract class Unit implements AbstractUnit {
         Random rand = new Random(); int r = rand.nextInt(1000);
         int aHP     = attacker.getLife();
         int dCO     = defender.getPlayer().getCommander().getDefenseValue(defender);
-        int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender);
+        AbstractBuilding building = Universe.get().getBuilding(defender.getX(), defender.getY());
+        int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender) + (building == null ? 0 : building.getDefense(defender));
         int dHP     = defender.getLife();
 
         return Math.max(0,(b*aCO+r)*aHP*(2000-10*dCO-dTR*dHP)/10000000);

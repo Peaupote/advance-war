@@ -18,7 +18,7 @@ public class WoodRenderer extends Wood implements Renderer {
 
 	private WoodRenderer(WoodLocation location) {
 		if (instance == null) instance = this;
-		this.tLocation = location;
+		this.location = location;
 		update();
 	}
 
@@ -28,12 +28,12 @@ public class WoodRenderer extends Wood implements Renderer {
 
 	@Override
 	public String getFilename() {
-		return tLocation.getPath();
+		return location.getPath();
 	}
 
 	@Override
 	public void update() {
-		this.image = TerrainImage.get(tLocation.getPath()).getSubImg(tLocation.location());
+		this.image = TerrainImage.get(location.getPath()).getSubImg(location.location());
 	}
 
 	@Override

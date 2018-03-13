@@ -1,6 +1,5 @@
 package fr.main.view.render;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import fr.main.view.render.terrains.TerrainImage;
 
 import java.awt.Graphics;

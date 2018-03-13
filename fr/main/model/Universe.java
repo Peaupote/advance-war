@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Random;
 
 import fr.main.model.terrains.Terrain;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.terrains.AbstractBuildable;
 import fr.main.model.commanders.FakeCommander;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.Weather;
@@ -23,8 +25,7 @@ public class Universe {
       File maps=new File(mapPath);
       if (!maps.exists() && !maps.isDirectory() && !maps.mkdir())
         System.out.println("Impossible to save.");
-      else
-        save=true;
+      else save = true;
   }
 
   protected static class Board implements Serializable {
@@ -32,11 +33,13 @@ public class Universe {
     public Terrain[][] board;
     public Player[] players;
     public AbstractUnit[][] units;
+    public AbstractBuilding[][] buildings;
 
-    public Board (AbstractUnit[][] units, Player[] ps, Terrain[][] board) {
-      this.board = board;
-      this.units = units;
-      this.players = ps;
+    public Board (AbstractUnit[][] units, Player[] ps, Terrain[][] board, AbstractBuilding[][] buildings) {
+      this.board     = board;
+      this.units     = units;
+      this.players   = ps;
+      this.buildings = buildings;
     }
   }
 
@@ -69,7 +72,7 @@ public class Universe {
 
     for (Player p: map.players) new FakeCommander(p);
 
-    weather=Weather.FOGGY;
+    weather = Weather.FOGGY;
     fogwar = new boolean[map.board.length][map.board[0].length];
     next();
   }
@@ -92,8 +95,6 @@ public class Universe {
   }
 
   public void next () {
-//    if (players.isFirst(current))
-//      weather=Weather.random(true);
     if (current != null)
       current.turnEnds();
 
@@ -113,14 +114,19 @@ public class Universe {
   }
 
   public final Terrain getTerrain (int x, int y) {
-    if (isValidPosition(x,y))
-      return map.board[y][x];
-    else
-      return null;
+    return isValidPosition(x,y) ? map.board[y][x] : null;
   }
 
   public final Terrain getTerrain (Point pt) {
     return getTerrain(pt.x, pt.y);
+  }
+
+  public final AbstractBuilding getBuilding(int x, int y) {
+    return isValidPosition(x,y) ? map.buildings[y][x] : null;
+  }
+
+  public final AbstractBuilding getBuilding (Point pt) {
+    return getBuilding(pt.x, pt.y);
   }
 
   public final AbstractUnit getUnit(int x, int y) {
@@ -158,13 +164,13 @@ public class Universe {
     return ret;
   }
 
-  public static void save (String mapName, AbstractUnit[][] units, Terrain[][] map, Player[] ps) {
+  public static void save (String mapName, AbstractUnit[][] units, Terrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {
     if (!Universe.save){
       System.out.println("Impossible to save.");
       return;
     }
 
-    Board board = new Board (units, ps, map);
+    Board board = new Board (units, ps, map, buildings);
 
     try {
       FileOutputStream fileOut = new FileOutputStream(mapPath+mapName);

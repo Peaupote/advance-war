@@ -99,6 +99,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             
             new Index("Move", () -> {
               mode = Mode.IDLE;
+              world.clearTarget();
               path.apply();
               mode = Mode.MOVE;
               cursor.setLocation(unitCursor.position());
@@ -107,6 +108,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
             new Index("Attack", () -> {
               mode = Mode.ATTACK;
+              world.updateTarget(targetUnit);
               unitCursor.setLocation(cursor.position());
             });
 
@@ -208,11 +210,13 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     AbstractUnit target = world.getUnit(unitCursor.position());
                     if (targetUnit.canAttack(target)) targetUnit.attack(target);
                     mode = Mode.MOVE;
+                    world.clearTarget();
                 } else {
                   if (targetUnit == null || !world.isVisible(cursor.position()))
                     actionPanel.setVisible (true);
                   else if (targetUnit.getPlayer() == world.getCurrentPlayer() && targetUnit.isEnabled()) {
                     mode = Mode.UNIT;
+                    world.updateTarget(targetUnit);
                     path.rebase(targetUnit);
                     path.visible = true;
                   }

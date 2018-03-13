@@ -10,7 +10,7 @@ import fr.main.model.buildings.Building;
 public abstract class Terrain implements AbstractTerrain {
 
     protected final Map<Weather,Map<MoveType,Integer>> moveCost;
-    protected TerrainLocation tLocation;
+    protected TerrainLocation location;
 
     protected int defense, bonusVision, bonusRange;
     protected String name;
@@ -20,8 +20,8 @@ public abstract class Terrain implements AbstractTerrain {
         this.bonusRange  = bonusRange;
         this.bonusVision = bonusVision;
         this.name        = name;
-        this.moveCost = moveCost;
-        this.tLocation = null;
+        this.moveCost    = moveCost;
+        this.location    = null;
     }
 
     public int getDefense(AbstractUnit u) {

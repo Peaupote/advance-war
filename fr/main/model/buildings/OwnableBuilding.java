@@ -13,11 +13,11 @@ public abstract class OwnableBuilding extends Building {
 
 	public OwnableBuilding(Terrain terrain, int defense, Player owner, int maximumLife, int income, String name){
     super (terrain, defense);
-		this.maximumLife=maximumLife;
-		this.life=maximumLife;
-		this.owner=owner;
-		this.income=income;
-		this.name=name;
+		this.maximumLife = maximumLife;
+		this.life        = maximumLife;
+		this.owner       = owner;
+		this.income      = income;
+		this.name        = name;
 	}
 
 	public String toString(){

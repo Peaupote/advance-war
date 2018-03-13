@@ -15,6 +15,7 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
+import fr.main.model.buildings.*;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
 import fr.main.view.render.units.air.FighterRenderer;
@@ -28,6 +29,30 @@ import fr.main.view.MainFrame;
 public class App {
 
   public static void main (String[] args) {
+    switch (args[0]) {
+      case "play": play();break;
+      case "save": save();break;
+      default: play(); break;
+    }
+  }
+
+  public static void play () {
+    EventQueue.invokeLater(() -> {
+      try {
+        new MainFrame();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      } catch (UnsupportedAudioFileException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (LineUnavailableException e) {
+        e.printStackTrace();
+      }
+    });
+  }
+
+  public static void save () {
     int s = 50;
     Terrain[][] map = new Terrain[s][s];
     TerrainEnum[][] eMap = new MapGenerator(2).randMap(s, s);
@@ -56,25 +81,13 @@ public class App {
     players[1].add(units[6][10]);
     players[0].add(units[10][10]);
 
-    Universe.save("maptest.map", units, map, players);
+    AbstractBuilding[][] buildings = new AbstractBuilding[s][s];
+    buildings[10][6] = new Barrack(map[10][6], players[1]);
+
+    Universe.save("maptest.map", units, map, players, buildings);
 
     //Universe world = new Universe("maptest.map");
     //System.out.println(world);
 
-
-
-    EventQueue.invokeLater(() -> {
-      try {
-        new MainFrame();
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (UnsupportedAudioFileException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (LineUnavailableException e) {
-        e.printStackTrace();
-      }
-	});
   }
 }

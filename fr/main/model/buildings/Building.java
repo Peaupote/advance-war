@@ -1,5 +1,7 @@
 package fr.main.model.buildings;
 
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.air.AirUnit;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.AbstractBuildable;
 
@@ -15,8 +17,8 @@ public abstract class Building implements AbstractBuilding{
         this.defense = defense;
     }
 
-    public int getDefense () {
-        return defense;
+    public int getDefense (AbstractUnit u) {
+        return u instanceof AirUnit ? 0 : defense;
     }
 
     public Terrain getTerrain () {

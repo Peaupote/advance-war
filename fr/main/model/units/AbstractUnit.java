@@ -3,9 +3,11 @@ package fr.main.model.units;
 import java.awt.Point;
 
 import fr.main.model.Universe;
+import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.terrains.Buildable;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
+import fr.main.model.buildings.Dock;
 import fr.main.model.Player;
 import fr.main.model.Direction;
 
@@ -127,5 +129,12 @@ public interface AbstractUnit extends Serializable {
 
     default void turnEnds(){
         setMoveQuantity(getMaxMoveQuantity());        
+    }
+
+    default Integer moveCost(int x, int y){
+        if (this instanceof NavalUnit && Universe.get().getBuilding(x,y) instanceof Dock)
+            return 1;
+        else
+            return Universe.get().getTerrain(x,y).moveCost(this);
     }
 }

@@ -15,32 +15,32 @@ public class FighterRenderer extends UnitRenderer.Render {
     LinkedList<ScaleRect> areas = new LinkedList<>();
     areas.add(new ScaleRect(90, 6, 15, 16, 2));
     areas.add(new ScaleRect(111, 7, 15, 16, 2));
-    AnimationState idleRight = new AnimationState(new SpriteList("./assets/red/air.png", areas), 50);
+    AnimationState idleRight = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
     areas = new LinkedList<>();
     areas.add(new ScaleRect(90, 6, 15, 16, 2, ScaleRect.Flip.VERTICALY));
     areas.add(new ScaleRect(111, 7, 15, 16, 2, ScaleRect.Flip.VERTICALY));
-    AnimationState idleLeft = new AnimationState(new SpriteList("./assets/red/air.png", areas), 50);
+    AnimationState idleLeft = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
     areas = new LinkedList<>();
     areas.add(new ScaleRect(86, 25, 19, 19, 2));
     areas.add(new ScaleRect(113, 25, 19, 20, 2));
-    AnimationState moveRight = new AnimationState(new SpriteList("./assets/red/air.png", areas), 15);
+    AnimationState moveRight = new AnimationState(new SpriteList(getDir() + "air.png", areas), 15);
 
     areas = new LinkedList<>();
     areas.add(new ScaleRect(86, 25, 19, 19, 2, ScaleRect.Flip.VERTICALY));
     areas.add(new ScaleRect(113, 25, 19, 20, 2, ScaleRect.Flip.VERTICALY));
-    AnimationState moveLeft = new AnimationState(new SpriteList("./assets/red/air.png", areas), 15);
+    AnimationState moveLeft = new AnimationState(new SpriteList(getDir() + "air.png", areas), 15);
 
     areas = new LinkedList<>();
     areas.add(new ScaleRect(90, 50, 15, 20, 2, ScaleRect.Flip.HORIZONTALLY));
     areas.add(new ScaleRect(90, 52, 15, 20, 2, ScaleRect.Flip.HORIZONTALLY));
-    AnimationState idleTop = new AnimationState(new SpriteList("./assets/red/air.png", areas), 50);
+    AnimationState idleTop = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
     areas = new LinkedList<>();
     areas.add(new ScaleRect(90, 50, 15, 20, 2));
     areas.add(new ScaleRect(90, 52, 15, 20, 2));
-    AnimationState idleBottom = new AnimationState(new SpriteList("./assets/red/air.png", areas), 50);
+    AnimationState idleBottom = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
     anim.put("idleRIGHT", idleRight);
     anim.put("idleLEFT", idleLeft);

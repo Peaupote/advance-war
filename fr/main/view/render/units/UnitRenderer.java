@@ -47,6 +47,14 @@ public class UnitRenderer {
       return true;
     }
 
+    protected final String getDir () {
+      String color;
+      Color c = unit.getPlayer().getColor();
+      if (c.equals(Color.blue)) color = "blue";
+      else color = "red";
+      return "./assets/" + color+ "/";
+    }
+
     public void draw (Graphics g, int x, int y) {
       anim.draw(g, x + offset.x, y + offset.y);
     }

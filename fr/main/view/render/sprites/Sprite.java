@@ -31,7 +31,7 @@ public class Sprite {
 		return new Sprite(path);
 	}
 
-	public Image getImage(int x, int y, int w, int h) {
+	public BufferedImage getImage(int x, int y, int w, int h) {
 		if (sprite == null) return null;
 
 		BufferedImage out = null;
@@ -50,12 +50,13 @@ public class Sprite {
 	}
 
 	public Image getReverseImage(int x, int y, int w, int h, int scale, boolean vertical) {
-		BufferedImage img = (BufferedImage) getImage(x, y, w, h);
+		BufferedImage img = getImage(x, y, w, h);
 
 		AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+    // TODO: find out why cant flip horizontally
 		tx.translate(-img.getWidth(null), 0);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		return op.filter(img, null).getScaledInstance(w * scale, h * scale, Image.SCALE_SMOOTH);
+		return op.filter(img, null);
 	}
 
   public Image getImage (ScaleRect rect) {

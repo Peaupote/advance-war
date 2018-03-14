@@ -15,12 +15,12 @@ public class LanderRenderer extends UnitRenderer.Render {
     LinkedList<ScaleRect> areas = new LinkedList<>();
     areas.add(new ScaleRect(9, 3, 16, 16, 2));
     areas.add(new ScaleRect(27, 3, 16, 16, 2));
-    AnimationState idle = new AnimationState (new SpriteList("./assets/red/sea.png", areas), 30);
+    AnimationState idle = new AnimationState (new SpriteList(getDir() + "sea.png", areas), 30);
 
     areas = new LinkedList<>();
     areas.add(new ScaleRect(7, 60, 18, 13, 2));
     areas.add(new ScaleRect(27, 60, 18, 13, 2));
-    AnimationState move = new AnimationState (new SpriteList("./assets/red/sea.png", areas), 30);
+    AnimationState move = new AnimationState (new SpriteList(getDir() + "sea.png", areas), 30);
 
     anim.put("idleRIGHT", idle);
     anim.put("moveRIGHT", move);

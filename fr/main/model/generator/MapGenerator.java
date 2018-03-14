@@ -2,7 +2,7 @@ package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.ReefRenderer;
 import fr.main.view.render.terrains.naval.RiverRenderer;

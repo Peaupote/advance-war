@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.model.terrains.naval.Sea;

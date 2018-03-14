@@ -8,6 +8,7 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.buildings.Building;
 import fr.main.model.units.weapons.PrimaryWeapon;
+import fr.main.view.render.terrains.TerrainLocation;
 
 public abstract class Terrain implements AbstractTerrain {
 

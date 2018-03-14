@@ -10,10 +10,6 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.terrains.Buildable;
-import fr.main.model.buildings.Building;
-import fr.main.model.buildings.Dock;
-import fr.main.model.terrains.Terrain;
-import fr.main.view.render.terrains.TerrainImage;
 
 public class Hill extends Buildable implements LandTerrain {
 

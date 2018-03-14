@@ -1,6 +1,6 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Beach;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;

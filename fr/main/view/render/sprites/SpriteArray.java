@@ -7,13 +7,13 @@ import java.awt.Image;
 
 public class SpriteArray extends ArrayList<Image> {
 
-  public SpriteArray (String path, LinkedList<ScaleRect> images) {
-    super();
-    
-    Sprite sprite = Sprite.get(path);
-    for (Rectangle rect: images)
-      add(sprite.getImage(rect.x, rect.y, rect.width, rect.height));
-  }
+	public SpriteArray(String path, LinkedList<ScaleRect> images) {
+		super();
+
+		Sprite sprite = Sprite.get(path);
+		for (ScaleRect rect : images)
+      add(sprite.getImage(rect));
+	}
 
 }
 

@@ -7,13 +7,12 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.generator.MapGenerator;
-import fr.main.model.terrains.*;
-import fr.main.model.buildings.*;
 import fr.main.model.terrains.land.*;
 import fr.main.model.units.AbstractUnit;
 
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.*;
 
@@ -25,7 +24,7 @@ public class UniverseRenderer extends Universe {
                       moveColor   = new Color (0, 255, 0, 50),
                       targetColor = new Color (255, 0, 0, 100);
 
-  private final int[][][] coords; 
+  private final int[][][] coords;
   private final boolean[][] targets;
   private Color tColor;
 

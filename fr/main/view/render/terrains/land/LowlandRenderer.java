@@ -2,17 +2,13 @@ package fr.main.view.render.terrains.land;
 
 import java.awt.*;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.model.terrains.land.Lowland;
 import fr.main.view.render.terrains.TerrainImage;
-
-import javax.imageio.ImageIO;
 
 public class LowlandRenderer extends Lowland implements Renderer {
 

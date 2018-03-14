@@ -10,6 +10,7 @@ import fr.main.view.render.Renderer;
 public interface UnitRenderer extends Renderer, AbstractUnit {
 
   Point getOffset();
+  void setOrientation(Direction d);
 
   default boolean moveOffset (Direction d) {
     Point offset = getOffset();

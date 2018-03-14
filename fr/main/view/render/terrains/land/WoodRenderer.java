@@ -1,16 +1,13 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Wood;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.view.render.terrains.TerrainImage;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 
 public class WoodRenderer extends Wood implements Renderer {
 	private transient Image image;

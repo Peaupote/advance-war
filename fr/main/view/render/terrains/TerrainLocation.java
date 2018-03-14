@@ -1,4 +1,4 @@
-package fr.main.model.terrains;
+package fr.main.view.render.terrains;
 
 import fr.main.view.render.terrains.TerrainImage;
 

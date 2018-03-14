@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.AbstractUnit;

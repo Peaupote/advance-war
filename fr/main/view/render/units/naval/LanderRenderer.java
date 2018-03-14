@@ -64,4 +64,6 @@ public class LanderRenderer extends Lander implements UnitRenderer {
     return offset;
   }
 
+  public void setOrientation (Direction d) {}
+
 }

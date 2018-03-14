@@ -97,7 +97,6 @@ public class PathRenderer extends Path {
     }
 
     public void apply () {
-        makeAppliable();
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
         while (!isEmpty()) {

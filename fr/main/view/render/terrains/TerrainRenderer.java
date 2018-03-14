@@ -10,7 +10,7 @@ import fr.main.model.terrains.naval.*;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 //import fr.main.view.render.terrains.land.*;
-//import fr.main.view.render.terrains.naval.*;
+import fr.main.view.render.terrains.naval.*;
 import fr.main.view.render.animations.*;
 
 public class TerrainRenderer {
@@ -30,7 +30,9 @@ public class TerrainRenderer {
     return null; 
   }
 
+  public SeaRenderer sea = new SeaRenderer();
   public static void render(Graphics g, Point coords, AbstractTerrain terrain) {
+    sea.draw(g, coords.x, coords.y);
   }
 
 }

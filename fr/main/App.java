@@ -29,6 +29,11 @@ import fr.main.view.MainFrame;
 public class App {
 
   public static void main (String[] args) {
+  	if(args.length <= 0) {
+  		save();
+  		play();
+  		return;
+	}
     switch (args[0]) {
       case "play": play();break;
       case "save": save();break;

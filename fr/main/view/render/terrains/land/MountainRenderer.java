@@ -1,17 +1,13 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.TerrainLocation;
+import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.terrains.land.Mountain;
-import fr.main.model.terrains.naval.NavalTerrain;
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
 import fr.main.view.render.terrains.TerrainImage;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 
 public class MountainRenderer extends Mountain implements Renderer {
 	private transient Image image;

@@ -11,11 +11,12 @@ import fr.main.model.commanders.Commander;
 
 public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
-    private static final Color[] colors = new Color[]{
-        Color.red,
-        Color.blue,
-        Color.white,
-        Color.yellow
+    public static final Color[] colors = new Color[]{
+        	Color.red,
+			Color.blue,
+			Color.green,
+//        Color.getHSBColor(270, 82, 43),
+        	Color.yellow
     };
 
     private static int increment_id = 0;
@@ -55,7 +56,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
             this.commander = c;
             return true;
         }
-        
+
         return false;
     }
 
@@ -89,4 +90,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         for (AbstractUnit u : units)
             u.turnEnds();
     }
+
+	public Color getColor() {
+		return color;
+	}
 }

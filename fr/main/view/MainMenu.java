@@ -13,10 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.sun.org.apache.bcel.internal.util.BCELifier;
-
 import fr.main.App;
-import sun.applet.Main;
 
 public class MainMenu extends JFrame implements ActionListener{
 	

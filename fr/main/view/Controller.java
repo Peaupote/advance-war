@@ -225,6 +225,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
                   mode = Mode.MOVE;
+                  world.clearTarget();
                   path.visible = false;
               }
             } else if (mode == Mode.MENU) {

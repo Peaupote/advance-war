@@ -9,10 +9,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.awt.CardLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.Thread;
@@ -50,6 +52,9 @@ public class MainFrame extends JFrame {
     // set view content
     view.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     setContentPane(view);
+    // remove mouse display
+    setCursor(view.getToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), null));
+
     // main loop
     
     new Thread(() -> {

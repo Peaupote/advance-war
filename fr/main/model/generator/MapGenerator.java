@@ -1,7 +1,7 @@
 package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.terrains.TerrainLocation;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.ReefRenderer;
@@ -512,7 +512,7 @@ public class MapGenerator {
 	}
 
 
-	public TerrainLocation[][] getLocations(Terrain[][] map) {
+	public TerrainLocation[][] getLocations(AbstractTerrain[][] map) {
     	TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++)

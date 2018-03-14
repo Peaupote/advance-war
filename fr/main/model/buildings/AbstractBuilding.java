@@ -1,12 +1,14 @@
 package fr.main.model.buildings;
 
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractTerrain;
 
 public interface AbstractBuilding extends java.io.Serializable{
   
   int getDefense (AbstractUnit u);
-  Terrain getTerrain ();
+  AbstractTerrain getTerrain ();
+  int getX();
+  int getY();
 
 }
 

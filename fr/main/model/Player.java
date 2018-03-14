@@ -40,6 +40,10 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         funds     = 0;
     }
 
+    public void addFunds(int f){
+        funds += f;
+    }
+
     public int getFunds(){
         return funds;
     }
@@ -64,12 +68,21 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     public void add(AbstractUnit u) {
-        if (u.setPlayer(this))
+        if (u.getPlayer() == this && !units.contains(u))
             units.add(u);
     }
 
     public void remove(AbstractUnit u){
         units.remove(u);
+    }
+
+    public void addBuilding(OwnableBuilding b){
+        if (b.getOwner() == this && !buildings.contains(b))
+            buildings.add(b);
+    }
+
+    public void removeBuilding(OwnableBuilding b){
+        buildings.remove(b);
     }
 
     public Iterator<AbstractUnit> iterator () {

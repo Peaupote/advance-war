@@ -1,28 +1,40 @@
 package fr.main.model.buildings;
 
+import java.awt.Point;
+
+import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.air.AirUnit;
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.terrains.AbstractBuildable;
 
 import java.io.Serializable;
 
 public abstract class Building implements AbstractBuilding{
 
-    protected final Terrain terrain;
     protected final int defense;
+    protected final Point location;
 
-    public Building (Terrain terrain, int defense) {
-        this.terrain = terrain;
-        this.defense = defense;
+    public Building (Point p, int defense) {
+        this.defense  = defense;
+        this.location = p;
+        Universe.get().setBuilding(p.x, p.y, this);
+    }
+
+    public int getX(){
+        return location.x;
+    }
+
+    public int getY(){
+        return location.y;
     }
 
     public int getDefense (AbstractUnit u) {
         return u instanceof AirUnit ? 0 : defense;
     }
 
-    public Terrain getTerrain () {
-        return terrain;
+    public AbstractTerrain getTerrain () {
+        return Universe.get().getTerrain(location);
     }
 
 }

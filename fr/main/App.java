@@ -11,10 +11,10 @@ import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Player;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.buildings.*;
+import fr.main.model.commanders.FakeCommander;
+import fr.main.model.terrains.AbstractTerrain;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.Unit;
 import fr.main.view.render.units.air.FighterRenderer;
 import fr.main.view.render.units.naval.LanderRenderer;
 import fr.main.view.render.units.land.InfantryRenderer;
@@ -40,20 +40,11 @@ public class App {
 
   public static void play (){
 	  new MainMenu();
-	  /**
-    EventQueue.invokeLater(() -> {
-      try {
-          new MainFrame();
-      } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e){
-        e.printStackTrace();
-      }
-    });
-    **/
   }
 
   public static void save () {
     int s = 50;
-    Terrain[][] map = new Terrain[s][s];
+    AbstractTerrain[][] map = new AbstractTerrain[s][s];
     TerrainEnum[][] eMap = new MapGenerator(2).randMap(s, s);
 
     for (int i = 0; i < eMap.length; i++)
@@ -65,28 +56,11 @@ public class App {
       new Player("P1"), new Player("P2")
     };
 
-    AbstractUnit[][] units = new Unit[s][s];
-    units[0][0] = new LanderRenderer(new Point(0,0));
-    units[1][1] = new LanderRenderer(new Point(1,1));
-    units[17][3] = new LanderRenderer(new Point(3,17));
-    units[5][10] = new InfantryRenderer(new Point(10,5));
-    units[6][10] = new InfantryRenderer(new Point(10,6));
-    units[10][10] = new FighterRenderer(new Point(10,10));
+    for (Player p: players) new FakeCommander(p);
 
-    players[0].add(units[0][0]);
-    players[0].add(units[17][3]);
-    players[1].add(units[1][1]);
-    players[0].add(units[5][10]);
-    players[1].add(units[6][10]);
-    players[0].add(units[10][10]);
-
+    AbstractUnit[][] units = new AbstractUnit[s][s];
     AbstractBuilding[][] buildings = new AbstractBuilding[s][s];
-    buildings[10][6] = new Barrack(map[10][6], players[1]);
 
     Universe.save("maptest.map", units, map, players, buildings);
-
-    //Universe world = new Universe("maptest.map");
-    //System.out.println(world);
-
   }
 }

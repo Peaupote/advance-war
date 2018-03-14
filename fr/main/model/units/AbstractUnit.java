@@ -36,7 +36,7 @@ public interface AbstractUnit extends Serializable {
 
     boolean setLife(int life);
     Player getPlayer();
-    boolean setPlayer(Player p);
+    void setPlayer(Player p);
     int getCost();
 
     /*
@@ -136,5 +136,8 @@ public interface AbstractUnit extends Serializable {
             return 1;
         else
             return Universe.get().getTerrain(x,y).moveCost(this);
+    }
+    default boolean canStop (int x, int y){
+        return (this instanceof NavalUnit && Universe.get().getBuilding(x,y) instanceof Dock) || Universe.get().getTerrain(x,y).canStop(this);
     }
 }

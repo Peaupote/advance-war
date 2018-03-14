@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.Color;
 import java.awt.Image;
 
+import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.Path;
 import fr.main.model.Direction;
@@ -23,8 +24,8 @@ public class LanderRenderer extends Lander implements UnitRenderer {
 
   private transient Image image;
 
-  public LanderRenderer (Point location) {
-    super (null, location);
+  public LanderRenderer (Player p, Point location) {
+    super (p, location);
 
     offset = new Point(0, 0);
   }

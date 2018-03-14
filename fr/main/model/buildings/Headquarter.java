@@ -1,5 +1,7 @@
 package fr.main.model.buildings;
 
+import java.awt.Point;
+
 import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
@@ -12,8 +14,8 @@ public class Headquarter extends OwnableBuilding implements RepairBuilding<LandU
 	public static final String name     = "QG";
 	public static final int maximumLife = 200;
 
-	public Headquarter(Terrain t, Player p){
-		super(t, defense, p, maximumLife, income, name);
+	public Headquarter(Player p, Point pos){
+		super(p, pos, defense, maximumLife, income, name);
 	}
 
 	public boolean canRepair(AbstractUnit u){

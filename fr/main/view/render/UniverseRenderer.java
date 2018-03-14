@@ -40,7 +40,8 @@ public class UniverseRenderer extends Universe {
 
     for (Player p: map.players)
       for (AbstractUnit u: p)
-        ((Renderer)u).update();
+        if (u instanceof Renderer)
+          ((Renderer)u).update();
 
     this.controller = controller;
     coords = new int[map.board.length][map.board[0].length][2];
@@ -106,7 +107,12 @@ public class UniverseRenderer extends Universe {
 
         if (map.units[i][j] != null)
           if (map.units[i][j].getPlayer() == current || fogwar[i][j])
-            ((Renderer)map.units[i][j]).draw(g, coords[i][j][0], coords[i][j][1]);
+            if (map.units[i][j] instanceof Renderer)
+              ((Renderer)map.units[i][j]).draw(g, coords[i][j][0], coords[i][j][1]);
+            else{
+              g.setColor(Color.RED);
+              g.fillRect(coords[i][j][0], coords[i][j][1], MainFrame.UNIT, MainFrame.UNIT);
+            }
       }
   }
 

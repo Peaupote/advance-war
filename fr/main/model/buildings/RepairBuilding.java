@@ -10,7 +10,7 @@ public interface RepairBuilding<T extends AbstractUnit> {
     // example : the airport is the only building to repair air units ; it doesn't repair land unit
     public boolean canRepair(AbstractUnit u);
 
-    public default void repair (T u){
+    public default void repair (AbstractUnit u){
         if (canRepair(u)){
             if (this instanceof OwnableBuilding){
                 Player p=((OwnableBuilding)this).getOwner();

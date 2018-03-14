@@ -5,6 +5,8 @@ import java.awt.Point;
 
 import fr.main.model.Direction;
 import fr.main.model.Universe;
+import fr.main.model.units.naval.NavalUnit;
+import fr.main.model.buildings.Dock;
 
 public class Path extends LinkedList<Direction> {
 
@@ -115,9 +117,9 @@ public class Path extends LinkedList<Direction> {
         public int lowestCost;
 
         public Node(int x, int y, int lowestCost){
-            this.x=x;
-            this.y=y;
-            Integer i = unit.moveCost(offset.x+x,offset.y+y);
+            this.x = x;
+            this.y = y;
+            Integer i = unit.moveCost(offset.x + x, offset.y + y);
             this.moveCost   = i == null ? lowestCost : i;
             this.lowestCost = lowestCost;
             this.previous   = Direction.NONE;

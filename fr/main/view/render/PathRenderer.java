@@ -100,6 +100,10 @@ public class PathRenderer extends Path {
         while (!isEmpty()) {
             Direction d = poll();
 
+            if (! (unit instanceof UnitRenderer)){
+                unit.move(d);
+                continue;
+            }
             UnitRenderer render = (UnitRenderer)unit;
             for (int i = 0; i < MainFrame.UNIT; i++) {
                 if (!render.moveOffset(d)) return;

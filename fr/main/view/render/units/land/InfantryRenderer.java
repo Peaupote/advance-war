@@ -2,6 +2,7 @@ package fr.main.view.render.units.land;
 
 import java.awt.*;
 
+import fr.main.model.Player;
 import fr.main.model.units.land.Infantry;
 import fr.main.view.MainFrame;
 import fr.main.view.render.units.UnitAnimationManager;
@@ -12,8 +13,8 @@ public class InfantryRenderer extends Infantry implements UnitRenderer {
   private Point offset;
   private transient Image image;
 
-  public InfantryRenderer (Point location) {
-    super(null, location);
+  public InfantryRenderer (Player p, Point location) {
+    super(p, location);
 
     offset = new Point (0, 0);
   }

@@ -8,6 +8,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
 import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.render.terrains.TerrainRenderer;
 
 public class UniverseRenderer extends Universe {
 
@@ -48,10 +49,7 @@ public class UniverseRenderer extends Universe {
         if (map.buildings[i][j] != null) {
           g.setColor(Color.red);
           g.fillRect(coords[i][j].x, coords[i][j].y, MainFrame.UNIT, MainFrame.UNIT);
-        } else {
-          g.setColor(Color.blue);
-          g.fillRect(coords[i][j].x, coords[i][j].y, MainFrame.UNIT, MainFrame.UNIT);
-        }
+        } else TerrainRenderer.render(g, coords[i][j], map.board[i][j]);
 
         if (targets[i][j]) {
           g.setColor(tColor);

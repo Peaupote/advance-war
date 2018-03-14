@@ -17,10 +17,10 @@ import fr.main.model.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.buildings.*;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.Unit;
-import fr.main.view.render.units.air.FighterRenderer;
-import fr.main.view.render.units.naval.LanderRenderer;
-import fr.main.view.render.units.land.InfantryRenderer;
+import fr.main.model.units.land.*;
+import fr.main.model.units.naval.*;
+import fr.main.model.units.air.*;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
 
 /**
@@ -64,13 +64,13 @@ public class App {
       new Player("P1"), new Player("P2")
     };
 
-    AbstractUnit[][] units = new Unit[s][s];
-    units[0][0] = new LanderRenderer(new Point(0,0));
-    units[1][1] = new LanderRenderer(new Point(1,1));
-    units[17][3] = new LanderRenderer(new Point(3,17));
-    units[5][10] = new InfantryRenderer(new Point(10,5));
-    units[6][10] = new InfantryRenderer(new Point(10,6));
-    units[10][10] = new FighterRenderer(new Point(10,10));
+    AbstractUnit[][] units = new AbstractUnit[s][s];
+    units[0][0] = new Lander(null, new Point(0,0));
+    units[1][1] = new Lander(null, new Point(1,1));
+    units[17][3] = new Lander(null, new Point(3,17));
+    units[5][10] = new Infantry(null,new Point(10,5));
+    units[6][10] = new Infantry(null, new Point(10,6));
+    units[10][10] = new Fighter(null, new Point(10,10));
 
     players[0].add(units[0][0]);
     players[0].add(units[17][3]);

@@ -98,7 +98,7 @@ public class PathRenderer extends Path {
 
     public void apply () {
         makeAppliable();
-        UnitRenderer render = (UnitRenderer)unit;
+        UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
         while (!isEmpty()) {
             Direction d = poll();

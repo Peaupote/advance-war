@@ -32,7 +32,7 @@ public class MainMenu extends JFrame implements ActionListener{
 		play =new MenuButton("PLAY","./assets/button/b02.png",350, 150);
 		select = new MenuButton("SELECT","./assets/button/b02.png",350, 290);
 		load = new MenuButton("LOAD","./assets/button/b02.png",350, 430);
-		edit = new MenuButton("EDIT","./assets/button/b02.png",350, 590);
+		edit = new MenuButton("EDIT","./assets/button/b02.png",350, 570);
 		
 		exit = new MenuButton("EXIT","./assets/button/b03.png",830, 0,20);
 		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0,20);

@@ -121,7 +121,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Load", () -> {});
             new Index("Unload", () -> {});
 
-            new Index("Cancel", () -> {});
+            new Index("Cancel", world::clearTarget);
         }
         
         @Override

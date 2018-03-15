@@ -1,12 +1,6 @@
 package fr.main;
 
-import java.awt.EventQueue;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import java.awt.Point;
 import java.io.IOException;
-
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
@@ -15,11 +9,6 @@ import fr.main.model.commanders.FakeCommander;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.land.*;
-import fr.main.model.units.naval.*;
-import fr.main.model.units.air.*;
-import fr.main.model.units.AbstractUnit;
-import fr.main.view.MainFrame;
 import fr.main.view.MainMenu;
 
 /**
@@ -27,7 +16,7 @@ import fr.main.view.MainMenu;
  */
 public class App {
 
-  public static void main (String[] args) {
+  public static void main (String[] args) throws IOException {
     String s = args == null || args.length == 0 ? "undefined" : args[0];
     switch (s) {
       case "play": play();break;
@@ -39,7 +28,7 @@ public class App {
     }
   }
 
-  public static void play (){
+  public static void play () throws IOException{
 	  new MainMenu();
   }
 

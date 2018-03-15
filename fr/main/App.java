@@ -15,9 +15,10 @@ import fr.main.model.commanders.FakeCommander;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.units.AbstractUnit;
-import fr.main.view.render.units.air.FighterRenderer;
-import fr.main.view.render.units.naval.LanderRenderer;
-import fr.main.view.render.units.land.InfantryRenderer;
+import fr.main.model.units.land.*;
+import fr.main.model.units.naval.*;
+import fr.main.model.units.air.*;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.MainMenu;
 

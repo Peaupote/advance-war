@@ -6,14 +6,14 @@ import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.sprites.*;
 import fr.main.view.render.animations.*;
 
-public class WoodRenderer extends TerrainRenderer.Render {
+public class RiverRenderer extends TerrainRenderer.Render {
 
-  public WoodRenderer () {
+  public RiverRenderer () {
     super();
 
     LinkedList<ScaleRect> areas = new LinkedList<>();
-    areas.add(new ScaleRect (0, 0, 16, 16, 2));
-    AnimationState idle = new AnimationState(new SpriteList("./assets/terrains/forest.png", areas), 20);
+    areas.add(new ScaleRect (17, 17, 16, 16, 2));
+    AnimationState idle = new AnimationState(new SpriteList("./assets/terrains/rivers2.png", areas), 20);
     anim.put("idle", idle);
     anim.setState("idle");
   }

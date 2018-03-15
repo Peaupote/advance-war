@@ -1,50 +1,55 @@
 package fr.main.view.render.units.air;
 
-import java.io.*;
-import javax.imageio.ImageIO;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Color;
-import java.awt.Image;
+import java.util.LinkedList;
 
-import fr.main.model.Player;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.units.Path;
-import fr.main.model.Direction;
-import fr.main.view.MainFrame;
+import fr.main.view.render.sprites.*;
+import fr.main.view.render.animations.*;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.render.units.UnitAnimationManager;
-import fr.main.model.units.air.Fighter;
+import fr.main.model.units.AbstractUnit;
 
-public class FighterRenderer extends Fighter implements UnitRenderer {
+public class FighterRenderer extends UnitRenderer.Render {
 
-  private Point offset;
+  public FighterRenderer (AbstractUnit unit) {
+    super (unit);
 
-  private transient Image image;
+    LinkedList<ScaleRect> areas = new LinkedList<>();
+    areas.add(new ScaleRect(90, 6, 15, 16, 2));
+    areas.add(new ScaleRect(111, 7, 15, 16, 2));
+    AnimationState idleRight = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
-  public FighterRenderer (Player p, Point location) {
-    super (p, location);
+    areas = new LinkedList<>();
+    areas.add(new ScaleRect(90, 6, 15, 16, 2, ScaleRect.Flip.VERTICALY));
+    areas.add(new ScaleRect(111, 7, 15, 16, 2, ScaleRect.Flip.VERTICALY));
+    AnimationState idleLeft = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
-    offset = new Point(0, 0);
-  }
+    areas = new LinkedList<>();
+    areas.add(new ScaleRect(86, 25, 19, 19, 2));
+    areas.add(new ScaleRect(113, 25, 19, 20, 2));
+    AnimationState moveRight = new AnimationState(new SpriteList(getDir() + "air.png", areas), 15);
 
-  public void draw (Graphics g, int x, int y) {
-    if (image == null) g.fillRect (x + offset.x, y + offset.y, MainFrame.UNIT, MainFrame.UNIT);
-    else g.drawImage (image, x + offset.x, y + offset.y + UnitAnimationManager.getOffset() - 5, MainFrame.UNIT, MainFrame.UNIT, null);
-  }
+    areas = new LinkedList<>();
+    areas.add(new ScaleRect(86, 25, 19, 19, 2, ScaleRect.Flip.VERTICALY));
+    areas.add(new ScaleRect(113, 25, 19, 20, 2, ScaleRect.Flip.VERTICALY));
+    AnimationState moveLeft = new AnimationState(new SpriteList(getDir() + "air.png", areas), 15);
 
-  @Override
-  public String getFilename() {
-    return getDir() + "fighter.png";
-  }
+    areas = new LinkedList<>();
+    areas.add(new ScaleRect(90, 50, 15, 20, 2, ScaleRect.Flip.HORIZONTALLY));
+    areas.add(new ScaleRect(90, 52, 15, 20, 2, ScaleRect.Flip.HORIZONTALLY));
+    AnimationState idleTop = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
-  public void setImage (Image image) {
-    this.image = image;
-  }
+    areas = new LinkedList<>();
+    areas.add(new ScaleRect(90, 50, 15, 20, 2));
+    areas.add(new ScaleRect(90, 52, 15, 20, 2));
+    AnimationState idleBottom = new AnimationState(new SpriteList(getDir() + "air.png", areas), 50);
 
-  @Override
-  public Point getOffset () {
-    return offset;
+    anim.put("idleRIGHT", idleRight);
+    anim.put("idleLEFT", idleLeft);
+    anim.put("idleTOP", idleTop);
+    anim.put("idleBOTTOM", idleBottom);
+
+    anim.put("moveRIGHT", moveRight);
+    anim.put("moveLEFT", moveLeft);
+    anim.setState("idleRIGHT");
   }
 
 }

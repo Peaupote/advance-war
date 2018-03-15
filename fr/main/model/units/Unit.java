@@ -1,6 +1,6 @@
 package fr.main.model.units;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Random;
 import java.io.Serializable;
 
@@ -17,6 +17,9 @@ import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.Universe;
 import fr.main.model.Direction;
+
+import static java.awt.Color.blue;
+import static java.awt.Color.red;
 
 /**
  * Represents a unit on the board
@@ -175,7 +178,7 @@ public abstract class Unit implements AbstractUnit {
             u.updateVision();
             return true;
         }
-        
+
         return false;
     }
 
@@ -276,7 +279,7 @@ public abstract class Unit implements AbstractUnit {
 
         if (mvP == null || movePoint < mvP)
             return;
-        
+
         movePoint -= mvP;
         if (canStop(x, y))
             map[y][x] = true;
@@ -384,4 +387,5 @@ public abstract class Unit implements AbstractUnit {
 
         return Math.max(0,(b*aCO+r)*aHP*(2000-10*dCO-dTR*dHP)/10000000);
     }
+
 }

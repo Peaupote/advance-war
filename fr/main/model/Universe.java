@@ -81,12 +81,12 @@ public class Universe {
 
     new Dock(map.players[0], new Point(6,10));
 
-    new LanderRenderer(map.players[0], new Point(0,0));
-    new LanderRenderer(map.players[1], new Point(1,1));
-    new LanderRenderer(map.players[0], new Point(3,17));
-    new InfantryRenderer(map.players[0], new Point(10,5));
-    new InfantryRenderer(map.players[1], new Point(10,6));
-    new FighterRenderer(map.players[0], new Point(10,10));
+    new Lander(map.players[0], new Point(0,0));
+    new Lander(map.players[1], new Point(1,1));
+    new Lander(map.players[0], new Point(3,17));
+    new Infantry(map.players[0], new Point(10,5));
+    new Infantry(map.players[1], new Point(10,6));
+    new Fighter(map.players[0], new Point(10,10));
 
     map.players[0].addFunds(15000);
 

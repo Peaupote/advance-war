@@ -2,10 +2,7 @@ package fr.main.model;
 
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.Reef;
-import fr.main.model.terrains.naval.Sea;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.*;
+import fr.main.model.terrains.naval.*;
 
 import java.time.temporal.TemporalAccessor;
 

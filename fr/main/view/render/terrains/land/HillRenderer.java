@@ -1,83 +1,22 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.model.terrains.TerrainLocation;
-import fr.main.model.terrains.land.Hill;
-import fr.main.view.MainFrame;
-import fr.main.view.render.Renderer;
-import fr.main.view.render.terrains.TerrainImage;
+import java.util.LinkedList;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
+import fr.main.view.render.terrains.TerrainRenderer;
+import fr.main.view.render.sprites.*;
+import fr.main.view.render.animations.*;
 
-public class HillRenderer extends Hill implements Renderer {
-	private transient Image image;
-	private transient static HillRenderer instance;
+public class HillRenderer extends TerrainRenderer.Render {
 
-	private HillRenderer(HillLocation location) {
-		if (instance == null) instance = this;
-		this.location = location;
-		update();
-	}
+  public HillRenderer () {
+    super();
 
-	private HillRenderer() {
-		this(HillLocation.NORMAL);
-	}
+    LinkedList<ScaleRect> areas = new LinkedList<>();
+    areas.add(new ScaleRect (0, 0, 16, 16, 2));
+    AnimationState idle = new AnimationState(new SpriteList("./assets/terrains/hill.png", areas), 20);
+    anim.put("idle", idle);
+    anim.setState("idle");
+  }
 
-	@Override
-	public String getFilename() {
-		return location.getPath();
-	}
-
-	@Override
-	public void setImage(Image image) {
-		this.image = image;
-	}
-
-	@Override
-	public void update() {
-		this.image = TerrainImage.get(location.getPath()).getSubImg(location.location());
-	}
-
-	public void draw(Graphics g, int x, int y) {
-		if (image == null) {
-			g.setColor(Color.pink);
-			g.fillRect(x, y, MainFrame.UNIT, MainFrame.UNIT);
-			return;
-		}
-
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(image, x, y, MainFrame.UNIT, MainFrame.UNIT, null);
-	}
-
-	public static HillRenderer get() {
-		if (instance == null) instance = new HillRenderer();
-		return instance;
-	}
-
-	public static HillRenderer get(HillLocation loc) {
-		return get();
-	}
-
-	public enum HillLocation implements TerrainLocation {
-		NORMAL(TerrainImage.Location.TOP_LEFT);
-
-		private TerrainImage.Location location;
-		private String path = "assets/terrains/hill.png";
-
-		HillLocation(TerrainImage.Location loc) {
-			this.location = loc;
-		}
-
-		@Override
-		public String getPath() {
-			return path;
-		}
-
-		public TerrainImage.Location location() {
-			return location;
-		}
-	}
 }
+

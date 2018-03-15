@@ -1,12 +1,7 @@
 package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
-import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.terrains.TerrainLocation;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.ReefRenderer;
-import fr.main.view.render.terrains.naval.RiverRenderer;
-import fr.main.view.render.terrains.naval.SeaRenderer;
+import fr.main.model.terrains.Terrain;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -481,42 +476,4 @@ public class MapGenerator {
 
         return map;
     }
-
-    private TerrainLocation[][] getLocations(TerrainEnum[][] map) {
-    	TerrainLocation[][] out = new TerrainLocation[map.length][map[0].length];
-		//TODO finish this function.
-    	for(int i = 0; i < map.length; i ++)
-    		for(int j = 0; j < map[0].length; j ++)
-    			switch (map[i][j]) {
-					case lowland:
-						if(isInMap(map, i, j - 1)
-								&& (map[i][j - 1] == mountain || map[i][j - 1] == hill || map[i][j - 1] == wood))
-							out[i][j] = LowlandRenderer.LowlandLocation.SHADOW;
-						else out[i][j] = LowlandRenderer.LowlandLocation.NORMAL;
-						break;
-					case sea: 		out[i][j] = SeaRenderer.SeaLocation.NORMAL; 			break; 	//TODO
-					case wood:		out[i][j] = WoodRenderer.WoodLocation.NORMAL; 			break;
-					case reef:		out[i][j] = ReefRenderer.ReefLocation.NORMAL; 			break;
-					case road:		out[i][j] = RoadRenderer.RoadLocation.CENTER; 			break; 	//TODO
-					case mountain: 	out[i][j] = MountainRenderer.MountainLocation.NORMAL; 	break;
-					case hill: 		out[i][j] = HillRenderer.HillLocation.NORMAL; 			break;
-					case beach: 	out[i][j] = BeachRenderer.BeachLocation.LEFT; 			break; 	//TODO
-					case river: 	out[i][j] = RiverRenderer.RiverLocation.CENTER; 		break; 	//TODO
-					case bridge:
-						if(isInMap(map, i - 1, j) && map[i - 1][j] == sea)
-							out[i][j] = BridgeRenderer.BridgeLocation.HORIZONTAL;
-						else out[i][j] = BridgeRenderer.BridgeLocation.VERTICAL;
-						break;
-				}
-		return out;
-	}
-
-
-	public TerrainLocation[][] getLocations(AbstractTerrain[][] map) {
-    	TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
-		for(int i = 0; i < map.length; i ++)
-			for(int j = 0; j < map[0].length; j ++)
-				mapBis[i][j] = TerrainEnum.getTerrainEnum(map[i][j]);
-		return getLocations(mapBis);
-	}
 }

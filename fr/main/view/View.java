@@ -1,8 +1,8 @@
 package fr.main.view;
 
+import java.util.LinkedList;
 import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Color;
+import java.awt.*;
 
 import fr.main.view.interfaces.*;
 

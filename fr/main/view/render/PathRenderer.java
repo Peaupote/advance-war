@@ -97,14 +97,12 @@ public class PathRenderer extends Path {
     }
 
     public void apply () {
+        UnitRenderer.Render render = UnitRenderer.getRender(unit);
+
         while (!isEmpty()) {
             Direction d = poll();
+            render.setOrientation(d);
 
-            if (! (unit instanceof UnitRenderer)){
-                unit.move(d);
-                continue;
-            }
-            UnitRenderer render = (UnitRenderer)unit;
             for (int i = 0; i < MainFrame.UNIT; i++) {
                 if (!render.moveOffset(d)) return;
 

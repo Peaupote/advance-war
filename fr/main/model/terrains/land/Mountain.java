@@ -4,13 +4,11 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
-import fr.main.model.terrains.TerrainLocation;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.terrains.Terrain;
-import fr.main.view.render.terrains.TerrainImage;
 
 public class Mountain extends Terrain implements LandTerrain {
 
@@ -44,26 +42,6 @@ public class Mountain extends Terrain implements LandTerrain {
             instance = new Mountain();
         return instance;
     }
-
-	public enum MountainLocation implements TerrainLocation {
-		NORMAL(TerrainImage.Location.TOP_LEFT);
-
-		private TerrainImage.Location location;
-		private String path = "assets/terrains/hill.png";
-
-		MountainLocation(TerrainImage.Location loc) {
-			this.location = loc;
-		}
-
-		@Override
-		public String getPath() {
-			return path;
-		}
-
-		public TerrainImage.Location location() {
-			return location;
-		}
-	}
 
     @Override
     public int getBonusVision(AbstractUnit u){

@@ -28,6 +28,8 @@ import fr.main.model.Player;
 public class MainFrame extends JFrame {
 
   public static final int WIDTH = 960, HEIGHT = 704, UNIT = 32;
+
+  private static int timer = 0;
   Controller controller;
   View view;
   
@@ -59,6 +61,7 @@ public class MainFrame extends JFrame {
     
     new Thread(() -> {
       while (true) {
+        timer++;
         controller.update();
         view.repaint();
         try {
@@ -74,7 +77,8 @@ public class MainFrame extends JFrame {
     setVisible(true);
   }
   
-  
- 
+  public static int getTimer () {
+    return timer;
+  }
 
 }

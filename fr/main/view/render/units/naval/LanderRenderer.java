@@ -1,52 +1,31 @@
 package fr.main.view.render.units.naval;
 
-import java.io.*;
-import javax.imageio.ImageIO;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Color;
-import java.awt.Image;
+import java.util.LinkedList;
 
-import fr.main.model.Player;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.units.Path;
-import fr.main.model.Direction;
-import fr.main.view.MainFrame;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.render.units.UnitAnimationManager;
+import fr.main.view.render.sprites.*;
+import fr.main.view.render.animations.*;
 import fr.main.model.units.naval.Lander;
 
-public class LanderRenderer extends Lander implements UnitRenderer {
+public class LanderRenderer extends UnitRenderer.Render {
 
-  private static String filename = "lander.png";
+  public LanderRenderer (AbstractUnit unit) {
+    super(unit);
+    LinkedList<ScaleRect> areas = new LinkedList<>();
+    areas.add(new ScaleRect(9, 3, 16, 16, 2));
+    areas.add(new ScaleRect(27, 3, 16, 16, 2));
+    AnimationState idle = new AnimationState (new SpriteList(getDir() + "sea.png", areas), 30);
 
-  private Point offset;
+    areas = new LinkedList<>();
+    areas.add(new ScaleRect(7, 60, 18, 13, 2));
+    areas.add(new ScaleRect(27, 60, 18, 13, 2));
+    AnimationState move = new AnimationState (new SpriteList(getDir() + "sea.png", areas), 30);
 
-  private transient Image image;
-
-  public LanderRenderer (Player p, Point location) {
-    super (p, location);
-
-    offset = new Point(0, 0);
-  }
-
-  public void draw (Graphics g, int x, int y) {
-    if (image == null) g.fillRect (x + offset.x, y + offset.y, MainFrame.UNIT, MainFrame.UNIT);
-    else g.drawImage (image, x + offset.x, y + offset.y + UnitAnimationManager.getOffset() - 5, MainFrame.UNIT, MainFrame.UNIT, null);
-  }
-
-  @Override
-  public String getFilename() {
-    return getDir() + filename;
-  }
-
-  public void setImage (Image image) {
-    this.image = image;
-  }
-
-  @Override
-  public Point getOffset () {
-    return offset;
+    anim.put("idleRIGHT", idle);
+    anim.put("moveRIGHT", move);
+    anim.setState("idleRIGHT");
   }
 
 }
+

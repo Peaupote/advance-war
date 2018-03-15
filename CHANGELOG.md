@@ -11,12 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Infantry, AirFighter unit
   - Commander Powerbar in PlayerPanel
   - Different images for Terrain cells (Multiple singleton per Terrain)
+  - Building images and animations
+  - Menu
   
 ### Changed
   - Path finding for the shortest path for unit move
   - Optimization in the view
 
-## [0.0.6] - 2018-22-02
+## [0.0.6] - 2018-02-22
 ### Added
   - Unit movement
   - PathRenderer
@@ -26,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
   - Fog of war bug
 
-## [0.0.5] - 2018-14-02
+## [0.0.5] - 2018-02-14
 ### Added
   - Unit selection & cursor movements when unit selected
   - Day panel first implementation

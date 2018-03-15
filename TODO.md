@@ -1,8 +1,9 @@
 TODO
 ====
 
-- [ ] Buildings
-- [ ] Rework renderers
+- [x] Buildings map display
+- [ ] Buildings interface (Dock, Barrack & Airport)
+- [x] Rework renderers
 - [x] Animations
 - [x] Sprites
 - [ ] Cliff

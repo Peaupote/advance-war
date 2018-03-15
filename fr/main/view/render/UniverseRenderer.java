@@ -9,6 +9,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.Controller;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.terrains.TerrainRenderer;
+import fr.main.view.render.buildings.BuildingRenderer;
 
 public class UniverseRenderer extends Universe {
 
@@ -46,10 +47,8 @@ public class UniverseRenderer extends Universe {
         coords[i][j].x = (j - x) * MainFrame.UNIT - offsetX;
         coords[i][j].y = (i - y) * MainFrame.UNIT - offsetY;
 
-        if (map.buildings[i][j] != null) {
-          g.setColor(Color.red);
-          g.fillRect(coords[i][j].x, coords[i][j].y, MainFrame.UNIT, MainFrame.UNIT);
-        } else TerrainRenderer.render(g, coords[i][j], map.board[i][j]);
+        TerrainRenderer.render(g, coords[i][j], map.board[i][j]);
+        if (map.buildings[i][j] != null) BuildingRenderer.render(g, coords[i][j], map.buildings[i][j]);
 
         if (targets[i][j]) {
           g.setColor(tColor);

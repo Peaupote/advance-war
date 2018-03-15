@@ -55,6 +55,13 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         return true;
     }
 
+    public void renderVision(boolean[][] fogwar){
+        for (AbstractUnit u : units)
+            u.renderVision(fogwar);
+        for (OwnableBuilding b : buildings)
+            b.renderVision(fogwar);
+    }
+
     public boolean setCommander(Commander c){
         if (this.commander == null){
             this.commander = c;

@@ -127,8 +127,7 @@ public class Universe {
       for (int j = 0; j < map.board[0].length; j++)
         fogwar[i][j] = false;
 
-    for (AbstractUnit u: current)
-      u.renderVision(fogwar);
+    current.renderVision(fogwar);
   }
 
   public final AbstractTerrain getTerrain (int x, int y) {

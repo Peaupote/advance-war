@@ -54,7 +54,7 @@ public class Sprite {
 
 		AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
     // TODO: find out why cant flip horizontally
-		tx.translate(-img.getWidth(null), 0);
+    tx.translate(-img.getWidth(null), 0);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 		return op.filter(img, null).getScaledInstance(w * scale, h * scale, Image.SCALE_SMOOTH);
 	}

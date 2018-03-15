@@ -1,11 +1,14 @@
 TODO
 ====
 
-- [ ] Buildings
-- [ ] Rework renderers
+- [x] Buildings
+- [x] Rework renderers
 - [x] Animations
 - [x] Sprites
 - [ ] Cliff
 - [ ] Sound Manager
 - [ ] Multiples pages (multiple controllers)
+- [ ] Building interface
+- [ ] Add buildings in map generation
+- [ ] Fight render
 

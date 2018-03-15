@@ -1,19 +1,14 @@
 package fr.main.view;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import fr.main.App;
 
 public class MainMenu extends JFrame implements ActionListener{
 	
@@ -29,32 +24,25 @@ public class MainMenu extends JFrame implements ActionListener{
 	static MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
 	static boolean listen = true;
 	
-	public MainMenu() {
+	public MainMenu() throws IOException {
 		// TODO Auto-generated constructor stub
 		bg = new ImageIcon("./assets/bd.png");
 		//button = new ImageIcon("./assets/button.png");
 		label = new JLabel(bg);
-		//Font font =new Font("Courier", Font.BOLD, 30);
-		play =new JButton("PLAY");
-		//play.setFont(font);
-		select = new JButton("Select");
-		load = new JButton("Load");
-		edit = new JButton("Edit");
-		exit = new JButton("Exit");
-		option = new JButton("Option");
+		
+		play =new MenuButton("./assets/button/b02.png",350, 150);
+		select = new MenuButton("./assets/button/b02.png",350, 290);
+		load = new MenuButton("./assets/button/b02.png",350, 430);
+		edit = new MenuButton("./assets/button/b02.png",350, 590);
+		
+		exit = new MenuButton("./assets/button/b03.png",830, 0);
+		option = new MenuButton("./assets/button/b03.png",-5, 0);
 		sound = new RButton("×");
+		sound.setBounds(40, 600, 60, 60);
 		
 		label.setBounds(0, 0, bg.getIconWidth(), bg.getIconHeight());
 		label.setIcon(bg);
 		label.setHorizontalAlignment(0);
-		
-		play.setBounds(400, 180, 100, 60);
-		select.setBounds(400, 280, 100, 60);
-		load.setBounds(400, 380, 100, 60);
-		edit.setBounds(400, 480, 100, 60);
-		option.setBounds(0, 0, 80, 40);
-		exit.setBounds(900,0,60,40);
-		sound.setBounds(30, 630, 50, 50);
 		
 		exit.addActionListener((ActionEvent e) -> {
 			dispose();
@@ -73,10 +61,7 @@ public class MainMenu extends JFrame implements ActionListener{
 			
 		});
 		
-		//play.setContentAreaFilled(false);
-		//play.setFocusPainted(false); 
-		play.setBorder(null);
-		//play.setForeground(Color.WHITE);
+		
 		play.addActionListener((ActionEvent e) ->{
 			try {
 				new MainFrame();
@@ -111,9 +96,5 @@ public class MainMenu extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 	}
-	/**
-	public static void main(String[] args) {
-		new MainMenu()
-	}
-	**/
+	
 }

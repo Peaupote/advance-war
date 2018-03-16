@@ -20,7 +20,7 @@ public class MountainRenderer extends TerrainRenderer.Render {
   }
 
   public void draw (Graphics g, int x, int y) {
-    anim.draw(g, x, y - 8);
+    anim.draw(g, x, y);
   }
 
 }

@@ -19,7 +19,8 @@ public class AnimationState {
   public void draw(Graphics g, int x, int y) {
     if (MainFrame.getTimer() % frameRate == 0) nextFrame(); 
 
-    g.drawImage(images.element(), x, y, null);
+    Image i = images.element();
+    g.drawImage(i, x, y + MainFrame.UNIT - i.getHeight(null), null);
   }
 
   private void nextFrame () {

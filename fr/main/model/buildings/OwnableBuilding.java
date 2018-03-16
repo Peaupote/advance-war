@@ -23,6 +23,10 @@ public abstract class OwnableBuilding extends Building {
         p.addBuilding(this);
     }
 
+    public void renderVision(boolean[][] fogwar){
+        fogwar[location.y][location.x] = true;
+    }
+
     public String toString(){
         return name;
     }

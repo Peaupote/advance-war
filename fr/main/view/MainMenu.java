@@ -27,16 +27,15 @@ public class MainMenu extends JFrame implements ActionListener{
 	public MainMenu() throws IOException {
 		// TODO Auto-generated constructor stub
 		bg = new ImageIcon("./assets/bd.png");
-		//button = new ImageIcon("./assets/button.png");
 		label = new JLabel(bg);
 		
-		play =new MenuButton("./assets/button/b02.png",350, 150);
-		select = new MenuButton("./assets/button/b02.png",350, 290);
-		load = new MenuButton("./assets/button/b02.png",350, 430);
-		edit = new MenuButton("./assets/button/b02.png",350, 590);
+		play =new MenuButton("PLAY","./assets/button/b02.png",350, 150);
+		select = new MenuButton("SELECT","./assets/button/b02.png",350, 290);
+		load = new MenuButton("LOAD","./assets/button/b02.png",350, 430);
+		edit = new MenuButton("EDIT","./assets/button/b02.png",350, 570);
 		
-		exit = new MenuButton("./assets/button/b03.png",830, 0);
-		option = new MenuButton("./assets/button/b03.png",-5, 0);
+		exit = new MenuButton("EXIT","./assets/button/b03.png",830, 0,20);
+		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0,20);
 		sound = new RButton("×");
 		sound.setBounds(40, 600, 60, 60);
 		
@@ -60,7 +59,6 @@ public class MainMenu extends JFrame implements ActionListener{
 			listen = !listen;
 			
 		});
-		
 		
 		play.addActionListener((ActionEvent e) ->{
 			try {

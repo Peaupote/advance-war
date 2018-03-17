@@ -1,7 +1,9 @@
 package fr.main.view.render.units;
 
 import java.awt.*;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.function.Function;
 
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.Direction;
@@ -19,6 +21,34 @@ import fr.main.view.render.animations.*;
 public class UnitRenderer {
 
   protected static HashMap<AbstractUnit, Render> renderers = new HashMap<>();
+  protected static final HashMap<Class<? extends AbstractUnit>, Function<AbstractUnit,? extends Render>> constructors;
+
+  static{
+    constructors = new HashMap<Class<? extends AbstractUnit>, Function<AbstractUnit, ? extends Render>>();
+    constructors.put(BCopter.class,BCopterRenderer::new);
+    constructors.put(Bomber.class,BomberRenderer::new);
+    constructors.put(Fighter.class,FighterRenderer::new);
+    constructors.put(Stealth.class,StealthRenderer::new);
+    constructors.put(TCopter.class,TCopterRenderer::new);
+    constructors.put(AntiAir.class,AntiAirRenderer::new);
+    constructors.put(APC.class,APCRenderer::new);
+    constructors.put(Artillery.class,ArtilleryRenderer::new);
+    constructors.put(Infantry.class,InfantryRenderer::new);
+    constructors.put(Mech.class,MechRenderer::new);
+    constructors.put(Megatank.class,MegatankRenderer::new);
+    constructors.put(Missiles.class,MissilesRenderer::new);
+    constructors.put(MTank.class,MTankRenderer::new);
+    constructors.put(Neotank.class,NeotankRenderer::new);
+    constructors.put(Recon.class,ReconRenderer::new);
+    constructors.put(Rockets.class,RocketsRenderer::new);
+    constructors.put(Tank.class,TankRenderer::new);
+    constructors.put(Battleship.class,BattleshipRenderer::new);
+    constructors.put(BlackBoat.class,BlackBoatRenderer::new);
+    constructors.put(Carrier.class,CarrierRenderer::new);
+    constructors.put(Cruiser.class,CruiserRenderer::new);
+    constructors.put(Lander.class,LanderRenderer::new);
+    constructors.put(Sub.class,SubRenderer::new);
+  }
 
   public static abstract class Render extends Renderer {
 
@@ -77,10 +107,12 @@ public class UnitRenderer {
   public static Render getRender (AbstractUnit unit) {
     if (renderers.containsKey(unit)) return renderers.get(unit);
     
-    // TODO: make dynamic
-    if (unit instanceof Fighter) renderers.put(unit, new FighterRenderer(unit));
-    else if (unit instanceof Lander) renderers.put(unit, new LanderRenderer(unit));
-    else if (unit instanceof Infantry) renderers.put(unit, new InfantryRenderer(unit));
+    for (Map.Entry<Class<? extends AbstractUnit>, Function<AbstractUnit,? extends Render>> entry : constructors.entrySet())
+      if (entry.getKey().isInstance(unit)){
+        renderers.put(unit,entry.getValue().apply(unit));
+        break;
+      }
+
     return renderers.get(unit);
   }
 

@@ -12,7 +12,7 @@ public abstract class OwnableBuildingRenderer extends BuildingRenderer.BuildingR
 
     public void updateState(){
         String s;
-        Color c = ((OwnableBuilding)building).getOwner() == null ? null : ((OwnableBuilding)building).getOwner().getColor();
+        Color c = ((OwnableBuilding)building).getOwner() == null ? Color.WHITE : ((OwnableBuilding)building).getOwner().getColor();
         if (c.equals(Color.RED)) s = "red";
         else if (c.equals(Color.BLUE)) s = "blue";
         else if (c.equals(Color.GREEN)) s = "green";

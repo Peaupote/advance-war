@@ -20,7 +20,8 @@ public abstract class OwnableBuilding extends Building {
         this.income      = income;
         this.name        = name;
         this.owner       = p;
-        p.addBuilding(this);
+        if (p != null)
+            p.addBuilding(this);
     }
 
     public void renderVision(boolean[][] fogwar){

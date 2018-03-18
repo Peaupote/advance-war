@@ -276,9 +276,11 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     @Override
     public void mouseMoved (MouseEvent e) {
+      if (mode == Mode.MOVE){
         mouse.x = e.getX() / MainFrame.UNIT;
         mouse.y = e.getY() / MainFrame.UNIT;
         listenMouse = true;
+      }
     }
 
     /**

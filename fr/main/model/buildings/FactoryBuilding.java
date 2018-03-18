@@ -4,7 +4,7 @@ import java.util.Set;
 
 import fr.main.model.units.AbstractUnit;
 
-public interface FactoryBuilding<T extends AbstractUnit> extends ActionBuilding{
+public interface FactoryBuilding<T extends AbstractUnit>{
     public Set<Class<? extends T>> getUnitList();
     public boolean create(Class<? extends T> c);
 }

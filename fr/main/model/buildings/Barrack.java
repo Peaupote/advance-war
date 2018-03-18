@@ -12,7 +12,7 @@ import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.*;
 
-public class Barrack extends OwnableBuilding implements FactoryBuilding<LandUnit>, RepairBuilding<LandUnit> {
+public class Barrack extends OwnableBuilding implements FactoryBuilding<LandUnit>, RepairBuilding {
 
     public static final int defense     = 3;
     public static final int income      = 1000;

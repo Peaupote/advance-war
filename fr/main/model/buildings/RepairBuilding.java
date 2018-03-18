@@ -14,9 +14,9 @@ public interface RepairBuilding<T extends AbstractUnit> {
         if (canRepair(u)){
             if (this instanceof OwnableBuilding){
                 Player p = ((OwnableBuilding)this).getOwner();
-                int pv = Math.min(20,50*p.getFunds() / u.getCost());
+                int pv   = Math.max(0, Math.min(Math.min(100 - u.getLife(), 20), 50 * p.getFunds() / u.getCost()));
                 u.addLife(pv);
-                p.spent(pv*u.getCost()/50);
+                p.spent(pv * u.getCost() / 50);
             } else u.addLife(20);
             u.getFuel().replenish();
         }

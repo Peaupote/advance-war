@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.Direction;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
@@ -103,9 +105,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Move", () -> {
               mode = Mode.IDLE;
               world.clearTarget();
-              UnitRenderer.getRender(targetUnit).setState("move");
+              UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
+              targetRender.setState("move");
               path.apply();
-              UnitRenderer.getRender(targetUnit).setState("idle");
+              targetRender.setState("idle");
               mode = Mode.MOVE;
               cursor.setLocation(unitCursor.position());
               path.visible = false;
@@ -115,6 +118,16 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
               mode = Mode.ATTACK;
               world.updateTarget(targetUnit);
               unitCursor.setLocation(cursor.position());
+            });
+
+            new Index("Capture", () -> {
+              AbstractUnit unit = targetUnit;
+              actions.get(1).action.run();
+              if (unit.getX() == unitCursor.getX() && unit.getY() == unitCursor.getY() && unit.isEnabled()){
+                AbstractBuilding b = Universe.get().getBuilding(unit.getX(),unit.getY());
+                if (((CaptureBuilding)unit).capture(b))
+                  BuildingRenderer.getRender(b).updateState(null);
+              }
             });
 
             new Index("Supply", () -> {});
@@ -130,15 +143,19 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         public void onOpen () {
           targetUnit = world.getUnit(cursor.position());
           actions.forEach((key, value) -> value.setActive(false));
+          actions.get(8).setActive(true);
+          if (!targetUnit.isEnabled()) return;
 
-          actions.get(7).setActive(true);
-          if (targetUnit.getMoveQuantity() > 0) actions.get(1).setActive(true);
+          actions.get(1).setActive(true);
           if (targetUnit.canAttack()) actions.get(2).setActive(true);
-          if (targetUnit instanceof SupplyUnit) actions.get(3).setActive(true);
-          if (targetUnit instanceof HealerUnit) actions.get(4).setActive(true);
+          if (targetUnit instanceof CaptureBuilding &&
+                ((CaptureBuilding)targetUnit).canCapture(Universe.get().getBuilding(unitCursor.getX(),unitCursor.getY())))
+            actions.get(3).setActive(true);
+          if (targetUnit instanceof SupplyUnit) actions.get(4).setActive(true);
+          if (targetUnit instanceof HealerUnit) actions.get(5).setActive(true);
           if (targetUnit instanceof HideableUnit)
-            if (((HideableUnit)targetUnit).hidden()) actions.get(6).setActive(true);
-            else actions.get(5).setActive(true);
+            if (((HideableUnit)targetUnit).hidden()) actions.get(7).setActive(true);
+            else actions.get(6).setActive(true);
 
           super.onOpen();
         }
@@ -233,7 +250,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                   if (targetUnit == null) {
                     if (!world.isVisible(cursor.position()))
                       actionPanel.setVisible (true);
-                    else if (world.getBuilding(cursor.position()) != null)
+                    else if (world.getBuilding(cursor.position()) != null &&
+                             world.getBuilding(cursor.position()) instanceof FactoryBuilding)
                       buildingPanel.setVisible (true);
                   } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                            targetUnit.isEnabled()) {
@@ -250,10 +268,13 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                   path.visible = false;
               }
             } else if (mode == Mode.MENU) {
-                if      (key == KeyEvent.VK_UP)     focusedActionPanel.goUp();
-                else if (key == KeyEvent.VK_DOWN)   focusedActionPanel.goDown();
-                else if (key == KeyEvent.VK_ENTER)  focusedActionPanel.perform();
-                else if (key == KeyEvent.VK_ESCAPE) focusedActionPanel.setVisible (false);
+                if      (key == KeyEvent.VK_UP)    focusedActionPanel.goUp();
+                else if (key == KeyEvent.VK_DOWN)  focusedActionPanel.goDown();
+                else if (key == KeyEvent.VK_ENTER) focusedActionPanel.perform();
+                else if (key == KeyEvent.VK_ESCAPE){
+                  focusedActionPanel.setVisible (false);
+                  world.clearTarget();
+                }
             } else if (key == KeyEvent.VK_ESCAPE) {
                 mode = Mode.MOVE;
                 world.clearTarget();

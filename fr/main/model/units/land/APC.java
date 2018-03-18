@@ -11,7 +11,7 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.SupplyUnit;
 import fr.main.model.units.MoveType;
 
-public class APC extends Unit implements LandVehicleUnit,TransportUnit<WalkingUnit>,SupplyUnit<AbstractUnit>{
+public class APC extends Unit implements LandVehicleUnit,TransportUnit<WalkingUnit>,SupplyUnit{
 
 	public static final String NAME = "VTB";
 	public static final int PRICE   = 5000;

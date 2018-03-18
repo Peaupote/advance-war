@@ -9,7 +9,6 @@ TODO
 - [ ] Cliff
 - [ ] Sound Manager
 - [ ] Multiples pages (multiple controllers)
-- [ ] Building interface
-- [ ] Add buildings in map generation
-- [ ] Fight render
+- [x] Add most units renderers (or just an image)
+- [ ] Implement actions in the selected unit menu (hide, heal, ...)
 

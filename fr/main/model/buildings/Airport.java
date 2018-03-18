@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class Airport extends OwnableBuilding implements FactoryBuilding<AirUnit>, RepairBuilding<AirUnit> {
+public class Airport extends OwnableBuilding implements FactoryBuilding<AirUnit>, RepairBuilding {
 
     public static final int defense     = 3;
     public static final int income      = 1000;
@@ -24,7 +24,6 @@ public class Airport extends OwnableBuilding implements FactoryBuilding<AirUnit>
     static{
         UNIT_LIST = new HashMap<Class<? extends AirUnit>,BiFunction<Player,Point,? extends AirUnit>>();
         UNIT_LIST.put(BCopter.class,   BCopter::new);
-        UNIT_LIST.put(BlackBomb.class, BlackBomb::new);
         UNIT_LIST.put(Bomber.class,    Bomber::new);
         UNIT_LIST.put(Fighter.class,   Fighter::new);
         UNIT_LIST.put(Stealth.class,   Stealth::new);

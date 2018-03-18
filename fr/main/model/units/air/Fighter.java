@@ -27,7 +27,6 @@ public class Fighter extends Unit implements PlaneUnit{
         PRIMARYWEAPON_DAMAGES.put(Stealth.class,85);
         PRIMARYWEAPON_DAMAGES.put(BCopter.class,120);
         PRIMARYWEAPON_DAMAGES.put(TCopter.class,120);
-        PRIMARYWEAPON_DAMAGES.put(BlackBomb.class,120);
     }
 
     public Fighter(Player p, int x, int y){

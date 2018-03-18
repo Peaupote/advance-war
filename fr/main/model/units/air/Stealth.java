@@ -40,7 +40,6 @@ public class Stealth extends Unit implements PlaneUnit,HideableUnit{
         PRIMARYWEAPON_DAMAGES.put(Stealth.class,55);
         PRIMARYWEAPON_DAMAGES.put(BCopter.class,85);
         PRIMARYWEAPON_DAMAGES.put(TCopter.class,95);
-        PRIMARYWEAPON_DAMAGES.put(BlackBomb.class,120);
         PRIMARYWEAPON_DAMAGES.put(Cruiser.class,35);
         PRIMARYWEAPON_DAMAGES.put(Sub.class,55);
         PRIMARYWEAPON_DAMAGES.put(Battleship.class,45);

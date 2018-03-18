@@ -13,7 +13,7 @@ import fr.main.model.units.SupplyUnit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.WalkingUnit;
 
-public class BlackBoat extends Unit implements NavalUnit,HealerUnit<AbstractUnit>,TransportUnit<WalkingUnit>,SupplyUnit<AbstractUnit> {
+public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUnit<WalkingUnit>,SupplyUnit {
 
     public static final String NAME = "NavLog"; // => navire logistique
     public static final int PRICE   = 7500;

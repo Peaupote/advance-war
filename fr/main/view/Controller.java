@@ -19,6 +19,7 @@ import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.model.units.*;
+import fr.main.model.buildings.*;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -32,6 +33,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     private Point mouse;
     private Mode mode;
     private ActionPanel actionPanel, focusedActionPanel;
+    private BuildingInterface buildingPanel;
     private AbstractUnit targetUnit;
     private UnitActionPanel unitActionPanel;
     private DayPanel dayPanel;
@@ -55,7 +57,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         }
     }
 
-    private class ControllerPanel extends ActionPanel {
+    public class ControllerPanel extends ActionPanel {
     
         public void onOpen () {
             super.onOpen();
@@ -191,6 +193,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         };
         unitActionPanel = new UnitActionPanel();
 
+        buildingPanel = new BuildingInterface(this);
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
         dayPanel.setVisible(true);
@@ -227,14 +230,18 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     mode = Mode.MOVE;
                     world.clearTarget();
                 } else {
-                  if (targetUnit == null || !world.isVisible(cursor.position()))
-                    actionPanel.setVisible (true);
-                  else if (targetUnit.getPlayer() == world.getCurrentPlayer() && targetUnit.isEnabled()) {
+                  if (targetUnit == null) {
+                    if (!world.isVisible(cursor.position()))
+                      actionPanel.setVisible (true);
+                    else if (world.getBuilding(cursor.position()) != null)
+                      buildingPanel.setVisible (true);
+                  } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
+                           targetUnit.isEnabled()) {
                     mode = Mode.UNIT;
                     world.updateTarget(targetUnit);
                     path.rebase(targetUnit);
                     path.visible = true;
-                  }
+                  } 
                   unitCursor.setLocation(cursor.position());
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
@@ -307,6 +314,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public Mode getMode () {
         return mode;
+    }
+
+    public void setMode (Mode mode) {
+      this.mode = mode;
     }
 
 }

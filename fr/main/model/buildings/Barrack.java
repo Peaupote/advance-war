@@ -27,7 +27,7 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding<LandUnit
         return u.getPlayer()==getOwner() && (u instanceof LandUnit);
     }
 
-    private static final Map<Class<? extends LandUnit>,BiFunction<Player,Point,? extends LandUnit>> UNIT_LIST;
+    public static final Map<Class<? extends LandUnit>,BiFunction<Player,Point,? extends LandUnit>> UNIT_LIST;
 
     static{
         UNIT_LIST = new HashMap<Class<? extends LandUnit>,BiFunction<Player,Point,? extends LandUnit>>();

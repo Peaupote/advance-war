@@ -20,7 +20,7 @@ public class BuildingInterface extends Controller.ControllerPanel {
     final Class c;
 
     public IndexClass (Class<? extends AbstractUnit> c) {
-      super(c.getCanonicalName(), () -> building.create(c));
+      super(c.getTypeName(), () -> building.create(c));
       this.c = c;
     }
 

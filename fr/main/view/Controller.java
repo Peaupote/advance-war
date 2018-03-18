@@ -248,10 +248,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     world.clearTarget();
                 } else {
                   if (targetUnit == null) {
+                    AbstractBuilding b = world.getBuilding (cursor.position());
                     if (!world.isVisible(cursor.position()))
                       actionPanel.setVisible (true);
-                    else if (world.getBuilding(cursor.position()) != null &&
-                             world.getBuilding(cursor.position()) instanceof FactoryBuilding)
+                    else if (b != null &&
+                             b instanceof FactoryBuilding &&
+                             ((OwnableBuilding)b).getOwner() == world.getCurrentPlayer())
                       buildingPanel.setVisible (true);
                   } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                            targetUnit.isEnabled()) {

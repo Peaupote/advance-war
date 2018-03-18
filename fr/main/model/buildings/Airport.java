@@ -19,7 +19,7 @@ public class Airport extends OwnableBuilding implements FactoryBuilding<AirUnit>
     public static final String name     = "Aéroport";
     public static final int maximumLife = 200;
 
-    private static final Map<Class<? extends AirUnit>,BiFunction<Player,Point,? extends AirUnit>> UNIT_LIST;
+    public static final Map<Class<? extends AirUnit>,BiFunction<Player,Point,? extends AirUnit>> UNIT_LIST;
 
     static{
         UNIT_LIST = new HashMap<Class<? extends AirUnit>,BiFunction<Player,Point,? extends AirUnit>>();

@@ -104,7 +104,10 @@ public class PathRenderer extends Path {
             render.setOrientation(d);
 
             for (int i = 0; i < MainFrame.UNIT; i++) {
-                if (!render.moveOffset(d)) return;
+                if (!render.moveOffset(d)) {
+
+                  return;
+                }
 
                 try {
                     Thread.sleep(5);

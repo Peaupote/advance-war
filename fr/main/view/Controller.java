@@ -21,6 +21,7 @@ import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.model.units.*;
+import fr.main.model.buildings.*;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -34,6 +35,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     private Point mouse;
     private Mode mode;
     private ActionPanel actionPanel, focusedActionPanel;
+    private BuildingInterface buildingPanel;
     private AbstractUnit targetUnit;
     private UnitActionPanel unitActionPanel;
     private DayPanel dayPanel;
@@ -57,7 +59,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         }
     }
 
-    private class ControllerPanel extends ActionPanel {
+    public class ControllerPanel extends ActionPanel {
     
         public void onOpen () {
             super.onOpen();
@@ -208,6 +210,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         };
         unitActionPanel = new UnitActionPanel();
 
+        buildingPanel = new BuildingInterface(this);
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
         dayPanel.setVisible(true);
@@ -228,18 +231,37 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 if (mode == Mode.UNIT) unitActionPanel.setVisible(true);
                 else if (mode == Mode.ATTACK) {
                     AbstractUnit target = world.getUnit(unitCursor.position());
-                    if (targetUnit.canAttack(target)) targetUnit.attack(target);
+                    if (targetUnit.canAttack(target)) {
+                      int aLife = targetUnit.getLife(),
+                          tLife = target.getLife();
+                      targetUnit.attack(target);
+                      world.flash ("" + (targetUnit.getLife() - aLife),
+                          (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                          (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                          UniverseRenderer.FlashMessage.Type.ALERT);
+                      world.flash ("" + (target.getLife() - tLife),
+                          (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                          (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                          UniverseRenderer.FlashMessage.Type.ALERT);
+                    }
                     mode = Mode.MOVE;
                     world.clearTarget();
                 } else {
-                  if (targetUnit == null || !world.isVisible(cursor.position()))
-                    actionPanel.setVisible (true);
-                  else if (targetUnit.getPlayer() == world.getCurrentPlayer() && targetUnit.isEnabled()) {
+                  if (targetUnit == null) {
+                    AbstractBuilding b = world.getBuilding (cursor.position());
+                    if (!world.isVisible(cursor.position()))
+                      actionPanel.setVisible (true);
+                    else if (b != null &&
+                             b instanceof FactoryBuilding &&
+                             ((OwnableBuilding)b).getOwner() == world.getCurrentPlayer())
+                      buildingPanel.setVisible (true);
+                  } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
+                           targetUnit.isEnabled()) {
                     mode = Mode.UNIT;
                     world.updateTarget(targetUnit);
                     path.rebase(targetUnit);
                     path.visible = true;
-                  }
+                  } 
                   unitCursor.setLocation(cursor.position());
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
@@ -317,6 +339,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public Mode getMode () {
         return mode;
+    }
+
+    public void setMode (Mode mode) {
+      this.mode = mode;
     }
 
 }

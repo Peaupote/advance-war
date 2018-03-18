@@ -19,7 +19,7 @@ public class Dock extends OwnableBuilding implements FactoryBuilding<NavalUnit>,
     public static final String name     = "Port";
     public static final int maximumLife = 200;
 
-    private static final Map<Class<? extends NavalUnit>,BiFunction<Player,Point,? extends NavalUnit>> UNIT_LIST;
+    public static final Map<Class<? extends NavalUnit>,BiFunction<Player,Point,? extends NavalUnit>> UNIT_LIST;
 
     static{
         UNIT_LIST = new HashMap<Class<? extends NavalUnit>,BiFunction<Player,Point,? extends NavalUnit>>();
@@ -46,11 +46,15 @@ public class Dock extends OwnableBuilding implements FactoryBuilding<NavalUnit>,
     public boolean create(Class<? extends NavalUnit> c){
         try{
             BiFunction<Player, Point, ? extends NavalUnit> constructor = UNIT_LIST.get(c);
-            if (constructor != null  && Universe.get().getUnit(getX(), getY()) == null && getOwner().spent(c.getField("PRICE").getInt(null))){
-                constructor.apply(getOwner(),new Point(getX(),getY()));
+            if (constructor != null &&
+                Universe.get().getUnit(getX(), getY()) == null &&
+                getOwner().spent(c.getField("PRICE").getInt(null))){
+                constructor.apply(getOwner(), new Point(getX(), getY()));
                 return true;
             }
-        }catch(Exception e){}
+        } catch(Exception e) {
+          e.printStackTrace();
+        }
         return false;
     }
 }

@@ -15,7 +15,7 @@ import fr.main.model.units.land.LandUnit;
 public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
 
     public static final String NAME = "Barge";
-    public static final int PRICE   = 12000;
+    public static final int PRICE   = 100;
 
     private final ArrayList<LandUnit> units=new ArrayList<LandUnit>();
 

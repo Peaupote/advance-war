@@ -116,9 +116,7 @@ public class ActionPanel extends InterfaceUI {
       if (i.active && j == selected){
         new Thread(i.action::run).start();
         break;
-      }
-      else if (i.active)
-        j++;
+      } else if (i.active) j++;
     setVisible (false);
   }
 

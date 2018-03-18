@@ -249,19 +249,24 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 } else {
                   if (targetUnit == null) {
                     AbstractBuilding b = world.getBuilding (cursor.position());
-                    if (!world.isVisible(cursor.position()))
+                    if (!world.isVisible(cursor.position()) || b == null 
+                          || !(b instanceof FactoryBuilding)
+                          || ((OwnableBuilding)b).getOwner() != world.getCurrentPlayer())
                       actionPanel.setVisible (true);
-                    else if (b != null &&
-                             b instanceof FactoryBuilding &&
-                             ((OwnableBuilding)b).getOwner() == world.getCurrentPlayer())
+                    else
                       buildingPanel.setVisible (true);
                   } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                            targetUnit.isEnabled()) {
+long time = System.nanoTime();
                     mode = Mode.UNIT;
+long time2 = System.nanoTime();
                     world.updateTarget(targetUnit);
+System.out.println("world::updateTarget "+(System.nanoTime()-time2));
                     path.rebase(targetUnit);
                     path.visible = true;
-                  } 
+System.out.println("total : "+(System.nanoTime()-time));
+                  }
+                  else actionPanel.setVisible(true);
                   unitCursor.setLocation(cursor.position());
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {

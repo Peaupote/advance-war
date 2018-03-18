@@ -1,6 +1,7 @@
 package fr.main.model.units;
 
 import java.util.LinkedList;
+import java.util.HashSet;
 import java.awt.Point;
 
 import fr.main.model.Direction;
@@ -27,6 +28,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void rebase (AbstractUnit unit) {
+long time = System.nanoTime();
         removeAll(this);
         points.removeAll(points);
         pathMoveCost = 0;
@@ -42,18 +44,20 @@ public class Path extends LinkedList<Direction> {
         offset = new Point(posX - x, posY - y);
         map    = new Node[x + Math.min(move, u.getMapWidth() - posX) + 1][y + Math.min(move, u.getMapHeight() - posY) + 1];
         shortestCalculus();
+System.out.println("rebase : "+(System.nanoTime()-time));
     }
 
-    private final Node removeMin(LinkedList<Node> l){
-        Node node=l.getFirst();
+    private final Node removeMin(HashSet<Node> l){
+        Node node = null;
         for (Node n : l)
-            if (n.compareTo(node)<0)
+            if (node == null || n.compareTo(node)<0)
                 node=n;
         l.remove(node);        
         return node;
     }
 
     public void shortestCalculus(){
+long time = System.nanoTime();
         int width  = map.length,
             height = map[0].length,
             move   = unit.getMoveQuantity();
@@ -63,8 +67,8 @@ public class Path extends LinkedList<Direction> {
             for (int j=0;j<height;j++)
                 map[i][j]=new Node(i,j,move+1);
 
-        LinkedList<Node> unsettled = new LinkedList<Node>();
-        LinkedList<Node> settled   = new LinkedList<Node>();
+        HashSet<Node> unsettled = new HashSet<Node>();
+        HashSet<Node> settled   = new HashSet<Node>();
 
         Node current=map[unit.getX()-offset.x][unit.getY()-offset.y];
         current.lowestCost=0;
@@ -84,6 +88,7 @@ public class Path extends LinkedList<Direction> {
                 }
             settled.add(actual);
         }
+System.out.println("shortestCalculus : "+(System.nanoTime()-time));
     }
 
     public void shorten(){

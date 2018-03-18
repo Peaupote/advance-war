@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Player;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
@@ -15,7 +16,7 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 
-public class Mech extends Unit implements WalkingUnit,CaptureBuilding<OwnableBuilding>{
+public class Mech extends Unit implements WalkingUnit,CaptureBuilding{
 
     public static final String NAME = "Bazooka";
     public static final int PRICE   = 3000;
@@ -66,8 +67,8 @@ public class Mech extends Unit implements WalkingUnit,CaptureBuilding<OwnableBui
         super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.MECH,2,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,3,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
     }
 
-    public boolean canCapture(OwnableBuilding b){
-        return b!=null && b.getOwner()!=getPlayer();
+    public boolean canCapture(AbstractBuilding b){
+        return isEnabled() && b instanceof OwnableBuilding && ((OwnableBuilding)b).getOwner()!=getPlayer();
     }
 
 }

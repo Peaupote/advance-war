@@ -81,6 +81,7 @@ public class Universe {
 
     new Dock(map.players[0], new Point(6,10));
     new Airport(map.players[1], new Point(6,9));
+    new Airport(map.players[0], new Point(7,9));
     new Barrack(null, new Point(9,5));
     new Headquarter(map.players[0], new Point(12,5));
     new City(null, new Point(20,5));
@@ -92,10 +93,15 @@ public class Universe {
     new Infantry(map.players[1], new Point(10,6));
     new Fighter(map.players[0], new Point(10,10));
 
-    map.players[0].addFunds(15000);
+    map.players[0].addFunds(100000);
+    map.players[1].addFunds(100000);
 
     if (getBuilding(6,10) != null)
-      ((Dock)getBuilding(6,10)).create(Lander.class);
+      ((Dock)getBuilding(6,10)).create(Battleship.class);
+    if (getBuilding(7,9) != null)
+      ((Airport)getBuilding(7,9)).create(Stealth.class);
+    if (getBuilding(6,9) != null)
+      ((Airport)getBuilding(6,9)).create(Fighter.class);
 
   }
 

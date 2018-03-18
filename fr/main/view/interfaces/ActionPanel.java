@@ -21,9 +21,9 @@ public class ActionPanel extends InterfaceUI {
   public class Index {
     // TODO: add image for each index
 
-    final int id;
-    final String name;
-    final Runnable action;
+    public final int id;
+    public final String name;
+    public final Runnable action;
 
     private boolean active;
 

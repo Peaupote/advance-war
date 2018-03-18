@@ -12,7 +12,7 @@ import java.util.Map;
 import java.awt.Point;
 import java.util.function.BiFunction;
 
-public class Dock extends OwnableBuilding implements FactoryBuilding<NavalUnit>,RepairBuilding<NavalUnit> {
+public class Dock extends OwnableBuilding implements FactoryBuilding<NavalUnit>,RepairBuilding {
 
     public static final int defense     = 3;
     public static final int income      = 1000;

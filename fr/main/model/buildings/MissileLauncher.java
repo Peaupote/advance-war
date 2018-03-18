@@ -4,7 +4,7 @@ import fr.main.model.terrains.Terrain;
 
 import java.awt.Point;
 
-public class MissileLauncher extends Building implements ActionBuilding {
+public class MissileLauncher extends Building {
 
     private boolean fired;
 

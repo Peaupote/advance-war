@@ -37,7 +37,11 @@ public abstract class OwnableBuilding extends Building {
     }
 
     public void setOwner(Player p){
+        if (owner != null)
+            owner.removeBuilding(this);
         owner = p;
+        if (owner != null)
+            owner.addBuilding(this);
     }
 
     public boolean isNeutral(){

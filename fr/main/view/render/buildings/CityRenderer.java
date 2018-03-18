@@ -24,7 +24,7 @@ public class CityRenderer extends OwnableBuildingRenderer {
 
         areas = new LinkedList<>();
         areas.add(new ScaleRect (43, 137, 16, 20, 2));
-        areas.add(new ScaleRect (62, 137, 16, 20, 2));
+        areas.add(new ScaleRect (63, 137, 16, 20, 2));
         AnimationState blue = new AnimationState(new SpriteList("./assets/buildings/colored_buildings.png", areas), 50);
 
         areas = new LinkedList<>();

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class Airport extends OwnableBuilding implements FactoryBuilding<AirUnit>, RepairBuilding<AirUnit> {
+public class Airport extends OwnableBuilding implements FactoryBuilding<AirUnit>, RepairBuilding {
 
     public static final int defense     = 3;
     public static final int income      = 1000;

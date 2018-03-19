@@ -132,12 +132,16 @@ public interface AbstractUnit extends Serializable {
     }
 
     default Integer moveCost(int x, int y){
-        if (this instanceof NavalUnit && Universe.get().getBuilding(x,y) instanceof Dock)
+        Universe u = Universe.get();
+        if (u.getUnit(x,y) != null && u.getUnit(x,y).getPlayer() != getPlayer()) // if there is an opponent unit we can't go through
+            return null;
+        else if (this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) // if this is a ship, it can go in a dock
             return 1;
         else
-            return Universe.get().getTerrain(x,y).moveCost(this);
+            return u.getTerrain(x,y).moveCost(this);
     }
     default boolean canStop (int x, int y){
-        return (this instanceof NavalUnit && Universe.get().getBuilding(x,y) instanceof Dock) || Universe.get().getTerrain(x,y).canStop(this);
+        Universe u = Universe.get();
+        return u.getUnit(x,y) == null && ((this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) || u.getTerrain(x,y).canStop(this));
     }
 }

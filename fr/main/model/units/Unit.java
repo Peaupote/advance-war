@@ -302,8 +302,9 @@ public abstract class Unit implements AbstractUnit {
         renderAllTargets(map, x, y, moveQuantity);
     }
 
+    //TODO : réécrire en utilisant Dijkstra
     private void renderAllTargets(boolean[][] map, int x, int y, int movePoint){
-        if (Universe.get().getTerrain(x, y).canStop(this))
+        if (canStop(x,y))
             renderTarget(map, x, y);
 
         for (Direction d : Direction.cardinalDirections()){

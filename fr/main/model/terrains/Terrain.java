@@ -5,7 +5,7 @@ import java.util.Map;
 import fr.main.model.Weather;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
-import fr.main.view.render.terrains.TerrainLocation;
+//import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.buildings.Building;
 import fr.main.model.units.weapons.PrimaryWeapon;

@@ -46,6 +46,11 @@ public class Sprite {
 
 	public Image getImage(int x, int y, int w, int h, int scale) {
 		Image img = getImage(x, y, w, h);
+
+		if(img == null) {
+			System.out.println("x : " + x + "| y : " + y + "| w : " + w + "| h : " + h);
+			System.exit(11);
+		}
 		return img.getScaledInstance(w * scale, h * scale, Image.SCALE_SMOOTH);
 	}
 
@@ -65,7 +70,7 @@ public class Sprite {
 
     if (rect.reverse == ScaleRect.Flip.HORIZONTALLY)
       return getReverseImage(rect.x, rect.y, rect.width, rect.height, rect.scale, true);
-    
+
     return getReverseImage(rect.x, rect.y, rect.width, rect.height, rect.scale, false);
   }
 

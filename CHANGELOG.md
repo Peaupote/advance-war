@@ -4,19 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.0.7] - 2018-03-15
 ### Added
-  - Animation while moving
+  - Animation
   - Fight implemented in the view
   - Infantry, AirFighter unit
   - Commander Powerbar in PlayerPanel
   - Different images for Terrain cells (Multiple singleton per Terrain)
+  - Building images and animations
+  - Menu
   
 ### Changed
   - Path finding for the shortest path for unit move
   - Optimization in the view
+  - Building are not directly linked to to Terrains
+  - Rework Renderers
 
-## [0.0.6] - 2018-22-02
+## [0.0.6] - 2018-02-22
 ### Added
   - Unit movement
   - PathRenderer
@@ -26,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
   - Fog of war bug
 
-## [0.0.5] - 2018-14-02
+## [0.0.5] - 2018-02-14
 ### Added
   - Unit selection & cursor movements when unit selected
   - Day panel first implementation

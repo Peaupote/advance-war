@@ -13,12 +13,15 @@ import java.util.LinkedList;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.Direction;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.MainFrame;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.interfaces.*;
 import fr.main.view.render.PathRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.model.units.*;
+import fr.main.model.buildings.*;
 
 public class Controller extends KeyAdapter implements MouseMotionListener {
 
@@ -32,6 +35,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     private Point mouse;
     private Mode mode;
     private ActionPanel actionPanel, focusedActionPanel;
+    private BuildingInterface buildingPanel;
     private AbstractUnit targetUnit;
     private UnitActionPanel unitActionPanel;
     private DayPanel dayPanel;
@@ -55,7 +59,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         }
     }
 
-    private class ControllerPanel extends ActionPanel {
+    public class ControllerPanel extends ActionPanel {
     
         public void onOpen () {
             super.onOpen();
@@ -101,7 +105,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Move", () -> {
               mode = Mode.IDLE;
               world.clearTarget();
+              UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
+              targetRender.setState("move");
               path.apply();
+              targetRender.setState("idle");
               mode = Mode.MOVE;
               cursor.setLocation(unitCursor.position());
               path.visible = false;
@@ -113,28 +120,42 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
               unitCursor.setLocation(cursor.position());
             });
 
+            new Index("Capture", () -> {
+              AbstractUnit unit = targetUnit;
+              actions.get(1).action.run();
+              if (unit.getX() == unitCursor.getX() && unit.getY() == unitCursor.getY() && unit.isEnabled()){
+                AbstractBuilding b = Universe.get().getBuilding(unit.getX(),unit.getY());
+                if (((CaptureBuilding)unit).capture(b))
+                  BuildingRenderer.getRender(b).updateState(null);
+              }
+            });
+
             new Index("Supply", () -> {});
             new Index("Heal", () -> {});
 
             new Index("Load", () -> {});
             new Index("Unload", () -> {});
 
-            new Index("Cancel", () -> {});
+            new Index("Cancel", world::clearTarget);
         }
         
         @Override
         public void onOpen () {
           targetUnit = world.getUnit(cursor.position());
           actions.forEach((key, value) -> value.setActive(false));
+          actions.get(8).setActive(true);
+          if (!targetUnit.isEnabled()) return;
 
-          actions.get(7).setActive(true);
-          if (targetUnit.getMoveQuantity() > 0) actions.get(1).setActive(true);
+          actions.get(1).setActive(true);
           if (targetUnit.canAttack()) actions.get(2).setActive(true);
-          if (targetUnit instanceof SupplyUnit) actions.get(3).setActive(true);
-          if (targetUnit instanceof HealerUnit) actions.get(4).setActive(true);
+          if (targetUnit instanceof CaptureBuilding &&
+                ((CaptureBuilding)targetUnit).canCapture(Universe.get().getBuilding(unitCursor.getX(),unitCursor.getY())))
+            actions.get(3).setActive(true);
+          if (targetUnit instanceof SupplyUnit) actions.get(4).setActive(true);
+          if (targetUnit instanceof HealerUnit) actions.get(5).setActive(true);
           if (targetUnit instanceof HideableUnit)
-            if (((HideableUnit)targetUnit).hidden()) actions.get(6).setActive(true);
-            else actions.get(5).setActive(true);
+            if (((HideableUnit)targetUnit).hidden()) actions.get(7).setActive(true);
+            else actions.get(6).setActive(true);
 
           super.onOpen();
         }
@@ -189,6 +210,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         };
         unitActionPanel = new UnitActionPanel();
 
+        buildingPanel = new BuildingInterface(this);
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
         dayPanel.setVisible(true);
@@ -209,31 +231,60 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 if (mode == Mode.UNIT) unitActionPanel.setVisible(true);
                 else if (mode == Mode.ATTACK) {
                     AbstractUnit target = world.getUnit(unitCursor.position());
-                    if (targetUnit.canAttack(target)) targetUnit.attack(target);
+                    if (targetUnit.canAttack(target)) {
+                      int aLife = targetUnit.getLife(),
+                          tLife = target.getLife();
+                      targetUnit.attack(target);
+                      world.flash ("" + (targetUnit.getLife() - aLife),
+                          (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                          (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                          UniverseRenderer.FlashMessage.Type.ALERT);
+                      world.flash ("" + (target.getLife() - tLife),
+                          (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                          (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                          UniverseRenderer.FlashMessage.Type.ALERT);
+                    }
                     mode = Mode.MOVE;
                     world.clearTarget();
                 } else {
-                  if (targetUnit == null || !world.isVisible(cursor.position()))
-                    actionPanel.setVisible (true);
-                  else if (targetUnit.getPlayer() == world.getCurrentPlayer() && targetUnit.isEnabled()) {
+                  if (targetUnit == null) {
+                    AbstractBuilding b = world.getBuilding (cursor.position());
+                    if (!world.isVisible(cursor.position()) || b == null 
+                          || !(b instanceof FactoryBuilding)
+                          || ((OwnableBuilding)b).getOwner() != world.getCurrentPlayer())
+                      actionPanel.setVisible (true);
+                    else
+                      buildingPanel.setVisible (true);
+                  } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
+                           targetUnit.isEnabled()) {
+long time = System.nanoTime();
                     mode = Mode.UNIT;
+long time2 = System.nanoTime();
                     world.updateTarget(targetUnit);
+System.out.println("world::updateTarget "+(System.nanoTime()-time2));
                     path.rebase(targetUnit);
                     path.visible = true;
+System.out.println("total : "+(System.nanoTime()-time));
                   }
+                  else actionPanel.setVisible(true);
                   unitCursor.setLocation(cursor.position());
                 }
               } else if (key == KeyEvent.VK_ESCAPE) {
                   mode = Mode.MOVE;
+                  world.clearTarget();
                   path.visible = false;
               }
             } else if (mode == Mode.MENU) {
-                if      (key == KeyEvent.VK_UP)     focusedActionPanel.goUp();
-                else if (key == KeyEvent.VK_DOWN)   focusedActionPanel.goDown();
-                else if (key == KeyEvent.VK_ENTER)  focusedActionPanel.perform();
-                else if (key == KeyEvent.VK_ESCAPE) focusedActionPanel.setVisible (false);
+                if      (key == KeyEvent.VK_UP)    focusedActionPanel.goUp();
+                else if (key == KeyEvent.VK_DOWN)  focusedActionPanel.goDown();
+                else if (key == KeyEvent.VK_ENTER) focusedActionPanel.perform();
+                else if (key == KeyEvent.VK_ESCAPE){
+                  focusedActionPanel.setVisible (false);
+                  world.clearTarget();
+                }
             } else if (key == KeyEvent.VK_ESCAPE) {
                 mode = Mode.MOVE;
+                world.clearTarget();
                 path.visible = false;
             }
         }
@@ -252,9 +303,11 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     @Override
     public void mouseMoved (MouseEvent e) {
+      if (mode == Mode.MOVE){
         mouse.x = e.getX() / MainFrame.UNIT;
         mouse.y = e.getY() / MainFrame.UNIT;
         listenMouse = true;
+      }
     }
 
     /**
@@ -291,6 +344,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public Mode getMode () {
         return mode;
+    }
+
+    public void setMode (Mode mode) {
+      this.mode = mode;
     }
 
 }

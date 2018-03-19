@@ -5,7 +5,8 @@ import java.awt.Color;
 
 import fr.main.model.terrains.naval.*;
 import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractTerrain;
+import fr.main.model.buildings.*;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.AbstractBuilding;
@@ -47,15 +48,24 @@ public class Minimap extends InterfaceUI {
           g.setColor(unit.getPlayer().color);
           g.fillRect(a, b, size, size);
         } else {
-          Terrain t = world.getTerrain(j, i);
-
-          if (t instanceof LandTerrain) g.setColor(Color.green);
-          else if (t instanceof NavalTerrain) g.setColor(Color.cyan);
-          else g.setColor(Color.black);
-          g.fillRect(a, b, size, size);
-          if (!world.isVisible(j, i)) {
-            g.setColor(fogColor);
+          AbstractBuilding building = world.getBuilding(j, i);
+          if (building != null) {
+            if (building instanceof OwnableBuilding) {
+              OwnableBuilding ob = (OwnableBuilding)building;
+              g.setColor (ob.getOwner() != null ? ob.getOwner().color : Color.white);
+            } else g.setColor(Color.white);
             g.fillRect(a, b, size, size);
+          } else {
+            AbstractTerrain t = world.getTerrain(j, i);
+
+            if (t instanceof LandTerrain) g.setColor(Color.green);
+            else if (t instanceof NavalTerrain) g.setColor(Color.cyan);
+            else g.setColor(Color.black);
+            g.fillRect(a, b, size, size);
+            if (!world.isVisible(j, i)) {
+              g.setColor(fogColor);
+              g.fillRect(a, b, size, size);
+            }
           }
         }
       }

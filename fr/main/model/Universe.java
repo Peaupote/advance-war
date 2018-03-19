@@ -7,11 +7,17 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
-import fr.main.model.terrains.Terrain;
-import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.terrains.AbstractTerrain;
+import fr.main.model.buildings.*;
+import fr.main.model.units.AbstractUnit;
+import fr.main.view.render.units.naval.*;
+import fr.main.view.render.units.air.*;
+import fr.main.view.render.units.land.*;
+import fr.main.model.units.naval.*;
+import fr.main.model.units.air.*;
+import fr.main.model.units.land.*;
 import fr.main.model.terrains.AbstractBuildable;
 import fr.main.model.commanders.FakeCommander;
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.Weather;
 
 public class Universe {
@@ -30,12 +36,12 @@ public class Universe {
 
   protected static class Board implements Serializable {
 
-    public Terrain[][] board;
+    public AbstractTerrain[][] board;
     public Player[] players;
     public AbstractUnit[][] units;
     public AbstractBuilding[][] buildings;
 
-    public Board (AbstractUnit[][] units, Player[] ps, Terrain[][] board, AbstractBuilding[][] buildings) {
+    public Board (AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings) {
       this.board     = board;
       this.units     = units;
       this.players   = ps;
@@ -68,13 +74,35 @@ public class Universe {
     }
 
     instance = this;
-    players = new PlayerIt(map.players).iterator();
-
-    for (Player p: map.players) new FakeCommander(p);
-
     weather = Weather.FOGGY;
     fogwar = new boolean[map.board.length][map.board[0].length];
+    players = new PlayerIt(map.players).iterator();
     next();
+
+    new Dock(map.players[0], new Point(6,10));
+    new Airport(map.players[1], new Point(6,9));
+    new Airport(map.players[0], new Point(7,9));
+    new Barrack(null, new Point(9,5));
+    new Headquarter(map.players[0], new Point(12,5));
+    new City(null, new Point(20,5));
+
+    new Lander(map.players[0], new Point(0,0));
+    new Lander(map.players[1], new Point(1,1));
+    new Lander(map.players[0], new Point(3,17));
+    new Infantry(map.players[0], new Point(10,5));
+    new Infantry(map.players[1], new Point(10,6));
+    new Fighter(map.players[0], new Point(10,10));
+
+    map.players[0].addFunds(100000);
+    map.players[1].addFunds(100000);
+
+    if (getBuilding(6,10) != null)
+      ((Dock)getBuilding(6,10)).create(Battleship.class);
+    if (getBuilding(7,9) != null)
+      ((Airport)getBuilding(7,9)).create(Stealth.class);
+    if (getBuilding(6,9) != null)
+      ((Airport)getBuilding(6,9)).create(Fighter.class);
+
   }
 
   public Dimension getDimension () {
@@ -109,15 +137,14 @@ public class Universe {
       for (int j = 0; j < map.board[0].length; j++)
         fogwar[i][j] = false;
 
-    for (AbstractUnit u: current)
-      u.renderVision(fogwar);
+    current.renderVision(fogwar);
   }
 
-  public final Terrain getTerrain (int x, int y) {
+  public final AbstractTerrain getTerrain (int x, int y) {
     return isValidPosition(x,y) ? map.board[y][x] : null;
   }
 
-  public final Terrain getTerrain (Point pt) {
+  public final AbstractTerrain getTerrain (Point pt) {
     return getTerrain(pt.x, pt.y);
   }
 
@@ -154,6 +181,15 @@ public class Universe {
     return false;
   }
 
+  public final boolean setBuilding(int x, int y, AbstractBuilding b){
+    if (isValidPosition(x, y)){
+      map.buildings[y][x] = b;
+      return true;
+    }
+    
+    return false;
+  }
+
   public String toString () {
     String ret = "";
     for (int i = 0; i < map.board.length; i++) {
@@ -164,7 +200,7 @@ public class Universe {
     return ret;
   }
 
-  public static void save (String mapName, AbstractUnit[][] units, Terrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {
+  public static void save (String mapName, AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {
     if (!Universe.save){
       System.out.println("Impossible to save.");
       return;

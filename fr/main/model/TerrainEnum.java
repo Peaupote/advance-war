@@ -1,11 +1,8 @@
 package fr.main.model;
 
-import fr.main.model.terrains.Terrain;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.Reef;
-import fr.main.model.terrains.naval.Sea;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.*;
+import fr.main.model.terrains.naval.*;
 
 import java.time.temporal.TemporalAccessor;
 
@@ -23,9 +20,9 @@ public enum TerrainEnum {
   bridge   (10, Bridge.get());
 
   public final int value;
-  public final Terrain terrain;
+  public final AbstractTerrain terrain;
 
-  TerrainEnum(int value, Terrain terrain) {
+  TerrainEnum(int value, AbstractTerrain terrain) {
     this.value = value;
     this.terrain = terrain;
   }
@@ -46,7 +43,7 @@ public enum TerrainEnum {
     }
   }
 
-  public static TerrainEnum getTerrainEnum(Terrain t) {
+  public static TerrainEnum getTerrainEnum(AbstractTerrain t) {
   	if (t instanceof Lowland) 	return lowland;
   	if (t instanceof Sea) 		return sea;
   	if (t instanceof Beach) 	return beach;

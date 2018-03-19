@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Player;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
@@ -14,7 +15,7 @@ import fr.main.model.units.CaptureBuilding;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 
-public class Infantry extends Unit implements WalkingUnit,CaptureBuilding<OwnableBuilding>{
+public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
 
     public static final String NAME = "Infanterie";
     public static final int PRICE   = 1000;
@@ -52,7 +53,7 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding<Ownabl
 		super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.INFANTRY,3,2,null,SECONDARYWEAPON,NAME,PRICE);
 	}
 
-    public boolean canCapture(OwnableBuilding b){
-        return b!=null && b.getOwner()!=getPlayer();
+    public boolean canCapture(AbstractBuilding b){
+        return isEnabled() && b instanceof OwnableBuilding && ((OwnableBuilding)b).getOwner()!=getPlayer();
     }
 }

@@ -1,55 +1,22 @@
 package fr.main.view.render.terrains.land;
 
-import fr.main.view.render.terrains.TerrainLocation;
-import fr.main.model.terrains.land.Road;
-import fr.main.view.MainFrame;
-import fr.main.view.render.Renderer;
-import fr.main.view.render.terrains.TerrainImage;
+import java.util.LinkedList;
 
-import java.awt.*;
-import java.awt.Image;
-import java.util.HashMap;
+import fr.main.view.render.terrains.TerrainRenderer;
+import fr.main.view.render.sprites.*;
+import fr.main.view.render.animations.*;
 
-public class RoadRenderer extends Road implements Renderer {
-	private transient Image image;
-	private transient static HashMap<TerrainLocation.RoadLocation, RoadRenderer> instances;
+public class RoadRenderer extends TerrainRenderer.Render {
 
-	private RoadRenderer(TerrainLocation.RoadLocation location) {
-		if (instances == null) instances = new HashMap<>();
-		if (!instances.containsKey(location)) instances.put(location, this);
-		this.location = location;
-		update();
-	}
+  public RoadRenderer () {
+    super();
 
-	@Override
-	public String getFilename() {
-		return location.getPath();
-	}
+    LinkedList<ScaleRect> areas = new LinkedList<>();
+    areas.add(new ScaleRect (0, 0, 16, 16, 2));
+    AnimationState idle = new AnimationState(new SpriteList("./assets/terrains/road1.png", areas), 20);
+    anim.put("idle", idle);
+    anim.setState("idle");
+  }
 
-	@Override
-	public void update() {
-		this.image = TerrainImage.get(location.getPath()).getSubImg(location.location());
-	}
-
-	@Override
-	public void setImage(Image image) {
-		this.image = image;
-	}
-
-	public void draw(Graphics g, int x, int y) {
-		if (image == null) {
-			g.setColor(Color.gray);
-			g.fillRect(x, y, MainFrame.UNIT, MainFrame.UNIT);
-			return;
-		}
-
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(image, x, y, null);
-	}
-
-	public static RoadRenderer get(TerrainLocation.RoadLocation loc) {
-		if (instances == null) instances = new HashMap<>();
-		if (!instances.containsKey(loc)) new RoadRenderer(loc);
-		return instances.get(loc);
-	}
 }
+

@@ -1,6 +1,6 @@
 package fr.main.model.units;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Random;
 import java.io.Serializable;
 
@@ -17,6 +17,9 @@ import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.Universe;
 import fr.main.model.Direction;
+
+import static java.awt.Color.blue;
+import static java.awt.Color.red;
 
 /**
  * Represents a unit on the board
@@ -73,18 +76,12 @@ public abstract class Unit implements AbstractUnit {
         }
     }
 
-    public Unit (Point location) {
-        this (null, location);
-    }
-
-    public Unit (Player player, Point location) {
-        this (player, location, "fuel", 0, false, MoveType.WHEEL, 5, 2, null, null, "unit",1);
-    }
-
     public Unit (Player player, Point location, String fuelName, int maxFuel, boolean diesIfNoFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name, int cost) {
         this.life            = 100;
         this.player          = player;
+        if (player != null) player.add(this);
         this.location        = location;
+        Universe.get().setUnit(location.x, location.y, this);
         this.fuel            = new Fuel(fuelName, maxFuel, diesIfNoFuel);
         this.moveType        = moveType;
         this.maxMoveQuantity = moveQuantity;
@@ -94,7 +91,7 @@ public abstract class Unit implements AbstractUnit {
         this.secondaryWeapon = secondaryWeapon;
         this.name            = name;
         this.cost            = cost;
-        move(location.x, location.y);
+        Universe.get().updateVision();
     }
 
     public int getBaseVision(){
@@ -135,11 +132,8 @@ public abstract class Unit implements AbstractUnit {
         return life;
     }
 
-    public final boolean setPlayer (Player p) {
-        if (player == null) {
-            this.player = p;
-            return true;
-        } else return false;
+    public final void setPlayer (Player p) {
+        this.player = p;
     }
 
     public final Player getPlayer(){
@@ -184,7 +178,7 @@ public abstract class Unit implements AbstractUnit {
             u.updateVision();
             return true;
         }
-        
+
         return false;
     }
 
@@ -285,9 +279,9 @@ public abstract class Unit implements AbstractUnit {
 
         if (mvP == null || movePoint < mvP)
             return;
-        
+
         movePoint -= mvP;
-        if (terrain.canStop(this))
+        if (canStop(x, y))
             map[y][x] = true;
 
         for (Direction d : Direction.cardinalDirections()){
@@ -393,4 +387,5 @@ public abstract class Unit implements AbstractUnit {
 
         return Math.max(0,(b*aCO+r)*aHP*(2000-10*dCO-dTR*dHP)/10000000);
     }
+
 }

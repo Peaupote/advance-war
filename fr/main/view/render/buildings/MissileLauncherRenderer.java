@@ -1,0 +1,38 @@
+package fr.main.view.render.buildings;
+
+import java.util.LinkedList;
+import java.awt.Color;
+
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.OwnableBuilding;
+import fr.main.model.buildings.MissileLauncher;
+import fr.main.view.render.sprites.*;
+import fr.main.view.render.animations.*;
+
+public class MissileLauncherRenderer extends BuildingRenderer.BuildingRender {
+
+    public MissileLauncherRenderer (AbstractBuilding building) {
+        super(building);
+
+        LinkedList<ScaleRect> areas = new LinkedList<>();
+        areas.add(new ScaleRect (168, 225, 16, 23, 2));
+        AnimationState active = new AnimationState (new SpriteList("./assets/buildings/colored_buildings.png", areas), 50);
+
+        areas = new LinkedList<>();
+        areas.add(new ScaleRect (187, 234, 16, 15, 2));
+        AnimationState inactive = new AnimationState (new SpriteList("./assets/buildings/colored_buildings.png", areas), 50);
+
+        anim.put("active", active);
+        anim.put("inactive", inactive);
+
+        updateState();
+    }
+
+    public void updateState(){
+        anim.setState(((MissileLauncher)building).isFired() ? "active" : "inactive");
+    }
+
+    public void updateState(String s){
+        updateState();
+    }
+}

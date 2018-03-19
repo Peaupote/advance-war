@@ -21,9 +21,9 @@ public class ActionPanel extends InterfaceUI {
   public class Index {
     // TODO: add image for each index
 
-    final int id;
-    final String name;
-    final Runnable action;
+    public final int id;
+    public final String name;
+    public final Runnable action;
 
     private boolean active;
 
@@ -111,7 +111,12 @@ public class ActionPanel extends InterfaceUI {
   public boolean hideOnOpen(InterfaceUI com) { return true; }
 
   public void perform () {
-    new Thread(actions.get(selected).action::run).start();
+    int j = 1;
+    for (Index i : actions.values())
+      if (i.active && j == selected){
+        new Thread(i.action::run).start();
+        break;
+      } else if (i.active) j++;
     setVisible (false);
   }
 

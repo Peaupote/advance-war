@@ -2,11 +2,6 @@ package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
-import fr.main.view.render.terrains.TerrainLocation;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.ReefRenderer;
-import fr.main.view.render.terrains.naval.RiverRenderer;
-import fr.main.view.render.terrains.naval.SeaRenderer;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -105,9 +100,7 @@ public class MapGenerator {
             }
         }
 
-        map = placeBeach(surroundBySea(refineMap(map, smoothness), 4));
-        placeRivers(map);
-        return placeWood(placeMountainsHills(map));
+        return placeWood(placeMountainsHills(placeBeach(surroundBySea(refineMap(map, smoothness), 4))));
     }
 
     private int distance(int x1 , int y1, int x2, int y2) {
@@ -333,17 +326,22 @@ public class MapGenerator {
 
     private void placeRivers (TerrainEnum[][] map) {
     	/*** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
-
-    	TerrainEnum[] land = {lowland, beach};
+//    	int nSea, nLowland, nBridge, nBeach, nRiver;
+    	TerrainEnum[] land = {lowland, bridge, beach}, naval = {sea, river};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
-    			if(map[i][j] == sea)
+    			if(map[i][j] == sea) {
     				if(isSandwiched(map, i, j, land)
 							&& getAdjacentTerrainNb(map, i, j, lowland)
 							+ getAdjacentTerrainNb(map, i, j, beach) < 3)
     					map[i][j] = river; //continue;
-//
+//    				nSea = getAdjacentTerrainNb(map, i , j, sea);
+//    				nLowland = getAdjacentTerrainNb(map, i, j, lowland);
+//					nBridge = getAdjacentTerrainNb(map, i, j, bridge);
+//					nRiver = getAdjacentTerrainNb(map, i, j , river);
+//					nBeach = getAdjacentTerrainNb(map, i, j, beach);
+				}
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++)
 				if(map[i][j] == sea && getAdjacentTerrainNb(map, i, j, river) >= 2)

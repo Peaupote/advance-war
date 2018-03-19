@@ -39,7 +39,6 @@ public class AntiAir extends Unit implements LandVehicleUnit{
         PRIMARYWEAPON_DAMAGES.put(Stealth.class,75);
         PRIMARYWEAPON_DAMAGES.put(BCopter.class,105);
         PRIMARYWEAPON_DAMAGES.put(TCopter.class,105);
-        PRIMARYWEAPON_DAMAGES.put(BlackBomb.class,120);
     }
 
     public AntiAir(Player p, int x, int y){

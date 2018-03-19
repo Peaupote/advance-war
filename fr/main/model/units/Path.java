@@ -1,10 +1,13 @@
 package fr.main.model.units;
 
 import java.util.LinkedList;
+import java.util.HashSet;
 import java.awt.Point;
 
 import fr.main.model.Direction;
 import fr.main.model.Universe;
+import fr.main.model.units.naval.NavalUnit;
+import fr.main.model.buildings.Dock;
 
 public class Path extends LinkedList<Direction> {
 
@@ -16,37 +19,45 @@ public class Path extends LinkedList<Direction> {
     private Node[][] map;
     private Point offset;
 
+    private int pathMoveCost;
+    private LinkedList<Point> points;
+
     public Path () {
         super();
+        points = new LinkedList<Point>();
     }
 
     public void rebase (AbstractUnit unit) {
+long time = System.nanoTime();
         removeAll(this);
+        points.removeAll(points);
+        pathMoveCost = 0;
+
         this.unit = unit;
 
         Universe u = Universe.get();
+        int move   = unit.getMoveQuantity(),
+            posX   = unit.getX(), posY = unit.getY(),
+            x      = Math.min(move,posX), y = Math.min(move,posY);
+        points.add(new Point(x, y));
 
-        int move = unit.getMoveQuantity();
-        int posX = unit.getX();
-        int posY = unit.getY();
-        int x    = Math.min(move,posX);
-        int y    = Math.min(move,posY);
-
-        offset = new Point(posX-x,posY-y);
-        map    = new Node[x+Math.min(move,u.getMapWidth()-posX)+1][y+Math.min(move,u.getMapHeight()-posY)+1];
+        offset = new Point(posX - x, posY - y);
+        map    = new Node[x + Math.min(move, u.getMapWidth() - posX) + 1][y + Math.min(move, u.getMapHeight() - posY) + 1];
         shortestCalculus();
+System.out.println("rebase : "+(System.nanoTime()-time));
     }
 
-    private final Node removeMin(LinkedList<Node> l){
-        Node node=l.getFirst();
+    private final Node removeMin(HashSet<Node> l){
+        Node node = null;
         for (Node n : l)
-            if (n.compareTo(node)<0)
+            if (node == null || n.compareTo(node)<0)
                 node=n;
         l.remove(node);        
         return node;
     }
 
     public void shortestCalculus(){
+long time = System.nanoTime();
         int width  = map.length,
             height = map[0].length,
             move   = unit.getMoveQuantity();
@@ -56,8 +67,8 @@ public class Path extends LinkedList<Direction> {
             for (int j=0;j<height;j++)
                 map[i][j]=new Node(i,j,move+1);
 
-        LinkedList<Node> unsettled = new LinkedList<Node>();
-        LinkedList<Node> settled   = new LinkedList<Node>();
+        HashSet<Node> unsettled = new HashSet<Node>();
+        HashSet<Node> settled   = new HashSet<Node>();
 
         Node current=map[unit.getX()-offset.x][unit.getY()-offset.y];
         current.lowestCost=0;
@@ -77,12 +88,12 @@ public class Path extends LinkedList<Direction> {
                 }
             settled.add(actual);
         }
+System.out.println("shortestCalculus : "+(System.nanoTime()-time));
     }
 
     public void shorten(){
-        Point p = new Point(unit.getX(), unit.getY());
-        for (Direction d : this)
-            d.move(p);
+        Point p = (Point)points.getLast().clone();
+        p.translate(offset.x,offset.y);
         shorten(p);
     }
 
@@ -94,10 +105,14 @@ public class Path extends LinkedList<Direction> {
         if (p.x < 0 || p.y < 0 || p.x >= map.length || p.y >= map[0].length)
             return;
         removeAll(this);
+        points.removeAll(points);
+        points.add((Point)p.clone());
+        pathMoveCost = map[p.x][p.y].lowestCost;
         Direction d;
         while ((d = map[p.x][p.y].previous) != Direction.NONE){
             addFirst(d);
             d.opposed().move(p);
+            points.addFirst((Point)p.clone());
         }
     }
 
@@ -107,9 +122,9 @@ public class Path extends LinkedList<Direction> {
         public int lowestCost;
 
         public Node(int x, int y, int lowestCost){
-            this.x=x;
-            this.y=y;
-            Integer i = unit.moveCost(offset.x+x,offset.y+y);
+            this.x = x;
+            this.y = y;
+            Integer i = unit.moveCost(offset.x + x, offset.y + y);
             this.moveCost   = i == null ? lowestCost : i;
             this.lowestCost = lowestCost;
             this.previous   = Direction.NONE;
@@ -124,49 +139,32 @@ public class Path extends LinkedList<Direction> {
     }
 
     @Override
-    public boolean add (Direction dir) {
-        Point t = new Point (unit.getX()-offset.x, unit.getY()-offset.y);
-        LinkedList<Point> pts = new LinkedList<>();
-        pts.add(t);
-
-        int pathMoveCost=0;
-        for (Direction d: this) {
-            t = (Point)t.clone();
-            d.move(t);
-            pts.add(t);
-            pathMoveCost += map[t.x][t.y].moveCost;
-        }
-
-        t = (Point)t.clone();
+    public /*synchronized*/ boolean add (Direction dir) {
+        Point t = (Point)points.getLast().clone();
         dir.move(t);
-        pathMoveCost += map[t.x][t.y].moveCost;
-        int i = pts.indexOf(t);
+
+        int i = points.lastIndexOf(t);
         if (i != -1) {
-            for (int j = i; j < pts.size() - 1; j++) removeLast();
+            while (points.size() != i+1){
+                removeLast();
+                pathMoveCost -= map[points.getLast().x][points.getLast().y].moveCost;
+                points.removeLast();
+            }
             return true;
         }
 
-
-        if (pathMoveCost > unit.getMoveQuantity()){
+        if (pathMoveCost + map[t.x][t.y].moveCost > unit.getMoveQuantity()){
             t.translate(offset.x,offset.y);
             shorten(t);
             return true;
         }
 
+        points.add(t);
+        pathMoveCost += map[t.x][t.y].moveCost;
         return super.add(dir);
     }
 
     public void apply () {
-        makeAppliable();
         unit.move(this);
     }
-
-    protected void makeAppliable(){
-        Universe u = Universe.get();
-        Point p    = new Point(unit.getX(),unit.getY());
-        for (Direction d : this) d.move(p);
-        while (!u.getTerrain(p.x,p.y).canStop(unit))
-            removeLast().opposed().move(p);
-    }
-
 }

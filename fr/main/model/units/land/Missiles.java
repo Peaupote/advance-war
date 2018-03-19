@@ -26,7 +26,6 @@ public class Missiles extends Unit implements LandVehicleUnit{
         PRIMARYWEAPON_DAMAGES.put(Stealth.class,100);
         PRIMARYWEAPON_DAMAGES.put(BCopter.class,115);
         PRIMARYWEAPON_DAMAGES.put(TCopter.class,115);
-        PRIMARYWEAPON_DAMAGES.put(BlackBomb.class,120);
     }
 
 	public Missiles(Player player, Point point){

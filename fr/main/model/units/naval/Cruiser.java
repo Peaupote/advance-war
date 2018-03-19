@@ -48,7 +48,6 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
         SECONDARYWEAPON_DAMAGES.put(Stealth.class,100);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,105);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,105);
-        SECONDARYWEAPON_DAMAGES.put(BlackBomb.class,120);
 
         SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }

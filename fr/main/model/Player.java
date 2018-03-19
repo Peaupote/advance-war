@@ -11,11 +11,12 @@ import fr.main.model.commanders.Commander;
 
 public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
-    private static final Color[] colors = new Color[]{
-        Color.red,
-        Color.blue,
-        Color.white,
-        Color.yellow
+    public static final Color[] colors = new Color[]{
+        	Color.red,
+			Color.blue,
+			Color.green,
+//        Color.getHSBColor(270, 82, 43),
+        	Color.yellow
     };
 
     private static int increment_id = 0;
@@ -40,6 +41,10 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         funds     = 0;
     }
 
+    public void addFunds(int f){
+        funds += f;
+    }
+
     public int getFunds(){
         return funds;
     }
@@ -50,12 +55,19 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         return true;
     }
 
+    public void renderVision(boolean[][] fogwar){
+        for (AbstractUnit u : units)
+            u.renderVision(fogwar);
+        for (OwnableBuilding b : buildings)
+            b.renderVision(fogwar);
+    }
+
     public boolean setCommander(Commander c){
         if (this.commander == null){
             this.commander = c;
             return true;
         }
-        
+
         return false;
     }
 
@@ -64,12 +76,21 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     public void add(AbstractUnit u) {
-        if (u.setPlayer(this))
+        if (u.getPlayer() == this && !units.contains(u))
             units.add(u);
     }
 
     public void remove(AbstractUnit u){
         units.remove(u);
+    }
+
+    public void addBuilding(OwnableBuilding b){
+        if (b.getOwner() == this && !buildings.contains(b))
+            buildings.add(b);
+    }
+
+    public void removeBuilding(OwnableBuilding b){
+        buildings.remove(b);
     }
 
     public Iterator<AbstractUnit> iterator () {
@@ -87,4 +108,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         for (AbstractUnit u : units)
             u.turnEnds();
     }
+
+	public Color getColor() {
+		return color;
+	}
 }

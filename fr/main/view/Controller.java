@@ -133,6 +133,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Supply", () -> {});
             new Index("Heal", () -> {});
 
+            new Index("Hide", () -> {});
+            new Index("Reveal", () -> {});
+
             new Index("Load", () -> {});
             new Index("Unload", () -> {});
 
@@ -143,7 +146,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         public void onOpen () {
           targetUnit = world.getUnit(cursor.position());
           actions.forEach((key, value) -> value.setActive(false));
-          actions.get(8).setActive(true);
+          actions.get(10).setActive(true);
           if (!targetUnit.isEnabled()) return;
 
           actions.get(1).setActive(true);
@@ -257,14 +260,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                       buildingPanel.setVisible (true);
                   } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                            targetUnit.isEnabled()) {
-long time = System.nanoTime();
                     mode = Mode.UNIT;
-long time2 = System.nanoTime();
                     world.updateTarget(targetUnit);
-System.out.println("world::updateTarget "+(System.nanoTime()-time2));
                     path.rebase(targetUnit);
                     path.visible = true;
-System.out.println("total : "+(System.nanoTime()-time));
                   }
                   else actionPanel.setVisible(true);
                   unitCursor.setLocation(cursor.position());

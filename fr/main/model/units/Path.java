@@ -28,7 +28,6 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void rebase (AbstractUnit unit) {
-long time = System.nanoTime();
         removeAll(this);
         points.removeAll(points);
         pathMoveCost = 0;
@@ -38,13 +37,12 @@ long time = System.nanoTime();
         Universe u = Universe.get();
         int move   = unit.getMoveQuantity(),
             posX   = unit.getX(), posY = unit.getY(),
-            x      = Math.min(move,posX), y = Math.min(move,posY);
+            x      = Math.min(move, posX), y = Math.min(move, posY);
         points.add(new Point(x, y));
 
         offset = new Point(posX - x, posY - y);
-        map    = new Node[x + Math.min(move, u.getMapWidth() - posX) + 1][y + Math.min(move, u.getMapHeight() - posY) + 1];
+        map    = new Node[x + 1 + Math.min(move, u.getMapWidth() - posX - 1)][y + 1 + Math.min(move, u.getMapHeight() - posY - 1)];
         shortestCalculus();
-System.out.println("rebase : "+(System.nanoTime()-time));
     }
 
     private final Node removeMin(HashSet<Node> l){
@@ -57,21 +55,20 @@ System.out.println("rebase : "+(System.nanoTime()-time));
     }
 
     public void shortestCalculus(){
-long time = System.nanoTime();
         int width  = map.length,
             height = map[0].length,
             move   = unit.getMoveQuantity();
 
         // initialization
-        for (int i=0;i<width;i++)
-            for (int j=0;j<height;j++)
-                map[i][j]=new Node(i,j,move+1);
+        for (int i = 0; i < width; i ++)
+            for (int j = 0; j < height; j ++)
+                map[i][j] = new Node(i, j, move + 1);
 
         HashSet<Node> unsettled = new HashSet<Node>();
         HashSet<Node> settled   = new HashSet<Node>();
 
-        Node current=map[unit.getX()-offset.x][unit.getY()-offset.y];
-        current.lowestCost=0;
+        Node current = map[unit.getX() - offset.x][unit.getY() - offset.y];
+        current.lowestCost = 0;
         unsettled.add(current);
 
         //  evaluation
@@ -88,7 +85,6 @@ long time = System.nanoTime();
                 }
             settled.add(actual);
         }
-System.out.println("shortestCalculus : "+(System.nanoTime()-time));
     }
 
     public void shorten(){
@@ -120,11 +116,13 @@ System.out.println("shortestCalculus : "+(System.nanoTime()-time));
         public Direction previous;
         public final int x,y,moveCost;
         public int lowestCost;
+        public final boolean canStop;
 
         public Node(int x, int y, int lowestCost){
-            this.x = x;
-            this.y = y;
-            Integer i = unit.moveCost(offset.x + x, offset.y + y);
+            this.x          = x;
+            this.y          = y;
+            this.canStop    = unit.canStop(offset.x + x, offset.y + y);
+            Integer i       = unit.moveCost(offset.x + x, offset.y + y);
             this.moveCost   = i == null ? lowestCost : i;
             this.lowestCost = lowestCost;
             this.previous   = Direction.NONE;
@@ -135,6 +133,10 @@ System.out.println("shortestCalculus : "+(System.nanoTime()-time));
         */
         public int compareTo(Node n){
             return this.lowestCost-n.lowestCost;
+        }
+
+        public boolean canStop(){
+            return canStop;
         }
     }
 

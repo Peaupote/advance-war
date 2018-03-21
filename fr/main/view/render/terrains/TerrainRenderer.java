@@ -49,8 +49,6 @@ public class TerrainRenderer {
     if (renderers.containsKey(location))
       return renderers.get(location);
 
-    System.out.println(location.getClass().getName() + " was created");
-
     // TODO: nice stuff with reflection
     if (location instanceof TerrainLocation.HillLocation) 			renderers.put(location, new HillRenderer((TerrainLocation.HillLocation) location));
     else if (location instanceof TerrainLocation.LowlandLocation) 	renderers.put(location, new LowlandRenderer((TerrainLocation.LowlandLocation) location));

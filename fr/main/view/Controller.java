@@ -182,35 +182,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         actionPanel     = new MainActionPanel();
         dayPanel        = new DayPanel();
         mode            = Mode.MOVE;
-        path            = new PathRenderer(camera) {
-         
-          Point last = null;
-          boolean[][] area;
-
-          @Override
-          public void rebase (AbstractUnit unit) {
-              area = new boolean[size.height][size.width];
-              
-              if (mode == Mode.UNIT) unit.reachableLocation(area);
-              else if (mode == Mode.ATTACK) unit.renderTarget(area);
-              super.rebase(unit);
-          }
-
-          @Override
-          public boolean add (Direction dir) {
-
-            Point pt = unitCursor.position();
-            dir.move(pt);
-
-            if (area[pt.y][pt.x]) {
-              if (last == null) return super.add(dir);
-              if (!last.equals(pt)) shorten(pt);
-              last = null;
-            } else last = pt;
-            return false;
-          }
-
-        };
+        path            = new PathRenderer(camera);
         unitActionPanel = new UnitActionPanel();
 
         buildingPanel = new BuildingInterface(this);
@@ -338,7 +310,11 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
           c.setDirection (d);
           
-          if (mode == Mode.UNIT && unitCursor.canMove(d)) path.add(d);
+          if (mode == Mode.UNIT && unitCursor.canMove(d)){
+            Point p = unitCursor.position().getLocation();
+            d.move(p);
+            path.add(p);
+          }
     }
 
     public Mode getMode () {

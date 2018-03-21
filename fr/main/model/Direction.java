@@ -52,4 +52,20 @@ public enum Direction {
         };
     }
 
+    public static Direction getDir(Point dep, Point arr){
+        if (arr.y == dep.y){
+            if (arr.x - dep.x == 1)
+                return RIGHT;
+            else if (arr.x - dep.x == -1)
+                return LEFT;
+        }
+        else if (arr.x == dep.x){
+            if (arr.y - dep.y == 1)
+                return BOTTOM;
+            else if (arr.y - dep.y == -1)
+                return TOP;
+        }
+        return NONE;
+    }
+
 }

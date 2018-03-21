@@ -1,8 +1,11 @@
 package fr.main.model.units;
 
 import java.awt.Point;
+import java.util.HashSet;
 
 import fr.main.model.Universe;
+import fr.main.model.MoveZone;
+import fr.main.model.Node;
 import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.terrains.Buildable;
 import fr.main.model.buildings.AbstractBuilding;
@@ -48,7 +51,49 @@ public interface AbstractUnit extends Serializable {
         renderVision(fog, true);
     }
 
-    void reachableLocation (boolean[][] map);
+    default MoveZone getMoveMap(){
+        Universe u = Universe.get();
+        int move   = getMoveQuantity(),
+            posX   = getX(), posY = getY(),
+            x      = Math.min(move, posX), y = Math.min(move, posY),
+            width  = x + 1 + Math.min(move, u.getMapWidth() - posX - 1), height = y + 1 + Math.min(move, u.getMapHeight() - posY - 1);
+
+        Point offset = new Point(posX - x, posY - y);
+        Node[][] map = new Node[height][width];
+        
+        // initialization
+        for (int i = 0; i < height; i ++)
+            for (int j = 0; j < width; j ++)
+                map[i][j] = new Node(j, i, canStop(offset.x + j, offset.y + i), moveCost(offset.x + j, offset.y + i), move + 1);
+        Node current = new Node(posX - offset.x, posY - offset.y, true, 0, 0);
+        map[posY - offset.y][posX - offset.x] = current;
+
+        HashSet<Node> unsettled = new HashSet<Node>();
+        HashSet<Node> settled   = new HashSet<Node>();
+
+        unsettled.add(current);
+
+        //  evaluation
+        while (!unsettled.isEmpty()){
+            Node actual = null;
+            for (Node n : unsettled)
+                if (actual == null || n.compareTo(actual) < 0)
+                    actual = n;
+            unsettled.remove(actual);
+
+            for (Direction d : Direction.cardinalDirections())
+                if (actual.x + d.x < width && actual.x + d.x >= 0 && actual.y + d.y < height && actual.y + d.y >= 0){
+                    Node target = map[actual.y+d.y][actual.x+d.x];
+                    if (!settled.contains(target) && actual.lowestCost + target.moveCost < target.lowestCost){
+                        target.previous = d;
+                        target.lowestCost = actual.lowestCost + target.moveCost;
+                        unsettled.add(target);
+                    }
+                }
+            settled.add(actual);
+        }
+        return new MoveZone(map, offset);
+    }
 
     /*
     * set all tiles of the map that can be attacked (with the main or secondary weapon) from the position (x,y) to true, whatever the unit on it

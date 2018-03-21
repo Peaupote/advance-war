@@ -2,6 +2,7 @@ package fr.main.model.units;
 
 import java.awt.*;
 import java.util.Random;
+import java.util.HashSet;
 import java.io.Serializable;
 
 import fr.main.model.Player;
@@ -190,7 +191,7 @@ public abstract class Unit implements AbstractUnit {
         int x = location.x, y = location.y, visionT = getVision(),
             height = this instanceof AirUnit ? 2 : Universe.get().getTerrain(x,y).getHeight();
 
-        Point start = (Point)location.clone();
+        Point start = location.getLocation();
         fog[y][x]=true;
         if (visionT != 0){
             for (int i = 1 ; i <= visionT ; i++)
@@ -266,29 +267,6 @@ public abstract class Unit implements AbstractUnit {
     private final boolean canSeeThrough(int startX, int startY, int x, int y, int height){ // especially written for linearRegression, should probably not be used in any other method
         AbstractTerrain t = Universe.get().getTerrain(x / 2 + startX, y / 2 + startY);
         return t.hideFrom(this) ? t.getHeight() < height : t.getHeight() <= height;
-    }
-
-    public void reachableLocation (boolean[][] map) {
-        if (map != null && map.length != 0 && map[0] != null && map[0].length != 0)
-            reachableLocation (map, location.x, location.y, moveQuantity+moveCost(location.x, location.y));
-    }
-
-    private void reachableLocation (boolean[][] map, int x, int y, int movePoint){
-        AbstractTerrain terrain = Universe.get().getTerrain(x, y);
-        Integer mvP             = moveCost(x,y);
-
-        if (mvP == null || movePoint < mvP)
-            return;
-
-        movePoint -= mvP;
-        if (canStop(x, y))
-            map[y][x] = true;
-
-        for (Direction d : Direction.cardinalDirections()){
-            int xx = x + d.x, yy = y + d.y;
-            if (yy >= 0 && xx >= 0 && yy < map.length && xx < map[yy].length)
-                reachableLocation(map, xx, yy, movePoint);
-        }
     }
 
     public void renderTarget (boolean[][] map, int x, int y) {

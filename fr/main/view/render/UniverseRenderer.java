@@ -4,6 +4,8 @@ import java.awt.*;
 import java.util.LinkedList;
 
 import fr.main.model.TerrainEnum;
+import fr.main.model.Node;
+import fr.main.model.MoveZone;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.terrains.AbstractTerrain;
@@ -28,6 +30,7 @@ public class UniverseRenderer extends Universe {
 
 	private final Point[][] coords;
 	private final boolean[][] targets;
+  	private Point upperLeft = new Point(0,0), lowerRight;
 	private Color tColor;
 	private TerrainLocation[][] tLocations;
 
@@ -70,8 +73,9 @@ public class UniverseRenderer extends Universe {
 			for (int j = 0; j < map.board[i].length; j++)
 				coords[i][j] = new Point(0, 0);
 
-		targets = new boolean[map.board.length][map.board[0].length];
-		flashs  = new LinkedList<>();
+		targets    = new boolean[map.board.length][map.board[0].length];
+ 		lowerRight = new Point(map.board.length, map.board[0].length);
+ 		flashs     = new LinkedList<>();
 		setLocations();
 	}
 
@@ -120,18 +124,29 @@ public class UniverseRenderer extends Universe {
 	public void updateTarget (AbstractUnit unit) {
 		clearTarget();
 		if (controller.getMode() == Controller.Mode.UNIT) {
-			unit.reachableLocation(targets);
+			MoveZone m = unit.getMoveMap();
+			int moveQuantity = unit.getMoveQuantity();
+			Node[][] n = m.map;
+			upperLeft = m.offset;
+			lowerRight = new Point(upperLeft.x + n[0].length, upperLeft.y + n.length);
+			for (int j = upperLeft.y; j < lowerRight.y; j++)
+				for (int i = upperLeft.x; i < lowerRight.x; i ++)
+					targets[j][i] = n[j - upperLeft.y][i - upperLeft.x].lowestCost <= moveQuantity;
 			tColor = unit.getPlayer() == current ? moveColor : targetColor;
 		} else if (controller.getMode() == Controller.Mode.ATTACK) {
 			unit.renderTarget(targets);
+			upperLeft = new Point (0,0);
+			lowerRight = new Point (targets.length, targets[0].length);
 			tColor = targetColor;
 		}
 	}
 
 	public void clearTarget () {
-		for (int i = 0; i < targets.length; i++)
-			for (int j = 0; j < targets[i].length; j++)
-				targets[i][j] = false;
+		for (int i = upperLeft.x; i < lowerRight.x; i++)
+			for (int j = upperLeft.y; j < lowerRight.y; j++)
+				targets[j][i] = false;
+		upperLeft.move(0,0);
+		lowerRight.move(coords[0].length, coords.length);
 	}
 
 	public void flash (String message, int x, int y, int time) {
@@ -146,11 +161,8 @@ public class UniverseRenderer extends Universe {
 		TerrainEnum[][] tEnum = new TerrainEnum[map.board.length][map.board[0].length];
 
 		for(int i = 0; i < map.board.length; i ++)
-			for(int j = 0; j < map.board[0].length; j ++) {
-
+			for(int j = 0; j < map.board[0].length; j ++)
 				tEnum[i][j] = TerrainEnum.getTerrainEnum(map.board[i][j]);
-				System.out.println(map.board[i][j].getClass().getName() + " || " + tEnum[i][j].getClass().getName());
-			}
 
 		this.tLocations = new TerrainLocation[map.board.length][map.board[0].length];
 
@@ -211,7 +223,6 @@ public class UniverseRenderer extends Universe {
 				if (cross[1] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_LEFT;
 				if (cross[2] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_TOP;
 				if (cross[3] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_RIGHT;
-				System.out.println("Error in setRiverLocation : 1");
 			case 2:
 				for (int i = 0; i < 4; i++)
 					if (cross[i] == TerrainEnum.river)
@@ -230,14 +241,13 @@ public class UniverseRenderer extends Universe {
 									case 5:
 										return TerrainLocation.RiverLocation.TURN_BOTTOM_LEFT;
 								}
-				System.out.println("Error in setRiverLocation : 2");
 			case 1:
 				if (cross[0] == TerrainEnum.river) return TerrainLocation.RiverLocation.TOP_END;
 				if (cross[1] == TerrainEnum.river) return TerrainLocation.RiverLocation.RIGHT_END;
 				if (cross[2] == TerrainEnum.river) return TerrainLocation.RiverLocation.BOTTOM_END;
 				if (cross[3] == TerrainEnum.river) return TerrainLocation.RiverLocation.LEFT_END;
 			case 0:
-				System.out.println("Error in setRiverLocation : 3");
+
 			default:
 				return TerrainLocation.RiverLocation.CENTER;
 		}
@@ -257,7 +267,6 @@ public class UniverseRenderer extends Universe {
 				if(cross[1] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_LEFT;
 				if(cross[2] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_TOP;
 				if(cross[3] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_RIGHT;
-				System.out.println("Error in setRoadLocation : 1");
 			case 2 :
 				for(int i = 0; i < 4; i ++)
 					if(cross[i] == TerrainEnum.road)
@@ -272,12 +281,10 @@ public class UniverseRenderer extends Universe {
 									case 4 : return TerrainLocation.RoadLocation.HORIZONTAL;
 									case 5 : return TerrainLocation.RoadLocation.TURN_BOTTOM_LEFT;
 								}
-				System.out.println("Error in setRoadLocation : 2");
 			case 1 :
 				if(cross[0] == TerrainEnum.road || cross[2] == TerrainEnum.road)
 					return TerrainLocation.RoadLocation.VERTICAL;
 				else return TerrainLocation.RoadLocation.HORIZONTAL;
-			case 0 : System.out.println("Error in setRoadLocation : 3");
 			default: return TerrainLocation.RoadLocation.CENTER;
 
 		}

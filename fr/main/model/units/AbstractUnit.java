@@ -3,6 +3,7 @@ package fr.main.model.units;
 import java.awt.Point;
 import java.util.HashSet;
 
+import fr.main.model.units.weapons.*;
 import fr.main.model.Universe;
 import fr.main.model.MoveZone;
 import fr.main.model.Node;
@@ -41,6 +42,8 @@ public interface AbstractUnit extends Serializable {
     Player getPlayer();
     void setPlayer(Player p);
     int getCost();
+    PrimaryWeapon getPrimaryWeapon();
+    SecondaryWeapon getSecondaryWeapon();
 
     /*
     * Airunits can see every tiles in range of their vision.

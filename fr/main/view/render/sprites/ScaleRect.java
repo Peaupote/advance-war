@@ -1,7 +1,5 @@
 package fr.main.view.render.sprites;
 
-import org.omg.PortableInterceptor.NON_EXISTENT;
-
 import java.awt.Rectangle;
 
 public class ScaleRect extends Rectangle {

@@ -22,10 +22,10 @@ public class TerrainPanel extends InterfaceUI {
           HALFH = MainFrame.HEIGHT / (2 * MainFrame.UNIT);
 
   private static Sprite sp = Sprite.get("./assets/small_sprites.png");
-  private static final Image lifeImage = sp.getImage(0, 8, 8, 8, 2),
-                             munitionsImage = sp.getImage(0, 16, 8, 7, 2),
-                             fuelImage = sp.getImage(0, 23, 8, 8, 2),
-                             moveImage = sp.getImage(0, 0, 8, 8, 2);
+  public static final Image lifeImage = sp.getImage(0, 8, 8, 8, 2),
+                            munitionsImage = sp.getImage(0, 16, 8, 7, 2),
+                            fuelImage = sp.getImage(0, 23, 8, 8, 2),
+                            moveImage = sp.getImage(0, 0, 8, 8, 2);
 
   boolean leftSide;
   int x, y;

@@ -19,11 +19,8 @@ import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.Universe;
 import fr.main.model.Direction;
 
-import static java.awt.Color.blue;
-import static java.awt.Color.red;
-
 /**
- * Represents a unit on the board
+ * Represents an unit on the board
  */
 public abstract class Unit implements AbstractUnit {
 
@@ -267,6 +264,14 @@ public abstract class Unit implements AbstractUnit {
     private final boolean canSeeThrough(int startX, int startY, int x, int y, int height){ // especially written for linearRegression, should probably not be used in any other method
         AbstractTerrain t = Universe.get().getTerrain(x / 2 + startX, y / 2 + startY);
         return t.hideFrom(this) ? t.getHeight() < height : t.getHeight() <= height;
+    }
+
+    public PrimaryWeapon getPrimaryWeapon(){
+        return primaryWeapon;
+    }
+
+    public SecondaryWeapon getSecondaryWeapon(){
+        return secondaryWeapon;
     }
 
     public void renderTarget (boolean[][] map, int x, int y) {

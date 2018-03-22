@@ -7,11 +7,14 @@ import java.util.function.Function;
 
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.Direction;
+import fr.main.model.units.HideableUnit;
+import fr.main.model.units.weapons.*;
 import fr.main.model.units.land.*;
 import fr.main.model.units.air.*;
 import fr.main.model.units.naval.*;
 
 import fr.main.view.MainFrame;
+import fr.main.view.interfaces.TerrainPanel;
 import fr.main.view.render.Renderer;
 import fr.main.view.render.units.air.*;
 import fr.main.view.render.units.land.*;
@@ -87,6 +90,21 @@ public class UnitRenderer {
 
     public void draw (Graphics g, int x, int y) {
       anim.draw(g, x + offset.x, y + offset.y);
+      if (MainFrame.getTimer() % 50 <= 15)
+        return;
+
+      if (unit.getLife() < 34)
+        g.drawImage(TerrainPanel.lifeImage, x + offset.x, y + offset.y, null);
+
+      if (unit.getFuel().getQuantity() <= unit.getFuel().maximumQuantity / 2)
+        g.drawImage(TerrainPanel.fuelImage, x + offset.x, y + offset.y + MainFrame.UNIT / 2, null);
+
+      PrimaryWeapon pr = unit.getPrimaryWeapon();
+      if (pr != null && pr.getAmmunition() <= pr.maximumAmmo / 2)
+        g.drawImage(TerrainPanel.munitionsImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y, null);
+
+      if (unit instanceof HideableUnit && ((HideableUnit)unit).hidden())
+        g.drawImage(TerrainPanel.moveImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y + MainFrame.UNIT / 2, null);
     }
 
     public void setState (String state) {

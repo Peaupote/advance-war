@@ -61,7 +61,7 @@ public class MainFrame extends JFrame {
     
     new Thread(() -> {
       while (true) {
-        timer++;
+        timer = timer == Integer.MAX_VALUE ? 0 : timer + 1; //pour éviter que le timer ne passe dans les négatifs ce qui pourrait être gênant
         controller.update();
         view.repaint();
         try {

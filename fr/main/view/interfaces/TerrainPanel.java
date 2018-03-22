@@ -54,10 +54,11 @@ public class TerrainPanel extends InterfaceUI {
     if(world.isVisible(cursor.getX(), cursor.getY()) && unit != null) {
       g.drawString(unit.getName(), x + 20, y + 100);
       g.drawString(unit.getPlayer().name, x + 20, y + 120);
-      g.drawString(unit.getMoveQuantity() + "/" + unit.getMaxMoveQuantity(), x + 20, y + 140);
+      g.drawString(unit.getLife() + "/100", x + 20, y + 140);
+      g.drawString(unit.getMoveQuantity() + "/" + unit.getMaxMoveQuantity(), x + 20, y + 160);
           
       Unit.Fuel fuel = unit.getFuel();
-      g.drawString(fuel.getQuantity()+"/"+fuel.maximumQuantity, x + 20, y + 160);
+      g.drawString(fuel.getQuantity()+"/"+fuel.maximumQuantity, x + 20, y + 180);
     } else {
       AbstractBuilding building  = world.getBuilding(cursor.getX(), cursor.getY());
       if (building != null) {

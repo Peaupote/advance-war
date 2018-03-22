@@ -40,7 +40,7 @@ public class PlayerPanel extends InterfaceUI {
 
     // TODO: don't re-evaluate all values each frames
     g.drawString (p.name, x + 20, y + 20);
-    g.drawString (p.getFunds() + "", x + 20, y + 40);
+    g.drawString (p.getFunds() + "$", x + 20, y + 40);
     
     g.setColor(Color.white);
     g.fillRect(x, y + HEIGHT - 20, WIDTH, 20);

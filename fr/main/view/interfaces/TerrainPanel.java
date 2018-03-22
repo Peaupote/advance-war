@@ -1,11 +1,12 @@
 package fr.main.view.interfaces;
 
-import java.awt.Graphics;
-import java.awt.Color;
+import java.awt.*;
 
 import fr.main.view.MainFrame;
 import fr.main.model.Universe;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.Position;
+import fr.main.view.render.terrains.TerrainRenderer;
 
 public class TerrainPanel extends InterfaceUI {
 
@@ -38,13 +39,15 @@ public class TerrainPanel extends InterfaceUI {
     g.fillRect (x, y, WIDTH, HEIGHT);
 
     g.setColor (FOREGROUNDCOLOR);
+
+    TerrainRenderer.render (g, new Point(x + 20, y + 20), cursor.position());
     g.drawString (world.getTerrain(cursor.getX(), cursor.getY()).toString(), x + 20, y + 20);
 
+
+
     // Units info :
-    if(world.isVisible(cursor.getX(), cursor.getY()) && world.getUnit (cursor.getX(), cursor.getY()) != null) {
-      String[] unitInfo = world.getUnit(cursor.getX(), cursor.getY()).toString().split("\n");
-      for(int i = 0; i < unitInfo.length; i ++)
-        g.drawString(unitInfo[i], x + 5, y + 40 + i * 10);
+    AbstractUnit unit = world.getUnit(cursor.getX(), cursor.getY());
+    if(world.isVisible(cursor.getX(), cursor.getY()) && unit != null) {
     } else
       g.drawString ("No Unit", x + 20, y + 40);
   }

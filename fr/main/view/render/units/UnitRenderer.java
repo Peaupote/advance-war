@@ -25,29 +25,29 @@ public class UnitRenderer {
 
   static{
     constructors = new HashMap<Class<? extends AbstractUnit>, Function<AbstractUnit, ? extends Render>>();
-    constructors.put(BCopter.class,BCopterRenderer::new);
-    constructors.put(Bomber.class,BomberRenderer::new);
-    constructors.put(Fighter.class,FighterRenderer::new);
-    constructors.put(Stealth.class,StealthRenderer::new);
-    constructors.put(TCopter.class,TCopterRenderer::new);
-    constructors.put(AntiAir.class,AntiAirRenderer::new);
-    constructors.put(APC.class,APCRenderer::new);
-    constructors.put(Artillery.class,ArtilleryRenderer::new);
-    constructors.put(Infantry.class,InfantryRenderer::new);
-    constructors.put(Mech.class,MechRenderer::new);
-    constructors.put(Megatank.class,MegatankRenderer::new);
-    constructors.put(Missiles.class,MissilesRenderer::new);
-    constructors.put(MTank.class,MTankRenderer::new);
-    constructors.put(Neotank.class,NeotankRenderer::new);
-    constructors.put(Recon.class,ReconRenderer::new);
-    constructors.put(Rockets.class,RocketsRenderer::new);
-    constructors.put(Tank.class,TankRenderer::new);
-    constructors.put(Battleship.class,BattleshipRenderer::new);
-    constructors.put(BlackBoat.class,BlackBoatRenderer::new);
-    constructors.put(Carrier.class,CarrierRenderer::new);
-    constructors.put(Cruiser.class,CruiserRenderer::new);
-    constructors.put(Lander.class,LanderRenderer::new);
-    constructors.put(Sub.class,SubRenderer::new);
+    constructors.put(BCopter.class    , BCopterRenderer::new);
+    constructors.put(Bomber.class     , BomberRenderer::new);
+    constructors.put(Fighter.class    , FighterRenderer::new);
+    constructors.put(Stealth.class    , StealthRenderer::new);
+    constructors.put(TCopter.class    , TCopterRenderer::new);
+    constructors.put(AntiAir.class    , AntiAirRenderer::new);
+    constructors.put(APC.class        , APCRenderer::new);
+    constructors.put(Artillery.class  , ArtilleryRenderer::new);
+    constructors.put(Infantry.class   , InfantryRenderer::new);
+    constructors.put(Mech.class       , MechRenderer::new);
+    constructors.put(Megatank.class   , MegatankRenderer::new);
+    constructors.put(Missiles.class   , MissilesRenderer::new);
+    constructors.put(MTank.class      , MTankRenderer::new);
+    constructors.put(Neotank.class    , NeotankRenderer::new);
+    constructors.put(Recon.class      , ReconRenderer::new);
+    constructors.put(Rockets.class    , RocketsRenderer::new);
+    constructors.put(Tank.class       , TankRenderer::new);
+    constructors.put(Battleship.class , BattleshipRenderer::new);
+    constructors.put(BlackBoat.class  , BlackBoatRenderer::new);
+    constructors.put(Carrier.class    , CarrierRenderer::new);
+    constructors.put(Cruiser.class    , CruiserRenderer::new);
+    constructors.put(Lander.class     , LanderRenderer::new);
+    constructors.put(Sub.class        , SubRenderer::new);
   }
 
   public static abstract class Render extends Renderer {

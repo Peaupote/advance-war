@@ -9,6 +9,7 @@ import fr.main.model.units.land.LandUnit;
 import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.units.air.AirUnit;
 import fr.main.view.Controller;
+import fr.main.view.MainFrame;
 
 public class BuildingInterface extends Controller.ControllerPanel {
 
@@ -19,8 +20,9 @@ public class BuildingInterface extends Controller.ControllerPanel {
 
     final Class c;
 
-    public IndexClass (Class<? extends AbstractUnit> c) {
-      super(c.getTypeName(), () -> building.create(c));
+    public IndexClass (Class<? extends AbstractUnit> c)
+        throws NoSuchFieldException, IllegalAccessException {
+      super(c.getField("NAME").get(null) + ": " + c.getField("PRICE").get(null) + "$", () -> building.create(c));
       this.c = c;
     }
 
@@ -29,15 +31,21 @@ public class BuildingInterface extends Controller.ControllerPanel {
   public BuildingInterface (Controller controller) {
     controller.super();
     this.controller = controller;
+    x = MainFrame.WIDTH - 200;
+    y = 10;
 
-    for (Class<? extends NavalUnit> c: Dock.UNIT_LIST.keySet())
-      new IndexClass(c);
+    try {
+      for (Class<? extends NavalUnit> c: Dock.UNIT_LIST.keySet())
+        new IndexClass(c);
 
-    for (Class<? extends AirUnit> c: Airport.UNIT_LIST.keySet())
-      new IndexClass(c);
+      for (Class<? extends AirUnit> c: Airport.UNIT_LIST.keySet())
+        new IndexClass(c);
 
-    for (Class<? extends LandUnit> c: Barrack.UNIT_LIST.keySet())
-      new IndexClass(c);
+      for (Class<? extends LandUnit> c: Barrack.UNIT_LIST.keySet())
+        new IndexClass(c);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override

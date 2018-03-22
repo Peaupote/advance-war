@@ -11,7 +11,7 @@ public interface TerrainLocation extends Serializable{
 	public ScaleRect getRect();
 
 	public enum TerrainImageRect {
-		LEFT(0, 17), RIGHT(35, 17), TOP(17, 0), BOTTOM(17, 34), CENTER(17, 17),
+		LEFT(0, 17), RIGHT(34, 17), TOP(17, 0), BOTTOM(17, 34), CENTER(17, 17),
 		TOP_RIGHT(34, 0), TOP_LEFT(0, 0), BOTTOM_RIGHT(34, 34), BOTTOM_LEFT(0, 34),
 		CENTER_TOP_LEFT(17, 17, 8, 8), CENTER_TOP_RIGHT(25, 17, 8, 8),
 		CENTER_BOTTOM_LEFT(17, 25, 8, 8), CENTER_BOTTOM_RIGHT(25, 25, 8, 8);

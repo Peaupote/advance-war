@@ -61,7 +61,7 @@ public class TerrainRenderer {
     else if (location instanceof TerrainLocation.ReefLocation) 		renderers.put(location, new ReefRenderer((TerrainLocation.ReefLocation) location));
     else if (location instanceof TerrainLocation.SeaLocation)		renderers.put(location, new SeaRenderer((TerrainLocation.SeaLocation) location));
 	else {
-		System.out.println("ERROR in TerrainRenderer");
+		System.err.println("ERROR in TerrainRenderer");
 		System.exit(10);
 	}
 

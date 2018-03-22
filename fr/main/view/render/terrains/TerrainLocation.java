@@ -12,17 +12,25 @@ public interface TerrainLocation extends Serializable{
 
 	public enum TerrainImageRect {
 		LEFT(0, 17), RIGHT(35, 17), TOP(17, 0), BOTTOM(17, 34), CENTER(17, 17),
-		TOP_RIGHT(34, 0), TOP_LEFT(0, 0), BOTTOM_RIGHT(34, 34), BOTTOM_LEFT(0, 34);
+		TOP_RIGHT(34, 0), TOP_LEFT(0, 0), BOTTOM_RIGHT(34, 34), BOTTOM_LEFT(0, 34),
+		CENTER_TOP_LEFT(17, 17, 8, 8), CENTER_TOP_RIGHT(25, 17, 8, 8),
+		CENTER_BOTTOM_LEFT(17, 25, 8, 8), CENTER_BOTTOM_RIGHT(25, 25, 8, 8);
 
-		public final int x, y;
+		public final int x, y, w, h;
 
 		TerrainImageRect(int x, int y) {
+			this(x, y, 16, 16);
+		}
+
+		TerrainImageRect(int x, int y, int w, int h) {
 			this.x = x;
 			this.y = y;
+			this.w = w;
+			this.h = h;
 		}
 
 		ScaleRect getRect() {
-			return new ScaleRect(x, y);
+			return new ScaleRect(x, y, w, h);
 		}
 	}
 
@@ -245,9 +253,13 @@ public interface TerrainLocation extends Serializable{
 		LEFT(1, TerrainImageRect.LEFT), RIGHT(1, TerrainImageRect.RIGHT),
 		TOP(1, TerrainImageRect.TOP), BOTTOM(1, TerrainImageRect.BOTTOM),
 		TOP_LEFT(1, TerrainImageRect.TOP_LEFT), TOP_RIGHT(1, TerrainImageRect.TOP_RIGHT),
-		BOTTOM_LEFT(1, TerrainImageRect.BOTTOM_LEFT), BOTTOM_RIGHT(1, TerrainImageRect.BOTTOM_RIGHT);
+		BOTTOM_LEFT(1, TerrainImageRect.BOTTOM_LEFT), BOTTOM_RIGHT(1, TerrainImageRect.BOTTOM_RIGHT),
+		CORNER_TOP_LEFT(2, TerrainImageRect.CENTER_TOP_LEFT), CORNER_TOP_RIGHT(2, TerrainImageRect.CENTER_TOP_RIGHT),
+		CORNER_BOTTOM_LEFT(2, TerrainImageRect.CENTER_BOTTOM_LEFT), CORNER_BOTTOM_RIGHT(2, TerrainImageRect.CENTER_BOTTOM_RIGHT);
 
-		private static final String[] paths = {"assets/terrains/beach1.png", "assets/terrains/cliffs.png"};
+		private static final String[] paths = {
+				"assets/terrains/beach1.png", "assets/terrains/cliffs.png", "assets/terrains/cliffs2.png"
+		};
 		private final TerrainImageRect location;
 		private final int index;
 

@@ -1,5 +1,7 @@
 package fr.main.view.render.sprites;
 
+import org.omg.PortableInterceptor.NON_EXISTENT;
+
 import java.awt.Rectangle;
 
 public class ScaleRect extends Rectangle {
@@ -26,6 +28,10 @@ public class ScaleRect extends Rectangle {
     public ScaleRect (int x, int y) {
         this(x, y, Flip.NONE);
     }
+
+    public ScaleRect(int x, int y, int w, int h) {
+    	this(x, y, w, h, 2);
+	}
 
     public ScaleRect (int x, int y, Flip reverse) {
         this(x, y, 16, 16, 2, reverse);

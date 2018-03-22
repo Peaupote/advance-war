@@ -14,10 +14,12 @@ public abstract class Building implements AbstractBuilding{
 
     protected final int defense;
     protected final Point location;
+    public final String name;
 
-    public Building (Point p, int defense) {
+    public Building (Point p, int defense, String name) {
         this.defense  = defense;
         this.location = p;
+        this.name     = name;
         Universe.get().setBuilding(p.x, p.y, this);
     }
 
@@ -27,6 +29,10 @@ public abstract class Building implements AbstractBuilding{
 
     public int getY(){
         return location.y;
+    }
+
+    public String getName () {
+        return name;
     }
 
     public int getDefense (AbstractUnit u) {

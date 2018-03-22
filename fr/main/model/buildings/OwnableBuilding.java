@@ -10,15 +10,13 @@ public abstract class OwnableBuilding extends Building {
 
     protected int life;
     public final int maximumLife, income;
-    public final String name;
     protected Player owner;
 
     public OwnableBuilding(Player p, Point pos, int defense, int maximumLife, int income, String name){
-        super (pos, defense);
+        super (pos, defense, name);
         this.maximumLife = maximumLife;
         this.life        = maximumLife;
         this.income      = income;
-        this.name        = name;
         this.owner       = p;
         if (p != null)
             p.addBuilding(this);

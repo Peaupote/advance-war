@@ -5,6 +5,10 @@ import java.awt.*;
 import fr.main.view.MainFrame;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.OwnableBuilding;
+import fr.main.model.Player;
+import fr.main.model.units.Unit;
 import fr.main.view.Position;
 import fr.main.view.render.terrains.TerrainRenderer;
 
@@ -40,16 +44,30 @@ public class TerrainPanel extends InterfaceUI {
 
     g.setColor (FOREGROUNDCOLOR);
 
-    TerrainRenderer.render (g, new Point(x + 20, y + 20), cursor.position());
-    g.drawString (world.getTerrain(cursor.getX(), cursor.getY()).toString(), x + 20, y + 20);
+    TerrainRenderer.render (g, new Point(x + 30, y + 20), cursor.position());
+    g.drawString (world.getTerrain(cursor.getX(), cursor.getY()).toString(), x + 20, y + 80);
 
 
 
     // Units info :
     AbstractUnit unit = world.getUnit(cursor.getX(), cursor.getY());
     if(world.isVisible(cursor.getX(), cursor.getY()) && unit != null) {
-    } else
-      g.drawString ("No Unit", x + 20, y + 40);
+      g.drawString(unit.getName(), x + 20, y + 100);
+      g.drawString(unit.getPlayer().name, x + 20, y + 120);
+      g.drawString(unit.getMoveQuantity() + "/" + unit.getMaxMoveQuantity(), x + 20, y + 140);
+          
+      Unit.Fuel fuel = unit.getFuel();
+      g.drawString(fuel.getQuantity()+"/"+fuel.maximumQuantity, x + 20, y + 160);
+    } else {
+      AbstractBuilding building  = world.getBuilding(cursor.getX(), cursor.getY());
+      if (building != null) {
+        g.drawString(building.getName(), x + 20, y + 100);
+        if (building instanceof OwnableBuilding) {
+          Player p = ((OwnableBuilding)building).getOwner();
+          g.drawString(p == null ? "Neutral" : p.name, x + 20, y + 120);
+        }
+      } else g.drawString ("No Unit", x + 20, y + 100);
+    }
   }
 
 }

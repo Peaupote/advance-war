@@ -8,6 +8,7 @@ import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.Direction;
 import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.naval.*;
+import fr.main.model.Universe;
 
 import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
@@ -16,10 +17,12 @@ import fr.main.view.render.sprites.SpriteList;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.*;
 import fr.main.view.render.animations.*;
+import fr.main.model.TerrainEnum;
 
 public class TerrainRenderer {
 
   public static HashMap<TerrainLocation, Render> renderers = new HashMap<>();
+	private static TerrainLocation[][] tLocations;
 
   public static class Render extends Renderer {
 
@@ -68,9 +71,158 @@ public class TerrainRenderer {
     return renderers.get(location);
   }
 
-  public static void render(Graphics g, Point coords, AbstractTerrain terrain, TerrainLocation location) {
-    getRender(terrain, location).draw(g, coords.x, coords.y);
+  private static Dimension size;
+
+  public static void render(Graphics g, Point coords, Point t) {
+    AbstractTerrain terrain = Universe.get().getTerrain(t.x, t.y);
+    getRender(terrain, tLocations[t.y][t.x]).draw(g, coords.x, coords.y);
   }
 
+	public static void setLocations () {
+    if (size == null) size = Universe.get().getDimension();
+		TerrainEnum[][] tEnum = new TerrainEnum[size.height][size.width];
+
+		for(int i = 0; i < size.height; i ++)
+			for(int j = 0; j < size.width; j ++)
+				tEnum[i][j] = TerrainEnum.getTerrainEnum(Universe.get().getTerrain(j, i));
+
+		tLocations = new TerrainLocation[size.height][size.width];
+
+		for(int i = 0; i < tEnum.length; i ++)
+			for(int j = 0; j < tEnum[0].length; j ++) {
+				switch (tEnum[i][j]) {
+					case sea: tLocations[i][j] = TerrainLocation.SeaLocation.NORMAL; break;
+					case lowland:
+						if(isInMap(i, j - 1) &&
+								(tEnum[i][j - 1] == TerrainEnum.mountain
+										|| tEnum[i][j - 1] == TerrainEnum.hill
+										|| tEnum[i][j - 1] == TerrainEnum.wood))
+							tLocations[i][j] = TerrainLocation.LowlandLocation.SHADOW;
+						else tLocations[i][j] = TerrainLocation.LowlandLocation.NORMAL;
+						break;
+					case hill: 		tLocations[i][j] = TerrainLocation.HillLocation.NORMAL; break;
+					case mountain: 	tLocations[i][j] = TerrainLocation.MountainLocation.NORMAL; break;
+					case wood: 		tLocations[i][j] = TerrainLocation.WoodLocation.NORMAL; break;
+					case reef: 		tLocations[i][j] = TerrainLocation.ReefLocation.NORMAL; break;
+					case bridge:
+						if(isInMap(i, j - 1) &&
+								(tEnum[i][j - 1] == TerrainEnum.sea || tEnum[i][j - 1] == TerrainEnum.river))
+							tLocations[i][j] = TerrainLocation.BridgeLocation.VERTICAL;
+						else tLocations[i][j] = TerrainLocation.BridgeLocation.HORIZONTAL;
+						break;
+					case river: 	tLocations[i][j] = setRiverLocation(tEnum, i, j); break;
+					case beach: tLocations[i][j] = TerrainLocation.BeachLocation.TOP; break; // TODO
+					case road: 		tLocations[i][j] = setRoadLocation(tEnum, i, j); break;
+					default: {}
+
+				}
+			}
+	}
+
+	private static boolean isInMap(int x, int y) {
+    if (size == null) size = Universe.get().getDimension();
+		return x >= 0 && x < size.height && y >= 0 && y < size.height;
+	}
+
+	private static TerrainLocation.BeachLocation setBeachLocation(TerrainEnum[][] tEnum, int x, int y) {
+		return null;
+	}
+	private static TerrainLocation.SeaLocation setSeaLocation(TerrainEnum[][] tEnum, int x, int y) {
+		return null;
+	}
+
+	private static TerrainLocation.RiverLocation setRiverLocation(TerrainEnum[][] tEnum, int x, int y) {
+		TerrainEnum[] cross = terrainCross(tEnum, x, y);
+		int count = 0;
+
+		for(TerrainEnum t : cross)
+			if(t == TerrainEnum.river) count ++;
+
+		switch (count) {
+			case 4:
+				return TerrainLocation.RiverLocation.CENTER;
+			case 3:
+				if (cross[0] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_BOTTOM;
+				if (cross[1] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_LEFT;
+				if (cross[2] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_TOP;
+				if (cross[3] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_RIGHT;
+			case 2:
+				for (int i = 0; i < 4; i++)
+					if (cross[i] == TerrainEnum.river)
+						for (int j = i + 1; j < 4; j++)
+							if (cross[j] == TerrainEnum.river)
+								switch (i + j) {
+									case 1:
+										return TerrainLocation.RiverLocation.TURN_TOP_RIGHT;
+									case 2:
+										return TerrainLocation.RiverLocation.VERTICAL;
+									case 3:
+										if (i == 0) return TerrainLocation.RiverLocation.TURN_TOP_LEFT;
+										else return TerrainLocation.RiverLocation.TURN_BOTTOM_RIGHT;
+									case 4:
+										return TerrainLocation.RiverLocation.HORIZONTAL;
+									case 5:
+										return TerrainLocation.RiverLocation.TURN_BOTTOM_LEFT;
+								}
+			case 1:
+				if (cross[0] == TerrainEnum.river) return TerrainLocation.RiverLocation.TOP_END;
+				if (cross[1] == TerrainEnum.river) return TerrainLocation.RiverLocation.RIGHT_END;
+				if (cross[2] == TerrainEnum.river) return TerrainLocation.RiverLocation.BOTTOM_END;
+				if (cross[3] == TerrainEnum.river) return TerrainLocation.RiverLocation.LEFT_END;
+			case 0:
+
+			default:
+				return TerrainLocation.RiverLocation.CENTER;
+		}
+	}
+
+	private static TerrainLocation.RoadLocation setRoadLocation(TerrainEnum[][] tEnum, int x, int y) {
+		TerrainEnum[] cross = terrainCross(tEnum, x, y);
+		int count = 0;
+
+		for(TerrainEnum t : cross)
+			if(t == TerrainEnum.road) count ++;
+
+		switch (count) {
+			case 4 : return TerrainLocation.RoadLocation.CENTER;
+			case 3 :
+				if(cross[0] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_BOTTOM;
+				if(cross[1] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_LEFT;
+				if(cross[2] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_TOP;
+				if(cross[3] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_RIGHT;
+			case 2 :
+				for(int i = 0; i < 4; i ++)
+					if(cross[i] == TerrainEnum.road)
+						for(int j = i + 1; j < 4; j ++)
+							if(cross[j] == TerrainEnum.road)
+								switch (i + j) {
+									case 1 : return TerrainLocation.RoadLocation.TURN_TOP_RIGHT;
+									case 2 : return TerrainLocation.RoadLocation.VERTICAL;
+									case 3 :
+										if(i == 0) return TerrainLocation.RoadLocation.TURN_TOP_LEFT;
+										else return TerrainLocation.RoadLocation.TURN_BOTTOM_RIGHT;
+									case 4 : return TerrainLocation.RoadLocation.HORIZONTAL;
+									case 5 : return TerrainLocation.RoadLocation.TURN_BOTTOM_LEFT;
+								}
+			case 1 :
+				if(cross[0] == TerrainEnum.road || cross[2] == TerrainEnum.road)
+					return TerrainLocation.RoadLocation.VERTICAL;
+				else return TerrainLocation.RoadLocation.HORIZONTAL;
+			default: return TerrainLocation.RoadLocation.CENTER;
+
+		}
+	}
+
+	private static TerrainEnum[] terrainCross(TerrainEnum[][] tEnum, int x, int y) {
+		TerrainEnum[] cross = new TerrainEnum[4];
+		int count = 0;
+
+		cross[0] = isInMap(x - 1, y) ? tEnum[x - 1][y] : TerrainEnum.none;
+		cross[1] = isInMap(x, y + 1) ? tEnum[x][y + 1] : TerrainEnum.none;
+		cross[2] = isInMap(x + 1, y) ? tEnum[x + 1][y] : TerrainEnum.none;
+		cross[3] = isInMap(x, y - 1) ? tEnum[x][y - 1] : TerrainEnum.none;
+
+		return cross;
+	}
 }
 

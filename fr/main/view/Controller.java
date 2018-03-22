@@ -236,8 +236,13 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     world.clearTarget();
                 }else if (mode == Mode.HEAL){
                     AbstractUnit target = world.getUnit(unitCursor.position());
-                    if (((HealerUnit)targetUnit).canHeal(target))
+                    if (((HealerUnit)targetUnit).canHeal(target)) {
+                      int life = target.getLife();
                       ((HealerUnit)targetUnit).heal(target);
+                      world.flash("+" + (target.getLife() - life),
+                          (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                          (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000);
+                    }
                     mode = Mode.MOVE;
                     world.clearTarget();
                 } else {

@@ -67,7 +67,8 @@ public class Path extends LinkedList<Direction> {
     public boolean add (Point p){
         p.translate(- offset.x, - offset.y);
         if (p.x >= 0 && p.y >= 0 &&
-                p.x < map[0].length && p.y < map.length){
+            p.x < map[0].length &&
+            p.y < map.length){
             if (points.getLast().equals(p)) return false; // rien n'a changé, le point est déjà le dernier du chemin
             Direction d = Direction.getDir(points.getLast(), p);
             if (map[p.y][p.x].canStop && map[p.y][p.x].lowestCost <= unit.getMoveQuantity())
@@ -81,7 +82,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     @Override
-    public /*synchronized*/ boolean add (Direction dir) {
+    public boolean add (Direction dir) {
         Point t = points.getLast().getLocation();
         dir.move(t);
 

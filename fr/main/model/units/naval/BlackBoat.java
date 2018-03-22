@@ -28,18 +28,6 @@ public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUni
         this(player, new Point(x,y));
     }
 
-    public boolean canHeal(AbstractUnit u){
-        return u!=null && this.getMoveQuantity()!=0;
-    }
-
-    public void heal(AbstractUnit u){
-        //TODO : deal with the money (one must pay to heal)
-        if (canHeal(u))
-            u.addLife(1);
-        else
-            throw new RuntimeException("Cannot heal.");
-    }
-
     public int getCapacity(){
         return 2;
     }

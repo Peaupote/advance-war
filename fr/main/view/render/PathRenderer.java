@@ -5,6 +5,8 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import fr.main.model.units.Path;
 import fr.main.model.Direction;
+import fr.main.model.Universe;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.Position;
 import fr.main.view.render.units.UnitRenderer;
@@ -12,6 +14,7 @@ import fr.main.view.render.units.UnitRenderer;
 public class PathRenderer extends Path {
 
     private Position.Camera camera;
+    private UniverseRenderer world;
     public boolean visible;
     private Image[] images;
     private static String[] filepaths = {
@@ -30,6 +33,7 @@ public class PathRenderer extends Path {
     public PathRenderer (Position.Camera camera) {
         super();
         this.camera = camera;
+        this.world = (UniverseRenderer)Universe.get();
         visible = false;
 
         images = new Image[filepaths.length];
@@ -102,12 +106,25 @@ public class PathRenderer extends Path {
         while (!isEmpty()) {
             Direction d = poll();
             render.setOrientation(d);
+            Point pt = unit.position();
+            d.move(pt);
+            
+            AbstractUnit u = world.getUnit(pt);
+            if (u != null) {
+              if (u.getPlayer() != unit.getPlayer() &&
+                  u.canAttack(unit)) {
+                int life = unit.getLife();
+                u.attack(unit, false);
+                world.flash ("" + (unit.getLife() - life),
+                    (unit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                    (unit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                    UniverseRenderer.FlashMessage.Type.ALERT);
+              }
+              return;
+            }
 
             for (int i = 0; i < MainFrame.UNIT; i++) {
-                if (!render.moveOffset(d)) {
-
-                  return;
-                }
+                if (!render.moveOffset(d)) return;
 
                 try {
                     Thread.sleep(5);

@@ -3,8 +3,10 @@ package fr.main.view.render;
 import java.awt.*;
 import java.util.LinkedList;
 
+import fr.main.model.units.HealerUnit;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Node;
+import fr.main.model.Direction;
 import fr.main.model.MoveZone;
 import fr.main.model.Universe;
 import fr.main.model.Player;
@@ -24,15 +26,16 @@ import fr.main.view.render.buildings.BuildingRenderer;
 public class UniverseRenderer extends Universe {
 
 	private final Controller controller;
-	private final Color fogColor    = new Color (0,0,0,100),
-			moveColor   = new Color (0, 255, 0, 50),
-			targetColor = new Color (255, 0, 0, 100);
+	private final Color fogColor 	= new Color (0,0,0,100),
+						moveColor   = new Color (0, 255, 0, 50),
+						targetColor = new Color (255, 0, 0, 100),
+						healColor   = new Color (0, 255, 0, 50);
 
-  private static final Font font = new Font("Helvetica", Font.PLAIN, 14);
+	private static final Font font = new Font("Helvetica", Font.PLAIN, 14);
 
 	private final Point[][] coords;
 	private final boolean[][] targets;
-  private Point upperLeft = new Point(0,0), lowerRight;
+	private Point upperLeft = new Point(0,0), lowerRight;
 	private Color tColor;
 
 	public static class FlashMessage {
@@ -140,6 +143,17 @@ public class UniverseRenderer extends Universe {
 			upperLeft = new Point (0,0);
 			lowerRight = new Point (targets.length, targets[0].length);
 			tColor = targetColor;
+		} else if (controller.getMode() == Controller.Mode.HEAL) {
+			int x = unit.getX(), y = unit.getY();
+			HealerUnit tmp = (HealerUnit)unit;
+			for (Direction d : Direction.cardinalDirections()){
+				int xx = x + d.x, yy = y + d.y;
+				if (isValidPosition(xx, yy) && tmp.canHeal(getUnit(xx, yy)))
+					targets[yy][xx] = true;
+			}
+			upperLeft.move(Math.max(0, unit.getX() - 1), Math.max(0, unit.getY() - 1));
+			lowerRight.move(Math.min(getMapWidth(), unit.getX() + 2), Math.min(getMapHeight(), unit.getY() + 2));
+			tColor = healColor;
 		}
 	}
 

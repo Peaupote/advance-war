@@ -60,6 +60,7 @@ public interface AbstractUnit extends Serializable {
 
         Point offset = new Point(posX - x, posY - y);
         Node[][] map = new Node[height][width];
+
         
         // initialization
         for (int i = 0; i < height; i ++)
@@ -72,6 +73,7 @@ public interface AbstractUnit extends Serializable {
         HashSet<Node> settled   = new HashSet<Node>();
 
         unsettled.add(current);
+
 
         //  evaluation
         while (!unsettled.isEmpty()){
@@ -178,7 +180,7 @@ public interface AbstractUnit extends Serializable {
 
     default Integer moveCost(int x, int y){
         Universe u = Universe.get();
-        if (u.getUnit(x,y) != null && u.getUnit(x,y).getPlayer() != getPlayer()) // if there is an opponent unit we can't go through
+        if (u.isVisible(x,y) && u.getUnit(x,y) != null && u.getUnit(x,y).getPlayer() != getPlayer()) // if there is an opponent unit we can't go through
             return null;
         else if (this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) // if this is a ship, it can go in a dock
             return 1;
@@ -187,6 +189,6 @@ public interface AbstractUnit extends Serializable {
     }
     default boolean canStop (int x, int y){
         Universe u = Universe.get();
-        return u.getUnit(x,y) == null && ((this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) || u.getTerrain(x,y).canStop(this));
+        return (!u.isVisible(x,y) || u.getUnit(x,y) == null) && ((this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) || u.getTerrain(x,y).canStop(this));
     }
 }

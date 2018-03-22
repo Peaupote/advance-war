@@ -102,7 +102,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             super();
             x = MainFrame.WIDTH - 200;
             y = 10;
-            
+           
             new Index("Stay", () -> {});
 
             new Index("Attack", () -> {
@@ -141,16 +141,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Unload", () -> {
               //TODO
             });
-
-            new Index("Cancel", world::clearTarget);
         }
         
         @Override
         public void onOpen () {
           targetUnit = world.getUnit(cursor.position());
           actions.forEach((key, value) -> value.setActive(false));
-          actions.get(10).setActive(true);
-
           actions.get(1).setActive(true);
           if (!targetUnit.isEnabled()) return;
           if (targetUnit.canAttack()) actions.get(2).setActive(true);
@@ -199,7 +195,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         int key = e.getKeyCode();
         if (!isListening) {
             isListening = true;
-            targetUnit = world.getUnit(cursor.position()); 
+            targetUnit = world.getUnit(cursor.position());
             if (mode.canMove()) {
               if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
               else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
@@ -216,7 +212,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     path.apply();
                     targetRender.setState("idle");
                     cursor.setLocation(unitCursor.position());
-                    unitActionPanel.setVisible(true);
+
+                    if (targetUnit.isEnabled()) unitActionPanel.setVisible(true);
+                    else mode = Mode.MOVE;
                   }).start();
                 } else if (mode == Mode.ATTACK) {
                     AbstractUnit target = world.getUnit(unitCursor.position());
@@ -246,15 +244,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     }
                     mode = Mode.MOVE;
                     world.clearTarget();
-                } else {
+                } else if (mode == Mode.MOVE) {
                   if (targetUnit == null) {
                     AbstractBuilding b = world.getBuilding (cursor.position());
                     if (!world.isVisible(cursor.position()) || b == null 
                           || !(b instanceof FactoryBuilding)
                           || ((OwnableBuilding)b).getOwner() != world.getCurrentPlayer())
                       actionPanel.setVisible (true);
-                    else
-                      buildingPanel.setVisible (true);
+                    else buildingPanel.setVisible (true);
                   } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                            targetUnit.isEnabled()) {
                     mode = Mode.UNIT;

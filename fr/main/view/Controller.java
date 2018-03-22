@@ -103,17 +103,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             x = MainFrame.WIDTH - 200;
             y = 10;
             
-            new Index("Move", () -> {
-              mode = Mode.IDLE;
-              world.clearTarget();
-              UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
-              targetRender.setState("move");
-              path.apply();
-              targetRender.setState("idle");
-              mode = Mode.MOVE;
-              cursor.setLocation(unitCursor.position());
-              path.visible = false;
-            });
+            new Index("Stay", () -> {});
 
             new Index("Attack", () -> {
               mode = Mode.ATTACK;
@@ -160,9 +150,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
           targetUnit = world.getUnit(cursor.position());
           actions.forEach((key, value) -> value.setActive(false));
           actions.get(10).setActive(true);
-          if (!targetUnit.isEnabled()) return;
 
           actions.get(1).setActive(true);
+          if (!targetUnit.isEnabled()) return;
           if (targetUnit.canAttack()) actions.get(2).setActive(true);
           if (targetUnit instanceof CaptureBuilding &&
                 ((CaptureBuilding)targetUnit).canCapture(Universe.get().getBuilding(unitCursor.getX(),unitCursor.getY())))
@@ -216,8 +206,19 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
               else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
               else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
               else if (key == KeyEvent.VK_ENTER) {
-                if (mode == Mode.UNIT) unitActionPanel.setVisible(true);
-                else if (mode == Mode.ATTACK) {
+                if (mode == Mode.UNIT) {
+                  mode = Mode.IDLE;
+                  new Thread(() -> {
+                    world.clearTarget();
+                    UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
+                    targetRender.setState("move");
+                    path.visible = false;
+                    path.apply();
+                    targetRender.setState("idle");
+                    cursor.setLocation(unitCursor.position());
+                    unitActionPanel.setVisible(true);
+                  }).start();
+                } else if (mode == Mode.ATTACK) {
                     AbstractUnit target = world.getUnit(unitCursor.position());
                     if (targetUnit.canAttack(target)) {
                       int aLife = targetUnit.getLife(),

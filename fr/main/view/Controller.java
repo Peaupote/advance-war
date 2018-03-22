@@ -46,7 +46,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         MOVE(true),
         MENU(false),
         ATTACK(true),
-        UNIT(true);
+        UNIT(true),
+        HEAL(true);
 
         private boolean moveable;
 
@@ -121,23 +122,35 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             });
 
             new Index("Capture", () -> {
-              AbstractUnit unit = targetUnit;
-              actions.get(1).action.run();
-              if (unit.getX() == unitCursor.getX() && unit.getY() == unitCursor.getY() && unit.isEnabled()){
-                AbstractBuilding b = Universe.get().getBuilding(unit.getX(),unit.getY());
-                if (((CaptureBuilding)unit).capture(b))
+              if (targetUnit.getX() == unitCursor.getX() && targetUnit.getY() == unitCursor.getY() && targetUnit.isEnabled()){
+                AbstractBuilding b = Universe.get().getBuilding(targetUnit.getX(),targetUnit.getY());
+                if (((CaptureBuilding)targetUnit).capture(b))
                   BuildingRenderer.getRender(b).updateState(null);
               }
             });
 
-            new Index("Supply", () -> {});
-            new Index("Heal", () -> {});
+            new Index("Supply", () -> {
+              ((SupplyUnit)targetUnit).supply();
+            });
+            new Index("Heal", () -> {
+              mode = Mode.HEAL;
+              world.updateTarget(targetUnit);
+              unitCursor.setLocation(cursor.position());
+            });
 
-            new Index("Hide", () -> {});
-            new Index("Reveal", () -> {});
+            new Index("Hide", () -> {
+              ((HideableUnit)targetUnit).hide();
+            });
+            new Index("Reveal", () -> {
+              ((HideableUnit)targetUnit).hide();
+            });
 
-            new Index("Load", () -> {});
-            new Index("Unload", () -> {});
+            new Index("Load", () -> {
+              //TODO
+            });
+            new Index("Unload", () -> {
+              //TODO
+            });
 
             new Index("Cancel", world::clearTarget);
         }
@@ -155,7 +168,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 ((CaptureBuilding)targetUnit).canCapture(Universe.get().getBuilding(unitCursor.getX(),unitCursor.getY())))
             actions.get(3).setActive(true);
           if (targetUnit instanceof SupplyUnit) actions.get(4).setActive(true);
-          if (targetUnit instanceof HealerUnit) actions.get(5).setActive(true);
+          if (targetUnit instanceof HealerUnit && ((HealerUnit)targetUnit).canHeal()) actions.get(5).setActive(true);
           if (targetUnit instanceof HideableUnit)
             if (((HideableUnit)targetUnit).hidden()) actions.get(7).setActive(true);
             else actions.get(6).setActive(true);
@@ -219,6 +232,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                           (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                           UniverseRenderer.FlashMessage.Type.ALERT);
                     }
+                    mode = Mode.MOVE;
+                    world.clearTarget();
+                }else if (mode == Mode.HEAL){
+                    AbstractUnit target = world.getUnit(unitCursor.position());
+                    if (((HealerUnit)targetUnit).canHeal(target))
+                      ((HealerUnit)targetUnit).heal(target);
                     mode = Mode.MOVE;
                     world.clearTarget();
                 } else {

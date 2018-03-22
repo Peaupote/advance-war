@@ -156,7 +156,7 @@ public abstract class Unit implements AbstractUnit {
         Universe u = Universe.get();
         if (u != null && u.isValidPosition(x, y)) {
             AbstractUnit unit = u.getUnit(x, y);
-            if (unit != null) {
+            if (unit != null && unit.getPlayer() != getPlayer()) {
                 if (unit.canAttack(this)) unit.attack(this, false);
                 setMoveQuantity(0);
                 return false;

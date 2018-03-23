@@ -2,18 +2,47 @@ TODO
 ====
 
 - [x] Buildings map display
-- [ ] Buildings interface (Dock, Barrack & Airport)
+- [x] Buildings interface (Dock, Barrack & Airport)
 - [x] Rework renderers
 - [x] Animations
 - [x] Sprites
-- [ ] Cliff
-- [ ] Sound Manager
+- [x] Cliff
 - [ ] Multiples pages (multiple controllers)
 - [x] Add most units renderers (or just an image)
-- [ ] Implement actions in the selected unit menu (hide, heal, ...)
+- [ ] Implement actions in the selected unit menu
+    - [x] hide
+    - [x] reveal
+    - [x] heal
+    - [x] supply
+        - [ ] display supplying
+    - [ ] charge an unit
+    - [ ] remove an unit
+- [ ] add differents weathers in the view (rain & snow falling on the map)
+- [ ] add a few commanders
+- [ ] be able to go over an allied unit when moving (without destroying it)
+- [ ] implements victory conditions (hq captured or all units killed)
+- [ ] Add the few missings unit sprites (to have at least one image for each unit)
 
 
-TODO of firgaty (from the most to the least important)
+TODO of Peaupote
+====
+
+- [ ] Allow online multiplayer gaming
+
+
+TODO of Na1an
+====
+
+- [ ] Create the sound manager (dynamic sound depending on what is visible for example)
+
+
+TODO of pgimalac
+====
+
+- [ ] Create an AI
+
+
+TODO of firgaty
 ====
 
 - [x] Apply the color filter on the units images (blue, green, yellow)

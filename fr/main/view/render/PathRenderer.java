@@ -100,7 +100,7 @@ public class PathRenderer extends Path {
                 MainFrame.UNIT, MainFrame.UNIT, null);
     }
 
-    public void apply () {
+    public boolean apply () {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
         while (!isEmpty()) {
@@ -115,16 +115,20 @@ public class PathRenderer extends Path {
                   u.canAttack(unit)) {
                 int life = unit.getLife();
                 u.attack(unit, false);
+                unit.setMoveQuantity(0);
                 world.flash ("" + (unit.getLife() - life),
                     (unit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                     (unit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                     UniverseRenderer.FlashMessage.Type.ALERT);
               }
-              return;
+              return false;
             }
 
             for (int i = 0; i < MainFrame.UNIT; i++) {
-                if (!render.moveOffset(d)) return;
+                if (!render.moveOffset(d)){
+                    unit.setMoveQuantity(0);
+                    return false;
+                }
 
                 try {
                     Thread.sleep(5);
@@ -133,8 +137,6 @@ public class PathRenderer extends Path {
                 }
             }
         }
-
+        return true;
     }
-
 }
-

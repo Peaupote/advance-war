@@ -109,7 +109,7 @@ public class Path extends LinkedList<Direction> {
         return super.add(dir);
     }
 
-    public void apply () {
-        unit.move(this);
+    public boolean apply () {
+        return unit.move(this);
     }
 }

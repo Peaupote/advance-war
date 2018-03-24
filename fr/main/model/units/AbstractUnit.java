@@ -28,6 +28,8 @@ public interface AbstractUnit extends Serializable {
         return new Point(getX(), getY());
     }
 
+    void setLocation(int x, int y);
+
     int getLife();
 
     default void addLife(int life){

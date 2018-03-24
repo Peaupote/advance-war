@@ -3,14 +3,14 @@ package fr.main.model.units.naval;
 import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
-
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import fr.main.model.Player;
 
 import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.land.Beach;
 
+import fr.main.model.Universe;
 import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
@@ -20,7 +20,7 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 import fr.main.model.units.air.*;
 
-public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit> {
+public class Cruiser extends Unit implements NavalUnit, TransportUnit {
 
     public static final String NAME = "Destroyer";
     public static final int PRICE   = 18000;
@@ -28,7 +28,7 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
     public static final String PRIMARYWEAPON_NAME   = "Missiles";
     public static final String SECONDARYWEAPON_NAME = "Canon antiaérien";
 
-    private final ArrayList<CopterUnit> units=new ArrayList<CopterUnit>();
+    private final HashSet<AbstractUnit> units = new HashSet<AbstractUnit>();
 
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES  = new HashMap<Class<? extends AbstractUnit>, Integer>();
     private static final Map<Class<? extends AbstractUnit>, Integer> SECONDARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
@@ -65,28 +65,43 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit<CopterUnit
     }
 
     public boolean isFull(){
-        return getCapacity()==units.size();
+        return getCapacity() < units.size();
     }
 
-    public ArrayList<CopterUnit> getUnits(){
-        return new ArrayList<CopterUnit>(units);
+    public HashSet<AbstractUnit> getUnits(){
+        return new HashSet<AbstractUnit>(units);
     }
 
     public boolean canCharge(AbstractUnit u){
-        return (u instanceof CopterUnit) && !isFull();
+        return !isFull() && !units.contains(u) && u instanceof CopterUnit;
     }
 
-    public boolean charge(CopterUnit u){
-        if (!isFull())
+    public boolean charge(AbstractUnit u){
+        if (canCharge(u)){
+            Universe.get().setUnit(u.getX(), u.getY(), null);
+            u.getFuel().replenish();
             return units.add(u);
-        return false;
+        }
+        else return false;
     }
 
-    public boolean remove(CopterUnit u){
-        return units.remove(u);
+    public boolean remove(AbstractUnit u, int x, int y){
+        if (units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.canStop(x, y)){
+            Universe.get().setUnit(x, y, u);
+            u.setLocation(x,y);
+            u.setMoveQuantity(0);
+            setMoveQuantity(0);
+            return units.remove(u);
+        }else return false;
+    }
+
+    public void turnBegins(){
+        super.turnBegins();
+        for (AbstractUnit u : units)
+            u.getFuel().replenish();
     }
 
     public int getFuelTurnCost(){
-        return 1;        
+        return 1;
     }
 }

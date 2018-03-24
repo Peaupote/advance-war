@@ -27,15 +27,15 @@ public abstract class Unit implements AbstractUnit {
     /**
      * Life in percentage
      */
-    private Point location;
-    private Player player;
-    private int life, moveQuantity;
+    protected Point location;
+    protected Player player;
+    protected int life, moveQuantity;
 
     public final Fuel fuel;
     public final MoveType moveType;
 
-    private PrimaryWeapon primaryWeapon;
-    private SecondaryWeapon secondaryWeapon;
+    protected PrimaryWeapon primaryWeapon;
+    protected SecondaryWeapon secondaryWeapon;
 
     public final int vision, maxMoveQuantity, cost;
     public final String name;
@@ -146,12 +146,16 @@ public abstract class Unit implements AbstractUnit {
         return location.y;
     }
 
+    public final void setLocation(int x, int y){
+        location.move(x, y);  
+    }
+
     /*
     * @return true if and only if the move was done.
     */
     public final boolean move(int x, int y) {
         Universe u = Universe.get();
-        if (u != null && u.isValidPosition(x, y)) {
+        if (u.isValidPosition(x, y)) {
             AbstractUnit unit = u.getUnit(x, y);
             if (unit != null && unit.getPlayer() != getPlayer()) {
                 if (unit.canAttack(this)) unit.attack(this, false);
@@ -329,7 +333,7 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public boolean canAttack () {
-      return primaryWeapon != null || secondaryWeapon != null;
+        return (primaryWeapon != null && (getMoveQuantity() == getMaxMoveQuantity() || primaryWeapon.canAttackAfterMove)) || secondaryWeapon != null;
     }
 
     public void attack(AbstractUnit u, boolean counter){

@@ -14,8 +14,8 @@ TODO
     - [x] reveal
     - [x] heal
     - [x] supply
-        - [ ] display supplying
-    - [ ] charge an unit
+        - [x] display supplying
+    - [x] charge an unit
     - [ ] remove an unit
 - [ ] add differents weathers in the view (rain & snow falling on the map)
 - [ ] add a few commanders

@@ -47,6 +47,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         MENU(false),
         ATTACK(true),
         UNIT(true),
+        LOAD(true),
         HEAL(true);
 
         private boolean moveable;
@@ -120,7 +121,18 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             });
 
             new Index("Supply", () -> {
-                ((SupplyUnit)targetUnit).supply();
+                SupplyUnit su = ((SupplyUnit)targetUnit);
+                su.supply();
+                Universe u = Universe.get();
+                for (Direction d : Direction.cardinalDirections()){
+                    int xx = targetUnit.getX() + d.x, yy = targetUnit.getY() + d.y;
+                    AbstractUnit unit = u.getUnit(xx, yy);
+                    if (su.canSupply(unit))
+                        world.flash("replenished",
+                            (xx - camera.getX()) * MainFrame.UNIT + 5,
+                            (yy - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                            UniverseRenderer.FlashMessage.Type.ALERT);
+                }
             });
             new Index("Heal", () -> {
                 mode = Mode.HEAL;
@@ -136,7 +148,9 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             });
 
             new Index("Load", () -> {
-                //TODO
+                mode = Mode.LOAD;
+                world.updateTarget(targetUnit);
+                unitCursor.setLocation(cursor.position());
             });
             new Index("Unload", () -> {
                 //TODO
@@ -158,6 +172,14 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             if (targetUnit instanceof HideableUnit)
                 if (((HideableUnit)targetUnit).hidden()) actions.get(7).setActive(true);
                 else actions.get(6).setActive(true);
+
+            for (Direction d : Direction.cardinalDirections()){
+                AbstractUnit u = Universe.get().getUnit(targetUnit.getX() + d.x, targetUnit.getY() + d.y);
+                if (u instanceof TransportUnit && ((TransportUnit)u).canCharge(targetUnit)) {
+                    actions.get(8).setActive(true);
+                    break;
+                }
+            }
 
             super.onOpen();
         }
@@ -261,6 +283,12 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                         }
                         else actionPanel.setVisible(true);
                         unitCursor.setLocation(cursor.position());
+                    }else if (mode == Mode.LOAD){
+                        AbstractUnit target = world.getUnit(unitCursor.position());
+                        if (target instanceof TransportUnit && ((TransportUnit)target).canCharge(targetUnit))
+                            ((TransportUnit)target).charge(targetUnit);
+                        mode = Mode.MOVE;
+                        world.clearTarget();
                     }
                 } else if (key == KeyEvent.VK_ESCAPE) {
                     mode = Mode.MOVE;

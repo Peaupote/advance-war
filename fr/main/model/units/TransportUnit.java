@@ -1,13 +1,13 @@
 package fr.main.model.units;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
-public interface TransportUnit<T extends AbstractUnit> extends AbstractUnit {
+public interface TransportUnit extends AbstractUnit {
 
     public int getCapacity();
     public boolean isFull();
-    public ArrayList<T> getUnits();
-    public boolean charge(T u);
-    public boolean remove(T u);
+    public HashSet<AbstractUnit> getUnits();
+    public boolean charge(AbstractUnit u);
+    public boolean remove(AbstractUnit u, int x, int y);
     public boolean canCharge(AbstractUnit u);
 }

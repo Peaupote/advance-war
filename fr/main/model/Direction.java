@@ -53,16 +53,20 @@ public enum Direction {
     }
 
     public static Direction getDir(Point dep, Point arr){
-        if (arr.y == dep.y){
-            if (arr.x - dep.x == 1)
+        return getDir(dep.x, dep.y, arr.x, arr.y);
+    }
+
+    public static Direction getDir(int a, int b, int c, int d){
+        if (d == b){
+            if (c - a == 1)
                 return RIGHT;
-            else if (arr.x - dep.x == -1)
+            else if (c - a == -1)
                 return LEFT;
         }
-        else if (arr.x == dep.x){
-            if (arr.y - dep.y == 1)
+        else if (c == a){
+            if (d - b == 1)
                 return BOTTOM;
-            else if (arr.y - dep.y == -1)
+            else if (d - b == -1)
                 return TOP;
         }
         return NONE;

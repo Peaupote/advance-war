@@ -2,22 +2,23 @@ package fr.main.model.units.naval;
 
 import java.awt.Point;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import fr.main.model.Player;
 
+import fr.main.model.Universe;
 import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 
-public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
+public class Lander extends Unit implements NavalUnit, TransportUnit {
 
     public static final String NAME = "Barge";
     public static final int PRICE   = 100;
 
-    private final ArrayList<LandUnit> units=new ArrayList<LandUnit>();
+    private final HashSet<AbstractUnit> units = new HashSet<AbstractUnit>();
 
     public Lander(Player player, Point point){
         super(player, point, fuelName, 99, true, MoveType.LANDER, 6, 2, null, null, NAME, PRICE);
@@ -32,23 +33,40 @@ public class Lander extends Unit implements NavalUnit, TransportUnit<LandUnit> {
     }
 
     public boolean isFull(){
-        return getCapacity()==units.size();
+        return getCapacity() < units.size();
     }
 
-    public ArrayList<LandUnit> getUnits(){
-        return new ArrayList<LandUnit>(units);
+    public HashSet<AbstractUnit> getUnits(){
+        return new HashSet<AbstractUnit>(units);
     }
 
     public boolean canCharge(AbstractUnit u){
-        return (u instanceof LandUnit) && !isFull();
+        return !isFull() && !units.contains(u) && u instanceof LandUnit;
     }
 
-    public boolean charge(LandUnit u){
-        return units.add(u);
+    public boolean charge(AbstractUnit u){
+        if (canCharge(u)){
+            Universe.get().setUnit(u.getX(), u.getY(), null);
+            u.getFuel().replenish();
+            return units.add(u);
+        }
+        else return false;
     }
 
-    public boolean remove(LandUnit u){
-        return units.remove(u);
+    public boolean remove(AbstractUnit u, int x, int y){
+        if (units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.canStop(x, y)){
+            Universe.get().setUnit(x, y, u);
+            u.setLocation(x,y);
+            u.setMoveQuantity(0);
+            setMoveQuantity(0);
+            return units.remove(u);
+        }else return false;
+    }
+
+    public void turnBegins(){
+        super.turnBegins();
+        for (AbstractUnit u : units)
+            u.getFuel().replenish();
     }
 
     public int getFuelTurnCost(){

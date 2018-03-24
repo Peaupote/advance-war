@@ -15,7 +15,6 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
-import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 
 public class Sub extends Unit implements NavalUnit, HideableUnit {

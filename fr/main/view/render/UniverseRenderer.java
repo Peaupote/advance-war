@@ -3,7 +3,6 @@ package fr.main.view.render;
 import java.awt.*;
 import java.util.LinkedList;
 
-import fr.main.model.units.HealerUnit;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Node;
 import fr.main.model.Direction;
@@ -16,6 +15,9 @@ import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.naval.Reef;
 import fr.main.model.terrains.naval.Sea;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.HealerUnit;
+import fr.main.model.units.TransportUnit;
+
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
 import fr.main.view.render.terrains.TerrainLocation;
@@ -29,6 +31,7 @@ public class UniverseRenderer extends Universe {
 	private final Color fogColor 	= new Color (0,0,0,100),
 						moveColor   = new Color (0, 255, 0, 50),
 						targetColor = new Color (255, 0, 0, 100),
+						loadColor   = new Color (0, 0, 255, 50),
 						healColor   = new Color (0, 255, 0, 50);
 
 	private static final Font font = new Font("Helvetica", Font.PLAIN, 14);
@@ -80,11 +83,11 @@ public class UniverseRenderer extends Universe {
 		targets    = new boolean[map.board.length][map.board[0].length];
  		lowerRight = new Point(map.board.length, map.board[0].length);
  		flashs     = new LinkedList<>();
-    TerrainRenderer.setLocations();
+	    TerrainRenderer.setLocations();
 	}
 
 	public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
-    g.setFont(font);
+    	g.setFont(font);
 		int w = map.board.length,
 				h = map.board[0].length,
 				firstX = x - (offsetX < 0 ? 1 : 0),
@@ -143,17 +146,19 @@ public class UniverseRenderer extends Universe {
 			upperLeft = new Point (0,0);
 			lowerRight = new Point (targets.length, targets[0].length);
 			tColor = targetColor;
-		} else if (controller.getMode() == Controller.Mode.HEAL) {
+		} else if (controller.getMode() == Controller.Mode.HEAL || controller.getMode() == Controller.Mode.LOAD) {
+			boolean b = controller.getMode() == Controller.Mode.HEAL;
 			int x = unit.getX(), y = unit.getY();
-			HealerUnit tmp = (HealerUnit)unit;
+			HealerUnit tmp = b ? (HealerUnit)unit : null;
+
 			for (Direction d : Direction.cardinalDirections()){
 				int xx = x + d.x, yy = y + d.y;
-				if (isValidPosition(xx, yy) && tmp.canHeal(getUnit(xx, yy)))
+				if (b ? tmp.canHeal(getUnit(xx, yy)) : (getUnit(xx, yy) instanceof TransportUnit && ((TransportUnit)getUnit(xx, yy)).canCharge(unit)))
 					targets[yy][xx] = true;
 			}
 			upperLeft.move(Math.max(0, unit.getX() - 1), Math.max(0, unit.getY() - 1));
 			lowerRight.move(Math.min(getMapWidth(), unit.getX() + 2), Math.min(getMapHeight(), unit.getY() + 2));
-			tColor = healColor;
+			tColor = b ? healColor : loadColor;
 		}
 	}
 

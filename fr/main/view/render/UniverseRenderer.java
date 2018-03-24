@@ -146,19 +146,23 @@ public class UniverseRenderer extends Universe {
 			upperLeft = new Point (0,0);
 			lowerRight = new Point (targets.length, targets[0].length);
 			tColor = targetColor;
-		} else if (controller.getMode() == Controller.Mode.HEAL || controller.getMode() == Controller.Mode.LOAD) {
-			boolean b = controller.getMode() == Controller.Mode.HEAL;
+		} else if (controller.getMode() == Controller.Mode.HEAL || 
+				   controller.getMode() == Controller.Mode.LOAD || 
+				   controller.getMode() == Controller.Mode.UNLOAD_LOCATE) {
 			int x = unit.getX(), y = unit.getY();
-			HealerUnit tmp = b ? (HealerUnit)unit : null;
+			HealerUnit healer = controller.getMode() == Controller.Mode.HEAL ? (HealerUnit)unit : null;
+			TransportUnit transporter = controller.getMode() == Controller.Mode.UNLOAD_LOCATE ? (TransportUnit)unit : null;
 
 			for (Direction d : Direction.cardinalDirections()){
 				int xx = x + d.x, yy = y + d.y;
-				if (b ? tmp.canHeal(getUnit(xx, yy)) : (getUnit(xx, yy) instanceof TransportUnit && ((TransportUnit)getUnit(xx, yy)).canCharge(unit)))
+				if ((controller.getMode() == Controller.Mode.HEAL && healer.canHeal(getUnit(xx, yy))) ||
+					(controller.getMode() == Controller.Mode.LOAD && getUnit(xx, yy) instanceof TransportUnit && ((TransportUnit)getUnit(xx, yy)).canCharge(unit)) ||
+					(controller.getMode() == Controller.Mode.UNLOAD_LOCATE && transporter.canRemove(controller.getTransportUnit(), xx, yy)))
 					targets[yy][xx] = true;
 			}
 			upperLeft.move(Math.max(0, unit.getX() - 1), Math.max(0, unit.getY() - 1));
 			lowerRight.move(Math.min(getMapWidth(), unit.getX() + 2), Math.min(getMapHeight(), unit.getY() + 2));
-			tColor = b ? healColor : loadColor;
+			tColor = controller.getMode() == Controller.Mode.HEAL ? healColor : loadColor;
 		}
 	}
 

@@ -37,6 +37,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     private ActionPanel actionPanel, focusedActionPanel;
     private BuildingInterface buildingPanel;
     private AbstractUnit targetUnit;
+    private TransportUnitPanel transportUnitPanel;
     private UnitActionPanel unitActionPanel;
     private DayPanel dayPanel;
     public PathRenderer path;
@@ -48,6 +49,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         ATTACK(true),
         UNIT(true),
         LOAD(true),
+        UNLOAD_CHOOSE(false),
+        UNLOAD_LOCATE(true),
         HEAL(true);
 
         private boolean moveable;
@@ -95,6 +98,36 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             new Index("Wait", () -> {});
         }
 
+    }
+
+    private class TransportUnitPanel extends ControllerPanel {
+
+        private TransportUnit transportUnit;
+        public AbstractUnit selected = null;
+
+        public TransportUnitPanel (){
+            super();
+            x = MainFrame.WIDTH - 200;
+            y = 10;
+        }
+
+        private void update (TransportUnit t){
+            transportUnit = t;
+            actions.clear();
+            setVisible(true);
+
+            for (AbstractUnit u : t.getUnits())
+                new Index(u.getName() + " (" + u.getLife() + ")", () -> {
+                    transportUnitPanel.setVisible(false);
+                    mode = Mode.UNLOAD_LOCATE;
+                    selected = u;
+                    world.updateTarget(targetUnit);
+                });
+        }
+    }
+
+    public AbstractUnit getTransportUnit(){
+        return transportUnitPanel.selected;
     }
 
     public class UnitActionPanel extends ControllerPanel {
@@ -153,7 +186,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                 unitCursor.setLocation(cursor.position());
             });
             new Index("Unload", () -> {
-                //TODO
+                mode = Mode.UNLOAD_CHOOSE;
+                transportUnitPanel.update((TransportUnit)targetUnit);
             });
         }
         
@@ -180,6 +214,8 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     break;
                 }
             }
+            if (targetUnit instanceof TransportUnit && ((TransportUnit)targetUnit).getCapacity() != 0)
+                actions.get(9).setActive(true);
 
             super.onOpen();
         }
@@ -199,12 +235,13 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         cursor     = new Position.Cursor(camera, size);
         unitCursor = new Position.Cursor(camera, size);
 
-        mouse           = new Point(1,1);
-        actionPanel     = new MainActionPanel();
-        dayPanel        = new DayPanel();
-        mode            = Mode.MOVE;
-        path            = new PathRenderer(camera);
-        unitActionPanel = new UnitActionPanel();
+        mouse              = new Point(1,1);
+        actionPanel        = new MainActionPanel();
+        dayPanel           = new DayPanel();
+        mode               = Mode.MOVE;
+        path               = new PathRenderer(camera);
+        unitActionPanel    = new UnitActionPanel();
+        transportUnitPanel = new TransportUnitPanel();
 
         buildingPanel = new BuildingInterface(this);
         new PlayerPanel (cursor, camera);
@@ -289,6 +326,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                             ((TransportUnit)target).charge(targetUnit);
                         mode = Mode.MOVE;
                         world.clearTarget();
+                    }else if (mode == Mode.UNLOAD_LOCATE){
+                        if (((TransportUnit)targetUnit).remove(getTransportUnit(), unitCursor.position().x, unitCursor.position().y)){}
+                        mode = Mode.MOVE;
+                        world.clearTarget();                        
                     }
                 } else if (key == KeyEvent.VK_ESCAPE) {
                     mode = Mode.MOVE;

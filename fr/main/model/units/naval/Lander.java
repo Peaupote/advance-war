@@ -53,8 +53,12 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
         else return false;
     }
 
+    public boolean canRemove(AbstractUnit u, int x, int y){
+        return units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.canStop(x, y);
+    }
+
     public boolean remove(AbstractUnit u, int x, int y){
-        if (units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.canStop(x, y)){
+        if (canRemove(u, x, y)){
             Universe.get().setUnit(x, y, u);
             u.setLocation(x,y);
             u.setMoveQuantity(0);

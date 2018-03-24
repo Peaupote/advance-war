@@ -12,17 +12,17 @@ import java.util.Map;
 import java.awt.Point;
 import java.util.function.BiFunction;
 
-public class Dock extends OwnableBuilding implements FactoryBuilding<NavalUnit>,RepairBuilding {
+public class Dock extends OwnableBuilding implements FactoryBuilding,RepairBuilding {
 
     public static final int defense     = 3;
     public static final int income      = 1000;
     public static final String name     = "Port";
     public static final int maximumLife = 200;
 
-    public static final Map<Class<? extends NavalUnit>,BiFunction<Player,Point,? extends NavalUnit>> UNIT_LIST;
+    public static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
 
     static{
-        UNIT_LIST = new HashMap<Class<? extends NavalUnit>,BiFunction<Player,Point,? extends NavalUnit>>();
+        UNIT_LIST = new HashMap<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>>();
         UNIT_LIST.put(Battleship.class, Battleship::new);
         UNIT_LIST.put(BlackBoat.class,  BlackBoat::new);
         UNIT_LIST.put(Carrier.class,    Carrier::new);
@@ -39,17 +39,17 @@ public class Dock extends OwnableBuilding implements FactoryBuilding<NavalUnit>,
         return u.getPlayer()==getOwner() && (u instanceof NavalUnit);
     }
 
-    public Set<Class<? extends NavalUnit>> getUnitList(){
+    public Set<Class<? extends AbstractUnit>> getUnitList(){
         return UNIT_LIST.keySet();
     }
 
-    public boolean create(Class<? extends NavalUnit> c){
+    public boolean create(Class<? extends AbstractUnit> c){
         try{
-            BiFunction<Player, Point, ? extends NavalUnit> constructor = UNIT_LIST.get(c);
+            BiFunction<Player, Point, ? extends AbstractUnit> constructor = UNIT_LIST.get(c);
             if (constructor != null &&
                 Universe.get().getUnit(getX(), getY()) == null &&
                 getOwner().spent(c.getField("PRICE").getInt(null))){
-                constructor.apply(getOwner(), new Point(getX(), getY()));
+                constructor.apply(getOwner(), new Point(getX(), getY())).setMoveQuantity(0);
                 return true;
             }
         } catch(Exception e) {

@@ -1,7 +1,7 @@
 package fr.main.view.render;
 
 import java.awt.*;
-import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.Node;
@@ -69,7 +69,7 @@ public class UniverseRenderer extends Universe {
 
 	}
 
-	private final LinkedList<FlashMessage> flashs;
+	private final CopyOnWriteArrayList<FlashMessage> flashs;
 
 	public UniverseRenderer (String mapName, Controller controller) {
 		super (mapName);
@@ -82,7 +82,7 @@ public class UniverseRenderer extends Universe {
 
 		targets    = new boolean[map.board.length][map.board[0].length];
  		lowerRight = new Point(map.board.length, map.board[0].length);
- 		flashs     = new LinkedList<>();
+ 		flashs     = new CopyOnWriteArrayList<FlashMessage>();
 	    TerrainRenderer.setLocations();
 	}
 

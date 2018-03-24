@@ -35,13 +35,13 @@ public class BuildingInterface extends Controller.ControllerPanel {
     y = 10;
 
     try {
-      for (Class<? extends NavalUnit> c: Dock.UNIT_LIST.keySet())
+      for (Class<? extends AbstractUnit> c: Dock.UNIT_LIST.keySet())
         new IndexClass(c);
 
-      for (Class<? extends AirUnit> c: Airport.UNIT_LIST.keySet())
+      for (Class<? extends AbstractUnit> c: Airport.UNIT_LIST.keySet())
         new IndexClass(c);
 
-      for (Class<? extends LandUnit> c: Barrack.UNIT_LIST.keySet())
+      for (Class<? extends AbstractUnit> c: Barrack.UNIT_LIST.keySet())
         new IndexClass(c);
     } catch (Exception e) {
       e.printStackTrace();

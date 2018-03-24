@@ -12,7 +12,7 @@ import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.*;
 
-public class Barrack extends OwnableBuilding implements FactoryBuilding<LandUnit>, RepairBuilding {
+public class Barrack extends OwnableBuilding implements FactoryBuilding, RepairBuilding {
 
     public static final int defense     = 3;
     public static final int income      = 1000;
@@ -27,10 +27,10 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding<LandUnit
         return u.getPlayer()==getOwner() && (u instanceof LandUnit);
     }
 
-    public static final Map<Class<? extends LandUnit>,BiFunction<Player,Point,? extends LandUnit>> UNIT_LIST;
+    public static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
 
     static{
-        UNIT_LIST = new HashMap<Class<? extends LandUnit>,BiFunction<Player,Point,? extends LandUnit>>();
+        UNIT_LIST = new HashMap<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>>();
         UNIT_LIST.put(AntiAir.class,   AntiAir::new);
         UNIT_LIST.put(APC.class,       APC::new);
         UNIT_LIST.put(Artillery.class, Artillery::new);
@@ -45,15 +45,15 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding<LandUnit
         UNIT_LIST.put(Tank.class,      Tank::new);
     }
 
-    public Set<Class<? extends LandUnit>> getUnitList(){
+    public Set<Class<? extends AbstractUnit>> getUnitList(){
         return UNIT_LIST.keySet();
     }
 
-    public boolean create(Class<? extends LandUnit> c){
+    public boolean create(Class<? extends AbstractUnit> c){
         try{
-            BiFunction<Player, Point, ? extends LandUnit> constructor = UNIT_LIST.get(c);
+            BiFunction<Player, Point, ? extends AbstractUnit> constructor = UNIT_LIST.get(c);
             if (constructor != null  && Universe.get().getUnit(getX(), getY()) == null && getOwner().spent(c.getField("PRICE").getInt(null))){
-                constructor.apply(getOwner(),new Point(getX(),getY()));
+                constructor.apply(getOwner(),new Point(getX(),getY())).setMoveQuantity(0);
                 return true;
             }
         }catch(Exception e){}

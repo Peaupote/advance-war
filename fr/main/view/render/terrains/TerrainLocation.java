@@ -7,6 +7,11 @@ import fr.main.view.render.sprites.ScaleRect;
 import java.io.Serializable;
 
 public interface TerrainLocation extends Serializable{
+
+  static String getDir () {
+    return "./assets/terrains/snow/";
+  }
+
 	public String getPath();
 	public ScaleRect getRect();
 
@@ -44,7 +49,7 @@ public interface TerrainLocation extends Serializable{
 		OUTER_BOTTOM_RIGHT(0, TerrainImageRect.BOTTOM_RIGHT), OUTER_BOTTOM_LEFT(0, TerrainImageRect.BOTTOM_LEFT),
 		OUTER_UPPER_RIGHT(0, TerrainImageRect.TOP_RIGHT), OUTER_UPPER_LEFT(0, TerrainImageRect.TOP_LEFT);
 
-		private static final String[] paths = {"assets/terrains/beach1.png", "assets/terrains/beach2.png"};
+		private static final String[] paths = {getDir() + "beach1.png", getDir() + "beach2.png"};
 		private final TerrainImageRect location;
 		private final int index;
 
@@ -70,7 +75,7 @@ public interface TerrainLocation extends Serializable{
 		HORIZONTAL(TerrainImageRect.TOP_LEFT), VERTICAL(TerrainImageRect.LEFT);
 
 		private TerrainImageRect location;
-		private String path = "assets/terrains/bridge.png";
+		private String path = getDir() + "bridge.png";
 
 		BridgeLocation(TerrainImageRect loc) {
 			this.location = loc;
@@ -95,7 +100,7 @@ public interface TerrainLocation extends Serializable{
 		NORMAL(TerrainImageRect.TOP_LEFT);
 
 		private TerrainImageRect location;
-		private String path = "assets/terrains/hill.png";
+		private String path = getDir() + "hill.png";
 
 		HillLocation(TerrainImageRect loc) {
 			this.location = loc;
@@ -121,7 +126,7 @@ public interface TerrainLocation extends Serializable{
 
 		private TerrainImageRect location;
 		private int index;
-		private String[] path = {"assets/terrains/rivers1.png", "assets/terrains/lowland_shadow.png"};
+		private String[] path = {getDir() + "rivers1.png", getDir() + "lowland_shadow.png"};
 
 		LowlandLocation(int index, TerrainImageRect loc) {
 			this.index = index;
@@ -146,7 +151,7 @@ public interface TerrainLocation extends Serializable{
 	public enum WoodLocation implements TerrainLocation {
 		NORMAL(TerrainImageRect.CENTER);
 
-		private static final String path = "assets/terrains/beach2.png";
+		private static final String path = getDir() + "beach2.png";
 		private final TerrainImageRect location;
 
 		WoodLocation(TerrainImageRect loc) {
@@ -170,7 +175,7 @@ public interface TerrainLocation extends Serializable{
 	public enum ReefLocation implements TerrainLocation {
 		NORMAL(TerrainImageRect.CENTER);
 
-		private static final String path = "assets/terrains/cliffs.png";
+		private static final String path = getDir() + "cliffs.png";
 		private final TerrainImageRect location;
 
 		ReefLocation(TerrainImageRect loc) {
@@ -194,7 +199,7 @@ public interface TerrainLocation extends Serializable{
 	public enum MountainLocation implements TerrainLocation {
 		NORMAL(TerrainImageRect.TOP_LEFT);
 
-		private static final String path = "assets/terrains/mountain.png";
+		private static final String path = getDir() + "mountain.png";
 		private final TerrainImageRect location;
 
 		MountainLocation(TerrainImageRect location) {
@@ -225,7 +230,7 @@ public interface TerrainLocation extends Serializable{
 		TURN_TOP_RIGHT(0, TerrainImageRect.BOTTOM_LEFT), TURN_TOP_LEFT(0, TerrainImageRect.BOTTOM_RIGHT),
 		TURN_BOTTOM_RIGHT(0, TerrainImageRect.TOP_LEFT), TURN_BOTTOM_LEFT(0, TerrainImageRect.TOP_RIGHT);
 
-		private static final String[] paths = {"assets/terrains/rivers1.png", "assets/terrains/rivers2.png"};
+		private static final String[] paths = {getDir() + "rivers1.png", getDir() + "rivers2.png"};
 		private final TerrainImageRect location;
 		private final int index;
 
@@ -258,7 +263,7 @@ public interface TerrainLocation extends Serializable{
 		CORNER_BOTTOM_LEFT(2, TerrainImageRect.CENTER_BOTTOM_LEFT), CORNER_BOTTOM_RIGHT(2, TerrainImageRect.CENTER_BOTTOM_RIGHT);
 
 		private static final String[] paths = {
-				"assets/terrains/beach1.png", "assets/terrains/cliffs.png", "assets/terrains/cliffs2.png"
+				getDir() + "beach1.png", getDir() + "cliffs.png", getDir() + "cliffs2.png"
 		};
 		private final TerrainImageRect location;
 		private final int index;
@@ -289,7 +294,7 @@ public interface TerrainLocation extends Serializable{
 		TURN_TOP_RIGHT(1, TerrainImageRect.BOTTOM_LEFT), TURN_TOP_LEFT(1, TerrainImageRect.BOTTOM_RIGHT),
 		TURN_BOTTOM_RIGHT(1, TerrainImageRect.TOP_LEFT), TURN_BOTTOM_LEFT(1, TerrainImageRect.TOP_RIGHT);
 
-		private static final String[] paths = {"assets/terrains/roads1.png", "assets/terrains/roads2.png"};
+		private static final String[] paths = {getDir() + "roads1.png", getDir() + "roads2.png"};
 		private final TerrainImageRect location;
 		private final int index;
 

@@ -46,6 +46,13 @@ public class PlayerIt implements Iterable<Player> {
             return ps[index];
         }
 
+        public boolean isFirst(Player p){
+            for (Player pl : ps){
+                if (p == pl) return true;
+                if (!pl.hasLost()) return false;
+            }
+            return false;
+        }
     }
 
     /**
@@ -61,7 +68,8 @@ public class PlayerIt implements Iterable<Player> {
         return players;
     }
 
-    public boolean isFirst(Player p){
-        return p==players.ps[0];
+    public Cycle cycle(){
+        return players;
     }
+
 }

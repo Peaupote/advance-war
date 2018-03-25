@@ -214,7 +214,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
                     break;
                 }
             }
-            if (targetUnit instanceof TransportUnit && ((TransportUnit)targetUnit).getCapacity() != 0)
+            if (targetUnit instanceof TransportUnit && ((TransportUnit)targetUnit).getOccupation() != 0)
                 actions.get(9).setActive(true);
 
             super.onOpen();

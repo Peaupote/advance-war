@@ -58,7 +58,7 @@ public class TerrainPanel extends InterfaceUI {
 
     // Units info :
     AbstractUnit unit = world.getUnit(cursor.getX(), cursor.getY());
-    if(world.isVisible(cursor.getX(), cursor.getY()) && unit != null) {
+    if(unit != null && (unit.getPlayer() == world.getCurrentPlayer() || world.isVisibleOpponentUnit(cursor.getX(), cursor.getY()))) {
       g.drawString(unit.getName(), x + 15, y + 100);
       g.drawString(unit.getPlayer().name, x + 15, y + 120);
 

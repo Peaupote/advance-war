@@ -5,6 +5,9 @@ import java.util.HashSet;
 public interface TransportUnit extends AbstractUnit {
 
     public int getCapacity();
+    public default int getOccupation(){
+    	return getUnits().size();
+    }
     public boolean isFull();
     public HashSet<AbstractUnit> getUnits();
     public boolean charge(AbstractUnit u);

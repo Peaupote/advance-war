@@ -1,7 +1,8 @@
 package fr.main.view.render;
 
 import java.awt.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.LinkedList;
+import java.util.Iterator;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.Node;
@@ -69,7 +70,7 @@ public class UniverseRenderer extends Universe {
 
 	}
 
-	private final CopyOnWriteArrayList<FlashMessage> flashs;
+	private final LinkedList<FlashMessage> flashs;
 
 	public UniverseRenderer (String mapName, Controller controller) {
 		super (mapName);
@@ -82,7 +83,7 @@ public class UniverseRenderer extends Universe {
 
 		targets    = new boolean[map.board.length][map.board[0].length];
  		lowerRight = new Point(map.board.length, map.board[0].length);
- 		flashs     = new CopyOnWriteArrayList<FlashMessage>();
+ 		flashs     = new LinkedList<FlashMessage>();
 	    TerrainRenderer.setLocations();
 	}
 
@@ -117,15 +118,17 @@ public class UniverseRenderer extends Universe {
 				}
 
 				if (map.units[i][j] != null)
-					if (map.units[i][j].getPlayer() == current || fogwar[i][j])
+					if (map.units[i][j].getPlayer() == current || isVisibleOpponentUnit(j, i))
 						UnitRenderer.render(g, coords[i][j], map.units[i][j]);
 			}
 
-		for (FlashMessage message: flashs) {
+		Iterator<FlashMessage> iterator = flashs.iterator();
+		while (iterator.hasNext()) {
+			FlashMessage message = iterator.next();
 			g.setColor(message.type.color);
 			g.drawString (message.message, message.x, message.y);
 			message.time -= 10;
-			if (message.time <= 0) flashs.remove(message);
+			if (message.time <= 0) iterator.remove();
 		}
 	}
 

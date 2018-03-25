@@ -27,6 +27,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     private Commander commander;
     private int funds;
+    private boolean hasLost;
 
     private LinkedList<AbstractUnit> units;
     private LinkedList<OwnableBuilding> buildings;
@@ -39,6 +40,15 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         color     = colors[id - 1];
         commander = null;
         funds     = 0;
+        hasLost   = false;
+    }
+
+    public void loose(){
+        hasLost = true;
+    }
+
+    public boolean hasLost(){
+        return hasLost;
     }
 
     public void addFunds(int f){

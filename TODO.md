@@ -16,7 +16,7 @@ TODO
     - [x] supply
         - [x] display supplying
     - [x] charge an unit
-    - [ ] remove an unit
+    - [x] remove an unit
 - [ ] add differents weathers in the view (rain & snow falling on the map)
 - [ ] add a few commanders
 - [ ] be able to go over an allied unit when moving (without destroying it)

@@ -44,7 +44,7 @@ public class Minimap extends InterfaceUI {
         int a = mx + j * size,
             b = my + i * size;
         AbstractUnit unit = world.getUnit(j, i);
-        if (unit != null && (unit.getPlayer() == world.getCurrentPlayer() || world.isVisible(j, i))) {
+        if (unit != null && (unit.getPlayer() == world.getCurrentPlayer() || world.isVisibleOpponentUnit(j, i))) {
           g.setColor(unit.getPlayer().color);
           g.fillRect(a, b, size, size);
         } else {

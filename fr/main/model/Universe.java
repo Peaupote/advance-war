@@ -9,7 +9,9 @@ import java.util.Random;
 
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.*;
+import fr.main.model.PlayerIt.Cycle;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.HideableUnit;
 import fr.main.view.render.units.naval.*;
 import fr.main.view.render.units.air.*;
 import fr.main.view.render.units.land.*;
@@ -40,8 +42,10 @@ public class Universe {
         public Player[] players;
         public AbstractUnit[][] units;
         public AbstractBuilding[][] buildings;
+        private final boolean fog;
 
         public Board (AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings) {
+            this.fog       = true;
             this.board     = board;
             this.units     = units;
             this.players   = ps;
@@ -50,7 +54,7 @@ public class Universe {
     }
 
     protected Board map;
-    protected final Iterator<Player> players;
+    protected final Cycle players;
     protected Player current;
     protected boolean[][] fogwar;
     private Dimension size;
@@ -74,9 +78,9 @@ public class Universe {
         }
 
         instance = this;
-        weather = Weather.FOGGY;
-        fogwar = new boolean[map.board.length][map.board[0].length];
-        players = new PlayerIt(map.players).iterator();
+        weather  = Weather.FOGGY;
+        fogwar   = new boolean[map.board.length][map.board[0].length];
+        players  = new PlayerIt(map.players).cycle();
         next();
 
         new Dock(map.players[0], new Point(6,10));
@@ -129,15 +133,26 @@ public class Universe {
         current = players.next();
         current.turnBegins();
 
+        if (players.isFirst(current)){
+            Weather w = Weather.random(map.fog);
+            if (w.fog && !weather.fog)
+                for (int i = 0; i < map.board.length; i++)
+                    for (int j = 0; j < map.board[0].length; j++)
+                        fogwar[i][j] = true;
+            weather = w;
+System.out.println(weather);
+        }
+
         updateVision ();
     }
 
     public void updateVision () {
-        for (int i = 0; i < map.board.length; i++)
-            for (int j = 0; j < map.board[0].length; j++)
-                fogwar[i][j] = false;
-
-        current.renderVision(fogwar);
+        if (weather.fog){
+            for (int i = 0; i < map.board.length; i++)
+                for (int j = 0; j < map.board[0].length; j++)
+                    fogwar[i][j] = false;
+            current.renderVision(fogwar);
+        }
     }
 
     public final AbstractTerrain getTerrain (int x, int y) {
@@ -198,6 +213,20 @@ public class Universe {
             ret += "\n";
         }
         return ret;
+    }
+
+    public boolean isVisibleOpponentUnit(int x, int y){
+        AbstractUnit unit = getUnit(x, y);
+        if (isVisible(x,y) && unit != null && unit.getPlayer() != getCurrentPlayer()){
+            if (unit instanceof HideableUnit && ((HideableUnit)unit).hidden()){
+                for (Direction d : Direction.cardinalDirections())
+                    if (getUnit(x + d.x, y + d.y) != null && getUnit(x + d.x, y + d.y).getPlayer() == getCurrentPlayer())
+                        return true;
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     public static void save (String mapName, AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {

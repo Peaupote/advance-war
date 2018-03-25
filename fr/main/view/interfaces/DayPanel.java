@@ -41,6 +41,5 @@ public class DayPanel extends InterfaceUI {
     }).start();
   }
 
-
 }
 

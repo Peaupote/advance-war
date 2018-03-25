@@ -9,7 +9,7 @@ TODO
 - [x] Cliff
 - [ ] Multiples pages (multiple controllers)
 - [x] Add most units renderers (or just an image)
-- [ ] Implement actions in the selected unit menu
+- [x] Implement actions in the selected unit menu
     - [x] hide
     - [x] reveal
     - [x] heal
@@ -17,10 +17,10 @@ TODO
         - [x] display supplying
     - [x] charge an unit
     - [x] remove an unit
-- [ ] add differents weathers in the view (rain & snow falling on the map)
+- [x] add differents weathers in the view (rain & snow falling on the map)
 - [ ] add a few commanders
-- [ ] be able to go over an allied unit when moving (without destroying it)
-- [ ] implements victory conditions (hq captured or all units killed)
+- [x] be able to go over an allied unit when moving (without destroying it)
+- [x] implements victory conditions (hq captured)
 - [ ] Add the few missings unit sprites (to have at least one image for each unit)
 
 

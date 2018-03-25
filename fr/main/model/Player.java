@@ -1,6 +1,6 @@
 package fr.main.model;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.lang.Iterable;
 import java.util.Iterator;
 import java.awt.Color;
@@ -29,14 +29,14 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     private int funds;
     private boolean hasLost;
 
-    private LinkedList<AbstractUnit> units;
-    private LinkedList<OwnableBuilding> buildings;
+    private HashSet<AbstractUnit> units;
+    private HashSet<OwnableBuilding> buildings;
 
     public Player (String name) {
         this.name = name;
         id        = ++increment_id;
-        units     = new LinkedList<AbstractUnit>();
-        buildings = new LinkedList<OwnableBuilding>();
+        units     = new HashSet<AbstractUnit>();
+        buildings = new HashSet<OwnableBuilding>();
         color     = colors[id - 1];
         commander = null;
         funds     = 0;
@@ -44,6 +44,13 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     public void loose(){
+        Universe u = Universe.get();
+        for (AbstractUnit a : units)
+            u.setUnit(a.getX(), a.getY(), null);
+        units.clear();
+        for (OwnableBuilding b : buildingList())
+            b.setOwner(null);
+        buildings.clear();
         hasLost = true;
     }
 
@@ -107,15 +114,23 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         return units.iterator();
     }
 
-    public void turnBegins(){
-        for (OwnableBuilding b : buildings)
+    public HashSet<OwnableBuilding> buildingList(){
+        return new HashSet<OwnableBuilding>(buildings);
+    }
+
+    public HashSet<AbstractUnit> unitList(){
+        return new HashSet<AbstractUnit>(units);
+    }
+
+    public synchronized void turnBegins(){
+        for (OwnableBuilding b : buildingList())
             funds += b.getIncome();
-        for (AbstractUnit u : units)
+        for (AbstractUnit u : unitList())
             u.turnBegins();
     }
 
-    public void turnEnds(){
-        for (AbstractUnit u : units)
+    public synchronized void turnEnds(){
+        for (AbstractUnit u : unitList())
             u.turnEnds();
     }
 

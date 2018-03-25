@@ -103,38 +103,51 @@ public class PathRenderer extends Path {
     public boolean apply () {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
+        Point pt = unit.position();
+        boolean previouslyUnit = false;
+
         while (!isEmpty()) {
             Direction d = poll();
             render.setOrientation(d);
-            Point pt = unit.position();
             d.move(pt);
-            
-            AbstractUnit u = world.getUnit(pt);
-            if (u != null) {
-              if (u.getPlayer() != unit.getPlayer() &&
-                  u.canAttack(unit)) {
-                int life = unit.getLife();
-                u.attack(unit, false);
-                unit.setMoveQuantity(0);
-                world.flash ("" + (unit.getLife() - life),
-                    (unit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                    (unit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                    UniverseRenderer.FlashMessage.Type.ALERT);
-              }
-              return false;
-            }
 
-            for (int i = 0; i < MainFrame.UNIT; i++) {
-                if (!render.moveOffset(d)){
+            AbstractUnit u = world.getUnit(pt);
+            if (u != null){
+                if (u.getPlayer() != unit.getPlayer()){
+                    if (u.canAttack(unit)) {
+                        int life = unit.getLife();
+                        u.attack(unit, false);
+                        world.flash ("" + (unit.getLife() - life),
+                        (unit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                        (unit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                        UniverseRenderer.FlashMessage.Type.ALERT);
+                    }
                     unit.setMoveQuantity(0);
                     return false;
                 }
-
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                unit.getFuel().consume(1);
+                unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
+                previouslyUnit = true;
+            }
+            else{
+                if (previouslyUnit){
+                    world.setUnit(unit.getX(), unit.getY(), null);
+                    unit.setLocation(pt.x, pt.y);
+                    world.setUnit(unit.getX(), unit.getY(), unit);
+                    unit.getFuel().consume(1);
+                    unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
                 }
+                else
+                    for (int i = 0; i < MainFrame.UNIT; i++) {
+                        render.moveOffset(d);
+
+                        try {
+                            Thread.sleep(5);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                previouslyUnit = false;
             }
         }
         return true;

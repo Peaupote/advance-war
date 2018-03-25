@@ -42,6 +42,7 @@ public class HeadquarterRenderer extends OwnableBuildingRenderer {
     }
 
     public void updateState(){
-        BuildingRenderer.renderers.remove(this);
+        BuildingRenderer.renderers.remove(building);
+        BuildingRenderer.updateAll();
     }
 }

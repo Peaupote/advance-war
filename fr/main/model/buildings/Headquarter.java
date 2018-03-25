@@ -23,8 +23,12 @@ public class Headquarter extends OwnableBuilding implements RepairBuilding{
     }
 
     public void setOwner(Player p){
-        if (owner != null)
+        if (owner != null){
             owner.removeBuilding(this);
-        OwnableBuilding b = new City(p, new Point (getX(),getY()));
+            for (OwnableBuilding b : owner.buildingList())
+                b.setOwner(p);
+            owner.loose();
+        }
+        new City(p, new Point (getX(),getY()));
     }
 }

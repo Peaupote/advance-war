@@ -126,11 +126,17 @@ public class Universe {
         return isVisible(pt.x, pt.y);
     }
 
-    public void next () {
+    public synchronized void next () {
         if (current != null)
             current.turnEnds();
 
-        current = players.next();
+        if (!players.hasNext())
+            System.exit(0);
+
+        do
+            current = players.next(); 
+        while (current.hasLost());
+
         current.turnBegins();
 
         if (players.isFirst(current)){
@@ -140,7 +146,6 @@ public class Universe {
                     for (int j = 0; j < map.board[0].length; j++)
                         fogwar[i][j] = true;
             weather = w;
-System.out.println(weather);
         }
 
         updateVision ();

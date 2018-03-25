@@ -125,6 +125,11 @@ public class PathRenderer extends Path {
                     unit.setMoveQuantity(0);
                     return false;
                 }
+                for (int i = 0; i < MainFrame.UNIT; i++){
+                    render.moveOffset(d, false);
+                    try{ Thread.sleep(5); }
+                    catch (InterruptedException e){ e.printStackTrace(); }
+                }
                 unit.getFuel().consume(1);
                 unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
                 previouslyUnit = true;
@@ -136,6 +141,7 @@ public class PathRenderer extends Path {
                     world.setUnit(unit.getX(), unit.getY(), unit);
                     unit.getFuel().consume(1);
                     unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
+                    render.cancelOffset();
                 }
                 else
                     for (int i = 0; i < MainFrame.UNIT; i++) {

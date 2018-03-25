@@ -195,7 +195,7 @@ public interface AbstractUnit extends Serializable {
     }
     default boolean canStop (int x, int y){
         Universe u = Universe.get();
-        return (u.getUnit(x,y) == null || !u.isVisibleOpponentUnit(x, y)) && 
+        return (u.getUnit(x,y) == null || (u.getUnit(x, y).getPlayer() != getPlayer() && !u.isVisibleOpponentUnit(x, y))) && 
                 ((this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) || u.getTerrain(x,y).canStop(this));
     }
 }

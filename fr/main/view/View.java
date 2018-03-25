@@ -5,13 +5,16 @@ import javax.swing.JPanel;
 import java.awt.*;
 
 import fr.main.view.interfaces.*;
+import fr.main.view.render.weather.*;
 
 public class View extends JPanel {
 
     private final Controller controller;
+    private final WeatherController weather;
 
     public View (Controller controller) {
         this.controller = controller;
+        this.weather = new Snow(100);
 
         addKeyListener(controller);
         addMouseMotionListener(controller);
@@ -30,6 +33,8 @@ public class View extends JPanel {
 
         if (controller.path.visible) controller.path.draw(g, offsetX, offsetY);
         
+        weather.render(g);
+
         for (InterfaceUI comp: InterfaceUI.components())
             comp.render(g);
     }

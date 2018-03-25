@@ -1,0 +1,36 @@
+package fr.main.view.render.weather;
+
+import java.awt.*;
+import java.util.*;
+
+import fr.main.view.MainFrame;
+
+public class Snow extends WeatherController {
+
+  private static Color color = Color.white;
+
+
+  private class SnowParticule extends WeatherController.Particule {
+
+    int radius;
+
+    public void backTop() {
+      super.backTop();
+      radius       = rand.nextInt(10) + 5;
+    }
+
+    protected void draw (Graphics g) {
+      g.setColor(color);
+      g.fillOval (x, y, radius, radius);
+    }
+  }
+
+  public Snow (int density) {
+    super(density);
+  }
+
+  protected SnowParticule createParticle () {
+    return new SnowParticule();
+  }
+
+}

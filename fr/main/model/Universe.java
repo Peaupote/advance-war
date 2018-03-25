@@ -30,7 +30,7 @@ public class Universe {
     private Weather weather;
 
     static{
-        File maps=new File(mapPath);
+        File maps = new File(mapPath);
         if (!maps.exists() && !maps.isDirectory() && !maps.mkdir())
             System.out.println("Impossible to save.");
         else save = true;

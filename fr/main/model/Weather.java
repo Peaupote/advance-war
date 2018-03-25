@@ -22,29 +22,24 @@ public enum Weather implements java.io.Serializable{
     }
 
     public static Weather random(boolean fog){
-        if (fog)
-            return random(0,90,5,5);
-        else
-            return random(90,0,5,5);
+        if (fog) return random(0,90,5,5);
+        return random(90,0,5,5);
     }
 
     static Weather random(int sun, int fog, int rain, int snow){
-        int sum=sun+fog+rain+snow;
-        Random rand=new Random();
+        int sum     = sun+fog+rain+snow;
+        Random rand = new Random();
 
-        int res=rand.nextInt(sum);
-        if (res<sun)
-            return SUNNY;
-        else 
-            res-=sun;
-        if (res<fog)
-            return FOGGY;
-        else
-            res-=fog;
-        if (res<rain)
-            return RAINY;
-        else
-            return SNOWY;
+        int res = rand.nextInt(sum);
+        if (res < sun) return SUNNY;
+        res -= sun;
+
+        if (res < fog) return FOGGY;
+        res -= fog;
+        
+        if (res < rain) return RAINY;
+        
+        return SNOWY;
     }
 
 }

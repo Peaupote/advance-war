@@ -14,7 +14,7 @@ public class View extends JPanel {
 
     public View (Controller controller) {
         this.controller = controller;
-        this.weather = new Snow(100);
+        this.weather = new WeatherController();
 
         addKeyListener(controller);
         addMouseMotionListener(controller);

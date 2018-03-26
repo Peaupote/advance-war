@@ -5,12 +5,11 @@ import java.util.*;
 
 import fr.main.view.MainFrame;
 
-public class Snow extends WeatherController {
+public class Snow extends WeatherRender {
 
   private static Color color = Color.white;
 
-
-  private class SnowParticule extends WeatherController.Particule {
+  private class SnowParticule extends WeatherRender.Particule {
 
     int radius;
 

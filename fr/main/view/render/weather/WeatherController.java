@@ -1,60 +1,28 @@
 package fr.main.view.render.weather;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Graphics;
 
-import fr.main.view.MainFrame;
+import fr.main.model.Universe;
+import fr.main.model.Weather;
 
-public abstract class WeatherController {
+public class WeatherController {
 
-  protected static final double radius = Math.toRadians(20),
-                                dx     = Math.sin(radius),
-                                dy     = Math.cos(radius);
+  private Snow snow;
+  private Rain rain;
+  private WeatherRender current;
 
-
-  protected static Random rand = new Random();
-
-  private LinkedList<Particule> particules;
-
-  protected abstract class Particule {
-    int x, y, incrX, incrY;
-
-    public Particule () {
-      backTop();
-    }
-
-    public void backTop () {
-      double speed = rand.nextInt(10) + 5;
-      incrX        = (int)(dx * speed) + 1;
-      incrY        = (int)(dy * speed) + 1;
-      x            = rand.nextInt(MainFrame.WIDTH) - rand.nextInt(MainFrame.WIDTH);
-      y            = -rand.nextInt(200);
-    }
-
-    public void render (Graphics g) {
-      draw(g);
-
-      x += incrX;
-      y += incrY;
-      if (y > MainFrame.HEIGHT) backTop();
-    }
-
-    protected abstract void draw (Graphics g);
-
+  public WeatherController () {
+    this.snow = new Snow(75);
+    this.rain = new Rain(100);
   }
 
-  public WeatherController (int density) {
-    particules = new LinkedList<>();
-    
-    for (int i = 0; i < density; i++)
-      particules.add(createParticle());
-  }
+  public void render (Graphics g) {
+    Weather w = Universe.get().getWeather();
+    if (w == Weather.RAINY) current = rain;
+    else if (w == Weather.SNOWY) current = snow;
+    else current = null;
 
-  protected abstract Particule createParticle ();
-
-  public final void render (Graphics g) {
-    for (Particule particle: particules)
-      particle.render(g);
+    if (current != null) current.render(g);
   }
 
 }

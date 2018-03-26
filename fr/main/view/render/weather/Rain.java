@@ -5,12 +5,12 @@ import java.util.*;
 
 import fr.main.view.MainFrame;
 
-public class Rain extends WeatherController {
+public class Rain extends WeatherRender {
 
   private static Color color = new Color(0x86D1E8);
 
 
-  private class RainParticule extends WeatherController.Particule {
+  private class RainParticule extends WeatherRender.Particule {
 
     int length;
 

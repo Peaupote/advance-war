@@ -10,14 +10,14 @@ public class ScaleRect extends Rectangle {
       VERTICALY
     }
 
-    public final int scale;
+    public final double scale;
     public final Flip reverse;
 
-    public ScaleRect (int x, int y, int w, int h, int scale) {
+    public ScaleRect (int x, int y, int w, int h, double scale) {
       this(x, y, w, h, scale, Flip.NONE);
     }
 
-    public ScaleRect (int x, int y, int w, int h, int scale, Flip reverse) {
+    public ScaleRect (int x, int y, int w, int h, double scale, Flip reverse) {
       super(x, y, w, h);
       this.scale = scale;
       this.reverse = reverse;

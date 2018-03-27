@@ -45,24 +45,24 @@ public class Sprite {
 		return out;
 	}
 
-	public Image getImage(int x, int y, int w, int h, int scale) {
+	public Image getImage(int x, int y, int w, int h, double scale) {
 		Image img = getImage(x, y, w, h);
 
 		if(img == null) {
 			System.out.println("x : " + x + "| y : " + y + "| w : " + w + "| h : " + h);
 			System.exit(11);
 		}
-		return img.getScaledInstance(w * scale, h * scale, Image.SCALE_SMOOTH);
+		return img.getScaledInstance((int) (((double)w) * scale), (int) (((double)h) * scale), Image.SCALE_SMOOTH);
 	}
 
-	public Image getReverseImage(int x, int y, int w, int h, int scale, boolean vertical) {
+	public Image getReverseImage(int x, int y, int w, int h, double scale, boolean vertical) {
 		BufferedImage img = getImage(x, y, w, h);
 
 		AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
     // TODO: find out why cant flip horizontally
     tx.translate(-img.getWidth(null), 0);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		return op.filter(img, null).getScaledInstance(w * scale, h * scale, Image.SCALE_SMOOTH);
+		return op.filter(img, null).getScaledInstance((int) (((double)w) * scale), (int) (((double)h) * scale), Image.SCALE_SMOOTH);
 	}
 
   public Image getImage (ScaleRect rect) {

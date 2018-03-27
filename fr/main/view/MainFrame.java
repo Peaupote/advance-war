@@ -70,8 +70,7 @@ public class MainFrame extends JFrame {
         
       setContentPane(view);
       // set view to listen key events
-      setFocusable(false);
-      view.setFocusable(true);
+      view.requestFocus(true);
 
       // set view content
       view.setPreferredSize(new Dimension(WIDTH, HEIGHT));

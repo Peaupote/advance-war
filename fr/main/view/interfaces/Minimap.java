@@ -13,7 +13,6 @@ import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.terrains.AbstractBuildable;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
-import fr.main.view.Controller;
 
 public class Minimap extends InterfaceUI {
 

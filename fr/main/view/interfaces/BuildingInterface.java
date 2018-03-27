@@ -8,13 +8,13 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.LandUnit;
 import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.units.air.AirUnit;
-import fr.main.view.Controller;
+import fr.main.view.controllers.GameController;
 import fr.main.view.MainFrame;
 
-public class BuildingInterface extends Controller.ControllerPanel {
+public class BuildingInterface extends GameController.ControllerPanel {
 
   private FactoryBuilding building;
-  private Controller controller;
+  private GameController controller;
 
   class IndexClass extends Index {
 
@@ -28,7 +28,7 @@ public class BuildingInterface extends Controller.ControllerPanel {
 
   }
 
-  public BuildingInterface (Controller controller) {
+  public BuildingInterface (GameController controller) {
     controller.super();
     this.controller = controller;
     x = MainFrame.WIDTH - 200;

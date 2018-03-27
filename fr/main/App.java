@@ -9,14 +9,14 @@ import fr.main.model.commanders.FakeCommander;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.units.AbstractUnit;
-import fr.main.view.MainMenu;
+import fr.main.view.MainFrame;
 
 /**
  * Classe qui lance le projet
  */
 public class App {
 
-  public static void main (String[] args) throws IOException {
+  public static void main (String[] args) throws Exception {
     String s = args == null || args.length == 0 ? "undefined" : args[0];
     switch (s) {
       case "play": play();break;
@@ -28,8 +28,8 @@ public class App {
     }
   }
 
-  public static void play () throws IOException{
-	  new MainMenu();
+  public static void play () throws Exception{
+	  new MainFrame();
   }
 
   public static void save () {

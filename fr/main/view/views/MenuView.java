@@ -1,4 +1,4 @@
-package fr.main.view;
+package fr.main.view.views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,22 +10,31 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class MainMenu extends JFrame implements ActionListener{
-	
+import fr.main.view.sound.MusicEngine;
+import fr.main.view.components.*;
+import fr.main.view.controllers.MenuController;
+
+public class MenuView extends View {
+
 	private ImageIcon bg;
 	private JLabel label;
-	private JButton play;
-	private JButton select;
-	private JButton load;
-	private JButton edit;
-	private JButton exit;
-	private JButton option;
-	private JButton sound;
+	private JButton play,
+                  select,
+                  load,
+                  edit,
+                  exit,
+                  option,
+                  sound;
+
 	static MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
 	static boolean listen = true;
+
+  protected MenuController controller;
 	
-	public MainMenu() throws IOException {
+	public MenuView (MenuController controller) {
+    super(controller);
 		// TODO Auto-generated constructor stub
+    try {
 		bg = new ImageIcon("./assets/bd.png");
 		label = new JLabel(bg);
 		
@@ -38,36 +47,13 @@ public class MainMenu extends JFrame implements ActionListener{
 		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0,20);
 		sound = new RButton("×");
 		sound.setBounds(40, 600, 60, 60);
+    } catch (IOException e) {
+      System.err.println(e);
+    }
 		
 		label.setBounds(0, 0, bg.getIconWidth(), bg.getIconHeight());
 		label.setIcon(bg);
 		label.setHorizontalAlignment(0);
-		
-		exit.addActionListener((ActionEvent e) -> {
-			dispose();
-		});
-		
-		sound.addActionListener((ActionEvent e) -> {
-			
-			if(listen) {
-				sound.setText("√");
-				bm.start(true);
-			}else {
-				sound.setText("x");
-				bm.stop();
-			}
-			listen = !listen;
-			
-		});
-		
-		play.addActionListener((ActionEvent e) ->{
-			try {
-				new MainFrame();
-			} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
-				e1.printStackTrace();
-			}
-			dispose();
-		});
 		
 		label.add(play);
 		label.add(select);
@@ -77,22 +63,12 @@ public class MainMenu extends JFrame implements ActionListener{
 		label.add(exit);
 		label.add(option);
 		label.add(sound);
-		this.add(label);
 		
-		//JFrame.setDefaultLookAndFeelDecorated(true);
-		
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setResizable(false);
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
+    add(label);
+
+    play.addActionListener(controller.play);
+    sound.addActionListener(controller.sound);
+    exit.addActionListener(controller.exit);
 	}
 
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

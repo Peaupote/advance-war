@@ -1,29 +1,22 @@
-package fr.main.view;
+package fr.main.view.controllers;
 
-import java.util.HashMap;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.Point;
-import java.awt.Dimension;
-import java.util.LinkedList;
+import java.awt.event.*;
+import java.awt.*;
+import java.util.*;
 
-import fr.main.model.Universe;
-import fr.main.model.Player;
-import fr.main.model.Direction;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.view.render.buildings.BuildingRenderer;
-import fr.main.view.MainFrame;
-import fr.main.view.render.UniverseRenderer;
-import fr.main.view.interfaces.*;
-import fr.main.view.render.PathRenderer;
-import fr.main.view.render.units.UnitRenderer;
+import fr.main.model.*;
 import fr.main.model.units.*;
 import fr.main.model.buildings.*;
 
-public class Controller extends KeyAdapter implements MouseMotionListener {
+import fr.main.view.*;
+import fr.main.view.views.GameView;
+import fr.main.view.interfaces.*;
+import fr.main.view.render.PathRenderer;
+import fr.main.view.render.UniverseRenderer;
+import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.render.buildings.BuildingRenderer;
+
+public class GameController extends Controller {
 
     public final Position.Cursor cursor, unitCursor;
     public final Position.Camera camera;
@@ -243,7 +236,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     }
 
 
-    public Controller (Player ps[]) {
+    public GameController (Player ps[]) {
         world      = new UniverseRenderer("maptest.map", this);
         size       = world.getDimension();
         camera     = new Position.Camera(size);
@@ -368,17 +361,6 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
     }
 
     @Override
-    public void keyReleased (KeyEvent e) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void mouseDragged (MouseEvent e) {}
-
-    @Override
     public void mouseMoved (MouseEvent e) {
         if (mode == Mode.MOVE){
             mouse.x = e.getX() / MainFrame.UNIT;
@@ -387,9 +369,6 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         }
     }
 
-    /**
-     * Function called each loop turn
-     */
     public void update () {
         isListening = cursor.move() | camera.move() |
                             (mode != Mode.MOVE && mode.canMove() && unitCursor.move());
@@ -429,6 +408,10 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
 
     public void setMode (Mode mode) {
         this.mode = mode;
+    }
+
+    public GameView makeView () {
+      return new GameView(this);
     }
 
 }

@@ -35,7 +35,12 @@ public class PlayerIt implements Iterable<Player> {
          * @return true while there is at least a single player
          */
         public boolean hasNext() {
-            return ps.length > 0;
+            int n = 0;
+            for (Player p : ps){
+                if (!p.hasLost()) n ++;
+                if (n > 1) return true;
+            }
+            return false;
         }
 
         /**

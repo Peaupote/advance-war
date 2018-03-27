@@ -52,4 +52,9 @@ public class BuildingRenderer{
     public static void render(Graphics g, Point coords, AbstractBuilding building) {
         getRender(building).draw (g, coords.x, coords.y);
     }
+
+    public static void updateAll(){
+        for (BuildingRender b : renderers.values())
+            b.updateState(null);
+    }
 }

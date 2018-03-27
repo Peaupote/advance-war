@@ -69,9 +69,17 @@ public class UnitRenderer {
       this.anim        = new Animation();
     }
 
-    public boolean moveOffset (Direction d) {
+    public boolean moveOffset (Direction d){
+      return moveOffset(d, true);
+    }
+
+    public void cancelOffset (){
+      offset.move(0,0);
+    }
+
+    public boolean moveOffset (Direction d, boolean change) {
       d.move(offset);
-      if (Math.abs(offset.x) == MainFrame.UNIT || Math.abs(offset.y) == MainFrame.UNIT) {
+      if (change && (Math.abs(offset.x) >= MainFrame.UNIT || Math.abs(offset.y) >= MainFrame.UNIT)) {
         offset.x = 0;
         offset.y = 0;
         return unit.move(d);

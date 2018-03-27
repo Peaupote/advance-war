@@ -194,6 +194,11 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         @Override
         public void onOpen () {
             targetUnit = world.getUnit(cursor.position());
+            if (targetUnit == null){
+                System.out.println("Error : unit is null");
+                onClose();
+                return;
+            }
             actions.forEach((key, value) -> value.setActive(false));
             actions.get(1).setActive(true);
             if (!targetUnit.isEnabled()) return;

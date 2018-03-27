@@ -27,8 +27,8 @@ public class Path extends LinkedList<Direction> {
     }
 
     public void rebase (AbstractUnit unit) {
-        removeAll(this);
-        points.removeAll(points);
+        clear();
+        points.clear();
         pathMoveCost = 0;
 
         this.unit = unit;
@@ -52,8 +52,8 @@ public class Path extends LinkedList<Direction> {
         p.translate(-offset.x,-offset.y);
         if (p.x < 0 || p.y < 0 || p.x >= map[0].length || p.y >= map.length)
             return;
-        removeAll(this);
-        points.removeAll(points);
+        clear();
+        points.clear();
         points.add(p.getLocation());
         pathMoveCost = map[p.y][p.x].lowestCost;
         Direction d;

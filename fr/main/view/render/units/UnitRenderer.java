@@ -79,12 +79,10 @@ public class UnitRenderer {
 
     public boolean moveOffset (Direction d, boolean change) {
       d.move(offset);
-      if (change && (Math.abs(offset.x) >= MainFrame.UNIT || Math.abs(offset.y) >= MainFrame.UNIT)) {
-        offset.x = 0;
-        offset.y = 0;
+      if (change && (Math.abs(offset.x) >= MainFrame.UNIT || Math.abs(offset.y) >= MainFrame.UNIT)){
+        cancelOffset();
         return unit.move(d);
       }
-
       return true;
     }
 

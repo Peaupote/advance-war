@@ -51,6 +51,7 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
         LOAD(true),
         UNLOAD_CHOOSE(false),
         UNLOAD_LOCATE(true),
+        MISSILE_LAUNCHER(true),
         HEAL(true);
 
         private boolean moveable;
@@ -96,6 +97,15 @@ public class Controller extends KeyAdapter implements MouseMotionListener {
             });
 
             new Index("Wait", () -> {});
+            new Index("Big power", world::bigPower);
+            new Index("Small power", world::smallPower);
+        }
+
+        @Override
+        public void onOpen(){
+            actions.get(3).setActive(world.getCurrentPlayer().getCommander().canActivate(true));
+            actions.get(3).setActive(world.getCurrentPlayer().getCommander().canActivate(false));
+            super.onOpen();
         }
 
     }

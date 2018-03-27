@@ -123,6 +123,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     public synchronized void turnBegins(){
+        commander.turnBegins();
         for (OwnableBuilding b : buildingList())
             funds += b.getIncome();
         for (AbstractUnit u : unitList())

@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Arrays;
 
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.*;
@@ -126,6 +127,10 @@ public class Universe {
         return isVisible(pt.x, pt.y);
     }
 
+    public Player[] playerList(){
+        return Arrays.copyOf(map.players,map.players.length);
+    }
+
     public synchronized void next () {
         if (current != null)
             current.turnEnds();
@@ -158,6 +163,14 @@ public class Universe {
                     fogwar[i][j] = false;
             current.renderVision(fogwar);
         }
+    }
+
+    public void smallPower(){
+        getCurrentPlayer().getCommander().activate(false);
+    }
+
+    public void bigPower(){
+        getCurrentPlayer().getCommander().activate(true);
     }
 
     public final AbstractTerrain getTerrain (int x, int y) {

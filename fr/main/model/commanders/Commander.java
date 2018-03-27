@@ -68,16 +68,33 @@ public abstract class Commander implements Serializable {
         this.powerBar = bar == 0 ? null : new PowerBar(bar);
     }
 
+    public boolean activate(boolean bigPower){
+        return bigPower ? big.activate(player) : small.activate(player);
+    }
+
+    public boolean activated(boolean bigPower){
+        return bigPower ? big.activated : small.activated;
+    }
+
+    public boolean canActivate(boolean bigPower){
+        return !activated(bigPower) && powerBar.value >= (bigPower ? big.value : small.value);
+    }
+
+    public void turnBegins(){
+        small.activated = false;
+        big.activated   = false;
+    }
+
+    public final int getSmallCost () {
+        return small == null ? 0 : small.value;
+    }
+
+    public final int getBigCost () {
+        return big == null ? 0 : big.value;
+    }
+
     //TODO : créer les fonctions qui donnent les modifications du commandant
     // par exemple des fonctions prenant une unité du joueur et renvoyant sa nouvelle portée, attaque, vision, déplacement,...
-
-    public int getSmallCost () {
-        return small==null?0:small.value;
-    }
-
-    public int getBigCost () {
-        return big==null?0:big.value;
-    }
 
     public int getAttackValue(AbstractUnit u){
         return 100;

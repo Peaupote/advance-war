@@ -6,7 +6,7 @@ import fr.main.model.Player;
 /*
  * Represents buildings that can repair and replenish specific units
  */
-public interface RepairBuilding {
+public interface RepairBuilding extends AbstractBuilding{
     // example : the airport is the only building to repair air units ; it doesn't repair land unit
     public boolean canRepair(AbstractUnit u);
 

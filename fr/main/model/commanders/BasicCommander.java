@@ -15,4 +15,8 @@ public class BasicCommander extends Commander{
     public int getDefenseValue(AbstractUnit u){
         return activated(true) ? 130 : (activated(false) ? 115 : 100);
     }
+
+    public String toString() {
+      return "basic";
+    }
 }

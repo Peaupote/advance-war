@@ -30,6 +30,8 @@ public class Universe {
     public static boolean save=false;
     protected Weather weather;
 
+    protected int day;
+
     static{
         File maps = new File(mapPath);
         if (!maps.exists() && !maps.isDirectory() && !maps.mkdir())
@@ -63,7 +65,7 @@ public class Universe {
     public Universe (String mapName, Player[] ps) {
         map = null;
 
-        if (save){
+        if (save)
             try {
                 FileInputStream fileIn = new FileInputStream(mapPath+mapName);
                 ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -76,10 +78,10 @@ public class Universe {
                 System.err.println("Board class not found");
                 e.printStackTrace();
             }
-        }
 
         map.players = ps;
 
+        day = 0;
         instance = this;
         weather  = Weather.FOGGY;
         fogwar   = new boolean[map.board.length][map.board[0].length];
@@ -110,7 +112,6 @@ public class Universe {
             ((Airport)getBuilding(7,9)).create(Stealth.class);
         if (getBuilding(6,9) != null)
             ((Airport)getBuilding(6,9)).create(Fighter.class);
-
     }
 
     public void playerLoose(Player p){
@@ -139,6 +140,10 @@ public class Universe {
         return Arrays.copyOf(map.players,map.players.length);
     }
 
+    public int getDay(){
+        return day;
+    }
+
     public synchronized void next () {
         if (current != null)
             current.turnEnds();
@@ -153,6 +158,7 @@ public class Universe {
         current.turnBegins();
 
         if (players.isFirst(current)){
+            day ++;
             Weather w = Weather.random(map.fog);
             if (w.fog && !weather.fog)
                 for (int i = 0; i < map.board.length; i++)

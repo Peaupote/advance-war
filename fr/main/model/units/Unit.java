@@ -205,7 +205,7 @@ public abstract class Unit implements AbstractUnit {
                 {1,1},{1,-1},{-1,-1},{-1,1}
             };
             for (int i = 2 ; i <= visionT ; i++)
-                for (int j = 1 ; j <= i ; j ++)
+                for (int j = 1 ; j < i ; j ++)
                     for (int[] tab : t){
                         int xx = x + j * tab[0], yy = y + (i - j) * tab[1];
                         if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && !Universe.get().getTerrain(xx, yy).hideFrom(this) && (height == 2 || linearRegression(x, y, xx, yy, height)))

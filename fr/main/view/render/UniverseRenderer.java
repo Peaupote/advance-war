@@ -18,6 +18,7 @@ import fr.main.model.terrains.naval.Sea;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HealerUnit;
 import fr.main.model.units.TransportUnit;
+import fr.main.model.buildings.MissileLauncher;
 
 import fr.main.view.MainFrame;
 import fr.main.view.Controller;
@@ -146,8 +147,8 @@ public class UniverseRenderer extends Universe {
 			tColor = unit.getPlayer() == current ? moveColor : targetColor;
 		} else if (controller.getMode() == Controller.Mode.ATTACK) {
 			unit.renderTarget(targets);
-			upperLeft = new Point (0,0);
-			lowerRight = new Point (targets.length, targets[0].length);
+			upperLeft.move(0,0);
+			lowerRight.move(targets.length, targets[0].length);
 			tColor = targetColor;
 		} else if (controller.getMode() == Controller.Mode.HEAL || 
 				   controller.getMode() == Controller.Mode.LOAD || 
@@ -167,6 +168,29 @@ public class UniverseRenderer extends Universe {
 			lowerRight.move(Math.min(getMapWidth(), unit.getX() + 2), Math.min(getMapHeight(), unit.getY() + 2));
 			tColor = controller.getMode() == Controller.Mode.HEAL ? healColor : loadColor;
 		}
+	}
+
+    private static final int[][] directions = {
+        {1,1},{1,-1},{-1,-1},{-1,1}
+    };
+
+	public boolean updateTarget(Point p){
+		System.out.println(p);
+		clearTarget();
+		if (controller.getMode() == Controller.Mode.MISSILE_LAUNCHER){
+	        for (int i = 0 ; i <= 3 ; i++)
+	            for (int j = 0 ; j <= i ; j ++)
+	                for (int[] tab : directions){
+						int xx = p.x + tab[0] * j, yy = p.y + tab[1] * (i - j);
+						if (isValidPosition(xx, yy))
+							targets[yy][xx] = true;
+	                }
+			upperLeft.move(Math.max(0, p.x - 3), Math.max(0, p.y - 3));
+			lowerRight.move(Math.min(getMapWidth(), p.x + 4), Math.min(getMapHeight(), p.y + 4));
+			tColor = targetColor;
+			return true;
+		}
+		return false;
 	}
 
 	public void clearTarget () {

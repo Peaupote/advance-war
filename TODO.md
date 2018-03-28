@@ -21,7 +21,7 @@ TODO
 - [x] implement victory conditions (hq captured)
 - [x] Add the few missings unit sprites (to have at least one image for each unit)
 - [x] add a few commanders
-- [ ] Implement the missile launcher
+- [x] Implement the missile launcher
 - [ ] Multiples pages (multiple controllers)
 
 

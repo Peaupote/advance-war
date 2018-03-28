@@ -29,7 +29,7 @@ public class MissileLauncherRenderer extends BuildingRenderer.BuildingRender {
     }
 
     public void updateState(){
-        anim.setState(((MissileLauncher)building).isFired() ? "active" : "inactive");
+        anim.setState(((MissileLauncher)building).isFired() ? "inactive" : "active");
     }
 
     public void updateState(String s){

@@ -90,6 +90,7 @@ public class Universe {
         new Barrack(null, new Point(9,5));
         new Headquarter(map.players[0], new Point(12,5));
         new City(null, new Point(20,5));
+        new MissileLauncher(new Point(11,5));
 
         new Lander(map.players[0], new Point(0,0));
         new Lander(map.players[1], new Point(1,1));

@@ -12,7 +12,7 @@ public abstract class Controller
   /**
    * Function called each loop turn
    */
-  public abstract void update();
+  public void update() {}
   public abstract View makeView ();
 
   @Override

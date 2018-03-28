@@ -19,7 +19,7 @@ public class LoadController extends Controller {
   }
 
   public void update() {
-    load = Math.min(100, load + rand.nextInt(5));
+    load++;
 
     if (load == 100) MainFrame.setScene(new GameController(ps));
   }

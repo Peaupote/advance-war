@@ -72,8 +72,8 @@ public class UniverseRenderer extends Universe {
 
 	private final LinkedList<FlashMessage> flashs;
 
-	public UniverseRenderer (String mapName, GameController controller) {
-		super (mapName);
+	public UniverseRenderer (String mapName, Player[] ps, GameController controller) {
+		super (mapName, ps);
 
 		this.controller = controller;
 		coords = new Point[map.board.length][map.board[0].length];

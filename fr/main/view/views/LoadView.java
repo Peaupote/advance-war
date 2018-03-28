@@ -25,7 +25,7 @@ public class LoadView extends View {
     g.setColor(Color.black);
     g.drawRect (x, y, width, height);
     g.setColor(Color.green);
-    g.fillRect (x + 1, y + 1, controller.getLoad() * 100 / width, height - 1);
+    g.fillRect (x + 1, y + 1, controller.getLoad() * (width / 100), height - 1);
   }
 
 }

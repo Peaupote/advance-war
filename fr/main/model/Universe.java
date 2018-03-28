@@ -60,7 +60,7 @@ public class Universe {
     protected boolean[][] fogwar;
     private Dimension size;
 
-    public Universe (String mapName) {
+    public Universe (String mapName, Player[] ps) {
         map = null;
 
         if (save){
@@ -77,6 +77,8 @@ public class Universe {
                 e.printStackTrace();
             }
         }
+
+        map.players = ps;
 
         instance = this;
         weather  = Weather.FOGGY;

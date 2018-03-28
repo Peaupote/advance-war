@@ -237,7 +237,7 @@ public class GameController extends Controller {
 
 
     public GameController (Player ps[]) {
-        world      = new UniverseRenderer("maptest.map", this);
+        world      = new UniverseRenderer("maptest.map", ps, this);
         size       = world.getDimension();
         camera     = new Position.Camera(size);
         cursor     = new Position.Cursor(camera, size);

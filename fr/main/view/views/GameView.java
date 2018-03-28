@@ -41,4 +41,8 @@ public class GameView extends View {
       for (InterfaceUI comp: InterfaceUI.components())
           comp.render(g);
   }
+
+  public WeatherController getWeatherController(){
+    return weather;
+  }
 }

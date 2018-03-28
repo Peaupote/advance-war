@@ -28,12 +28,12 @@ public class MissileLauncher extends Building {
         if(!canFire(x, y)) return;
         fired = true;
         Universe u = Universe.get();
-        AbstractUnit unit = u.getUnit(getX(), getY());
+        AbstractUnit unit = u.getUnit(x, y);
         if (unit != null) // center of the target
             unit.removeLife(30);
         for (int i = 1; i < 4; i++) // cardinal directions from the target
             for (Direction d : Direction.cardinalDirections()){
-                unit = u.getUnit(getX() + d.x, getY() + d.y);
+                unit = u.getUnit(x + i * d.x, y + i * d.y);
                 if (unit != null)
                     unit.removeLife(30);
             }
@@ -41,11 +41,11 @@ public class MissileLauncher extends Building {
         int[][] t = {
             {1,1},{1,-1},{-1,-1},{-1,1}
         };
-        for (int i = 2 ; i <= 3 ; i++) // other tiles
-            for (int j = 1 ; j <= i ; j ++)
+        for (int i = 2 ; i < 4 ; i++) // other tiles
+            for (int j = 1 ; j < i ; j ++)
                 for (int[] tab : t){
                     unit = u.getUnit(x + j * tab[0], y + (i - j) * tab[1]);
-                    if (unit != null);
+                    if (unit != null)
                         unit.removeLife(30);
                 }
     }

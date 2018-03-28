@@ -12,7 +12,7 @@ public class MenuController extends Controller {
     super();
 
     play = (ActionEvent e) -> MainFrame.setScene(new CreateController());
-    exit = (ActionEvent e) -> System.out.println("exit");
+    exit = (ActionEvent e) -> System.exit(0);
     sound = (ActionEvent e) -> System.out.println("sound");
   }
 

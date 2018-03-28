@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.Direction;
+import fr.main.model.Weather;
 import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.naval.*;
 import fr.main.model.Universe;
@@ -37,15 +38,22 @@ public class TerrainRenderer {
 
 			LinkedList<ScaleRect> areas = new LinkedList<>();
 			areas.add(location.getRect());
-			AnimationState idle = new AnimationState(new SpriteList(location.getPath(), areas), 20);
-			anim.put("idle", idle);
-			anim.setState("idle");
+			AnimationState normal = new AnimationState(new SpriteList(TerrainLocation.getDir() + "normal/" + location.getPath(), areas), 20);
+			AnimationState snow   = new AnimationState(new SpriteList(TerrainLocation.getDir() + "snow/"   + location.getPath(), areas), 20);
+			anim.put("normal", normal);
+			anim.put("snow", snow);
+			anim.setState("normal");
 		}
 
 		public void draw(Graphics g, int x, int y) {
 			anim.draw(g, x, y);
 		}
 
+	}
+
+	public static void updateAll(){
+		String s = Universe.get().getWeather() == Weather.SNOWY ? "snow" : "normal";
+		for (Render render : renderers.values()) render.anim.setState(s);
 	}
 
 	public static Render getRender(AbstractTerrain terrain, TerrainLocation location) {

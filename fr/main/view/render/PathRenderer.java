@@ -140,6 +140,7 @@ public class PathRenderer extends Path {
                 render.cancelOffset();
                 unit.setLocation(pt.x, pt.y);
                 world.setUnit(unit.getX(), unit.getY(), unit);
+                world.updateVision();
             }
         }
         return true;

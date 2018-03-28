@@ -18,6 +18,8 @@ import fr.main.view.render.buildings.BuildingRenderer;
 
 public class GameController extends Controller {
 
+    protected GameView gameViewController;
+
     public final Position.Cursor cursor, unitCursor;
     public final Position.Camera camera;
     public final UniverseRenderer world;
@@ -97,7 +99,7 @@ public class GameController extends Controller {
         @Override
         public void onOpen(){
             actions.get(3).setActive(world.getCurrentPlayer().getCommander().canActivate(true));
-            actions.get(3).setActive(world.getCurrentPlayer().getCommander().canActivate(false));
+            actions.get(4).setActive(world.getCurrentPlayer().getCommander().canActivate(false));
             super.onOpen();
         }
 
@@ -156,6 +158,11 @@ public class GameController extends Controller {
                 }
             });
 
+            new Index("Launch", () -> {
+                mode = Mode.MISSILE_LAUNCHER;
+                world.updateTarget(targetUnit.position());
+            });
+
             new Index("Supply", () -> {
                 SupplyUnit su = ((SupplyUnit)targetUnit);
                 su.supply();
@@ -197,33 +204,40 @@ public class GameController extends Controller {
         @Override
         public void onOpen () {
             targetUnit = world.getUnit(cursor.position());
+
             if (targetUnit == null){
                 System.out.println("Error : unit is null");
+                setVisible(false);
                 onClose();
                 return;
             }
+
             actions.forEach((key, value) -> value.setActive(false));
             actions.get(1).setActive(true);
             if (!targetUnit.isEnabled()) return;
+
+            AbstractBuilding building = Universe.get().getBuilding(unitCursor.getX(), unitCursor.getY());
             if (targetUnit.canAttack()) actions.get(2).setActive(true);
-            if (targetUnit instanceof CaptureBuilding &&
-                        ((CaptureBuilding)targetUnit).canCapture(Universe.get().getBuilding(unitCursor.getX(),unitCursor.getY())))
-                actions.get(3).setActive(true);
-            if (targetUnit instanceof SupplyUnit) actions.get(4).setActive(true);
-            if (targetUnit instanceof HealerUnit && ((HealerUnit)targetUnit).canHeal()) actions.get(5).setActive(true);
+            if (targetUnit instanceof CaptureBuilding)
+                if (((CaptureBuilding)targetUnit).canCapture(building))
+                    actions.get(3).setActive(true);
+                else if (building instanceof MissileLauncher && !((MissileLauncher)building).isFired())
+                    actions.get(4).setActive(true);
+            if (targetUnit instanceof SupplyUnit) actions.get(5).setActive(true);
+            if (targetUnit instanceof HealerUnit && ((HealerUnit)targetUnit).canHeal()) actions.get(6).setActive(true);
             if (targetUnit instanceof HideableUnit)
-                if (((HideableUnit)targetUnit).hidden()) actions.get(7).setActive(true);
-                else actions.get(6).setActive(true);
+                if (((HideableUnit)targetUnit).hidden()) actions.get(8).setActive(true);
+                else actions.get(7).setActive(true);
 
             for (Direction d : Direction.cardinalDirections()){
                 AbstractUnit u = Universe.get().getUnit(targetUnit.getX() + d.x, targetUnit.getY() + d.y);
                 if (u instanceof TransportUnit && ((TransportUnit)u).canCharge(targetUnit)) {
-                    actions.get(8).setActive(true);
+                    actions.get(9).setActive(true);
                     break;
                 }
             }
             if (targetUnit instanceof TransportUnit && ((TransportUnit)targetUnit).getOccupation() != 0)
-                actions.get(9).setActive(true);
+                actions.get(10).setActive(true);
 
             super.onOpen();
         }
@@ -264,10 +278,18 @@ public class GameController extends Controller {
             isListening = true;
             if (mode.canMove()) {
                 targetUnit = world.getUnit(cursor.position());
-                if      (key == KeyEvent.VK_UP)    move(Direction.TOP);
-                else if (key == KeyEvent.VK_LEFT)  move(Direction.LEFT);
-                else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
-                else if (key == KeyEvent.VK_DOWN)  move(Direction.BOTTOM);
+                if      (key == KeyEvent.VK_UP)    {
+                    move(Direction.TOP);
+                }
+                else if (key == KeyEvent.VK_LEFT)  {
+                    move(Direction.LEFT);
+                }
+                else if (key == KeyEvent.VK_RIGHT) {
+                    move(Direction.RIGHT);
+                }
+                else if (key == KeyEvent.VK_DOWN)  {
+                    move(Direction.BOTTOM); 
+                }
                 else if (key == KeyEvent.VK_ENTER) {
                     if (mode == Mode.UNIT) {
                         mode = Mode.IDLE;
@@ -335,9 +357,16 @@ public class GameController extends Controller {
                         mode = Mode.MOVE;
                         world.clearTarget();
                     }else if (mode == Mode.UNLOAD_LOCATE){
-                        if (((TransportUnit)targetUnit).remove(getTransportUnit(), unitCursor.position().x, unitCursor.position().y)){}
+                        if (((TransportUnit)targetUnit).remove(getTransportUnit(), unitCursor.getX(), unitCursor.getY())){}
                         mode = Mode.MOVE;
                         world.clearTarget();                        
+                    }else if (mode == Mode.MISSILE_LAUNCHER){
+                        MissileLauncher missile = (MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY());
+                        missile.fire(unitCursor.getX(), unitCursor.getY());
+                        BuildingRenderer.getRender(missile).updateState("inactive");
+                        targetUnit.setMoveQuantity(0);
+                        mode = Mode.MOVE;
+                        world.clearTarget();
                     }
                 } else if (key == KeyEvent.VK_ESCAPE) {
                     mode = Mode.MOVE;
@@ -372,6 +401,7 @@ public class GameController extends Controller {
     public void update () {
         isListening = cursor.move() | camera.move() |
                             (mode != Mode.MOVE && mode.canMove() && unitCursor.move());
+        if (!isListening && mode == Mode.MISSILE_LAUNCHER) world.updateTarget(unitCursor.position()); //called each frame... 
 
         if (!isListening && mode.canMove() && listenMouse) {
             if (camera.getX() > 0 && mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
@@ -386,7 +416,6 @@ public class GameController extends Controller {
     private void move (Direction d) {
         listenMouse = false;
         Position.Cursor c = mode == Mode.MOVE || mode == Mode.MENU ? cursor : unitCursor;
-
         if ((d == Direction.LEFT && c.getX() - camera.getX() <= moveRange) ||
                 (d == Direction.RIGHT && camera.getX() + camera.width - c.getX() <= moveRange + 1) ||
                 (d == Direction.TOP && c.getY() - camera.getY() <= moveRange) ||
@@ -411,7 +440,12 @@ public class GameController extends Controller {
     }
 
     public GameView makeView () {
-      return new GameView(this);
+      gameViewController = new GameView(this);
+      return gameViewController;
+    }
+
+    public GameView getGameView(){
+        return gameViewController;
     }
 
 }

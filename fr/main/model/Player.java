@@ -52,6 +52,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
             b.setOwner(null);
         buildings.clear();
         hasLost = true;
+        u.playerLoose(this);
     }
 
     public boolean hasLost(){

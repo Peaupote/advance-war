@@ -28,7 +28,7 @@ public class Universe {
     private static Universe instance;
     public static final String mapPath="maps/";
     public static boolean save=false;
-    private Weather weather;
+    protected Weather weather;
 
     static{
         File maps = new File(mapPath);
@@ -92,6 +92,7 @@ public class Universe {
         new Barrack(null, new Point(9,5));
         new Headquarter(map.players[0], new Point(12,5));
         new City(null, new Point(20,5));
+        new MissileLauncher(new Point(11,5));
 
         new Lander(map.players[0], new Point(0,0));
         new Lander(map.players[1], new Point(1,1));
@@ -110,6 +111,11 @@ public class Universe {
         if (getBuilding(6,9) != null)
             ((Airport)getBuilding(6,9)).create(Fighter.class);
 
+    }
+
+    public void playerLoose(Player p){
+        if (!players.hasNext())
+            System.exit(0);
     }
 
     public Dimension getDimension () {

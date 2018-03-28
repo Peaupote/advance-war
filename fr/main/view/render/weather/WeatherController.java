@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import fr.main.model.Universe;
 import fr.main.model.Weather;
+import fr.main.view.render.terrains.TerrainRenderer;
 
 public class WeatherController {
 
@@ -16,12 +17,19 @@ public class WeatherController {
     this.rain = new Rain(100);
   }
 
-  public void render (Graphics g) {
+  public void update(Weather old){
     Weather w = Universe.get().getWeather();
-    if (w == Weather.RAINY) current = rain;
-    else if (w == Weather.SNOWY) current = snow;
-    else current = null;
+    if (old != w){
+      if (w == Weather.RAINY) current = rain;
+      else if (w == Weather.SNOWY) current = snow;
+      else current = null;
 
+      if (old == Weather.SNOWY ? w != Weather.SNOWY : w == Weather.SNOWY)
+        TerrainRenderer.updateAll();
+    }
+  }
+
+  public void render (Graphics g) {
     if (current != null) current.render(g);
   }
 

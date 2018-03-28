@@ -22,7 +22,7 @@ TODO
 - [x] Add the few missings unit sprites (to have at least one image for each unit)
 - [x] add a few commanders
 - [x] Implement the missile launcher
-- [ ] Multiples pages (multiple controllers)
+- [x] Multiples pages (multiple controllers)
 
 
 TODO of Peaupote

@@ -175,9 +175,8 @@ public class UniverseRenderer extends Universe {
     };
 
 	public boolean updateTarget(Point p){
-		System.out.println(p);
 		clearTarget();
-		if (controller.getMode() == Controller.Mode.MISSILE_LAUNCHER){
+		if (controller.getMode() == GameController.Mode.MISSILE_LAUNCHER){
 	        for (int i = 0 ; i <= 3 ; i++)
 	            for (int j = 0 ; j <= i ; j ++)
 	                for (int[] tab : directions){

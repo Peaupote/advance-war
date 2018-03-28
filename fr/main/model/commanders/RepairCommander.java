@@ -15,11 +15,15 @@ public class RepairCommander extends Commander{
 		}));
 	}
 
-    public int getAttackValue(AbstractUnit u){
+    public int getAttackValue(AbstractUnit u) {
         return activated(true) ? 110 : (activated(false) ? 105 : 100);
     }
 
-    public int getDefenseValue(AbstractUnit u){
+    public int getDefenseValue(AbstractUnit u) {
         return activated(true) ? 110 : (activated(false) ? 105 : 100);
+    }
+
+    public String toString () {
+      return "repair";
     }
 }

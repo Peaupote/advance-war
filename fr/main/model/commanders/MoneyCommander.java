@@ -23,4 +23,8 @@ public class MoneyCommander extends Commander{
     public int getDefenseValue(AbstractUnit u){
         return activated(true) ? 110 : (activated(false) ? 105 : 100);
     }
+
+    public String toString () {
+      return "money";
+    }
 }

@@ -32,4 +32,8 @@ public class RangedCommander extends Commander{
     public int getMaximumRange(AbstractUnit u, PrimaryWeapon p){
         return p.isContactWeapon() ? 1 : p.getBaseMaximumRange() + Universe.get().getTerrain(u.getX(), u.getY()).getBonusRange(u, p) + 1;
     }
+
+    public String toString () {
+      return "ranged";
+    }
 }

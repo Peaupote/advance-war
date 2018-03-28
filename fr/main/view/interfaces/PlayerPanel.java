@@ -1,13 +1,13 @@
 package fr.main.view.interfaces;
 
-import java.awt.Graphics;
-import java.awt.Color;
+import java.awt.*;
 
 import fr.main.view.MainFrame;
 import fr.main.model.Universe;
 import fr.main.model.Player;
 import fr.main.model.commanders.Commander;
 import fr.main.view.Position;
+import fr.main.view.render.commanders.CommanderRenderer;
 
 public class PlayerPanel extends InterfaceUI {
 
@@ -55,6 +55,9 @@ public class PlayerPanel extends InterfaceUI {
     if (c.getBigCost() > c.powerBar.getValue()) g.setColor(Color.black);
     r = x + c.getBigCost() * WIDTH / c.powerBar.maxValue;
     g.drawLine(r, y + HEIGHT - 20, r, y + HEIGHT);
+
+    CommanderRenderer.getRender(p.getCommander().toString())
+                     .draw(g, x + WIDTH - 70, y + 35);
   }
 
 }

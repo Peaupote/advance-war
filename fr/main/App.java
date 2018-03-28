@@ -41,16 +41,9 @@ public class App {
       for (int j = 0; j < eMap[0].length; j++)
 		  map[i][j] = eMap[i][j].terrain;
 
-
-    Player[] players = new Player[]{
-      new Player("P1"), new Player("P2")
-    };
-
-    for (Player p: players) new FakeCommander(p);
-
     AbstractUnit[][] units = new AbstractUnit[s][s];
     AbstractBuilding[][] buildings = new AbstractBuilding[s][s];
 
-    Universe.save("maptest.map", units, map, players, buildings);
+    Universe.save("maptest.map", units, map, null, buildings);
   }
 }

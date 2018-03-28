@@ -44,15 +44,15 @@ public class CommanderRenderer {
     }
   }
 
-    public static Render getRender (String commander) {
-      if (!renderers.containsKey(commander)) 
-        renderers.put(commander, new Render(commander));
+  public static Render getRender (String commander) {
+    if (!renderers.containsKey(commander)) 
+      renderers.put(commander, new Render(commander));
 
-      return renderers.get(commander);
-    }
+    return renderers.get(commander);
+  }
 
-    public static void render (Graphics g, String commander, Point pt) {
-      getRender(commander).draw(g, pt.x, pt.y);
-    }
+  public static void render (Graphics g, String commander, Point pt) {
+    getRender(commander).draw(g, pt.x, pt.y);
+  }
 
 }

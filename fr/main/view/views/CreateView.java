@@ -68,6 +68,7 @@ public class CreateView extends View {
     private final int width, height;
     private int focus;
     private JButton[] btns;
+    private int[] selected;
 
     public PlayersPanel () {
       setLayout(new GridLayout(1, 4, 20, 50));
@@ -76,9 +77,11 @@ public class CreateView extends View {
 
       width = 60;
       height = 100;
-
+      selected = new int[4];
       btns = new JButton[4];
+
       for (int i = 0; i < btns.length; i++) {
+        selected[i] = -1;
         btns[i] = new JButton("Player " + (i + 1));
         final int target = i;
         btns[i].addActionListener(e -> focus = target);
@@ -91,16 +94,26 @@ public class CreateView extends View {
       btns[focus].setIcon(new ImageIcon(
           ((ImageIcon)commanders.btns[commanders.focus]
           .getIcon()).getImage().getScaledInstance(70, 78, Image.SCALE_DEFAULT)));
+      selected[focus] = commanders.focus;
       btns[focus].revalidate();
     }
 
     public Player[] getPlayers() {
-      Player[] ps = new Player[4];
-      for (int i = 0; i < ps.length; i++) {
-        ps[i] = new Player("Player " + (i + 1));
-        new RepairCommander(ps[i]);
+      ArrayList<Player> ps = new ArrayList<>();
+      for (int i = 0; i < selected.length; i++) {
+        if (selected[i] == -1) continue;
+        Player p = new Player("Player " + (i + 1)); 
+        ps.add(p);
+        switch (selected[i]) {
+          case 0: new ContactCommander(p);break;
+          case 1: new DestroyCommander(p);break;
+          case 2: new MoneyCommander(p);break;
+          case 3: new RepairCommander(p);break;
+          case 4: new BasicCommander(p);break;
+          case 5: new RangedCommander(p);break;
+        }
       }
-      return ps;
+      return ps.toArray(new Player[ps.size()]);
     }
 
   }

@@ -1,4 +1,4 @@
-package fr.main.view;
+package fr.main.view.sound;
 
 import java.io.File;
 import java.io.IOException;

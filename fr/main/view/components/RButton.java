@@ -1,10 +1,10 @@
-package fr.main.view;
+package fr.main.view.components;
 
 import java.awt.*;
 import java.awt.geom.*;
 import javax.swing.*;
 
- class RButton extends JButton {
+public class RButton extends JButton {
   public RButton(String label) {
     super(label);
 

@@ -42,6 +42,7 @@ public abstract class Position {
       cursorScale = 1;
 
       image = null;
+      // TODO: make better stuff with getTimer()
       try {
         image = ImageIO.read(new File("./assets/cursor.png"));
 

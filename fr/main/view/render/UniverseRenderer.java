@@ -21,7 +21,7 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.buildings.MissileLauncher;
 
 import fr.main.view.MainFrame;
-import fr.main.view.Controller;
+import fr.main.view.controllers.GameController;
 import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.terrains.TerrainRenderer;
@@ -29,7 +29,7 @@ import fr.main.view.render.buildings.BuildingRenderer;
 
 public class UniverseRenderer extends Universe {
 
-	private final Controller controller;
+	private final GameController controller;
 	private final Color fogColor 	= new Color (0,0,0,100),
 						moveColor   = new Color (0, 255, 0, 50),
 						targetColor = new Color (255, 0, 0, 100),
@@ -73,7 +73,7 @@ public class UniverseRenderer extends Universe {
 
 	private final LinkedList<FlashMessage> flashs;
 
-	public UniverseRenderer (String mapName, Controller controller) {
+	public UniverseRenderer (String mapName, GameController controller) {
 		super (mapName);
 
 		this.controller = controller;
@@ -135,7 +135,7 @@ public class UniverseRenderer extends Universe {
 
 	public void updateTarget (AbstractUnit unit) {
 		clearTarget();
-		if (controller.getMode() == Controller.Mode.UNIT) {
+		if (controller.getMode() == GameController.Mode.UNIT) {
 			MoveZone m = unit.getMoveMap();
 			int moveQuantity = unit.getMoveQuantity();
 			Node[][] n = m.map;
@@ -145,28 +145,28 @@ public class UniverseRenderer extends Universe {
 				for (int i = upperLeft.x; i < lowerRight.x; i ++)
 					targets[j][i] = n[j - upperLeft.y][i - upperLeft.x].lowestCost <= moveQuantity;
 			tColor = unit.getPlayer() == current ? moveColor : targetColor;
-		} else if (controller.getMode() == Controller.Mode.ATTACK) {
+		} else if (controller.getMode() == GameController.Mode.ATTACK) {
 			unit.renderTarget(targets);
 			upperLeft.move(0,0);
 			lowerRight.move(targets.length, targets[0].length);
 			tColor = targetColor;
-		} else if (controller.getMode() == Controller.Mode.HEAL || 
-				   controller.getMode() == Controller.Mode.LOAD || 
-				   controller.getMode() == Controller.Mode.UNLOAD_LOCATE) {
+		} else if (controller.getMode() == GameController.Mode.HEAL || 
+				   controller.getMode() == GameController.Mode.LOAD || 
+				   controller.getMode() == GameController.Mode.UNLOAD_LOCATE) {
 			int x = unit.getX(), y = unit.getY();
-			HealerUnit healer = controller.getMode() == Controller.Mode.HEAL ? (HealerUnit)unit : null;
-			TransportUnit transporter = controller.getMode() == Controller.Mode.UNLOAD_LOCATE ? (TransportUnit)unit : null;
+			HealerUnit healer = controller.getMode() == GameController.Mode.HEAL ? (HealerUnit)unit : null;
+			TransportUnit transporter = controller.getMode() == GameController.Mode.UNLOAD_LOCATE ? (TransportUnit)unit : null;
 
 			for (Direction d : Direction.cardinalDirections()){
 				int xx = x + d.x, yy = y + d.y;
-				if ((controller.getMode() == Controller.Mode.HEAL && healer.canHeal(getUnit(xx, yy))) ||
-					(controller.getMode() == Controller.Mode.LOAD && getUnit(xx, yy) instanceof TransportUnit && ((TransportUnit)getUnit(xx, yy)).canCharge(unit)) ||
-					(controller.getMode() == Controller.Mode.UNLOAD_LOCATE && transporter.canRemove(controller.getTransportUnit(), xx, yy)))
+				if ((controller.getMode() == GameController.Mode.HEAL && healer.canHeal(getUnit(xx, yy))) ||
+					(controller.getMode() == GameController.Mode.LOAD && getUnit(xx, yy) instanceof TransportUnit && ((TransportUnit)getUnit(xx, yy)).canCharge(unit)) ||
+					(controller.getMode() == GameController.Mode.UNLOAD_LOCATE && transporter.canRemove(controller.getTransportUnit(), xx, yy)))
 					targets[yy][xx] = true;
 			}
 			upperLeft.move(Math.max(0, unit.getX() - 1), Math.max(0, unit.getY() - 1));
 			lowerRight.move(Math.min(getMapWidth(), unit.getX() + 2), Math.min(getMapHeight(), unit.getY() + 2));
-			tColor = controller.getMode() == Controller.Mode.HEAL ? healColor : loadColor;
+			tColor = controller.getMode() == GameController.Mode.HEAL ? healColor : loadColor;
 		}
 	}
 

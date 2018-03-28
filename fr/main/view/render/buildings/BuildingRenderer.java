@@ -40,11 +40,11 @@ public class BuildingRenderer{
         if (renderers.containsKey(building)) return renderers.get(building);
 
         // TODO: make dynamic
-        if (building instanceof Dock) renderers.put(building, new DockRenderer(building));
-        else if (building instanceof Airport) renderers.put(building, new AirportRenderer(building));
-        else if (building instanceof Barrack) renderers.put(building, new BarrackRenderer(building));
-        else if (building instanceof City) renderers.put(building, new CityRenderer(building));
-        else if (building instanceof Headquarter) renderers.put(building, new HeadquarterRenderer(building));
+        if      (building instanceof Dock)            renderers.put(building, new DockRenderer(building));
+        else if (building instanceof Airport)         renderers.put(building, new AirportRenderer(building));
+        else if (building instanceof Barrack)         renderers.put(building, new BarrackRenderer(building));
+        else if (building instanceof City)            renderers.put(building, new CityRenderer(building));
+        else if (building instanceof Headquarter)     renderers.put(building, new HeadquarterRenderer(building));
         else if (building instanceof MissileLauncher) renderers.put(building, new MissileLauncherRenderer(building));
         return renderers.get(building);
     }
@@ -55,6 +55,7 @@ public class BuildingRenderer{
 
     public static void updateAll(){
         for (BuildingRender b : renderers.values())
-            b.updateState(null);
+            if (! (b instanceof HeadquarterRenderer))
+                b.updateState(null);
     }
 }

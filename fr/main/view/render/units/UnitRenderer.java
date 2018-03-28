@@ -89,8 +89,11 @@ public class UnitRenderer {
     protected final String getDir () {
       String color;
       Color c = unit.getPlayer().getColor();
-      if (c.equals(Color.blue)) color = "blue";
-      else color = "red";
+      if (c.equals(Color.red))         color = "red";
+      else if (c.equals(Color.blue))   color = "blue";
+      else if (c.equals(Color.green))  color = "green";
+      else if (c.equals(Color.yellow)) color = "yellow";
+      else throw new RuntimeException("Invalid color");
       return "./assets/" + color+ "/";
     }
 

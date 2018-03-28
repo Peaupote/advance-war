@@ -6,6 +6,7 @@ import java.util.*;
 import java.io.IOException;
 
 import fr.main.model.Player;
+import fr.main.model.IAPlayer;
 import fr.main.model.commanders.*;
 import fr.main.view.MainFrame;
 import fr.main.view.render.sprites.*;
@@ -96,10 +97,14 @@ public class CreateView extends View {
 
     public Player[] getPlayers() {
       Player[] ps = new Player[4];
-      for (int i = 0; i < ps.length; i++) {
-        ps[i] = new Player("Player " + (i + 1));
-        new RepairCommander(ps[i]);
-      }
+      ps[0] = new Player("Player 1");
+      new RepairCommander(ps[0]);
+      ps[1] = new IAPlayer();
+      new RepairCommander(ps[1]);
+      ps[2] = new IAPlayer();
+      new RepairCommander(ps[2]);
+      ps[3] = new IAPlayer();
+      new RepairCommander(ps[3]);
       return ps;
     }
 

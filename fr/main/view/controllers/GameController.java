@@ -440,12 +440,7 @@ public class GameController extends Controller {
     }
 
     public GameView makeView () {
-      gameViewController = new GameView(this);
-      return gameViewController;
-    }
-
-    public GameView getGameView(){
+        if (gameViewController == null) gameViewController = new GameView(this);
         return gameViewController;
     }
-
 }

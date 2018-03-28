@@ -93,8 +93,16 @@ public class Universe {
         new Airport(map.players[0], new Point(7,9));
         new Barrack(null, new Point(9,5));
         new Headquarter(map.players[0], new Point(12,5));
+        new Headquarter(map.players[1], new Point(13,5));
+        new Headquarter(map.players[2], new Point(12,6));
+        new Headquarter(map.players[3], new Point(13,6));
         new City(null, new Point(20,5));
         new MissileLauncher(new Point(11,5));
+
+        new Infantry(map.players[0], new Point(12,5));
+        new Infantry(map.players[1], new Point(13,5));
+        new Infantry(map.players[2], new Point(12,6));
+        new Infantry(map.players[3], new Point(13,6));
 
         new Lander(map.players[0], new Point(0,0));
         new Lander(map.players[1], new Point(1,1));

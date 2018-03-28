@@ -17,7 +17,7 @@ public class MenuController extends Controller {
       new Player("P2")
     };
     play = (ActionEvent e) -> MainFrame.setScene(new LoadController(ps));
-    exit = (ActionEvent e) -> System.out.println("exit");
+    exit = (ActionEvent e) -> System.exit(0);
     sound = (ActionEvent e) -> System.out.println("sound");
   }
 

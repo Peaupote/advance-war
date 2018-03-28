@@ -10,6 +10,7 @@ import fr.main.model.Direction;
 import fr.main.model.MoveZone;
 import fr.main.model.Universe;
 import fr.main.model.Player;
+import fr.main.model.Weather;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.land.*;
@@ -131,6 +132,12 @@ public class UniverseRenderer extends Universe {
 			message.time -= 10;
 			if (message.time <= 0) iterator.remove();
 		}
+	}
+
+	public void next(){
+		Weather w = weather;
+		super.next();
+		if (w != weather) controller.getGameView().getWeatherController().update(w);
 	}
 
 	public void updateTarget (AbstractUnit unit) {

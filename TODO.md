@@ -23,6 +23,7 @@ TODO
 - [x] add a few commanders
 - [x] Implement the missile launcher
 - [x] Multiples pages (multiple controllers)
+- [ ] Victory panel
 
 
 TODO of Peaupote

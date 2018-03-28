@@ -15,9 +15,11 @@ public class MountainRenderer extends TerrainRenderer.Render {
 
     LinkedList<ScaleRect> areas = new LinkedList<>();
     areas.add(new ScaleRect (0, 0, 16, 20, 2));
-    AnimationState idle = new AnimationState(new SpriteList(location.getPath(), areas), 20);
-    anim.put("idle", idle);
-    anim.setState("idle");
+    AnimationState normal = new AnimationState(new SpriteList(TerrainLocation.getDir() + "normal/" + location.getPath(), areas), 20);
+    AnimationState snow   = new AnimationState(new SpriteList(TerrainLocation.getDir() + "snow/"   + location.getPath(), areas), 20);
+    anim.put("normal", normal);
+    anim.put("snow",   snow);
+    anim.setState("normal");
   }
 
   public void draw (Graphics g, int x, int y) {

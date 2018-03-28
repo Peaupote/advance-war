@@ -18,6 +18,8 @@ import fr.main.view.render.buildings.BuildingRenderer;
 
 public class GameController extends Controller {
 
+    protected GameView gameViewController;
+
     public final Position.Cursor cursor, unitCursor;
     public final Position.Camera camera;
     public final UniverseRenderer world;
@@ -438,7 +440,12 @@ public class GameController extends Controller {
     }
 
     public GameView makeView () {
-      return new GameView(this);
+      gameViewController = new GameView(this);
+      return gameViewController;
+    }
+
+    public GameView getGameView(){
+        return gameViewController;
     }
 
 }

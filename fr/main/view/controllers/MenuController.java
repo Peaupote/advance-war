@@ -4,6 +4,9 @@ import java.awt.event.*;
 import fr.main.view.views.*;
 import fr.main.view.MainFrame;
 
+/**
+ * Main Menu
+ */
 public class MenuController extends Controller {
 	
   public final ActionListener play, exit, sound;

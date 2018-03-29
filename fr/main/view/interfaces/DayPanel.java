@@ -8,6 +8,9 @@ import java.lang.InterruptedException;
 import fr.main.model.Universe;
 import fr.main.view.MainFrame;
 
+/**
+ * Panel showing when a new day start
+ */
 public class DayPanel extends InterfaceUI {
 
   private static final int HEIGHT = 200, MARGINTOP = MainFrame.HEIGHT / 2 - HEIGHT;

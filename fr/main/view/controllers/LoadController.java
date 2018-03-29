@@ -6,6 +6,10 @@ import fr.main.view.views.LoadView;
 import fr.main.model.Player;
 import fr.main.view.MainFrame;
 
+/**
+ * Loading screen
+ * TODO: load stuffs
+ */
 public class LoadController extends Controller {
 
   private int load;

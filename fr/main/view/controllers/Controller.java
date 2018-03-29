@@ -6,6 +6,9 @@ import java.util.*;
 
 import fr.main.view.views.View;
 
+/**
+ * Super controller class
+ */
 public abstract class Controller
   extends KeyAdapter implements MouseMotionListener {
 
@@ -13,7 +16,16 @@ public abstract class Controller
    * Function called each loop turn
    */
   public void update() {}
+
+  /**
+   * Create a new view for the controller
+   */
   public abstract View makeView ();
+
+  /**
+   * Key Events
+   * By default doing nothing
+   */
 
   @Override
   public void keyPressed (KeyEvent e) {}
@@ -23,6 +35,11 @@ public abstract class Controller
 
   @Override
   public void keyTyped(KeyEvent e) {}
+
+  /**
+   * Mouse events 
+   * By default doing nothing
+   */
 
   @Override
   public void mouseDragged (MouseEvent e) {}

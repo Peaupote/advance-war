@@ -129,8 +129,8 @@ public abstract class Commander implements Serializable {
      * @param boolean true to return the big power's cost and false for the small one
      * @return the value of the matching power
      */
-    public final int getPowerCost (boolean big) {
-        return big ? (big == null ? 0 big.value) : (small == null ? 0 : small.value);
+    public final int getPowerCost (boolean bigPower) {
+        return bigPower ? (big == null ? 0 : big.value) : (small == null ? 0 : small.value);
     }
 
     /**

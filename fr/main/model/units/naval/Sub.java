@@ -17,6 +17,9 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.land.LandUnit;
 
+/**
+ * Represents a submarine
+ */
 public class Sub extends Unit implements NavalUnit, HideableUnit {
 
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();

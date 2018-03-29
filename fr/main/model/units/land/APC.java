@@ -12,6 +12,9 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.SupplyUnit;
 import fr.main.model.units.MoveType;
 
+/**
+ * Represents an armoured personnel carrier (transport unit vehicle)
+ */
 public class APC extends Unit implements LandVehicleUnit,TransportUnit,SupplyUnit{
 
 	public static final String NAME = "VTB";

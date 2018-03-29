@@ -52,13 +52,13 @@ public abstract class Unit implements AbstractUnit {
             this.diesIfNoFuel    = diesIfNoFuel;
         }
 
-        /*
-         *  @return true if the unit has still has fuel.
-         */
+        /**
+          * @return true if the unit has still has fuel.
+          */
         public boolean consume(int quantity){
-            quantity*=Universe.get().getWeather().malusFuel;
-            this.quantity=Math.max(0,this.quantity-quantity);
-            if (fuel.quantity==0 && diesIfNoFuel){
+            quantity *= Universe.get().getWeather().malusFuel;
+            this.quantity = Math.max(0,this.quantity-quantity);
+            if (fuel.quantity == 0 && diesIfNoFuel){
                 Universe.get().setUnit(location.x,location.y,null);
                 player.remove(Unit.this);
             }
@@ -91,29 +91,35 @@ public abstract class Unit implements AbstractUnit {
         Universe.get().updateVision();
     }
 
+    @Override
     public int getBaseVision(){
         return vision;
     }
 
+    @Override
     public int getMoveQuantity(){
         return moveQuantity;
     }
 
+    @Override
     public int getMaxMoveQuantity(){
         return maxMoveQuantity;
     }
 
+    @Override
     public void setMoveQuantity(int m){
         this.moveQuantity=Math.min(m,getMaxMoveQuantity());
     }
 
+    @Override
     public Fuel getFuel(){
         return fuel;
     }
 
-    /*
-    * @return true if and only if the unit is still alive
-    */
+    /**
+     * @return true if and only if the unit is still alive
+     */
+    @Override
     public final boolean setLife (int life) {
         this.life = Math.max(0, Math.min(100, life));
         if (this.life==0){
@@ -125,26 +131,32 @@ public abstract class Unit implements AbstractUnit {
             return true;
     }
 
+    @Override
     public final int getLife () {
         return life;
     }
 
+    @Override
     public final void setPlayer (Player p) {
         this.player = p;
     }
 
+    @Override
     public final Player getPlayer(){
         return this.player;
     }
 
+    @Override
     public final int getX () {
         return location.x;
     }
 
+    @Override
     public final int getY () {
         return location.y;
     }
 
+    @Override
     public final void setLocation(int x, int y){
         location.move(x, y);  
     }
@@ -152,23 +164,27 @@ public abstract class Unit implements AbstractUnit {
     /*
     * @return true if and only if the move was done.
     */
+    @Override
     public final boolean move(int x, int y) {
         Universe u = Universe.get();
         if (u.isValidPosition(x, y)) {
             AbstractUnit unit = u.getUnit(x, y);
             if (unit != null && unit.getPlayer() != getPlayer()) {
+                // if there is an unit on the tile we want to move to, and if it is an opponent,
+                // it attacks this unit, and there is no counter attack possible
                 if (unit.canAttack(this)) unit.attack(this, false);
                 setMoveQuantity(0);
                 return false;
             }
 
             Integer q = moveCost(x,y);
-            if (q == null || q > getMoveQuantity()){
+            if (q == null || q > getMoveQuantity()){ // the cost to move on the tile is too high
                 setMoveQuantity(0);
                 return false;
             }
             removeMoveQuantity(q);
 
+            // it should be 1 but in case we teleport the unit, we spent the right amount
             int fuelQuantity = Math.abs(x-location.x)+Math.abs(y-location.y);
 
             u.setUnit(location.x, location.y, null);
@@ -183,23 +199,28 @@ public abstract class Unit implements AbstractUnit {
         return false;
     }
 
+    @Override
     public MoveType getMoveType() {
         return moveType;
     }
 
+    @Override
     public final void renderVision (boolean[][] fog, boolean linearRegression) {
         int x = location.x, y = location.y, visionT = getVision(),
             height = this instanceof AirUnit ? 2 : Universe.get().getTerrain(x,y).getHeight();
 
         Point start = location.getLocation();
-        fog[y][x]=true;
+        fog[y][x] = true; // the current tile can always be seen
         if (visionT != 0){
+            // we decompose the tiles in 2 categories according to the position of the unit (to avoid checking multiple times the same tile)
+            // first we check the tiles that are in straight line
             for (int i = 1 ; i <= visionT ; i++)
                 for (Direction d : Direction.cardinalDirections()){
                     int xx = x + i * d.x, yy = y + i * d.y;
                     if (xx >= 0 && yy >= 0 && yy < fog.length && xx < fog[yy].length && !fog[yy][xx] && (i == 1 || !Universe.get().getTerrain(xx, yy).hideFrom(this)) && (!linearRegression || height == 2 || linearRegression(x, y, xx, yy, height)))
                         fog[yy][xx]=true;
                 }
+            // then we check the other tiles, from the closest to the farthest
             int[][] t = {
                 {1,1},{1,-1},{-1,-1},{-1,1}
             };
@@ -213,15 +234,33 @@ public abstract class Unit implements AbstractUnit {
         }
     }
 
+    /**
+     * @param int startX is the horizontal position of the unit
+     * @param int startY is the vertical position of the unit
+     * @param int x is the horizontal position of the target tile
+     * @param int y is the vertical position of the target tile
+     * @param int height is the height of the unit
+     * @return true if and only if there is nothing blocking the vision of the unit between its position and the target tile 
+     */
     private boolean linearRegression(int startX, int startY, int x, int y, int height){
+    // this function is quite unclear so I'll write lots of comments...
+
+        // change coordinates to make it easier
         x = 2 * (x - startX); y = 2 * (y - startY);
-        if (Math.abs(x) + Math.abs(y) <= 2) return true;
+        if (Math.abs(x) + Math.abs(y) <= 2) return true; // the two tiles are adjacents
         Universe u = Universe.get();
 
+        // we use two int to know if the move is oriented to the right or the left and the top or the bottom
         int epsilonX = x > 0 ? 1 : -1, epsilonY = y > 0 ? 1 : -1;
-
+        // we use two points (a,b) and (c,d) to represent the tile we are considering (from the beginning and from the end : the line is symmetrical)
         int a = 0, b = 0, c = x, d = y;
 
+        // we look what direction is the most used : if the move is to the upper right for example,
+        // if the move is mainly horizontal then the first move to do is to go to the right
+        // else if the move is mainly vertical then the first move to do is to go to the top 
+        // and otherwise it means that the move is as much vertical as horizontal and so it is a diagonal move
+        // then we have to move diagonaly
+            // we go to the next tile
         if (x * x >= y * y){ // mainly horizontal
             a = 2 * epsilonX; c = x - 2 * epsilonX;
         }
@@ -231,6 +270,14 @@ public abstract class Unit implements AbstractUnit {
 
         AbstractTerrain t;
 
+        // if the move was diagonal then we check if one of the two tiles possibles :
+        // if we're going from the tile q to the tile i, we check if we can see through tiles l or r, tile m, and tile h or n
+        /* a b c d e
+           f g h i j
+           k l m n o
+           p q r s t
+           u v w x y
+        */
         if (x * x == y * y){ // diagonal path, check first and last tiles
                 if (!canSeeThrough(startX, startY, 2 * epsilonX, 0, height) && !canSeeThrough(startX, startY, 0, 2 * epsilonY, height))
                         return false;
@@ -238,6 +285,7 @@ public abstract class Unit implements AbstractUnit {
                         return false;
         }
 
+        // we check the whole straight line
         while (a * epsilonX < c * epsilonX || b * epsilonY < d * epsilonY){
             if (!canSeeThrough(startX, startY, a, b, height) || !canSeeThrough(startX, startY, c, d, height)) // check actual
                 return false;
@@ -250,33 +298,42 @@ public abstract class Unit implements AbstractUnit {
                         return false;
             }
 
+            // we use these booleans to know if we move verticaly or horizontaly
+            // we check if the corner a tile is above or below the straight line (the corner corresponding to the directions of the move)
+            // if both are true then the move is diagonal
             boolean sup = epsilonX * epsilonY * y * (a + epsilonX) >= epsilonX * epsilonY * x * (b + epsilonY),
                     inf = epsilonX * epsilonY * y * (a + epsilonX) <= epsilonX * epsilonY * x * (b + epsilonY);
             if (sup){ // vertical 
-                b += 2 * epsilonY;
-                d -= 2 * epsilonY;
+                b += 2 * epsilonY; d -= 2 * epsilonY;
             }
             if (inf) { // horizontal
-                a += 2 * epsilonX;
-                c -= 2 * epsilonX;
+                a += 2 * epsilonX; c -= 2 * epsilonX;
             }
         }
         return a != c || b != d || canSeeThrough(startX, startY, a, b, height);
+        // return if the middle tile is visible
     }
 
+    /**
+     * parameters are the same as in the precedent function
+     * @return true if and only if the unit can see through the tile
+     */
     private final boolean canSeeThrough(int startX, int startY, int x, int y, int height){ // especially written for linearRegression, should probably not be used in any other method
         AbstractTerrain t = Universe.get().getTerrain(x / 2 + startX, y / 2 + startY);
         return t.hideFrom(this) ? t.getHeight() < height : t.getHeight() <= height;
     }
 
+    @Override
     public PrimaryWeapon getPrimaryWeapon(){
         return primaryWeapon;
     }
 
+    @Override
     public SecondaryWeapon getSecondaryWeapon(){
         return secondaryWeapon;
     }
 
+    @Override
     public void renderTarget (boolean[][] map, int x, int y) {
         if (primaryWeapon != null)
             primaryWeapon.renderTarget(map, this);
@@ -284,25 +341,7 @@ public abstract class Unit implements AbstractUnit {
             secondaryWeapon.renderTarget(map, this);
     }
 
-    public void renderAllTargets(boolean[][] map, int x, int y){
-        renderAllTargets(map, x, y, moveQuantity);
-    }
-
-    //TODO : réécrire en utilisant Dijkstra
-    private void renderAllTargets(boolean[][] map, int x, int y, int movePoint){
-        if (canStop(x,y))
-            renderTarget(map, x, y);
-
-        for (Direction d : Direction.cardinalDirections()){
-            int xx = x + d.x, yy = y + d.y;
-            if (yy >= 0 && xx >= 0 && yy < map.length && xx < map[yy].length){
-                Integer mvP=moveCost(xx,yy);
-                if (mvP==null?false:movePoint>mvP)
-                    renderAllTargets(map, xx, yy, movePoint-mvP);
-            }
-        }
-    }
-
+    @Override
     public String getName (){
         return name;
     }
@@ -326,42 +365,55 @@ public abstract class Unit implements AbstractUnit {
         return out;
     }
 
+    @Override
     public boolean canAttack(AbstractUnit u){
         return (primaryWeapon == null ? false : primaryWeapon.canAttack(this,u)) ||
                 (secondaryWeapon==null ? false : secondaryWeapon.canAttack(this,u));
     }
 
+    @Override
     public boolean canAttack () {
         return (primaryWeapon != null && (getMoveQuantity() == getMaxMoveQuantity() || primaryWeapon.canAttackAfterMove)) || secondaryWeapon != null;
     }
 
+    @Override
     public void attack(AbstractUnit u, boolean counter){
         if (getMoveQuantity()==0) return;
-        if (primaryWeapon!=null && primaryWeapon.canAttack(this,u)){
+        if (primaryWeapon != null && primaryWeapon.canAttack(this,u)){
+            // if possible we attack with the main weapon
             primaryWeapon.shoot();
-            u.removeLife(damage(this,primaryWeapon,u));
+            int damages = damage(this,primaryWeapon,u);
+            u.getPlayer().getCommander().powerBar.addValue(damages);
+            u.removeLife(damages);
         } else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u)) {
-            int damages=damage(this,secondaryWeapon,u);
+            // else we use the secondary weapon
             secondaryWeapon.shoot();
+            int damages = damage(this,secondaryWeapon,u);
             u.getPlayer().getCommander().powerBar.addValue(damages);
             u.removeLife(damages);
         }
 
         if (counter){
+            // if there is a counter attack, we do it
             this.setMoveQuantity(0);
             if (u.getLife()!=0)
                 u.attack(this,false);
         }
     }
 
+    @Override
     public int getFuelTurnCost(){
         return 0;
     }
 
+    @Override
     public int getCost(){
         return cost;
     }
 
+    /**
+     * 
+     */
     public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){
         int b       = w.damage(defender);
         int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);

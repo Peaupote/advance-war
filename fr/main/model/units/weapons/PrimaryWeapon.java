@@ -4,9 +4,9 @@ import java.util.Map;
 
 import fr.main.model.units.AbstractUnit;
 
-/*
-* Primary weapons are weapons with limited ammunitions that can be range weapons. 
-*/
+/**
+ * Primary weapons are weapons with limited ammunitions. They may be range weapons. 
+ */
 public class PrimaryWeapon extends Weapon{
 
     private int ammo;
@@ -33,21 +33,23 @@ public class PrimaryWeapon extends Weapon{
     }
 
     public void replenish(){
-        this.ammo=this.maximumAmmo;
+        this.ammo = this.maximumAmmo;
     }
 
+    /**
+     * One ammunition is removed when shooting
+     */
     public void shoot(){
-        if (ammo==0)
-            throw new RuntimeException("No ammunition left ! Impossible to shoot.");
-        else
-            ammo--;
+        ammo--;
     }
 
+    @Override
     public boolean isInRange(AbstractUnit unit, AbstractUnit target){
         int i=Math.abs(unit.getX()-target.getX())+Math.abs(unit.getY()-target.getY());
         return i <= getMaximumRange(unit) && i >= getMinimumRange(unit);
     }
 
+    @Override
     public void renderTarget(boolean[][] map, AbstractUnit u){
         int[][] t = {
             {1,1},{1,-1},{-1,-1},{-1,1}
@@ -63,27 +65,45 @@ public class PrimaryWeapon extends Weapon{
                     }
     }
 
+    @Override
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
         return ammo!=0 && (canAttackAfterMove?shooter.isEnabled():shooter.getMoveQuantity()==shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter,target);
     }
 
+    /**
+     * @return the basic minimum range of the weapon
+     */
     public int getBaseMinimumRange(){
         return minimumRange;
     }
 
+    /**
+     * @param AbstractUnit the unit using the weapon
+     * @return the real minimum range of the weapon (used by the unit)
+     */
     public int getMinimumRange(AbstractUnit u){
         return u.getPlayer().getCommander().getMinimumRange(u, this);
     }
 
+    /**
+     * @return the basic maximum range of the weapon
+     */
     public int getBaseMaximumRange(){
         return maximumRange;
     }
 
+    /**
+     * @param AbstractUnit the unit using the weapon
+     * @return the real maximum range of the weapon (used by the unit)
+     */
     public int getMaximumRange(AbstractUnit u){
         return u.getPlayer().getCommander().getMaximumRange(u, this);
     }
 
+    /**
+     * @return true if and only if the weapon is a contact weapon (it attacks only the adjacent units)
+     */
     public final boolean isContactWeapon(){
-        return getBaseMinimumRange()==1 && getBaseMaximumRange()==1;
+        return getBaseMinimumRange() == 1 && getBaseMaximumRange() == 1;
     }
 }

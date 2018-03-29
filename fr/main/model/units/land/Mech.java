@@ -16,6 +16,9 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 
+/**
+ * Represents a mech (a walking unit whose weapon is a bazooka)
+ */
 public class Mech extends Unit implements WalkingUnit,CaptureBuilding{
 
     public static final String NAME = "Bazooka";

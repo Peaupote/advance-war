@@ -13,6 +13,9 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 
+/**
+ * Represents a lander (a transport boat)
+ */
 public class Lander extends Unit implements NavalUnit, TransportUnit {
 
     public static final String NAME = "Barge";

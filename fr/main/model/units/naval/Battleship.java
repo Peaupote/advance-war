@@ -12,6 +12,9 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.land.*;
 import fr.main.model.units.weapons.PrimaryWeapon;
 
+/**
+ * Represents a battleship (a boat with a huge range)
+ */
 public class Battleship extends Unit implements NavalUnit {
 
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();

@@ -18,13 +18,31 @@ import fr.main.view.views.View;
  */
 public class MainFrame extends JFrame {
 
+    /**
+     * Dimension of the window
+     */
     public static final int WIDTH = 960,
                             HEIGHT = 704,
                             UNIT = 32;
 
+    /**
+     * Time spend since the controller has been loaded (in ms)
+     */
     private static int timer = 0;
+
+    /**
+     * Unique instance of the MainFrame
+     */
     private static MainFrame instance;
+
+    /**
+     * Current controller
+     */
     Controller controller;
+
+    /**
+     * View associated with the controller
+     */
     View view;
     
     public MainFrame ()
@@ -77,6 +95,9 @@ public class MainFrame extends JFrame {
       pack();
     }
 
+    /**
+     * Change Scene
+     */
     public static void setScene (Controller controller) {
       instance.setController (controller);
     }

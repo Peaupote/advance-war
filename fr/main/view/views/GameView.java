@@ -9,6 +9,9 @@ import fr.main.view.controllers.GameController;
 
 public class GameView extends View {
 
+  /**
+   * Rendering weather controller
+   */
   private final WeatherController weather;
   protected GameController controller;
 
@@ -27,17 +30,23 @@ public class GameView extends View {
           y = controller.camera.getY(),
           offsetX = controller.camera.getOffsetX(),
           offsetY = controller.camera.getOffsetY();
+
+      // render map
       controller.world.draw(g, x, y, offsetX, offsetY);
       
+      // render cursor
       if (controller.getMode() != GameController.Mode.MOVE)
         controller.unitCursor.draw(g);
       else controller.cursor.draw(g);
 
+      // render path
       if (controller.path.visible)
         controller.path.draw(g, offsetX, offsetY);
       
+      // render weather
       weather.render(g);
 
+      // render user interface
       for (InterfaceUI comp: InterfaceUI.components())
           comp.render(g);
   }

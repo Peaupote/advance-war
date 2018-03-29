@@ -7,6 +7,10 @@ import fr.main.view.views.CreateView;
 import fr.main.view.MainFrame;
 import fr.main.model.Player;
 
+/**
+ * Controller to choose each commanders for each players
+ *
+ */
 public class CreateController extends Controller {
 
   private CreateView view;

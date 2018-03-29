@@ -14,6 +14,9 @@ import fr.main.view.sound.MusicEngine;
 import fr.main.view.components.*;
 import fr.main.view.controllers.MenuController;
 
+/**
+ * Rendering main menu
+ */
 public class MenuView extends View {
 
 	private ImageIcon bg;

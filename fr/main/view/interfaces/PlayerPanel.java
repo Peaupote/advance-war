@@ -9,6 +9,9 @@ import fr.main.model.commanders.Commander;
 import fr.main.view.Position;
 import fr.main.view.render.commanders.CommanderRenderer;
 
+/**
+ * Panel showing current user informations
+ */
 public class PlayerPanel extends InterfaceUI {
 
   private static final Color BACKGROUNDCOLOR = new Color(0,0,0,230);

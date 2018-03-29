@@ -11,11 +11,21 @@ import fr.main.model.units.air.AirUnit;
 import fr.main.view.controllers.GameController;
 import fr.main.view.MainFrame;
 
+/**
+ * Action panel to create unit after selecting a building
+ */
 public class BuildingInterface extends GameController.ControllerPanel {
 
+  /**
+   * Selected building
+   */
   private FactoryBuilding building;
+
   private GameController controller;
 
+  /**
+   * Index for a single unit
+   */
   class IndexClass extends Index {
 
     final Class c;

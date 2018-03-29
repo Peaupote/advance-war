@@ -5,6 +5,9 @@ import java.awt.*;
 import fr.main.view.controllers.LoadController;
 import fr.main.view.MainFrame;
 
+/**
+ * View for the loading page
+ */
 public class LoadView extends View {
 
   private LoadController controller;

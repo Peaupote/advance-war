@@ -12,14 +12,24 @@ import fr.main.view.MainFrame;
 import fr.main.view.render.sprites.*;
 import fr.main.view.controllers.CreateController;
 
+/**
+ * View of commanders selection
+ */
 public class CreateView extends View {
 
   protected CreateController controller;
 
+  /**
+   * Panels with all commanders
+   */
   public class CommandersPanel extends JPanel {
 
     private final JButton[] btns;
     private final int width, height;
+
+    /**
+     * Index of which commander is selected
+     */
     private int focus;
 
     public CommandersPanel () {
@@ -64,11 +74,25 @@ public class CreateView extends View {
 
   }
 
+  /**
+   * Panel of all players
+   */
   public class PlayersPanel extends JPanel {
 
     private final int width, height;
+
+    /**
+     * Index of focused player
+     */
     private int focus;
+
     private JButton[] btns;
+
+    /**
+     * Representing the choosed commander
+     * selected[i] = k ~ player i choosed commander k
+     * -1 meaning no commander choosed (default)
+     */
     private int[] selected;
 
     public PlayersPanel () {
@@ -91,6 +115,9 @@ public class CreateView extends View {
       }
     }
 
+    /**
+     * Change focused player's commander
+     */
     public void updateCommander () {
       btns[focus].setIcon(new ImageIcon(
           ((ImageIcon)commanders.btns[commanders.focus]
@@ -99,6 +126,9 @@ public class CreateView extends View {
       btns[focus].revalidate();
     }
 
+    /**
+     * @return list of all players in the game
+     */
     public Player[] getPlayers() {
       ArrayList<Player> ps = new ArrayList<>();
       for (int i = 0; i < selected.length; i++) {
@@ -119,6 +149,9 @@ public class CreateView extends View {
 
   }
 
+  /**
+   * Panel with the single button play.
+   */
   public class PlayPanel extends JPanel {
     
     private final JButton play;

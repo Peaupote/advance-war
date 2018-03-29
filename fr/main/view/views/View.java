@@ -6,7 +6,10 @@ import java.awt.*;
 
 import fr.main.view.controllers.Controller;
 
-public abstract class View extends JPanel {
+/**
+ * Empty view
+ */
+public class View extends JPanel {
 
     public View (Controller controller) {
         addKeyListener(controller);

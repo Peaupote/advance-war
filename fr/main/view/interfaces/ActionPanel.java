@@ -7,17 +7,34 @@ import java.lang.Runnable;
 
 import fr.main.view.MainFrame;
 
+/**
+ * Game panel to select actions
+ */
 public class ActionPanel extends InterfaceUI {
 
+  /**
+   * All existing actions
+   */
   protected HashMap<Integer, Index> actions;
+
+  /**
+   * Index of selected action
+   */
   protected int selected;
+
   protected static final Color BACKGROUNDCOLOR = new Color(0,0,0,230);
   protected static final Color FOREGROUNDCOLOR = Color.white;
 
   protected int x, y;
 
+  /**
+   * Number of actives actions
+   */
   private int actives;
 
+  /**
+   * Representing a single action
+   */
   public class Index {
     // TODO: add image for each index
 
@@ -84,24 +101,39 @@ public class ActionPanel extends InterfaceUI {
     g.drawString ("->", x + 10, y + selected * 20);
   }
 
+  /**
+   * Select first action
+   */
   public void moveTop () {
     selected = 1;
   }
 
+  /**
+   * Select the action above the current selected
+   */
   public void goUp () {
     selected = Math.max(1, selected - 1);
   }
 
+  /**
+   * Select the action under the current selected
+   */
   public void goDown () {
     selected = Math.min (actives, selected + 1);
   }
 
+  /**
+   * Call when setVisible(true)
+   */
   public void onOpen () {
     selected = 1;
     for (InterfaceUI com: InterfaceUI.components())
       if (!(com instanceof ActionPanel) && hideOnOpen(com)) com.setVisible(false);
   }
 
+  /**
+   * Call when setVisible(false)
+   */
   public void onClose () {
     for (InterfaceUI com: InterfaceUI.components())
       if (!(com instanceof ActionPanel) && showOnClose(com)) com.setVisible(true);
@@ -110,6 +142,9 @@ public class ActionPanel extends InterfaceUI {
   public boolean showOnClose(InterfaceUI com) { return true; }
   public boolean hideOnOpen(InterfaceUI com) { return true; }
 
+  /**
+   * Run the selected action
+   */
   public void perform () {
     int j = 1;
     for (Index i : actions.values())

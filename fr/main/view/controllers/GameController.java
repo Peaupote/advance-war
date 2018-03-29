@@ -16,39 +16,155 @@ import fr.main.view.render.UniverseRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.buildings.BuildingRenderer;
 
+/**
+ * Game Controller
+ */
 public class GameController extends Controller {
 
+    /**
+     * View associated with the game controller
+     */
     protected GameView gameViewController;
 
+    /**
+     * Cursor is the cursor used when the player is in
+     * mode MOVE or MENU; unitCursor is the cursor used 
+     * otherwise.
+     */
     public final Position.Cursor cursor, unitCursor;
+
+    /**
+     * Camera describing what's the visible part of the
+     * Universe.
+     */
     public final Position.Camera camera;
+
+    /**
+     * Renderer for the map
+     */
     public final UniverseRenderer world;
+
+    /**
+     * Minimum distance untill the cursor make the camera move.
+     */
     public final int moveRange = 3;
 
+    /**
+     * isListening is true if and only if the controller
+     * is listening to user inputs
+     *
+     * listenMouse is true if and only if the controller
+     * is listening to user mouse inputs
+     */
     private boolean isListening = false, listenMouse = false;
+
+    /**
+     * Dimension of the world
+     */
     private final Dimension size;
+
+    /**
+     * Last recorded position of the mouse on the screen
+     */
     private Point mouse;
+
+    /**
+     * Current user mode
+     */
     private Mode mode;
-    private ActionPanel actionPanel, focusedActionPanel;
+
+    /**
+     * actionPanel 
+     */
+    private ActionPanel focusedActionPanel;
+
+    /**
+     * MainActionPanel for user actions at the end ot the turn
+     */
+    private MainActionPanel actionPanel;
+
+    /**
+     * Panel for choosing what unit to create
+     */
     private BuildingInterface buildingPanel;
+
+    /**
+     * Last unit selected by a player
+     * can be null if no unit is selected
+     */
     private AbstractUnit targetUnit;
+
+    /**
+     * Choose unit to unload from a transport unit
+     */
     private TransportUnitPanel transportUnitPanel;
+
+    /**
+     * All units actions
+     */
     private UnitActionPanel unitActionPanel;
+
     private DayPanel dayPanel;
     public PathRenderer path;
 
+    /**
+     * Enumerate all possibles modes for user
+     */
     public enum Mode {
+
+        /**
+         * Can't do any action
+         */ 
         IDLE(false),
+
+        /**
+         * Can move the cursor
+         */
         MOVE(true),
+
+        /**
+         * When a menu is open
+         */
         MENU(false),
+
+        /**
+         * When user choose target to attack
+         */
         ATTACK(true),
+
+        /**
+         * When user move the targetUnit
+         */
         UNIT(true),
+
+        /**
+         * When choosing you want to go in
+         */
         LOAD(true),
+
+        /**
+         * When choosing unit to unload
+         */
         UNLOAD_CHOOSE(false),
+
+        /**
+         * When choosing where to unload the unit
+         */
         UNLOAD_LOCATE(true),
+
+        /**
+         * When choosing target for the missile launcher
+         */
         MISSILE_LAUNCHER(true),
+
+        /**
+         * When choosing unit to heal
+         */
         HEAL(true);
 
+        /**
+         * Can the cursor move in this mode
+         */
         private boolean moveable;
 
         private Mode (boolean moveable) {
@@ -60,6 +176,11 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * GameController action panel
+     * each action panel's game must inherits from
+     * this class to update the focusedActionPanel
+     */
     public class ControllerPanel extends ActionPanel {
 
         public void onOpen () {
@@ -151,7 +272,9 @@ public class GameController extends Controller {
             });
 
             new Index("Capture", () -> {
-                if (targetUnit.getX() == unitCursor.getX() && targetUnit.getY() == unitCursor.getY() && targetUnit.isEnabled()){
+                if (targetUnit.getX() == unitCursor.getX() &&
+                    targetUnit.getY() == unitCursor.getY() &&
+                    targetUnit.isEnabled()){
                     AbstractBuilding b = Universe.get().getBuilding(targetUnit.getX(),targetUnit.getY());
                     if (((CaptureBuilding)targetUnit).capture(b))
                         BuildingRenderer.getRender(b).updateState(null);
@@ -216,6 +339,7 @@ public class GameController extends Controller {
             actions.get(1).setActive(true);
             if (!targetUnit.isEnabled()) return;
 
+            // enable options associated with the unit
             AbstractBuilding building = Universe.get().getBuilding(unitCursor.getX(), unitCursor.getY());
             if (targetUnit.canAttack()) actions.get(2).setActive(true);
             if (targetUnit instanceof CaptureBuilding)
@@ -278,22 +402,14 @@ public class GameController extends Controller {
             isListening = true;
             if (mode.canMove()) {
                 targetUnit = world.getUnit(cursor.position());
-                if      (key == KeyEvent.VK_UP)    {
-                    move(Direction.TOP);
-                }
-                else if (key == KeyEvent.VK_LEFT)  {
-                    move(Direction.LEFT);
-                }
-                else if (key == KeyEvent.VK_RIGHT) {
-                    move(Direction.RIGHT);
-                }
-                else if (key == KeyEvent.VK_DOWN)  {
-                    move(Direction.BOTTOM); 
-                }
+                if      (key == KeyEvent.VK_UP) move(Direction.TOP);
+                else if (key == KeyEvent.VK_LEFT) move(Direction.LEFT);
+                else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
+                else if (key == KeyEvent.VK_DOWN) move(Direction.BOTTOM);
                 else if (key == KeyEvent.VK_ENTER) {
-                    if (mode == Mode.UNIT) {
+                    if (mode == Mode.UNIT) { // validing unit move
                         mode = Mode.IDLE;
-                        new Thread(() -> {
+                        new Thread(() -> { // apply the movement
                             world.clearTarget();
                             UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
                             targetRender.setState("move");
@@ -305,7 +421,7 @@ public class GameController extends Controller {
                             if (b && targetUnit.isEnabled()) unitActionPanel.setVisible(true);
                             else mode = Mode.MOVE;
                         }).start();
-                    } else if (mode == Mode.ATTACK) {
+                    } else if (mode == Mode.ATTACK) { // validing unit target
                         AbstractUnit target = world.getUnit(unitCursor.position());
                         if (targetUnit.canAttack(target)) {
                             int aLife = targetUnit.getLife(),
@@ -357,7 +473,8 @@ public class GameController extends Controller {
                         mode = Mode.MOVE;
                         world.clearTarget();
                     }else if (mode == Mode.UNLOAD_LOCATE){
-                        if (((TransportUnit)targetUnit).remove(getTransportUnit(), unitCursor.getX(), unitCursor.getY())){}
+                        ((TransportUnit)targetUnit).remove(getTransportUnit(),
+                                                           unitCursor.getX(), unitCursor.getY());
                         mode = Mode.MOVE;
                         world.clearTarget();                        
                     }else if (mode == Mode.MISSILE_LAUNCHER){
@@ -368,12 +485,12 @@ public class GameController extends Controller {
                         mode = Mode.MOVE;
                         world.clearTarget();
                     }
-                } else if (key == KeyEvent.VK_ESCAPE) {
+                } else if (key == KeyEvent.VK_ESCAPE) { // exit and back to move mode
                     mode = Mode.MOVE;
                     world.clearTarget();
                     path.visible = false;
                 }
-            } else if (mode == Mode.MENU) {
+            } else if (mode == Mode.MENU) { // update index and valid menu action for focusedActionPanel
                     if      (key == KeyEvent.VK_UP)    focusedActionPanel.goUp();
                     else if (key == KeyEvent.VK_DOWN)  focusedActionPanel.goDown();
                     else if (key == KeyEvent.VK_ENTER) focusedActionPanel.perform();
@@ -381,7 +498,7 @@ public class GameController extends Controller {
                         focusedActionPanel.setVisible (false);
                         world.clearTarget();
                     }
-            } else if (key == KeyEvent.VK_ESCAPE) {
+            } else if (key == KeyEvent.VK_ESCAPE) { // exit and back move mode
                 mode = Mode.MOVE;
                 world.clearTarget();
                 path.visible = false;
@@ -389,6 +506,9 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * Update mouse position on the screen
+     */
     @Override
     public void mouseMoved (MouseEvent e) {
         if (mode == Mode.MOVE){
@@ -398,11 +518,16 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * Call each frame
+     */
     public void update () {
+        // isListening if none of the cursors move
         isListening = cursor.move() | camera.move() |
                             (mode != Mode.MOVE && mode.canMove() && unitCursor.move());
-        if (!isListening && mode == Mode.MISSILE_LAUNCHER) world.updateTarget(unitCursor.position()); //called each frame... 
+        if (!isListening && mode == Mode.MISSILE_LAUNCHER) world.updateTarget(unitCursor.position());
 
+        // make the cursor following the mouse
         if (!isListening && mode.canMove() && listenMouse) {
             if (camera.getX() > 0 && mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
             else if (camera.getX() + camera.width < size.width && camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
@@ -413,6 +538,9 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * Tell the cursor to move by the given direction
+     */
     private void move (Direction d) {
         listenMouse = false;
         Position.Cursor c = mode == Mode.MOVE || mode == Mode.MENU ? cursor : unitCursor;

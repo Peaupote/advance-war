@@ -12,6 +12,9 @@ import java.util.Map;
 import java.awt.Point;
 import java.util.function.BiFunction;
 
+/**
+ * Represent a dock
+ */
 public class Dock extends OwnableBuilding implements FactoryBuilding,RepairBuilding {
 
     public static final int defense     = 3;

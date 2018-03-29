@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+/**
+ * Represent an airport
+ */
 public class Airport extends OwnableBuilding implements FactoryBuilding, RepairBuilding {
 
     public static final int defense     = 3;
@@ -52,5 +55,4 @@ public class Airport extends OwnableBuilding implements FactoryBuilding, RepairB
         }catch(Exception e){}
         return false;
     }
-
 }

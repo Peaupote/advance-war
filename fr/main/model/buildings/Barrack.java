@@ -12,6 +12,9 @@ import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.*;
 
+/**
+ * Represent a barrack
+ */
 public class Barrack extends OwnableBuilding implements FactoryBuilding, RepairBuilding {
 
     public static final int defense     = 3;

@@ -8,9 +8,11 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
-import fr.main.model.terrains.Buildable;
 
-public class Hill extends Buildable implements LandTerrain {
+/**
+ * represents a hill
+ */
+public class Hill implements LandTerrain {
 
     private static Hill instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();

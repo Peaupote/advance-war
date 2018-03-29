@@ -7,6 +7,9 @@ import fr.main.model.Weather;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a sea
+ */
 public class Sea extends Terrain implements NavalTerrain {
 
     private static Sea instance;

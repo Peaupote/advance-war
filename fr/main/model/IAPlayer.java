@@ -11,14 +11,13 @@ public class IAPlayer extends Player{
 
 	public synchronized void turnBegins(){
 		super.turnBegins();
-		new Thread(() -> {
-			play();
-		}).start();
+		new Thread(this::play).start();
 	}
 
 	private void play(){
 		System.out.println(name + " plays");
-		try{ Thread.sleep(500); }catch(InterruptedException e){}
+		try{ Thread.sleep(500); }
+		catch(InterruptedException e){}
 		System.out.println(name + " is done");
 		Universe.get().next();
 	}

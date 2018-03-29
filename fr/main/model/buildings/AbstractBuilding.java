@@ -4,7 +4,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.terrains.AbstractTerrain;
 
 /**
- * Interface representing a buildings
+ * Interface representing a building
  *
  */
 public interface AbstractBuilding extends java.io.Serializable{

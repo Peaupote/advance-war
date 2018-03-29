@@ -5,6 +5,9 @@ import fr.main.model.Player;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 
+/**
+ * A commander with good contact units
+ */
 public class ContactCommander extends Commander{
     public ContactCommander(Player player){
         super(player, new Power(800), new Power(1600));

@@ -8,7 +8,6 @@ import fr.main.model.Universe;
 import fr.main.model.MoveZone;
 import fr.main.model.Node;
 import fr.main.model.units.naval.NavalUnit;
-import fr.main.model.terrains.Buildable;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.buildings.Dock;

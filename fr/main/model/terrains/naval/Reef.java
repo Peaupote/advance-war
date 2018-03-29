@@ -10,6 +10,9 @@ import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a reef
+ */
 public class Reef extends Terrain implements NavalTerrain {
 
     private static Reef instance;
@@ -38,7 +41,7 @@ public class Reef extends Terrain implements NavalTerrain {
 
     @Override
     public boolean hideFrom(AbstractUnit from){
-        return AirUnit.class.isInstance(from);
+        return !AirUnit.class.isInstance(from);
     }
 
     public static Reef get () {

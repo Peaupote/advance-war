@@ -3,13 +3,20 @@ package fr.main.model.buildings;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.Player;
 
-/*
- * Represents buildings that can repair and replenish specific units
- */
+/**
+  * Represents buildings that can repair and replenish specific units
+  */
 public interface RepairBuilding extends AbstractBuilding{
-    // example : the airport is the only building to repair air units ; it doesn't repair land unit
+    /**
+     * @param AbstractUnit the unit we want to repair
+     * @return true if and only if the building can repair the unit given in parameter
+     */
     public boolean canRepair(AbstractUnit u);
 
+    /**
+     * @param AbstractUnit the unit to repair
+     * Repair the unit given in parameter
+     */
     public default void repair (AbstractUnit u){
         if (canRepair(u)){
             if (this instanceof OwnableBuilding){

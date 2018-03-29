@@ -13,7 +13,6 @@ import fr.main.model.units.weapons.Weapon;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.terrains.Buildable;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.Universe;

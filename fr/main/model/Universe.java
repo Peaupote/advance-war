@@ -19,7 +19,6 @@ import fr.main.view.render.units.land.*;
 import fr.main.model.units.naval.*;
 import fr.main.model.units.air.*;
 import fr.main.model.units.land.*;
-import fr.main.model.terrains.AbstractBuildable;
 import fr.main.model.commanders.FakeCommander;
 import fr.main.model.Weather;
 

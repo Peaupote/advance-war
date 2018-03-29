@@ -7,6 +7,9 @@ import fr.main.model.Weather;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a bridge
+ */
 public class Bridge extends Terrain implements LandTerrain{
 
     private static Bridge instance;

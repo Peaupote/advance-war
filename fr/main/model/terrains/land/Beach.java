@@ -8,6 +8,9 @@ import fr.main.model.units.MoveType;
 import fr.main.model.terrains.naval.NavalTerrain;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a beach
+ */
 public class Beach extends Terrain implements LandTerrain,NavalTerrain {
 
     private static Beach instance;

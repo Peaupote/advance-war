@@ -4,6 +4,9 @@ import fr.main.model.Player;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
 
+/**
+ * A commander whose power is to earn money
+ */
 public class MoneyCommander extends Commander{
 	public MoneyCommander(Player player){
 		super(player, new Power(1000, p -> {

@@ -10,7 +10,6 @@ import fr.main.model.buildings.*;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.terrains.AbstractBuildable;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
 

@@ -7,8 +7,14 @@ import fr.main.model.terrains.Terrain;
 
 import java.awt.Point;
 
+/*
+* Represents a missile launcher
+*/
 public class MissileLauncher extends Building {
 
+    /**
+     * set to true if the missile was fired and false otherwise
+     */
     private boolean fired;
 
     public MissileLauncher(Point p) {
@@ -20,10 +26,16 @@ public class MissileLauncher extends Building {
         return fired;
     }
 
-    public boolean canFire(int x, int y) { // can fire everywhere
-        return !fired;
+    /**
+     * @return true if the missile can be fired at the position (x,y)
+     */
+    public boolean canFire(int x, int y) {
+        return !fired && Universe.get().isValidPosition(x,y);
     }
 
+    /**
+     * fire the missile at the position (x,y)
+     */
     public void fire(int x, int y) {
         if(!canFire(x, y)) return;
         fired = true;

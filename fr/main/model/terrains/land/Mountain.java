@@ -10,6 +10,9 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a mountain
+ */
 public class Mountain extends Terrain implements LandTerrain {
 
     private static Mountain instance;

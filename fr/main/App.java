@@ -32,6 +32,9 @@ public class App {
 	  new MainFrame();
   }
 
+  /**
+   * Procedural generation of map in maps/maptest.map
+   */
   public static void save () {
     int s = 50;
     AbstractTerrain[][] map = new AbstractTerrain[s][s];

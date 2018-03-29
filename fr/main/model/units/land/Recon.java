@@ -13,6 +13,9 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 
+/**
+ * Represents a light reconnaissance vehicle 
+ */
 public class Recon extends Unit implements LandVehicleUnit{
 
     public static final String NAME = "Recon";

@@ -13,6 +13,9 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.land.*;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a stealth (a plane that can hide itself)
+ */
 public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 
     public static final String NAME = "Furtif";

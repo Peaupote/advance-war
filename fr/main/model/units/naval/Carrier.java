@@ -16,6 +16,9 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.units.air.*;
 
+/**
+ * Represents a carrier
+ */
 public class Carrier extends Unit implements NavalUnit,TransportUnit {
 
     public static final String NAME = "Porte-avion";

@@ -13,6 +13,9 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.*;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a bomber
+ */
 public class Bomber extends Unit implements PlaneUnit {
 
     public static final String NAME = "Bombardier";

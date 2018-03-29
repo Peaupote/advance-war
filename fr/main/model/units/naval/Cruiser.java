@@ -20,6 +20,9 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 import fr.main.model.units.air.*;
 
+/**
+ * Represents a cruiser (an anti air and anti submarines boat)
+ */
 public class Cruiser extends Unit implements NavalUnit, TransportUnit {
 
     public static final String NAME = "Destroyer";

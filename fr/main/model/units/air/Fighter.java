@@ -12,6 +12,9 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.Player;
 import fr.main.model.units.Unit;
 
+/**
+ * Represents a fighter
+ */
 public class Fighter extends Unit implements PlaneUnit{
 
     public static final String NAME = "Chasseur";

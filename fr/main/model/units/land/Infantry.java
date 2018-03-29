@@ -15,6 +15,9 @@ import fr.main.model.units.CaptureBuilding;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 
+/**
+ * Represents an infantry
+ */
 public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
 
     public static final String NAME = "Infanterie";

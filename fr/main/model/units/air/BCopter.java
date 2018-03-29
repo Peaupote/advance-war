@@ -13,6 +13,9 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.land.*;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a bomber copter
+ */
 public class BCopter extends Unit implements CopterUnit {
 
     public static final String NAME = "Hélicoptère";

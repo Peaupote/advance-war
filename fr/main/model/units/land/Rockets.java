@@ -12,6 +12,9 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a missile launcher which can fire at a good range
+ */
 public class Rockets extends Unit implements LandVehicleUnit{
 
     public static final String NAME = "Lance-missile";

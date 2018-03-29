@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import fr.main.model.Weather;
+import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.air.AirUnit;
@@ -12,7 +13,7 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 /**
  * represents a hill
  */
-public class Hill implements LandTerrain {
+public class Hill extends Terrain implements LandTerrain {
 
     private static Hill instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();

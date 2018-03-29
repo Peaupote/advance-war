@@ -14,6 +14,9 @@ import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a medium tank
+ */
 public class MTank extends Unit implements TankUnit{
 
     public static final String NAME = "Tank-M";

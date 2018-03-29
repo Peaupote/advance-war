@@ -13,6 +13,9 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.Unit;
 import fr.main.model.units.air.*;
 
+/**
+ * Represents an anti air unit
+ */
 public class AntiAir extends Unit implements LandVehicleUnit{
 
     public static final String NAME = "DCA";

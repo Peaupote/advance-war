@@ -14,6 +14,9 @@ import fr.main.model.units.SupplyUnit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.WalkingUnit;
 
+/**
+ * Represents a repairing boat
+ */
 public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUnit,SupplyUnit {
 
     public static final String NAME = "NavLog"; // => navire logistique

@@ -11,6 +11,9 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.WalkingUnit;
 import fr.main.model.units.TransportUnit;
 
+/**
+ * Represents a transport copter
+ */
 public class TCopter extends Unit implements CopterUnit,TransportUnit {
 
     public static final String NAME = "Chinook";

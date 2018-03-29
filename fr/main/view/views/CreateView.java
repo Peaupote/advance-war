@@ -6,7 +6,7 @@ import java.util.*;
 import java.io.IOException;
 
 import fr.main.model.Player;
-import fr.main.model.IAPlayer;
+import fr.main.model.AIPlayer;
 import fr.main.model.commanders.*;
 import fr.main.view.MainFrame;
 import fr.main.view.render.sprites.*;

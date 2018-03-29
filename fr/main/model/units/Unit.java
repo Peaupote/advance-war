@@ -412,7 +412,10 @@ public abstract class Unit implements AbstractUnit {
     }
 
     /**
-     * 
+     * @param AbstractUnit the attacker
+     * @param Weapon the weapon used to attack
+     * @param AbstractUnit the defender
+     * @return the damage inflicted by the attacker to the defender with the weapon
      */
     public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){
         int b       = w.damage(defender);
@@ -424,7 +427,8 @@ public abstract class Unit implements AbstractUnit {
         int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender) + (building == null ? 0 : building.getDefense(defender));
         int dHP     = defender.getLife();
 
-        return Math.max(0,(b*aCO+r)*aHP*(2000-10*dCO-dTR*dHP)/10000000);
+        // the formula isn't obvious but works nicely
+        return Math.max(0, (b * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
     }
 
 }

@@ -162,7 +162,7 @@ public abstract class Commander implements Serializable {
      * @return the vision of the given unit
      */
     public int getVision(AbstractUnit u){
-        return u.getBaseVision() + Universe.get().getTerrain(u.getX(), u.getY()).getBonusVision(u);
+        return Math.max(1, u.getBaseVision() + Universe.get().getTerrain(u.getX(), u.getY()).getBonusVision(u) - Universe.get().getWeather().malusVision);
     }
 
     /**

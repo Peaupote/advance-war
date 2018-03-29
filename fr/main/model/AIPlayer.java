@@ -1,10 +1,13 @@
 package fr.main.model;
 
-public class IAPlayer extends Player{
+/**
+ * Represents an artificial intelligence
+ */
+public class AIPlayer extends Player{
 
 	private static int num = 1;
 
-	public IAPlayer(){
+	public AIPlayer(){
 		super("IA " + num);
 		num ++;
 	}

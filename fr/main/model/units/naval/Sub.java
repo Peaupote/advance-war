@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
 import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.land.Beach;

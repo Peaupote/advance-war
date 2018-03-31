@@ -31,7 +31,7 @@ public enum Weather implements java.io.Serializable{
     }
 
     /**
-     * @param boolean true and only if the basic weather (SUNNY or FOGGY) returned has fog (so FOGGY if true and SUNNY otherwise) 
+     * @param fog is true if and only if the basic weather (SUNNY or FOGGY) returned has fog (so FOGGY if true and SUNNY otherwise) 
      * @return a random Weather with 5% chance of being SNOWY, 10% chance of being RAINY, and 85% chance of being the other one
      */
     public static Weather random(boolean fog){
@@ -40,10 +40,10 @@ public enum Weather implements java.io.Serializable{
     }
 
     /**
-     * @param int the proportion of SUNNY returned
-     * @param int the proportion of FOGGY returned
-     * @param int the proportion of RAINY returned
-     * @param int the proportion of SNOWY returned
+     * @param sun is the proportion of SUNNY returned
+     * @param fog is the proportion of FOGGY returned
+     * @param rain is the proportion of RAINY returned
+     * @param snow is the proportion of SNOWY returned
      * @return a random Weather accordingly to the proportions
      */
     static Weather random(int sun, int fog, int rain, int snow){

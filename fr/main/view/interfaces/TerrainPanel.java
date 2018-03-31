@@ -7,7 +7,7 @@ import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.OwnableBuilding;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 import fr.main.view.Position;
 import fr.main.view.render.terrains.TerrainRenderer;

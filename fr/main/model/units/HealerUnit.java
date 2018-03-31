@@ -9,7 +9,7 @@ import fr.main.model.Direction;
 public interface HealerUnit extends AbstractUnit {
 
     /**
-     * @param AbstractUnit the unit to heal
+     * @param u is the unit to heal
      */
     default void heal(AbstractUnit u){
         if (canHeal(u))
@@ -20,7 +20,7 @@ public interface HealerUnit extends AbstractUnit {
     }
 
     /**
-     * @param AbstractUnit the unit we want to heal
+     * @param u is the unit we want to heal
      * @return true if and only if the unit can be healed
      */
     default boolean canHeal(AbstractUnit u){

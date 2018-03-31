@@ -5,7 +5,7 @@ import javax.swing.*;
 
 import fr.main.view.views.CreateView;
 import fr.main.view.MainFrame;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
 /**
  * Controller to choose each commanders for each players

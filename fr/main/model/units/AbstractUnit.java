@@ -11,7 +11,7 @@ import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.RepairBuilding;
 import fr.main.model.buildings.Dock;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.Direction;
 
 import java.io.Serializable;
@@ -59,14 +59,14 @@ public interface AbstractUnit extends Serializable {
     int getLife();
 
     /**
-     * @param int the amount of life to add
+     * @param life is the amount of life to add
      */
     default void addLife(int life){
         setLife(getLife()+life);
     }
 
     /**
-     * @param int the amount of life to remove
+     * @param life is the amount of life to remove
      * @return true if and only if the unit is still alive
      */
     default boolean removeLife(int life){
@@ -74,7 +74,7 @@ public interface AbstractUnit extends Serializable {
     }
 
     /**
-     * @param the new amount of life of the unit
+     * @param life is the new amount of life of the unit
      * @return true if and only if the unit is still alive
      */
     boolean setLife(int life);
@@ -83,7 +83,7 @@ public interface AbstractUnit extends Serializable {
      */
     Player getPlayer();
     /**
-     * @param Player the new owner of the unit
+     * @param p is the new owner of the unit
      */
     void setPlayer(Player p);
     /**
@@ -100,12 +100,12 @@ public interface AbstractUnit extends Serializable {
     SecondaryWeapon getSecondaryWeapon();
 
     /**
-     * @param boolean[][] a representation of the map, true if the tile if visible and false otherwise
-     * @param boolean true to use "linear regression" (some tiles may not be visible if a mountain is between it and the unit for example)
+     * @param fog is a representation of the map, true if the tile if visible and false otherwise
+     * @param b true to use "linear regression" (some tiles may not be visible if a mountain is between it and the unit for example)
      * Airunits can see every tiles in their range of vision.
      * For navalunits and landunits, it depends on the height of the terrain compared to the one of the unit, and if the terrain hide its content from the unit  
      */
-    void renderVision(boolean[][] fog, boolean l);
+    void renderVision(boolean[][] fog, boolean b);
     default void renderVision (boolean[][] fog){
         renderVision(fog, true);
     }
@@ -173,8 +173,9 @@ public interface AbstractUnit extends Serializable {
     }
 
     /**
-     * @param boolean[][] a representation of the map
-     * @param int the position from which we shoot
+     * @param map is a representation of the map
+     * @param x is the horizontal position from which we shoot
+     * @param y is the vertical position from which we shoot
      * set all tiles of the map that can be attacked (with the main or secondary weapon) from the position (x,y) to true, whatever the unit on it
      */
     void renderTarget (boolean[][] map, int x, int y);
@@ -188,7 +189,7 @@ public interface AbstractUnit extends Serializable {
      */
     MoveType getMoveType();
     /**
-     * @param AbstractUnit the unit we want to attack
+     * @param u is the unit we want to attack
      * @return true if and only if the unit can attack the one given as a parameter
      */
     boolean canAttack(AbstractUnit u);
@@ -198,7 +199,7 @@ public interface AbstractUnit extends Serializable {
     boolean canAttack();
 
     /**
-     * @param AbstractUnit the unit we want to attack
+     * @param u is the unit we want to attack
      * The unit attack the argument who can counter attack
      */
     default void attack(AbstractUnit u){
@@ -206,8 +207,8 @@ public interface AbstractUnit extends Serializable {
     }
 
     /**
-     * @param AbstractUnit the unit we want to attack
-     * @param boolean true to allow a counter attack from the unit given in parameter
+     * @param u is the unit we want to attack
+     * @param counter is true to allow a counter attack from the unit given in parameter
      */
     void attack(AbstractUnit u, boolean counter);
 
@@ -247,7 +248,7 @@ public interface AbstractUnit extends Serializable {
     void setMoveQuantity(int x);
 
     /**
-     * @param int the move quantity to remove to the unit
+     * @param q is the move quantity to remove to the unit
      */
     default void removeMoveQuantity(int q){
         setMoveQuantity(getMoveQuantity() - q);
@@ -267,7 +268,7 @@ public interface AbstractUnit extends Serializable {
     boolean move(int x, int y);
 
     /**
-     * @param Direction the direction in which the unit moves
+     * @param d is the direction in which the unit moves
      * @return true if and only if the move was done.
      */
     default boolean move (Direction d) {
@@ -277,7 +278,7 @@ public interface AbstractUnit extends Serializable {
     }
 
     /**
-     * @param Path the path the unit has to follow
+     * @param path is the path the unit has to follow
      * @return true if and only if the move was done entirely.
      */
     default boolean move (Path path) {

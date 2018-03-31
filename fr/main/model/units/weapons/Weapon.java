@@ -38,7 +38,8 @@ public abstract class Weapon implements java.io.Serializable {
     public abstract boolean isInRange(AbstractUnit shooter, AbstractUnit target);
 
     /**
-     * @param AbstractUnit the unit using this weapon
+     * @param map is the map represented by booleans
+     * @param u is the unit using this weapon
      * Set the tiles that can be fired on (if used by the unit) to true
      */
     public abstract void renderTarget(boolean[][] map, AbstractUnit u);

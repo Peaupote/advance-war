@@ -15,7 +15,7 @@ public interface AbstractBuilding extends java.io.Serializable{
   String getName();
 
   /**
-   * @param AbstractUnit unit on the building
+   * @param u is the unit on the building
    * @return defense bonus given by the building
    */
   int getDefense (AbstractUnit u);

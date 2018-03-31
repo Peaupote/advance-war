@@ -45,7 +45,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     /**
-     * @param AbstractUnit the new unit considered in this path
+     * @param unit is the new unit considered in this path
      * change the unit considered
      */
     public void rebase (AbstractUnit unit) {
@@ -73,7 +73,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     /**
-     * @param Point is the objective in the absolute map
+     * @param p is the objective in the absolute map
      * Delete the whole path and replace it by the shortest way to go to the point
      */
     protected void shorten(Point p){
@@ -99,7 +99,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     /**
-     * @param Point is the point we want to add to this path
+     * @param p is the point we want to add to this path
      * @return true if and only if the unit can stop on the point and the point is not the last one
      * Add the point to the path
      */
@@ -124,7 +124,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     /**
-     * @param Direction is the direction we want to add to this path
+     * @param dir is the direction we want to add to this path
      * @return true if and only if the unit can stop on the point
      * Add the direction to the path
      */

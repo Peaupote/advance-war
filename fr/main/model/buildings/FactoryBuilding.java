@@ -14,7 +14,7 @@ public interface FactoryBuilding extends AbstractBuilding{
     public Set<Class<? extends AbstractUnit>> getUnitList();
 
     /**
-     * @param Class<? extends AbstractUnit> the class of the unit to be created
+     * @param c is the class of the unit to be created
      */
     public boolean create(Class<? extends AbstractUnit> c);
 }

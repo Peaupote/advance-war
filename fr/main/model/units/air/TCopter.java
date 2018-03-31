@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.HashSet;
 
 import fr.main.model.Universe;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;

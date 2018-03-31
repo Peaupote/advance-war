@@ -1,6 +1,6 @@
 package fr.main.model.commanders;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
 

@@ -26,24 +26,26 @@ public interface TransportUnit extends AbstractUnit {
      */
     public HashSet<AbstractUnit> getUnits();
     /**
-     * @param AbstractUnit the unit we want to transport
+     * @param u is the unit we want to transport
      * @return true if and only if the unit is now in the transport
      */
     public boolean charge(AbstractUnit u);
     /**
-     * @param AbstractUnit the unit we want to remove from the transport
-     * @param int the coordinate of the tile we want to drop the unit on
+     * @param u is the unit we want to remove from the transport
+     * @param x is the horizontal coordinate of the tile we want to drop the unit on
+     * @param y is the vertical coordinate of the tile we want to drop the unit on
      * @return true if and only if the unit can be removed from the transport
      */
     public boolean canRemove(AbstractUnit u, int x, int y);
     /**
-     * @param AbstractUnit the unit we want to remove from the transport
-     * @param int the coordinate of the tile we want to drop the unit on
+     * @param u the unit we want to remove from the transport
+     * @param x is the horizontal coordinate of the tile we want to drop the unit on
+     * @param y is the vertical coordinate of the tile we want to drop the unit on
      * @return true if and only if the unit was removed from the transport
      */
     public boolean remove(AbstractUnit u, int x, int y);
     /**
-     * @param AbstractUnit the unit we want to charge in the transport
+     * @param u is the unit we want to charge in the transport
      * @return true if and only if the unit can be charged into the transport
      */
     public boolean canCharge(AbstractUnit u);

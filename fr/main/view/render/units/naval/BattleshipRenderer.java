@@ -3,7 +3,7 @@ package fr.main.view.render.units.naval;
 import java.awt.*;
 import java.util.LinkedList;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.Direction;
 import fr.main.view.MainFrame;

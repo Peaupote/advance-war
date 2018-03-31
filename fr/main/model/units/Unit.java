@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.HashSet;
 import java.io.Serializable;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.Weather;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.air.AirUnit;
@@ -244,11 +244,11 @@ public abstract class Unit implements AbstractUnit {
     }
 
     /**
-     * @param int startX is the horizontal position of the unit
-     * @param int startY is the vertical position of the unit
-     * @param int x is the horizontal position of the target tile
-     * @param int y is the vertical position of the target tile
-     * @param int height is the height of the unit
+     * @param startX is the horizontal position of the unit
+     * @param startY is the vertical position of the unit
+     * @param x is the horizontal position of the target tile
+     * @param y is the vertical position of the target tile
+     * @param height is the height of the unit
      * @return true if and only if there is nothing blocking the vision of the unit between its position and the target tile 
      */
     private boolean linearRegression(int startX, int startY, int x, int y, int height){
@@ -421,9 +421,9 @@ public abstract class Unit implements AbstractUnit {
     }
 
     /**
-     * @param AbstractUnit the attacker
-     * @param Weapon the weapon used to attack
-     * @param AbstractUnit the defender
+     * @param attacker is the unit that attacks
+     * @param w is the weapon used to attack
+     * @param defender is the unit that defends
      * @return the damage inflicted by the attacker to the defender with the weapon
      */
     public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){

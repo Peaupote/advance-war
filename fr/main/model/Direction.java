@@ -23,16 +23,16 @@ public enum Direction {
     }
 
     /**
-     * Translate the given point by the given direction
-     * @param Point point to move
-     * @param int the increment
+     * Translate the given point by the given direction (multiplicated by the increment)
+     * @param pt is the point to move
+     * @param incr is the increment
      */
     public void move (Point pt, int incr) {
         pt.translate (x * incr, y * incr);
     }
 
     /**
-     * @param Point the point we want to move
+     * @param pt is the point we want to move
      * Move to point accordingly to the direction
      */
     public void move (Point pt) {
@@ -47,7 +47,7 @@ public enum Direction {
     }
 
     /**
-     * @param Direction the direction we consider
+     * @param d is the direction we consider
      * @return the direction opposed to the considered direction
      */
     public static Direction opposed(Direction d){
@@ -59,7 +59,7 @@ public enum Direction {
     }
 
     /**
-     * @return an array of the 4 cardinal directions
+     * @return an array of the 4 cardinal directions, in order : LEFT, TOP, RIGHT, BOTTOM
      */
     public static Direction[] cardinalDirections(){
         return new Direction[]{
@@ -68,8 +68,8 @@ public enum Direction {
     }
 
     /**
-     * @param Point the departure point
-     * @param Point the arrival point
+     * @param dep is the departure point
+     * @param arr is the arrival point
      * @return the direction to go from the departure to the arrival, return NONE if the points aren't adjacents
      */
     public static Direction getDir(Point dep, Point arr){
@@ -77,6 +77,10 @@ public enum Direction {
     }
 
     /**
+     * @param a is the horizontal coordinate of the starting point
+     * @param b is the vertical coordinate of the starting point
+     * @param c is the horizontal coordinate of the arrival point
+     * @param d is the vertical coordinate of the arrival point
      * @return the direction to go from the departure to the arrival
      */
     public static Direction getDir(int a, int b, int c, int d){

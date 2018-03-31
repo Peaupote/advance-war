@@ -1,10 +1,11 @@
-package fr.main.model;
+package fr.main.model.players;
 
 import java.util.HashSet;
 import java.lang.Iterable;
 import java.util.Iterator;
 import java.awt.Color;
 
+import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.commanders.Commander;
@@ -86,7 +87,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * @param int the quantity of money to add to the player's funds
+     * @param f is the quantity of money to add to the player's funds
      */
     public void addFunds(int f){
         funds += f;
@@ -106,7 +107,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * @param boolean[][] represents the map and the tiles that can be seen by this player
+     * @param fogwar represents the map and the tiles that can be seen by this player
      * set to true all the tiles that can be seen by the player
      */
     public void renderVision(boolean[][] fogwar){
@@ -117,8 +118,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
+     * @param c is the new commander of the player
      * @return true if and only if the commander was changed
-     * @param Commander the new commander of the player
      * the commander can be changed only if the player didn't have one before (a player can have only one commander)
      */
     public boolean setCommander(Commander c){
@@ -138,7 +139,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * @param AbstractUnit the unit to add to the player's unit list
+     * @param u is the unit to add to the player's unit list
      */
     public void add(AbstractUnit u) {
         if (u.getPlayer() == this && !units.contains(u))
@@ -146,14 +147,14 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * @param AbstractUnit the unit to remove from the player's unit list
+     * @param u is the unit to remove from the player's unit list
      */
     public void remove(AbstractUnit u){
         units.remove(u);
     }
 
     /**
-     * @param OwnableBuilding the building to add to the player's building list
+     * @param b is the building to add to the player's building list
      */
     public void addBuilding(OwnableBuilding b){
         if (b.getOwner() == this && !buildings.contains(b))
@@ -161,7 +162,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * @param OwnableBuilding the building to remove from the player's building list
+     * @param b is the building to remove from the player's building list
      */
     public void removeBuilding(OwnableBuilding b){
         buildings.remove(b);

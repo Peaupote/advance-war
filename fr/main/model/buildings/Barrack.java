@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import fr.main.model.Universe;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.*;

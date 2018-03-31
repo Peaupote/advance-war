@@ -9,7 +9,7 @@ import fr.main.model.Direction;
 public interface SupplyUnit extends AbstractUnit {
 
     /**
-     * @param AbstractUnit the unit we want to replenish
+     * @param u is the unit we want to replenish
      * @return true if and only if the unit can be replenished
      */
     public boolean canSupply(AbstractUnit u);

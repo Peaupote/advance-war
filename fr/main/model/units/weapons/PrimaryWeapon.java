@@ -78,7 +78,7 @@ public class PrimaryWeapon extends Weapon{
     }
 
     /**
-     * @param AbstractUnit the unit using the weapon
+     * @param u is the unit using the weapon
      * @return the real minimum range of the weapon (used by the unit)
      */
     public int getMinimumRange(AbstractUnit u){
@@ -93,7 +93,7 @@ public class PrimaryWeapon extends Weapon{
     }
 
     /**
-     * @param AbstractUnit the unit using the weapon
+     * @param u is the unit using the weapon
      * @return the real maximum range of the weapon (used by the unit)
      */
     public int getMaximumRange(AbstractUnit u){

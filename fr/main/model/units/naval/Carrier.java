@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
 import fr.main.model.Universe;
 import fr.main.model.units.Unit;

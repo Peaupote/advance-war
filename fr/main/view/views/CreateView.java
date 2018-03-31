@@ -5,8 +5,8 @@ import javax.swing.*;
 import java.util.*;
 import java.io.IOException;
 
-import fr.main.model.Player;
-import fr.main.model.AIPlayer;
+import fr.main.model.players.Player;
+import fr.main.model.players.AIPlayer;
 import fr.main.model.commanders.*;
 import fr.main.view.MainFrame;
 import fr.main.view.render.sprites.*;

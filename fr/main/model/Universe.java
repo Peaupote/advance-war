@@ -21,6 +21,7 @@ import fr.main.model.units.air.*;
 import fr.main.model.units.land.*;
 import fr.main.model.commanders.FakeCommander;
 import fr.main.model.Weather;
+import fr.main.model.players.Player;
 
 /**
  * Represents the universe of a game (board, ...)
@@ -157,7 +158,7 @@ public class Universe {
     }
 
     /**
-     * @param Player the player that lose
+     * @param p is the player that looses
      * When a player looses, if there is only one player left then the game is done
      */
     public void playerLoose(Player p){
@@ -188,7 +189,7 @@ public class Universe {
     }
 
     /**
-     * @param Point the point considered
+     * @param pt is the point considered
      * @return true if the point given in parameter can be seen by the current player
      */
     public boolean isVisible (Point pt) {
@@ -321,7 +322,9 @@ public class Universe {
     }
 
     /**
-     * @param AbstractUnit the unit we place on the map
+     * @param x is the horizontal coordinate of the tile in which we want to place the unit
+     * @param y is the vertical coordinate of the tile in which we want to place the unit
+     * @param u is the unit we place on the map
      * @return true if and only if the position is valid
      */
     public final boolean setUnit(int x, int y, AbstractUnit u) {
@@ -334,7 +337,9 @@ public class Universe {
     }
 
     /**
-     * @param AbstractBuilding the unit we place on the map
+     * @param x is the horizontal coordinate of the tile in which we want to place the building
+     * @param y is the vertical coordinate of the tile in which we want to place the building
+     * @param b is the building we place on the map
      * @return true if and only if the position is valid
      */
     public final boolean setBuilding(int x, int y, AbstractBuilding b){
@@ -346,6 +351,7 @@ public class Universe {
         return false;
     }
 
+    @Override
     public String toString () {
         String ret = "";
         for (int i = 0; i < map.board.length; i++) {
@@ -357,6 +363,8 @@ public class Universe {
     }
 
     /**
+     * @param x is the horizontal coordinate of the tile considered
+     * @param y is the vertical coordinate of the tile considered
      * @return true if and only if there is an opponent unit at the location specified and the unit is visible by the current player
      */
     public boolean isVisibleOpponentUnit(int x, int y){
@@ -374,6 +382,11 @@ public class Universe {
     }
 
     /**
+     * @param mapName is the name of the save file
+     * @param units is the units board
+     * @param map is the terrain board
+     * @param ps is the array of players
+     * @param buildings is the buildings board
      * save the board described in parameter
      */
     public static void save (String mapName, AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {

@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import java.awt.Point;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 import fr.main.model.terrains.Terrain;
 
@@ -26,7 +26,7 @@ public abstract class OwnableBuilding extends Building {
     }
 
     /**
-     * @param boolean[][] an array representing the vision of the map
+     * @param fogwar is an array representing the vision of the map
      * set to true all the tiles the owner of this building can see
      */
     public void renderVision(boolean[][] fogwar){
@@ -42,7 +42,7 @@ public abstract class OwnableBuilding extends Building {
     }
 
     /**
-     * @param Player the new owner of the player
+     * @param p is the new owner of the player
      */
     public void setOwner(Player p){
         if (owner != null)
@@ -68,8 +68,8 @@ public abstract class OwnableBuilding extends Building {
     }
 
     /**
-     * @param Player the player capturing the building
-     * @param int the amount of damage inflicted to the building
+     * @param player is the player capturing the building
+     * @param life is the amount of damage inflicted to the building
      * @return true if and only if the building was captured
      */
     public boolean removeLife(Player player, int life){
@@ -84,7 +84,7 @@ public abstract class OwnableBuilding extends Building {
     }
 
     /**
-     * @param Unit the unit capturing the building
+     * @param u is the unit capturing the building
      * @return true if and only if the building was captured
      */
     public boolean removeLife(Unit u){

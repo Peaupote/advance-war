@@ -38,7 +38,7 @@ public class Node implements Comparable<Node>{
     }
 
     /**
-     * @param Node the node to which the current Node is compared to
+     * @param n is the node to which the current Node is compared to
      * @return 0 if distances and the same, <0 if this is closer than n and >0 otherwise
      */
     public int compareTo(Node n){

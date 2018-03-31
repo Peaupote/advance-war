@@ -4,7 +4,7 @@ import java.awt.*;
 
 import fr.main.view.MainFrame;
 import fr.main.model.Universe;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.commanders.Commander;
 import fr.main.view.Position;
 import fr.main.view.render.commanders.CommanderRenderer;

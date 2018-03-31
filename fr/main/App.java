@@ -4,7 +4,7 @@ import java.io.IOException;
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.commanders.FakeCommander;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;

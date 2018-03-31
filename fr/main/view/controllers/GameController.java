@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 
+import fr.main.model.players.Player;
 import fr.main.model.*;
 import fr.main.model.units.*;
 import fr.main.model.buildings.*;

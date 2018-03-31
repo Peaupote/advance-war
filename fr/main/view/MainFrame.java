@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.view.controllers.*;
 import fr.main.view.views.View;
 

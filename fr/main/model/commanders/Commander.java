@@ -1,7 +1,7 @@
 package fr.main.model.commanders;
 
 import java.io.Serializable;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
@@ -77,7 +77,7 @@ public abstract class Commander implements Serializable {
         }
 
         /**
-         * @param Player the player who activates the power
+         * @param p is the player who activates the power
          */
         public boolean activate(Player p){
             if (activated) return false;
@@ -98,7 +98,7 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param boolean true to activate the big power and false for the small one
+     * @param bigPower is true to activate the big power and false for the small one
      * @return true if and only if the matching power was activated
      */
     public boolean activate(boolean bigPower){
@@ -110,7 +110,7 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param boolean true to return if the big power is activated and false for the small one
+     * @param bigPower is true to return if the big power is activated and false for the small one
      * @return true if and only if the matching power is activated
      */
     public boolean activated(boolean bigPower){
@@ -118,7 +118,7 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param boolean true to return if the big power can be activated and false for the small one
+     * @param bigPower is true to return if the big power can be activated and false for the small one
      * @return true if and only if the matching power can be activated
      */
     public boolean canActivate(boolean bigPower){
@@ -126,11 +126,11 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param boolean true to return the big power's cost and false for the small one
+     * @param bigPower is true to return the big power's cost and false for the small one
      * @return the value of the matching power
      */
-    public final int getPowerCost (boolean takeBig) {
-        return takeBig ? (big == null ? 0 : big.value) : (small == null ? 0 : small.value);
+    public final int getPowerCost (boolean bigPower) {
+        return bigPower ? (big == null ? 0 : big.value) : (small == null ? 0 : small.value);
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param AbstractUnit the unit we want to know the attack value
+     * @param u is the unit we want to know the attack value
      * @return the attack value (as a percentage) of the commander for the given unit
      */
     public int getAttackValue(AbstractUnit u){
@@ -150,7 +150,7 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param AbstractUnit the unit we want to know the defense value
+     * @param u is the unit we want to know the defense value
      * @return the defense value (as a percentage) of the commander for the given unit
      */
     public int getDefenseValue(AbstractUnit u){
@@ -158,7 +158,7 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param AbstractUnit the unit we want to know the vision
+     * @param u is the unit we want to know the vision
      * @return the vision of the given unit
      */
     public int getVision(AbstractUnit u){
@@ -175,8 +175,8 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param AbstractUnit the unit we want to know the maximum range
-     * @param PrimaryWeapon the weapon of the unit we want to know the maximum range
+     * @param u is the unit we want to know the maximum range
+     * @param p is the weapon of the unit we want to know the maximum range
      * @return the maximum range of the unit
      */
     public int getMaximumRange(AbstractUnit u, PrimaryWeapon p){

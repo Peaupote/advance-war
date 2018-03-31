@@ -68,8 +68,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
      */
     public void loose(){
         Universe u = Universe.get();
-        for (AbstractUnit a : units)
-            u.setUnit(a.getX(), a.getY(), null);
+        for (AbstractUnit a : unitList())
+            a.dies();
         units.clear();
         for (OwnableBuilding b : buildingList())
             b.setOwner(null);

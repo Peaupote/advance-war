@@ -29,15 +29,14 @@ public abstract class Unit implements AbstractUnit {
     protected Point location;
     protected Player player;
     protected int life, moveQuantity;
+    protected boolean dead;
 
     public final Fuel fuel;
     public final MoveType moveType;
-
-    protected PrimaryWeapon primaryWeapon;
-    protected SecondaryWeapon secondaryWeapon;
-
     public final int vision, maxMoveQuantity, cost;
     public final String name;
+    public final PrimaryWeapon primaryWeapon;
+    public final SecondaryWeapon secondaryWeapon;
 
     public class Fuel implements java.io.Serializable{
         public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
@@ -58,10 +57,7 @@ public abstract class Unit implements AbstractUnit {
         public boolean consume(int quantity){
             quantity *= Universe.get().getWeather().malusFuel;
             this.quantity = Math.max(0,this.quantity-quantity);
-            if (fuel.quantity == 0 && diesIfNoFuel){
-                Universe.get().setUnit(location.x,location.y,null);
-                player.remove(Unit.this);
-            }
+            if (fuel.quantity == 0 && diesIfNoFuel) dies();
             return quantity!=0;
         }
 
@@ -74,6 +70,7 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public Unit (Player player, Point location, String fuelName, int maxFuel, boolean diesIfNoFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name, int cost) {
+        this.dead            = false;
         this.life            = 100;
         this.player          = player;
         if (player != null) player.add(this);
@@ -89,6 +86,15 @@ public abstract class Unit implements AbstractUnit {
         this.name            = name;
         this.cost            = cost;
         Universe.get().updateVision();
+    }
+
+    @Override
+    public void dies(){
+        Universe.get().setUnit(getX(), getY(), null);
+        player.remove(this);
+        location        = null;
+        player          = null;
+        dead            = true;
     }
 
     @Override
@@ -108,12 +114,17 @@ public abstract class Unit implements AbstractUnit {
 
     @Override
     public void setMoveQuantity(int m){
-        this.moveQuantity=Math.min(m,getMaxMoveQuantity());
+        this.moveQuantity = Math.min(m,getMaxMoveQuantity());
     }
 
     @Override
     public Fuel getFuel(){
         return fuel;
+    }
+
+    @Override
+    public boolean dead(){
+        return dead;
     }
 
     /**
@@ -122,9 +133,8 @@ public abstract class Unit implements AbstractUnit {
     @Override
     public final boolean setLife (int life) {
         this.life = Math.max(0, Math.min(100, life));
-        if (this.life==0){
-            player.remove(this);
-            Universe.get().setUnit(location.x,location.y,null);
+        if (this.life == 0){
+            dies();
             return false;
         }
         else
@@ -161,9 +171,9 @@ public abstract class Unit implements AbstractUnit {
         location.move(x, y);  
     }
 
-    /*
-    * @return true if and only if the move was done.
-    */
+    /**
+     * @return true if and only if the move was done.
+     */
     @Override
     public final boolean move(int x, int y) {
         Universe u = Universe.get();
@@ -184,7 +194,7 @@ public abstract class Unit implements AbstractUnit {
             }
             removeMoveQuantity(q);
 
-            // it should be 1 but in case we teleport the unit, we spent the right amount
+            // it should be 1 but in case we teleport the unit, we spend the right amount
             int fuelQuantity = Math.abs(x-location.x)+Math.abs(y-location.y);
 
             u.setUnit(location.x, location.y, null);
@@ -193,7 +203,7 @@ public abstract class Unit implements AbstractUnit {
             u.setUnit(x, y, this);
             fuel.consume(fuelQuantity);
             u.updateVision();
-            return true;
+            return !dead;
         }
 
         return false;

@@ -33,16 +33,25 @@ public interface AbstractUnit extends Serializable {
     int getY();
 
     /**
-     * @return a the position of the unit
+     * @return a Point which is the position of the unit
      */
     default Point position() {
         return new Point(getX(), getY());
     }
 
     /**
-     * change the position of the unit
+     * changes the position of the unit
      */
     void setLocation(int x, int y);
+
+    /**
+     * What happens when the unit dies
+     */
+    void dies();
+    /**
+     * @return true if and only if the unit is dead
+     */
+    boolean dead();
 
     /**
      * @return the life of the unit

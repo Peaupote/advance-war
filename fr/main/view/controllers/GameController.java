@@ -329,7 +329,6 @@ public class GameController extends Controller {
             targetUnit = world.getUnit(cursor.position());
 
             if (targetUnit == null){
-                System.out.println("Error : unit is null");
                 setVisible(false);
                 onClose();
                 return;
@@ -416,10 +415,16 @@ public class GameController extends Controller {
                             path.visible = false;
                             boolean b = path.apply();
                             targetRender.setState("idle");
-                            cursor.setLocation(unitCursor.position());
-
-                            if (b && targetUnit.isEnabled()) unitActionPanel.setVisible(true);
-                            else mode = Mode.MOVE;
+                            if (targetUnit.dead()) UnitRenderer.remove(targetRender);
+                            else{
+                                cursor.setLocation(unitCursor.position());
+                                if (b && targetUnit.isEnabled()){
+                                    cursor.setLocation(targetUnit.position());
+                                    unitCursor.setLocation(targetUnit.position());
+                                    unitActionPanel.setVisible(true);
+                                }
+                                else mode = Mode.MOVE;
+                            }
                         }).start();
                     } else if (mode == Mode.ATTACK) { // validing unit target
                         AbstractUnit target = world.getUnit(unitCursor.position());
@@ -435,6 +440,8 @@ public class GameController extends Controller {
                                 (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                                 (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                                 UniverseRenderer.FlashMessage.Type.ALERT);
+                            if (targetUnit.dead()) UnitRenderer.remove(targetUnit);
+                            if (target.dead())     UnitRenderer.remove(target);
                         }
                         mode = Mode.MOVE;
                         world.clearTarget();

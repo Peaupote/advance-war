@@ -41,23 +41,13 @@ public class CreateView extends View {
       setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT / 2 + 100));
       setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-      btns[0] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/contact.png")
-                        .getImage(0, 0, width, height)));
-      btns[1] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/destroy.png")
-                        .getImage(0, 0, width, height)));
-      btns[2] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/money.png")
-                        .getImage(0, 0, width, height)));
-      btns[3] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/repair.png")
-                        .getImage(0, 0, width, height)));
-      btns[4] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/basic.png")
-                        .getImage(0, 0, width, height)));
-      btns[5] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/ranged.png")
+      String[] names = new String[]{
+        "contact", "destroy", "money", "repair", "basic", "ranged"
+      };
+
+      for (int i = 0; i < names.length; i++)
+        btns[i] = new JButton(new ImageIcon(
+                        Sprite.get("./assets/commanders/"+names[i]+".png")
                         .getImage(0, 0, width, height)));
 
       for (int i = 0; i < btns.length; i++) {
@@ -133,15 +123,19 @@ public class CreateView extends View {
       ArrayList<Player> ps = new ArrayList<>();
       for (int i = 0; i < selected.length; i++) {
         if (selected[i] == -1) continue;
-        Player p = new Player("Player " + (i + 1)); 
+        Player p;
+        if (i == 0)
+          p = new Player("Player " + (i + 1)); 
+        else
+          p = new AIPlayer();
         ps.add(p);
         switch (selected[i]) {
-          case 0: new ContactCommander(p);break;
-          case 1: new DestroyCommander(p);break;
-          case 2: new MoneyCommander(p);break;
-          case 3: new RepairCommander(p);break;
-          case 4: new BasicCommander(p);break;
-          case 5: new RangedCommander(p);break;
+          case 0: new ContactCommander(p); break;
+          case 1: new DestroyCommander(p); break;
+          case 2: new MoneyCommander(p);   break;
+          case 3: new RepairCommander(p);  break;
+          case 4: new BasicCommander(p);   break;
+          case 5: new RangedCommander(p);  break;
         }
       }
       return ps.toArray(new Player[ps.size()]);

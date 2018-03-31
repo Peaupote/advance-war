@@ -92,7 +92,6 @@ public abstract class Unit implements AbstractUnit {
     public void dies(){
         Universe.get().setUnit(getX(), getY(), null);
         player.remove(this);
-        location        = null;
         player          = null;
         dead            = true;
     }

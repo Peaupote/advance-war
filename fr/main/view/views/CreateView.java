@@ -9,6 +9,7 @@ import fr.main.model.players.Player;
 import fr.main.model.players.AIPlayer;
 import fr.main.model.commanders.*;
 import fr.main.view.MainFrame;
+import fr.main.view.components.MenuButton;
 import fr.main.view.render.sprites.*;
 import fr.main.view.controllers.CreateController;
 
@@ -31,25 +32,30 @@ public class CreateView extends View {
      * Index of which commander is selected
      */
     private int focus;
+	private Image image;
+    
+    
 
-    public CommandersPanel () {
+    public CommandersPanel () throws IOException {
       btns = new JButton[6];
       width = 140;
       height = 156;
+      image = new ImageIcon("./assets/acc.jpg").getImage();
+      
+      
 
-      setLayout(new GridLayout(2, 3, 10, 10));
+      //setLayout(new GridLayout(2, 3, 10, 10));
+      setLayout(null);
       setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT / 2 + 100));
       setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-      String[] names = new String[]{
-        "contact", "destroy", "money", "repair", "basic", "ranged"
-      };
-
-      for (int i = 0; i < names.length; i++)
-        btns[i] = new JButton(new ImageIcon(
-                        Sprite.get("./assets/commanders/"+names[i]+".png")
-                        .getImage(0, 0, width, height)));
-
+      
+      btns[0] = new MenuButton("./assets/commanders/contact01.png", 10, 20);
+      btns[1] = new MenuButton("./assets/commanders/destroy01.png", 160, 170);
+      btns[2] = new MenuButton("./assets/commanders/money01.png", 310, 20);
+      btns[3] = new MenuButton("./assets/commanders/repair01.png", 460, 170);
+      btns[4] = new MenuButton("./assets/commanders/basic01.png", 610, 20);
+      btns[5] = new MenuButton("./assets/commanders/ranged01.png", 760, 170);
+      
       for (int i = 0; i < btns.length; i++) {
         final int target = i;
         btns[i].addActionListener(controller.select);
@@ -61,6 +67,12 @@ public class CreateView extends View {
     public int getFocus () {
       return focus;
     }
+    
+    protected void paintComponent(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paintComponent(g);
+		g.drawImage(this.image, 0, 0, this.getWidth(), this.getHeight(), this);
+	}
 
   }
 
@@ -163,7 +175,7 @@ public class CreateView extends View {
   public final PlayersPanel players;
   public final PlayPanel play;
 
-  public CreateView (CreateController controller) {
+  public CreateView (CreateController controller) throws IOException {
     super(controller);
 
     this.controller = controller;

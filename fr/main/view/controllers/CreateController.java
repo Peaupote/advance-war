@@ -1,6 +1,8 @@
 package fr.main.view.controllers;
 
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 
 import fr.main.view.views.CreateView;
@@ -26,7 +28,11 @@ public class CreateController extends Controller {
   }
 
   public CreateView makeView() {
-    view = new CreateView(this);
+    try {
+		view = new CreateView(this);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
     return view;
   }
 

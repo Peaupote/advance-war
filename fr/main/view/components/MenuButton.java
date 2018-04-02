@@ -20,10 +20,8 @@ public class MenuButton extends JButton{
 		setContentAreaFilled(false);
 		setOpaque(false);
 	    //play.setBackground(new Color(0, 0, 255));
-		
 		setFocusPainted(false); 
 		setBorder(null);
-		
 		setIcon(imageIcon);
 	}
 	

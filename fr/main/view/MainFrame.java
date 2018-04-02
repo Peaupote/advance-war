@@ -22,8 +22,8 @@ public class MainFrame extends JFrame {
      * Dimension of the window
      */
     public static final int WIDTH = 960,
-                            HEIGHT = 704,
-                            UNIT = 32;
+                              HEIGHT = 704,
+                              UNIT = 32;
 
     /**
      * Time spend since the controller has been loaded (in ms)
@@ -61,7 +61,6 @@ public class MainFrame extends JFrame {
         new Thread(() -> {
             while (true) {
                 timer = timer == Integer.MAX_VALUE ? 0 : timer + 1;
-
                 controller.update();
                 view.repaint();
                 try {

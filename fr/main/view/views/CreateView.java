@@ -1,6 +1,8 @@
 package fr.main.view.views;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+
 import javax.swing.*;
 import java.util.*;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import fr.main.model.commanders.*;
 import fr.main.view.MainFrame;
 import fr.main.view.components.MenuButton;
 import fr.main.view.controllers.CreateController;
+import fr.main.view.controllers.LoadController;
 
 /**
  * View of commanders selection
@@ -44,12 +47,12 @@ public class CreateView extends View {
       setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT / 2 + 100));
       setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
       
-      btns[0] = new MenuButton("./assets/commanders/contact01.png", 500, 20);
-      btns[1] = new MenuButton("./assets/commanders/destroy01.png", 550, 170);
-      btns[2] = new MenuButton("./assets/commanders/money01.png", 600, 20);
-      btns[3] = new MenuButton("./assets/commanders/repair01.png", 700, 170);
-      btns[4] = new MenuButton("./assets/commanders/basic01.png", 750, 20);
-      btns[5] = new MenuButton("./assets/commanders/ranged01.png", 800, 170);
+      btns[0] = new MenuButton("./assets/commanders/contact01.png", 300, 20);
+      btns[1] = new MenuButton("./assets/commanders/destroy01.png", 300, 200);
+      btns[2] = new MenuButton("./assets/commanders/money01.png", 550, 20);
+      btns[3] = new MenuButton("./assets/commanders/repair01.png", 550, 200);
+      btns[4] = new MenuButton("./assets/commanders/basic01.png", 800, 20);
+      btns[5] = new MenuButton("./assets/commanders/ranged01.png", 800, 200);
       
       for (int i = 0; i < btns.length; i++) {
         final int target = i;
@@ -58,7 +61,7 @@ public class CreateView extends View {
         add(btns[i]);
       }
       
-      startGame = new MenuButton("STARTGAME","./assets/button/startGame.png", 650, 570);
+      startGame = new MenuButton("STARTGAME","./assets/button/startGame.png", 350, 450);
       startGame.addActionListener(controller.play);
       add(startGame);
       
@@ -72,7 +75,6 @@ public class CreateView extends View {
 		super.paintComponent(g);
 		g.drawImage(this.image, 0, 0, this.getWidth(), this.getHeight(), this);
 	}
-
   }
 
   /**
@@ -110,20 +112,13 @@ public class CreateView extends View {
 
       for (int i = 0; i < btns.length; i++) {
         selected[i] = -1;
-        btns[i] = new MenuButton("","./assets/button/border.png",0,0);
+        btns[i] = new MenuButton("","./assets/button/border01.png",0,0);
         final int target = i;
         btns[i].addActionListener(e -> focus = target);
         btns[i].setVerticalAlignment(SwingConstants.TOP);
-        //add(btns[i]);
+        btns[i].setBounds(0, 0+150*i, 165, 165);
+        add(btns[i]);
       }
-      btns[0].setBounds(0, 0, 165, 165);
-      btns[1].setBounds(0, 170, 165, 165);
-      btns[2].setBounds(0, 340, 165, 165);
-      btns[3].setBounds(0, 510, 165, 165);
-      add(btns[0]);
-      add(btns[1]);
-      add(btns[2]);
-      add(btns[3]);
     }
 
     /**
@@ -175,7 +170,6 @@ public class CreateView extends View {
 
     commanders = new CommandersPanel();
     players    = new PlayersPanel();
-    
 
     JPanel select = new JPanel(new BorderLayout());
     players.setBounds(50, 20, 200,800);

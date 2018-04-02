@@ -16,8 +16,8 @@ public class cutImage {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		cutImage cutImage = new cutImage("./assets/boutton.png");	
-	    ImageIO.write(cutImage.sprite.getImage(561, 1410, 160, 160), "png", new File("./assets/button/border.png")); 
+		cutImage cutImage = new cutImage("./assets/GameUI.png");	
+	    ImageIO.write(cutImage.sprite.getImage(1090, 1205, 121, 121), "png", new File("./assets/button/border01.png")); 
 	}
 
 }

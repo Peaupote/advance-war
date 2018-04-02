@@ -26,7 +26,7 @@ public class MenuButton extends JButton{
 	}
 	
 	public MenuButton(String nom,String path,int x, int y) throws IOException {
-		// TODO Auto-generated constructor stub
+		
 		this(path,x,y);
 		
 		font = new Font("Courier", Font.BOLD+Font.ITALIC, 34);
@@ -44,7 +44,6 @@ public class MenuButton extends JButton{
 	}
 	
 	public MenuButton(String nom,String path,int x, int y,int t,Color color) throws IOException{
-		// TODO Auto-generated constructor stub
 		setForeground(color);
 	}
 }

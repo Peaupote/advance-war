@@ -53,7 +53,7 @@ public class AIPlayer extends Player{
         checkUnits(allUnits.iterator(), u -> true);
 
         // if one unit still has move points, we give it a try to do something
-        // because the situation may have changed since the calculus of the thing to do for the unit
+        // because the situation may have changed since the first calculus of the thing to do
         checkUnits(unitList().iterator(), u -> u.isEnabled());
 
         createUnits();
@@ -76,14 +76,34 @@ public class AIPlayer extends Player{
         }
     }
 
+    private final HashSet<Airport> airports = new HashSet<Airport>();
+    private final HashSet<Dock>    docks    = new HashSet<Dock>();
+    private final HashSet<Barrack> barracks = new HashSet<Barrack>();
+
+    @Override
+    public void addBuilding(OwnableBuilding b){
+        super.addBuilding(b);
+        if      (b instanceof Airport) airports.add((Airport)b);
+        else if (b instanceof Barrack) barracks.add((Barrack)b);
+        else if (b instanceof Dock)    docks.add((Dock)b);
+    }
+
+    @Override
+    public void removeBuilding(OwnableBuilding b){
+        super.removeBuilding(b);
+        airports.remove(b);
+        docks.remove(b);
+        barracks.remove(b);        
+    }
 
     /**
      * Choose the units to create with the buildings
      */
     private void createUnits (){
-        // TODO
+        //TODO
     }
 }
+
 
 /**
  * Class used to find the action of an unit
@@ -97,7 +117,7 @@ class UnitActionChooser {
 
     public UnitActionChooser(AbstractUnit unit){
         this.unit     = unit;
-        this.moveZone = unit.getMoveMap ();
+        this.moveZone = null;
         this.action   = null;
     }
 
@@ -105,7 +125,18 @@ class UnitActionChooser {
      * Finds the perfect action for the unit
      */
     public void findAction(){
-        this.action = () -> {};
+        this.moveZone = unit.getMoveMap();
+
+        boolean supply    = unit instanceof SupplyUnit;
+        boolean heal      = unit instanceof HealerUnit;
+        boolean capture   = unit instanceof CaptureBuilding;
+        boolean hide      = unit instanceof HideableUnit;
+        boolean transport = unit instanceof TransportUnit;
+
+/*        if (capture){
+            Point pt = findBuilding()
+        }
+*/        this.action   = () -> {};
     }
 
     /**

@@ -6,11 +6,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+
+### Fixed
+
+
+## [0.0.8] - 2018-04-03
+### Added
   - Units in all colors
   - Buildings generating units
   - Building capture
+  - Every other unit action (heal, supply, transport, hide/reveal)
+  - Missile launcher
+  - Terrain orientation
+  - Display of tile, building & unit informations
+  - Add weather (snow & rain) 
+  - Add a few commanders
+  - Victory conditions
+  - Add menu & possibility to choose commanders
+  - Begin of AI
+### Changed
+  - Controller uses only one frame
+  - Move : add possibility to go over a friendly unit when moving
 ### Fixed
   - Optimisation in the view
+  - Move zone calculus
+  - Lots of small issues
+  - Move teleportation when going on a friendly unit
 
 ## [0.0.7] - 2018-03-15
 ### Added

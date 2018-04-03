@@ -29,10 +29,10 @@ public class CreateController extends Controller {
 
   public CreateView makeView() {
     try {
-		view = new CreateView(this);
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
+      view = new CreateView(this);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return view;
   }
 

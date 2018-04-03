@@ -10,6 +10,7 @@ import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
+import fr.main.network.*;
 
 /**
  * Classe qui lance le projet
@@ -21,6 +22,8 @@ public class App {
     switch (s) {
       case "play": play();break;
       case "save": save();break;
+      case "server": new Server(8080);break;
+      case "client": new Client("localhost", 8080);break;
       default: 
         save();
         play();

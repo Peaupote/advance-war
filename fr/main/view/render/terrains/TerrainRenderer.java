@@ -161,6 +161,7 @@ public class TerrainRenderer {
 				if (cross[1] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_LEFT;
 				if (cross[2] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_TOP;
 				if (cross[3] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_RIGHT;
+				break;
 			case 2:
 				for (int i = 0; i < 4; i++)
 					if (cross[i] == TerrainEnum.sea)
@@ -175,16 +176,18 @@ public class TerrainRenderer {
 									case 4: return TerrainLocation.BeachLocation.TOP; // error
 									case 5: return TerrainLocation.BeachLocation.OUTER_UPPER_LEFT;
 								}
+			    break;
 			case 1:
 				if (cross[0] == TerrainEnum.sea) return TerrainLocation.BeachLocation.BOTTOM;
 				if (cross[1] == TerrainEnum.sea) return TerrainLocation.BeachLocation.LEFT;
 				if (cross[2] == TerrainEnum.sea) return TerrainLocation.BeachLocation.TOP;
 				if (cross[3] == TerrainEnum.sea) return TerrainLocation.BeachLocation.RIGHT;
+			    break;
 			case 0:
 
-			default:
-				return TerrainLocation.BeachLocation.TOP;
+		    break;
 		}
+		return TerrainLocation.BeachLocation.TOP;
 	}
 
 	private static TerrainLocation.SeaLocation setSeaLocation(TerrainEnum[][] tEnum, int x, int y) {
@@ -213,6 +216,7 @@ public class TerrainRenderer {
 									case 4: return TerrainLocation.SeaLocation.NORMAL;
 									case 5: return TerrainLocation.SeaLocation.TOP_RIGHT;
 								}
+		    break;
 			case 1:
 				if (cross[0] != TerrainEnum.sea
 						&& cross[0] != TerrainEnum.beach
@@ -230,11 +234,10 @@ public class TerrainRenderer {
 						&& cross[3] != TerrainEnum.beach
 						&& cross[3] != TerrainEnum.bridge
 						&& cross[3] != TerrainEnum.reef) return TerrainLocation.SeaLocation.LEFT;
+		    break;
 			case 0:
-
-			default:
-				return TerrainLocation.SeaLocation.NORMAL;
 		}
+		return TerrainLocation.SeaLocation.NORMAL;
 	}
 
 	private static TerrainLocation.RiverLocation setRiverLocation(TerrainEnum[][] tEnum, int x, int y) {
@@ -252,6 +255,7 @@ public class TerrainRenderer {
 				if (cross[1] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_LEFT;
 				if (cross[2] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_TOP;
 				if (cross[3] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_RIGHT;
+		    break;
 			case 2:
 				for (int i = 0; i < 4; i++)
 					if (cross[i] == TerrainEnum.river)
@@ -266,16 +270,16 @@ public class TerrainRenderer {
 									case 4: return TerrainLocation.RiverLocation.HORIZONTAL;
 									case 5: return TerrainLocation.RiverLocation.TURN_BOTTOM_LEFT;
 								}
+		    break;
 			case 1:
 				if (cross[0] == TerrainEnum.river) return TerrainLocation.RiverLocation.TOP_END;
 				if (cross[1] == TerrainEnum.river) return TerrainLocation.RiverLocation.RIGHT_END;
 				if (cross[2] == TerrainEnum.river) return TerrainLocation.RiverLocation.BOTTOM_END;
 				if (cross[3] == TerrainEnum.river) return TerrainLocation.RiverLocation.LEFT_END;
+		    break;
 			case 0:
-
-			default:
-				return TerrainLocation.RiverLocation.CENTER;
 		}
+		return TerrainLocation.RiverLocation.CENTER;
 	}
 
 	private static TerrainLocation.RoadLocation setRoadLocation(TerrainEnum[][] tEnum, int x, int y) {
@@ -293,6 +297,7 @@ public class TerrainRenderer {
 				if (cross[1] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_LEFT;
 				if (cross[2] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_TOP;
 				if (cross[3] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_RIGHT;
+		    break;
 			case 2:
 				for (int i = 0; i < 4; i++)
 					if (cross[i] == TerrainEnum.road)
@@ -307,14 +312,13 @@ public class TerrainRenderer {
 									case 4: return TerrainLocation.RoadLocation.HORIZONTAL;
 									case 5: return TerrainLocation.RoadLocation.TURN_BOTTOM_LEFT;
 								}
+		    break;
 			case 1:
 				if (cross[0] == TerrainEnum.road || cross[2] == TerrainEnum.road)
 					return TerrainLocation.RoadLocation.VERTICAL;
 				else return TerrainLocation.RoadLocation.HORIZONTAL;
-			default:
-				return TerrainLocation.RoadLocation.CENTER;
-
 		}
+		return TerrainLocation.RoadLocation.CENTER;
 	}
 
 	private static TerrainEnum[] terrainCross(TerrainEnum[][] tEnum, int x, int y) {

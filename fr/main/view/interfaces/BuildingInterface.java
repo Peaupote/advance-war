@@ -28,7 +28,7 @@ public class BuildingInterface extends GameController.ControllerPanel {
    */
   class IndexClass extends Index {
 
-    final Class c;
+    final Class<? extends AbstractUnit> c;
 
     public IndexClass (Class<? extends AbstractUnit> c)
         throws NoSuchFieldException, IllegalAccessException {
@@ -62,7 +62,7 @@ public class BuildingInterface extends GameController.ControllerPanel {
   public void onOpen () {
     super.onOpen();
     building = (FactoryBuilding)controller.world.getBuilding(controller.cursor.position());
-    Set units = building.getUnitList();
+    Set<Class<? extends AbstractUnit>> units = building.getUnitList();
     for (Index i: actions.values())
       if (units.contains(((IndexClass)i).c)) i.setActive(true);
       else i.setActive(false);

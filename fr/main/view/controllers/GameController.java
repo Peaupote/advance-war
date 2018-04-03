@@ -416,8 +416,10 @@ public class GameController extends Controller {
                             path.visible = false;
                             boolean b = path.apply();
                             targetRender.setState("idle");
-                            if (targetUnit.dead()) UnitRenderer.remove(targetRender);
-                            else{
+                            if (targetUnit.dead()){
+                                UnitRenderer.remove(targetRender);
+                                mode = Mode.MOVE;
+                            }else{
                                 cursor.setLocation(unitCursor.position());
                                 if (b && targetUnit.isEnabled()){
                                     cursor.setLocation(targetUnit.position());

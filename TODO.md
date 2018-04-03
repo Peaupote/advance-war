@@ -24,6 +24,10 @@ TODO
 - [x] Implement the missile launcher
 - [x] Multiples pages (multiple controllers)
 - [ ] Victory panel
+- [ ] Be able to save the game and resume it
+- [ ] Access to the menu from the game
+- [ ] Choose player's names
+- [ ] Choose whether a player is human or AI
 
 
 TODO of Peaupote

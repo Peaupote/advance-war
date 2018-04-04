@@ -131,7 +131,7 @@ public class MapGenerator {
         map = refineMap(map,smoothness);
         map = surroundBySea(map, 4);
         map = placeBeach(map);
-//        map = placeRivers(map);
+        map = placeRivers(map);
         map = placeMountainsHills(map);
         map = placeWood(map);
 
@@ -347,7 +347,7 @@ public class MapGenerator {
     private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
     	/** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
 //    	int nSea, nLowland, nBridge, nBeach, nRiver;
-    	TerrainEnum[] land = {lowland, bridge, beach}, naval = {sea, river};
+    	TerrainEnum[] land = {lowland, bridge}, naval = {sea, river};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
@@ -417,25 +417,25 @@ public class MapGenerator {
 		return out;
 	}
 
-    private boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
+    public static boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
     	return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
 	}
 
-	private boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type[]) {
+	public static boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type[]) {
 		return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
 	}
 
-	private boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type, boolean horizontal) {
+	public static boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type, boolean horizontal) {
 		TerrainEnum[] ts = {type};
     	return isSandwiched(map, x, y, ts, horizontal);
 	}
 
-    private boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type[], boolean horizontal) {
+    public static boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type[], boolean horizontal) {
     	return (!horizontal && isInMap(map, x - 1, y) && isInMap(map, x + 1, y) && hasMatch(type, map[x - 1][y]) && hasMatch(type, map[x + 1][y]))
 				|| (horizontal && isInMap(map, x, y - 1) && isInMap(map, x, y + 1) && hasMatch(type, map[x][y - 1]) && hasMatch(type, map[x][y + 1])	);
 	}
 
-	private boolean hasMatch(TerrainEnum ts[], TerrainEnum type) {
+	public static boolean hasMatch(TerrainEnum ts[], TerrainEnum type) {
 		for (TerrainEnum t : ts)
 			if(t == type) return true;
 		return false;
@@ -484,9 +484,9 @@ public class MapGenerator {
 	 * @param map
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return boolean
 	 */
-    private boolean isInMap(TerrainEnum[][] map, int x, int y) {
+    public static boolean isInMap(TerrainEnum[][] map, int x, int y) {
         return x >= 0 && x < map.length && y >= 0 && y < map[0].length;
     }
 
@@ -494,7 +494,7 @@ public class MapGenerator {
 	 * Creates a wall of sea all around the map.
 	 * @param map
 	 * @param size
-	 * @return
+	 * @return map with a wall of sea.
 	 */
     private TerrainEnum[][] surroundBySea(TerrainEnum[][] map, int size) {
         for(int i = 0; i < map.length; i ++)

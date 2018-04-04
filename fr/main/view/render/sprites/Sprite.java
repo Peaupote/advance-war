@@ -39,6 +39,8 @@ public class Sprite {
 		try {
 			out = sprite.getSubimage(x, y, w, h);
 		} catch (RasterFormatException e) {
+			System.out.println(x + " : " + y + " : " + w + " : " + h);
+			System.out.println(sprite.toString());
 			e.printStackTrace();
 		}
 

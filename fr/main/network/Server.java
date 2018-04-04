@@ -1,24 +1,63 @@
 package fr.main.network;
 
-import java.io.DataInputStream;
-import java.io.PrintStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.ServerSocket;
 
+import fr.main.model.players.Player;
+
+/**
+ * Represent the server side.
+ */
 public class Server extends ServerSocket {
 
+  /**
+   * Can't be more than 4 players.
+   */
   private static final int MAX_CLIENT_COUNT = 4;
 
+  /**
+   * Thread for each player.
+   */
   private final ClientThread[] clients;
+
+  /**
+   * Number of connected clients
+   * number of non-null ClientThread in clients.
+   */
   private int connectedClients;
+
+  /**
+   * Connection with the last socket.
+   */
   private Socket socket;
 
-  private class ClientThread extends Thread {
+  class ClientThread extends Thread {
 
-    DataInputStream is;
-    PrintStream os;
-    Socket socket;
+    /**
+     * Receive messages from client.
+     */
+    private ObjectInputStream is;
+
+    /**
+     * Send messages to the client.
+     */
+    private ObjectOutputStream os;
+
+    /**
+     * Socket connection with the client.
+     */
+    private Socket socket;
+
+    /**
+     * Server side protocol.
+     */
+    private AdwProtocol.Server protocol;
+
+    /**
+     * Client's Player.
+     */
+    private Player player;
 
     public ClientThread(Socket socket) {
       this.socket = socket;
@@ -26,46 +65,47 @@ public class Server extends ServerSocket {
 
     public void run () {
       try {
-        is = new DataInputStream(socket.getInputStream());
-        os = new PrintStream(socket.getOutputStream());
-        os.println("Coucou");
-        sendAll("Hi !");
+        is = new ObjectInputStream(socket.getInputStream());
+        os = new ObjectOutputStream(socket.getOutputStream());
+        System.out.println("New Client: " + socket);
+        protocol = new AdwProtocol.Server(this);
 
         synchronized (this) {
-          String line = is.readLine();
-          while ((line != null)) {
-            if (line.equals("quit")) {
-              sendAll(line);
-              break;
+          Object line;
+          while ((line = is.readObject()) != null) {
+            try {
+              protocol.processInput(line);
+            } catch (Exception e) {
+              os.writeObject(e);
             }
+            System.out.println(line);
           }
         }
-        sendAll("Bye.");
-        os.println("Bye.");
 
         for (ClientThread client: clients)
-          if (client == this)
+          if (client == this) {
             client = null;
+            break;
+          }
 
         is.close();
         os.close();
         socket.close();
-      } catch (IOException e) {
+      } catch (Exception e) {
         System.err.println(e);
       }
     }
 
-    public synchronized void sendAll (String message) {
-      for (ClientThread client: clients)
-        if (client != this && client != null)
-          client.os.println(message);
+    void setPlayer(Player player) {
+      this.player = player;
     }
-  
+
   }
 
   public Server (int port) throws IOException {
     super (port);
     clients = new ClientThread[MAX_CLIENT_COUNT];
+    System.out.println("Start server");
 
     while (true) {
       socket = accept();

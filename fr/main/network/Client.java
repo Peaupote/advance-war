@@ -1,47 +1,78 @@
 package fr.main.network;
 
-import java.io.DataInputStream;
-import java.io.PrintStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * Represent client playing.
+ */
 public class Client implements Runnable {
 
+  /**
+   * Socket connecting to the server.
+   */
   private Socket socket;
 
-  private PrintStream os;
-  private DataInputStream is;
+  /**
+   * Send messages to the server with this stream.
+   */
+  private ObjectOutputStream os;
 
+  /**
+   * Receive messages from the server with this stream.
+   */
+  private ObjectInputStream is;
+
+  /**
+   * User input stream.
+   */
   private BufferedReader inputLine;
+
+  /**
+   * Advance war protocol telling client
+   * what he must do.
+   */
+  private AdwProtocol.Client protocol;
+
+  /**
+   * Is listening to the server.
+   */
   private static boolean closed;
 
   public Client (String host, int port)
       throws UnknownHostException, IOException {
+    closed = false;
     socket = new Socket(host, port);
     inputLine = new BufferedReader(new InputStreamReader(System.in));
-    os = new PrintStream(socket.getOutputStream());
-    is = new DataInputStream(socket.getInputStream());
+    os = new ObjectOutputStream(socket.getOutputStream());
+    is = new ObjectInputStream(socket.getInputStream());
+    protocol = new AdwProtocol.Client();
 
     new Thread(this).start();
-    while (!closed) os.println(inputLine.readLine());
+
+    /**
+     * Send messages to the server.
+     */
+    Object data;
+    while ((data = protocol.processing()) != null)
+      os.writeObject(data);
 
     os.close();
     is.close();
     socket.close();
   }
 
+  /**
+   * Listening from the server.
+   */
   public void run () {
-    String response;
+    Object response;
 
     try {
-      while ((response = is.readLine()) != null) {
-        System.out.println(response);
-        if (response.equals("quit")) closed = true;
-      }
-    } catch (IOException e) {
+      while ((response = is.readObject()) != null)
+        protocol.processInput(response);
+    } catch (Exception e) {
       System.err.println(e);
     }
   }

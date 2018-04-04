@@ -75,6 +75,12 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
+    public MainFrame (Controller controller) 
+        throws Exception {
+      this();
+      setController(controller);
+    }
     
     public static int getTimer () {
         return timer;

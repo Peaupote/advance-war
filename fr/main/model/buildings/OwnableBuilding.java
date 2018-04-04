@@ -2,10 +2,13 @@ package fr.main.model.buildings;
 
 import java.awt.Point;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * Class representing a building that can be owned by a player
+ */
 public abstract class OwnableBuilding extends Building {
 
     protected int life;
@@ -22,6 +25,10 @@ public abstract class OwnableBuilding extends Building {
             p.addBuilding(this);
     }
 
+    /**
+     * @param fogwar is an array representing the vision of the map
+     * set to true all the tiles the owner of this building can see
+     */
     public void renderVision(boolean[][] fogwar){
         fogwar[location.y][location.x] = true;
     }
@@ -34,6 +41,9 @@ public abstract class OwnableBuilding extends Building {
         return owner;
     }
 
+    /**
+     * @param p is the new owner of the player
+     */
     public void setOwner(Player p){
         if (owner != null)
             owner.removeBuilding(this);
@@ -42,6 +52,9 @@ public abstract class OwnableBuilding extends Building {
             owner.addBuilding(this);
     }
 
+    /**
+     * @return true if and only if the building has no owner
+     */
     public boolean isNeutral(){
         return owner == null;
     }
@@ -54,9 +67,11 @@ public abstract class OwnableBuilding extends Building {
         return income;
     }
 
-    /*
-    * @return true if and only if the building was captured
-    */
+    /**
+     * @param player is the player capturing the building
+     * @param life is the amount of damage inflicted to the building
+     * @return true if and only if the building was captured
+     */
     public boolean removeLife(Player player, int life){
         if (this.life<=life){
             setOwner(player);
@@ -68,6 +83,10 @@ public abstract class OwnableBuilding extends Building {
         }
     }
 
+    /**
+     * @param u is the unit capturing the building
+     * @return true if and only if the building was captured
+     */
     public boolean removeLife(Unit u){
         return removeLife(u.getPlayer(),u.getLife());
     }
@@ -75,5 +94,4 @@ public abstract class OwnableBuilding extends Building {
     public void goBackToMaximumLife(){
         life = maximumLife;
     }
-
 }

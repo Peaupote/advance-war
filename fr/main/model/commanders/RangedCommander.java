@@ -1,10 +1,13 @@
 package fr.main.model.commanders;
 
 import fr.main.model.Universe;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 
+/**
+ * A commander with good ranged units
+ */
 public class RangedCommander extends Commander{
     public RangedCommander(Player player){
         super(player, new Power(800), new Power(1600));

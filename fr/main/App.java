@@ -4,12 +4,13 @@ import java.io.IOException;
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.commanders.FakeCommander;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
+import fr.main.network.*;
 
 /**
  * Classe qui lance le projet
@@ -21,6 +22,8 @@ public class App {
     switch (s) {
       case "play": play();break;
       case "save": save();break;
+      case "server": new Server(8080);break;
+      case "client": new Client("localhost", 8080);break;
       default: 
         save();
         play();

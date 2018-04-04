@@ -6,10 +6,12 @@ import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.terrains.AbstractBuildable;
 
 import java.io.Serializable;
 
+/**
+ * Class representing a 'basic' building
+ */
 public abstract class Building implements AbstractBuilding{
 
     protected final int defense;
@@ -39,6 +41,9 @@ public abstract class Building implements AbstractBuilding{
         return u instanceof AirUnit ? 0 : defense;
     }
 
+    /**
+     * @return the terrain on which the building is located
+     */
     public AbstractTerrain getTerrain () {
         return Universe.get().getTerrain(location);
     }

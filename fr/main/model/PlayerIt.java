@@ -3,6 +3,8 @@ package fr.main.model;
 import java.util.Iterator;
 import java.lang.Iterable;
 
+import fr.main.model.players.Player;
+
 /**
  * Class managing the cycle of players:
  */

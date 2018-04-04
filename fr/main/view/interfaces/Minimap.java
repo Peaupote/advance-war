@@ -10,10 +10,12 @@ import fr.main.model.buildings.*;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.terrains.AbstractBuildable;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
 
+/**
+ * In-game minimap user interface
+ */
 public class Minimap extends InterfaceUI {
 
   private final Position.Camera camera;
@@ -23,10 +25,10 @@ public class Minimap extends InterfaceUI {
   private static final Color fogColor = new Color(0,0,0,200);
 
   public Minimap (Position.Camera camera, TerrainPanel reference) {
-    this.camera = camera;
+    this.camera    = camera;
     this.reference = reference;
-    world = Universe.get();
-    size = TerrainPanel.HEIGHT / world.getDimension().height;
+    world          = Universe.get();
+    size           = TerrainPanel.HEIGHT / world.getDimension().height;
   }
 
   public void draw (Graphics g) {

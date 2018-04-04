@@ -5,9 +5,12 @@ import java.util.HashMap;
 
 import fr.main.model.Weather;
 import fr.main.model.units.MoveType;
-import fr.main.model.terrains.Buildable;
+import fr.main.model.terrains.Terrain;
 
-public class Lowland extends Buildable implements LandTerrain {
+/**
+ * represents a lowland
+ */
+public class Lowland extends Terrain implements LandTerrain {
 
     private static Lowland instance;
     public static final String name="Plaine";

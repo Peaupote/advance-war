@@ -11,12 +11,20 @@ import fr.main.view.MainFrame;
 import fr.main.view.Position;
 import fr.main.view.render.units.UnitRenderer;
 
+/**
+ * Arrow renderer for path
+ */
 public class PathRenderer extends Path {
 
     private Position.Camera camera;
     private UniverseRenderer world;
     public boolean visible;
     private Image[] images;
+
+    /**
+     * All images path
+     * TODO: change for sprites
+     */
     private static String[] filepaths = {
             "./assets/arrows/arrow-bottom.png",
             "./assets/arrows/arrow-left.png",
@@ -58,6 +66,7 @@ public class PathRenderer extends Path {
                 Direction next = get(i);
                 d.move(point);
 
+                // choosing right image depending on the i-th and the (i+1)-th
                 if ((d == Direction.LEFT && next == Direction.LEFT) ||
                         (d == Direction.LEFT && next == Direction.RIGHT) ||
                         (d == Direction.RIGHT && next == Direction.LEFT) ||
@@ -88,6 +97,8 @@ public class PathRenderer extends Path {
         Image arrow = null;
         Direction d = getLast();
         d.move(point);
+
+        // last images
         if (d == Direction.LEFT) arrow = images[1];
         else if (d == Direction.RIGHT) arrow = images[2];
         else if (d == Direction.TOP) arrow = images[3];
@@ -100,6 +111,9 @@ public class PathRenderer extends Path {
                 MainFrame.UNIT, MainFrame.UNIT, null);
     }
 
+    /**
+     * make the unit moves allong the path
+     */
     public boolean apply () {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 

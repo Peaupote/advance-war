@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.HideableUnit;
@@ -13,6 +13,9 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.land.*;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a stealth (a plane that can hide itself)
+ */
 public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 
     public static final String NAME = "Furtif";

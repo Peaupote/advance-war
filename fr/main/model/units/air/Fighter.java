@@ -9,9 +9,12 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 
+/**
+ * Represents a fighter
+ */
 public class Fighter extends Unit implements PlaneUnit{
 
     public static final String NAME = "Chasseur";

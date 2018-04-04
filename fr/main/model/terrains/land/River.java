@@ -7,6 +7,9 @@ import fr.main.model.Weather;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a river
+ */
 public class River extends Terrain implements LandTerrain {
 
     private static River instance;

@@ -1,5 +1,8 @@
 package fr.main.model.units;
 
+/**
+ * Enum to represent the move type of an unit
+ */
 public enum MoveType {
 
 	AIRY("Aérien"),

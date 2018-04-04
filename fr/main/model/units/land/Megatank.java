@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
@@ -14,6 +14,9 @@ import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 import fr.main.model.units.naval.*;
 
+/**
+ * Represents a big tank
+ */
 public class Megatank extends Unit implements TankUnit{
 
     public static final String NAME = "Megatank";

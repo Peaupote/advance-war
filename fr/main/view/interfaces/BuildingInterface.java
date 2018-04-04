@@ -11,14 +11,24 @@ import fr.main.model.units.air.AirUnit;
 import fr.main.view.controllers.GameController;
 import fr.main.view.MainFrame;
 
+/**
+ * Action panel to create unit after selecting a building
+ */
 public class BuildingInterface extends GameController.ControllerPanel {
 
+  /**
+   * Selected building
+   */
   private FactoryBuilding building;
+
   private GameController controller;
 
+  /**
+   * Index for a single unit
+   */
   class IndexClass extends Index {
 
-    final Class c;
+    final Class<? extends AbstractUnit> c;
 
     public IndexClass (Class<? extends AbstractUnit> c)
         throws NoSuchFieldException, IllegalAccessException {
@@ -52,7 +62,7 @@ public class BuildingInterface extends GameController.ControllerPanel {
   public void onOpen () {
     super.onOpen();
     building = (FactoryBuilding)controller.world.getBuilding(controller.cursor.position());
-    Set units = building.getUnitList();
+    Set<Class<? extends AbstractUnit>> units = building.getUnitList();
     for (Index i: actions.values())
       if (units.contains(((IndexClass)i).c)) i.setActive(true);
       else i.setActive(false);

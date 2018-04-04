@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
 import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.land.Beach;
@@ -17,6 +17,9 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.land.LandUnit;
 
+/**
+ * Represents a submarine
+ */
 public class Sub extends Unit implements NavalUnit, HideableUnit {
 
     private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();

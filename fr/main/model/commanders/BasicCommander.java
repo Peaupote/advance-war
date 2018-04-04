@@ -1,8 +1,11 @@
 package fr.main.model.commanders;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
 
+/**
+ * A basic commander with no real power but to increase attack and defense of its units
+ */
 public class BasicCommander extends Commander{
 	public BasicCommander(Player player){
 		super(player, new Power(600), new Power(1200));

@@ -1,6 +1,8 @@
 package fr.main.view;
 
-// TODO: ask if can remove
+/**
+ * Use as reference for all loction enum
+ */
 public interface Location {
 	String getPath();
 }

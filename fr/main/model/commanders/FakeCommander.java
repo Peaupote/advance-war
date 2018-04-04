@@ -1,7 +1,10 @@
 package fr.main.model.commanders;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
+/**
+ * A commander with no power and no bonus of any sort
+ */
 public class FakeCommander extends Commander {
 
   public FakeCommander (Player player) {

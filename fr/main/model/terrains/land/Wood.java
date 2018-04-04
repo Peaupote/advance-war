@@ -10,6 +10,9 @@ import fr.main.model.units.land.LandUnit;
 import fr.main.model.units.air.AirUnit;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * represents a forest
+ */
 public class Wood extends Terrain implements LandTerrain {
 
     private static Wood instance;

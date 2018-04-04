@@ -16,7 +16,7 @@ public class Sprite {
 
 	private BufferedImage sprite;
 
-	private Sprite(String path) {
+	Sprite(String path) {
 		instances.put(path, this);
 
 		try {

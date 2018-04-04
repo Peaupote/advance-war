@@ -5,25 +5,17 @@ import java.util.Iterator;
 import java.lang.Iterable;
 import java.awt.Graphics;
 
+/**
+ * User interface panels
+ */
 public abstract class InterfaceUI {
 
   private boolean visible;
 
-  private static class ComponentsIt implements Iterable<InterfaceUI> {
-
-    private LinkedList<InterfaceUI> components;
-
-    public ComponentsIt () {
-      components = new LinkedList<>();
-    }
-
-    public Iterator<InterfaceUI> iterator() {
-      return components.iterator();
-    }
-
-  }
-
-  private static ComponentsIt comps = new ComponentsIt();
+  /**
+   * List of all interfaces
+   */
+  private static LinkedList<InterfaceUI> comps = new LinkedList<>();
 
   public static Iterable<InterfaceUI> components () {
     return comps;
@@ -31,7 +23,7 @@ public abstract class InterfaceUI {
 
   public InterfaceUI (boolean visible) {
     this.visible = visible;
-    comps.components.add(this);
+    comps.add(this);
   }
 
   public InterfaceUI () {
@@ -40,6 +32,9 @@ public abstract class InterfaceUI {
 
   protected abstract void draw (Graphics g);
 
+  /**
+   * Render interface visual if visible
+   */
   public final void render (Graphics g) {
     if (visible) draw(g);
   }

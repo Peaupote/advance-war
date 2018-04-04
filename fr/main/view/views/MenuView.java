@@ -9,11 +9,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
 import fr.main.view.sound.MusicEngine;
 import fr.main.view.components.*;
 import fr.main.view.controllers.MenuController;
 
+/**
+ * Rendering main menu
+ */
 public class MenuView extends View {
 
 	private ImageIcon bg;
@@ -45,8 +47,8 @@ public class MenuView extends View {
 		
 		exit = new MenuButton("EXIT","./assets/button/b03.png",830, 0,20);
 		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0,20);
-		sound = new RButton("×");
-		sound.setBounds(40, 600, 60, 60);
+		sound = new MenuButton("", "./assets/button/music02.png", 40,600);
+		
     } catch (IOException e) {
       System.err.println(e);
     }
@@ -67,8 +69,18 @@ public class MenuView extends View {
     add(label);
 
     play.addActionListener(controller.play);
-    sound.addActionListener(controller.sound);
     exit.addActionListener(controller.exit);
+    sound.addActionListener((ActionEvent e) -> {
+		if(listen) {
+			sound.setIcon(new ImageIcon("./assets/button/music03.png"));
+			bm.start(true);
+		}else {
+			sound.setIcon(new ImageIcon("./assets/button/music02.png"));
+			bm.stop();
+		}
+		listen = !listen;
+	});
+    
 	}
 
 }

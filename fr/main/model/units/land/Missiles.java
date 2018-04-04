@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
 import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;
@@ -12,6 +12,9 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.air.*;
 
+/**
+ * Represents a anti air missile 
+ */
 public class Missiles extends Unit implements LandVehicleUnit{
 
     public static final String NAME = "Anti-aérien";

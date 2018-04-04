@@ -7,6 +7,9 @@ import fr.main.model.Weather;
 import fr.main.model.units.MoveType;
 import fr.main.model.terrains.Terrain;
 
+/**
+ * Represents a road
+ */
 public class Road extends Terrain implements LandTerrain {
 
     private static Road instance;

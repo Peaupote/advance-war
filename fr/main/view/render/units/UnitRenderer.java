@@ -143,6 +143,14 @@ public class UnitRenderer {
     return renderers.get(unit);
   }
 
+  public static void remove (AbstractUnit u){
+    remove(renderers.get(u));
+  }
+
+  public static void remove(Render r){
+    renderers.remove(r);
+  }
+
   public static void render(Graphics g, Point coords, AbstractUnit unit) {
     getRender(unit).draw (g, coords.x, coords.y);
   }

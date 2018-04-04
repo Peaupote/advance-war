@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
@@ -13,6 +13,9 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.Unit;
 import fr.main.model.units.air.*;
 
+/**
+ * Represents an anti air unit
+ */
 public class AntiAir extends Unit implements LandVehicleUnit{
 
     public static final String NAME = "DCA";

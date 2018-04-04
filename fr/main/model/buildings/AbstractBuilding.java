@@ -4,7 +4,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.terrains.AbstractTerrain;
 
 /**
- * Interface representing a buildings
+ * Interface representing a building
  *
  */
 public interface AbstractBuilding extends java.io.Serializable{
@@ -15,7 +15,7 @@ public interface AbstractBuilding extends java.io.Serializable{
   String getName();
 
   /**
-   * @param AbstractUnit unit on the building
+   * @param u is the unit on the building
    * @return defense bonus given by the building
    */
   int getDefense (AbstractUnit u);

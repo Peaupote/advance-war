@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.HashMap;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
@@ -16,6 +16,9 @@ import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 
+/**
+ * Represents a mech (a walking unit whose weapon is a bazooka)
+ */
 public class Mech extends Unit implements WalkingUnit,CaptureBuilding{
 
     public static final String NAME = "Bazooka";

@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 import fr.main.view.controllers.*;
 import fr.main.view.views.View;
 
@@ -18,13 +18,31 @@ import fr.main.view.views.View;
  */
 public class MainFrame extends JFrame {
 
+    /**
+     * Dimension of the window
+     */
     public static final int WIDTH = 960,
-                            HEIGHT = 704,
-                            UNIT = 32;
+                              HEIGHT = 704,
+                              UNIT = 32;
 
+    /**
+     * Time spend since the controller has been loaded (in ms)
+     */
     private static int timer = 0;
+
+    /**
+     * Unique instance of the MainFrame
+     */
     private static MainFrame instance;
+
+    /**
+     * Current controller
+     */
     Controller controller;
+
+    /**
+     * View associated with the controller
+     */
     View view;
     
     public MainFrame ()
@@ -43,7 +61,6 @@ public class MainFrame extends JFrame {
         new Thread(() -> {
             while (true) {
                 timer = timer == Integer.MAX_VALUE ? 0 : timer + 1;
-
                 controller.update();
                 view.repaint();
                 try {
@@ -77,6 +94,9 @@ public class MainFrame extends JFrame {
       pack();
     }
 
+    /**
+     * Change Scene
+     */
     public static void setScene (Controller controller) {
       instance.setController (controller);
     }

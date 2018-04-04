@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import java.util.HashSet;
 
-import fr.main.model.Player;
+import fr.main.model.players.Player;
 
 import fr.main.model.Universe;
 import fr.main.model.units.Unit;
@@ -13,6 +13,9 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
 
+/**
+ * Represents a lander (a transport boat)
+ */
 public class Lander extends Unit implements NavalUnit, TransportUnit {
 
     public static final String NAME = "Barge";

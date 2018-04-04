@@ -58,7 +58,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
         id        = ++increment_id;
         units     = new HashSet<AbstractUnit>();
         buildings = new HashSet<OwnableBuilding>();
-        color     = colors[id - 1];
+        color     = colors[(id - 1) % colors.length];
         commander = null;
         funds     = 0;
         hasLost   = false;

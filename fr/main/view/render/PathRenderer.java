@@ -126,7 +126,7 @@ public class PathRenderer extends Path {
             d.move(pt);
 
             AbstractUnit u = world.getUnit(pt);
-            // if we meet an opponent unit, we can go any further
+            // if we meet an opponent unit, we can't go any further
             if (u != null && u.getPlayer() != unit.getPlayer()){
                 if (u.canAttack(unit)) {
                     int life = unit.getLife();
@@ -148,6 +148,7 @@ public class PathRenderer extends Path {
             }
             unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
             unit.getFuel().consume(1);
+            if (unit.dead()) return false;
             previouslyUnit = u != null;
             if (u == null){
                 world.setUnit(unit.getX(), unit.getY(), null);

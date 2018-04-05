@@ -3,6 +3,7 @@ package fr.main.model.players;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
@@ -31,18 +32,21 @@ public class UnitControlAI implements ArtificialIntelligence {
 	}
 
 	public void run(){
+        // we have to use a copy of the list to avoid concurrent modification exception if an unit dies for example
+        ArrayList<UnitActionChooser> unitList = new ArrayList<UnitActionChooser>(units.values());
+
         // first ranged units play
-        checkUnits(units.values().iterator(), u -> u.getPrimaryWeapon() != null && !u.getPrimaryWeapon().isContactWeapon());
+        checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null && !u.getPrimaryWeapon().isContactWeapon());
 
         // then contact units play
-        checkUnits(units.values().iterator(), u -> u.getPrimaryWeapon() != null ||  u.getSecondaryWeapon() != null);
+        checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null ||  u.getSecondaryWeapon() != null);
 
         // eventually other units play
-        checkUnits(units.values().iterator(), u -> u.isEnabled());
+        checkUnits(unitList.iterator(), u -> u.isEnabled());
 
         // if one unit still has move points, we give it a try to do something
         // because the situation may have changed since the first calculus of the thing to do
-        checkUnits(units.values().iterator(), u -> u.isEnabled());
+        checkUnits(unitList.iterator(), u -> u.isEnabled());
 	}
 
     /**
@@ -53,8 +57,10 @@ public class UnitControlAI implements ArtificialIntelligence {
     private void checkUnits(Iterator<UnitActionChooser> iterator, Predicate<AbstractUnit> test){
         while (iterator.hasNext()){
             UnitActionChooser actionChooser = iterator.next();
-            if (test.test(actionChooser.unit))
+            if (test.test(actionChooser.unit)){
                 actionChooser.findAction().run();
+                if (!actionChooser.unit.isEnabled()) iterator.remove();
+            }
         }
     }
 

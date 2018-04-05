@@ -26,8 +26,13 @@ TODO
 - [ ] Victory panel
 - [ ] Be able to save the game and resume it
 - [ ] Access to the menu from the game
-- [ ] Choose player's names
+- [ ] Choose player's name
 - [ ] Choose whether a player is human or AI
+- [ ] Display damages in attack selection
+- [ ] Display ammunitions
+- [ ] Display death/destruction animation
+- [ ] Improve design of the panels (in game)
+- [ ] Display building's life
 
 
 TODO of Peaupote
@@ -46,6 +51,19 @@ TODO of pgimalac
 ====
 
 - [ ] Create an AI
+    - [ ] Economic AI
+        - [x] Random unit creation
+        - [ ] Smart unit creation (unit type)
+        - [ ] Smart unit creation (unit place)
+    - [ ] Unit manager AI
+        - [ ] Finite state machine to manage each unit independently
+            - [x] Random unit move
+            - [ ] Clever unit move
+            - [ ] Switch from one state to another
+        - [ ] Objective manager to tell units to do something (units don't act separatly)
+    - [ ] Global AI
+        - [x] Power activation
+        - [ ] Finds objectives and affect unit manager on it
 
 
 TODO of firgaty

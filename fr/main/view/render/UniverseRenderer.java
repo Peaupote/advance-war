@@ -30,7 +30,7 @@ import fr.main.view.render.buildings.BuildingRenderer;
 
 public class UniverseRenderer extends Universe {
 
-    private final GameController controller;
+    public final GameController controller;
     private final Color fogColor    = new Color (0,0,0,100),
                         moveColor   = new Color (0, 255, 0, 50),
                         targetColor = new Color (255, 0, 0, 100),

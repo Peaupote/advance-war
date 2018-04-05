@@ -45,7 +45,7 @@ public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUni
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof WalkingUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof WalkingUnit;
     }
 
     public boolean charge(AbstractUnit u){

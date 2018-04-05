@@ -2,6 +2,7 @@ package fr.main.model.units;
 
 import java.awt.Point;
 import java.util.HashSet;
+import java.util.Random;
 
 import fr.main.model.units.weapons.*;
 import fr.main.model.Universe;
@@ -328,5 +329,28 @@ public interface AbstractUnit extends Serializable {
         Universe u = Universe.get();
         return (u.getUnit(x,y) == null || (u.getUnit(x, y).getPlayer() != getPlayer() && !u.isVisibleOpponentUnit(x, y))) && 
                 ((this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) || u.getTerrain(x,y).canStop(this));
+    }
+
+    /**
+     * @param attacker is the unit that attacks
+     * @param b is the weapon used to attack : true for the primary weapon and false for the secondary weapon
+     * @param defender is the unit that defends
+     * @return the damage inflicted by the attacker to the defender with the weapon
+     */
+    public static int damage(AbstractUnit attacker, boolean b, AbstractUnit defender){
+        Weapon w    = b ? attacker.getPrimaryWeapon() : attacker.getSecondaryWeapon();
+        if (w == null || ! w.canAttack(attacker,defender)) return 0;
+        
+        int d       = w.damage(defender);
+        int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
+        Random rand = new Random(); int r = rand.nextInt(1000);
+        int aHP     = attacker.getLife();
+        int dCO     = defender.getPlayer().getCommander().getDefenseValue(defender);
+        AbstractBuilding building = Universe.get().getBuilding(defender.getX(), defender.getY());
+        int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender) + (building == null ? 0 : building.getDefense(defender));
+        int dHP     = defender.getLife();
+
+        // the formula isn't obvious but works nicely
+        return Math.max(0, (d * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
     }
 }

@@ -44,7 +44,7 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof LandUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof LandUnit;
     }
 
     public boolean charge(AbstractUnit u){

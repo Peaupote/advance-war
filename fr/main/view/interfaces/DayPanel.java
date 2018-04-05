@@ -13,6 +13,7 @@ import fr.main.view.MainFrame;
  */
 public class DayPanel extends InterfaceUI {
 
+  public static final int PANEL_TIME = 1500;
   private static final int HEIGHT = 200, MARGINTOP = MainFrame.HEIGHT / 2 - HEIGHT;
 
   public DayPanel () {
@@ -32,7 +33,7 @@ public class DayPanel extends InterfaceUI {
     // TODO: make a real animation here instead of a new thread each time
     new Thread(() -> {
       try {
-        Thread.sleep(1500);
+        Thread.sleep(PANEL_TIME);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }

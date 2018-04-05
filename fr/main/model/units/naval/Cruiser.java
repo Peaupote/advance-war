@@ -76,7 +76,7 @@ public class Cruiser extends Unit implements NavalUnit, TransportUnit {
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof CopterUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof CopterUnit;
     }
 
     public boolean charge(AbstractUnit u){

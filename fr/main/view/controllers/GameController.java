@@ -216,6 +216,11 @@ public class GameController extends Controller {
             new Index("Wait", () -> {});
             new Index("Big power", world::bigPower);
             new Index("Small power", world::smallPower);
+            new Index("Save", world::save);
+            new Index("Quit to menu", () -> {
+                MainFrame.setScene(new MenuController());
+            });
+            new Index("Quit game", () -> { System.exit(0); });
         }
 
         @Override

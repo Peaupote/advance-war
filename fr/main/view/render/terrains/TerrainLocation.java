@@ -42,8 +42,8 @@ public interface TerrainLocation extends Serializable{
 	public enum BeachLocation implements TerrainLocation {
 		LEFT(1, TerrainImageRect.LEFT), RIGHT(1, TerrainImageRect.RIGHT),
 		TOP(1, TerrainImageRect.TOP), BOTTOM(1, TerrainImageRect.BOTTOM),
-		FILLED_LEFT(0, TerrainImageRect.LEFT), FILLED_RIGHT(0, TerrainImageRect.RIGHT),
-		FILLED_TOP(0, TerrainImageRect.TOP), FILLED_BOTTOM(0, TerrainImageRect.BOTTOM),
+		FILLED_LEFT(0, TerrainImageRect.RIGHT), FILLED_RIGHT(0, TerrainImageRect.LEFT),
+		FILLED_TOP(0, TerrainImageRect.BOTTOM), FILLED_BOTTOM(0, TerrainImageRect.TOP),
 		INNER_BOTTOM_RIGHT(1, TerrainImageRect.BOTTOM_RIGHT), INNER_BOTTOM_LEFT(1, TerrainImageRect.BOTTOM_LEFT),
 		INNER_UPPER_RIGHT(1, TerrainImageRect.TOP_RIGHT), INNER_UPPER_LEFT(1, TerrainImageRect.TOP_LEFT),
 		OUTER_BOTTOM_RIGHT(0, TerrainImageRect.BOTTOM_RIGHT), OUTER_BOTTOM_LEFT(0, TerrainImageRect.BOTTOM_LEFT),

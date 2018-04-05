@@ -106,18 +106,26 @@ public class Server extends ServerSocket {
     super (port);
     clients = new ClientThread[MAX_CLIENT_COUNT];
     System.out.println("Start server");
+  }
 
-    while (true) {
-      socket = accept();
-      if (connectedClients == MAX_CLIENT_COUNT) 
-        exitConnectionWithMessage("Server is to busy. Try later");
+  public void listen () {
+    System.out.println("Start to listen");
 
-      int i;
-      for (i = 0; i < MAX_CLIENT_COUNT && clients[i] != null; i++);
-      ClientThread clientThread = new ClientThread(socket);
-      clients[i] = clientThread;
-      clientThread.start();
-      connectedClients++;
+    try {
+      while (true) {
+        socket = accept();
+        if (connectedClients == MAX_CLIENT_COUNT) 
+          exitConnectionWithMessage("Server is to busy. Try later");
+
+        int i;
+        for (i = 0; i < MAX_CLIENT_COUNT && clients[i] != null; i++);
+        ClientThread clientThread = new ClientThread(socket);
+        clients[i] = clientThread;
+        clientThread.start();
+        connectedClients++;
+      }
+    } catch (Exception e) {
+      System.err.println(e);
     }
   }
 

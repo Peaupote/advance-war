@@ -3,6 +3,7 @@ package fr.main.network;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.net.InetAddress;
 
 /**
  * Represent client playing.
@@ -25,56 +26,51 @@ public class Client implements Runnable {
   private ObjectInputStream is;
 
   /**
-   * User input stream.
-   */
-  private BufferedReader inputLine;
-
-  /**
    * Advance war protocol telling client
    * what he must do.
    */
   private AdwProtocol.Client protocol;
 
-  /**
-   * Is listening to the server.
-   */
-  private static boolean closed;
-
   public Client (String host, int port)
       throws UnknownHostException, IOException {
-    closed = false;
     socket = new Socket(host, port);
-    inputLine = new BufferedReader(new InputStreamReader(System.in));
     os = new ObjectOutputStream(socket.getOutputStream());
     is = new ObjectInputStream(socket.getInputStream());
     protocol = new AdwProtocol.Client();
 
     new Thread(this).start();
+  }
 
-    /**
-     * Send messages to the server.
-     */
-    Object data;
-    while ((data = protocol.processing()) != null)
-      os.writeObject(data);
-
-    os.close();
-    is.close();
-    socket.close();
+  public void listen () {
+    try {
+      Object data;
+      while ((data = protocol.processing()) != null)
+        os.writeObject(data);
+  
+      os.close();
+      is.close();
+      socket.close();
+    } catch (Exception e) {
+      System.err.println(e);
+    }
   }
 
   /**
    * Listening from the server.
    */
   public void run () {
-    Object response;
+    Object data;
 
     try {
-      while ((response = is.readObject()) != null)
-        protocol.processInput(response);
+      while ((data = is.readObject()) != null)
+        protocol.processInput(data);
     } catch (Exception e) {
       System.err.println(e);
     }
+  }
+
+  public InetAddress getInetAddress () {
+    return socket.getInetAddress();
   }
 
 }

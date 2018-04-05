@@ -13,7 +13,7 @@ public abstract class Controller
   extends KeyAdapter implements MouseMotionListener {
 
   /**
-   * Function called each loop turn
+   * Function called each loop turn.
    */
   public void update() {}
 

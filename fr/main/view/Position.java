@@ -1,10 +1,6 @@
 package fr.main.view;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Image;
+import java.awt.*;
 import javax.imageio.ImageIO;
 import java.io.*;
 

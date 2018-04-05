@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import fr.main.view.sound.MusicEngine;
 import fr.main.view.components.*;
-import fr.main.view.controllers.MenuController;
+import fr.main.view.controllers.*;
 
 /**
  * Rendering main menu
@@ -22,8 +22,8 @@ public class MenuView extends View {
 	private JLabel label;
 	private JButton play,
                   select,
-                  load,
-                  edit,
+                  host,
+                  join,
                   exit,
                   option,
                   sound;
@@ -42,8 +42,8 @@ public class MenuView extends View {
 		
 		play =new MenuButton("PLAY","./assets/button/b02.png",350, 150);
 		select = new MenuButton("SELECT","./assets/button/b02.png",350, 290);
-		load = new MenuButton("LOAD","./assets/button/b02.png",350, 430);
-		edit = new MenuButton("EDIT","./assets/button/b02.png",350, 570);
+		host = new MenuButton("HOST","./assets/button/b02.png",350, 430);
+		join = new MenuButton("JOIN","./assets/button/b02.png",350, 570);
 		
 		exit = new MenuButton("EXIT","./assets/button/b03.png",830, 0,20);
 		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0,20);
@@ -59,8 +59,8 @@ public class MenuView extends View {
 		
 		label.add(play);
 		label.add(select);
-		label.add(load);
-		label.add(edit);
+		label.add(host);
+		label.add(join);
 		label.add(play);
 		label.add(exit);
 		label.add(option);
@@ -70,16 +70,18 @@ public class MenuView extends View {
 
     play.addActionListener(controller.play);
     exit.addActionListener(controller.exit);
+    host.addActionListener(controller.host);
+    join.addActionListener(controller.join);
     sound.addActionListener((ActionEvent e) -> {
-		if(listen) {
-			sound.setIcon(new ImageIcon("./assets/button/music03.png"));
-			bm.start(true);
-		}else {
-			sound.setIcon(new ImageIcon("./assets/button/music02.png"));
-			bm.stop();
-		}
-		listen = !listen;
-	});
+      if(listen) {
+        sound.setIcon(new ImageIcon("./assets/button/music03.png"));
+        bm.start(true);
+      } else {
+        sound.setIcon(new ImageIcon("./assets/button/music02.png"));
+        bm.stop();
+      }
+      listen = !listen;
+    });
     
 	}
 

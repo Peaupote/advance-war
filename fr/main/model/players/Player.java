@@ -28,7 +28,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * The number of players
      */
-    private static int increment_id = 0;
+    public static int increment_id = 0;
 
     public final String name;
     /**

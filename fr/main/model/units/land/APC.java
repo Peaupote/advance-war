@@ -43,7 +43,7 @@ public class APC extends Unit implements LandVehicleUnit,TransportUnit,SupplyUni
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof WalkingUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof WalkingUnit;
     }
 
     public boolean charge(AbstractUnit u){

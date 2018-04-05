@@ -1,7 +1,6 @@
 package fr.main.model.units;
 
 import java.awt.*;
-import java.util.Random;
 import java.util.HashSet;
 import java.io.Serializable;
 
@@ -57,8 +56,8 @@ public abstract class Unit implements AbstractUnit {
         public boolean consume(int quantity){
             quantity *= Universe.get().getWeather().malusFuel;
             this.quantity = Math.max(0,this.quantity-quantity);
-            if (fuel.quantity == 0 && diesIfNoFuel) dies();
-            return quantity!=0;
+            if (fuel.quantity <= 0 && diesIfNoFuel) dies();
+            return quantity != 0;
         }
 
         public void replenish(){
@@ -388,16 +387,18 @@ public abstract class Unit implements AbstractUnit {
     @Override
     public void attack(AbstractUnit u, boolean counter){
         if (getMoveQuantity()==0) return;
-        if (primaryWeapon != null && primaryWeapon.canAttack(this,u)){
+        Weapon w = null;
+
+        if (primaryWeapon != null && primaryWeapon.canAttack(this,u))
+            w = primaryWeapon;
             // if possible we attack with the main weapon
-            primaryWeapon.shoot();
-            int damages = damage(this,true,u);
-            u.getPlayer().getCommander().powerBar.addValue(damages);
-            u.removeLife(damages);
-        } else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u)) {
+        else if (secondaryWeapon != null && secondaryWeapon.canAttack(this,u))
+            w = secondaryWeapon;
             // else we use the secondary weapon
-            secondaryWeapon.shoot();
-            int damages = damage(this,false,u);
+
+        if (w != null){
+            w.shoot();
+            int damages = AbstractUnit.damage(this, w == primaryWeapon ,u);
             u.getPlayer().getCommander().powerBar.addValue(damages);
             u.removeLife(damages);
         }
@@ -419,28 +420,4 @@ public abstract class Unit implements AbstractUnit {
     public int getCost(){
         return cost;
     }
-
-    /**
-     * @param attacker is the unit that attacks
-     * @param b is the weapon used to attack : true for the primary weapon and false for the secondary weapon
-     * @param defender is the unit that defends
-     * @return the damage inflicted by the attacker to the defender with the weapon
-     */
-    public static final int damage(AbstractUnit attacker, boolean b, AbstractUnit defender){
-        Weapon w    = b ? attacker.getPrimaryWeapon() : attacker.getSecondaryWeapon();
-        if (w == null || ! w.canAttack(attacker,defender)) return 0;
-        
-        int d       = w.damage(defender);
-        int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
-        Random rand = new Random(); int r = rand.nextInt(1000);
-        int aHP     = attacker.getLife();
-        int dCO     = defender.getPlayer().getCommander().getDefenseValue(defender);
-        AbstractBuilding building = Universe.get().getBuilding(defender.getX(), defender.getY());
-        int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender) + (building == null ? 0 : building.getDefense(defender));
-        int dHP     = defender.getLife();
-
-        // the formula isn't obvious but works nicely
-        return Math.max(0, (d * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
-    }
-
 }

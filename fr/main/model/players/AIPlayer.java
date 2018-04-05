@@ -5,17 +5,14 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.commanders.Commander;
 import fr.main.model.buildings.OwnableBuilding;
 
+import fr.main.view.interfaces.DayPanel;
+
 /**
  * Represents an artificial intelligence player
  * This class's role in the decision process is empire AI (it determines the tactics to win and deals with the entire empire)
  * The game has no diplomacy and the only victory condition is taking the opponent's HQ so this class actually doesn't do much
  */
 public class AIPlayer extends Player implements ArtificialIntelligence {
-
-    /**
-     * Minimum time the ai takes to play its turn in milliseconds
-     */
-    public static final int AI_TIME_PLAY_MINIMUM = 750;
 
     private static int num = 1;
 
@@ -62,8 +59,8 @@ public class AIPlayer extends Player implements ArtificialIntelligence {
      * What the empire AI does when it plays
      */
     public void run(){
-        System.out.println(name + " plays");
-        long time = System.currentTimeMillis();
+        try{ Thread.sleep(DayPanel.PANEL_TIME + 150); }
+        catch(InterruptedException e){}
 
         // power is activated as soon as it can be
         if (commander.canActivate(true)) commander.activate(true);
@@ -75,10 +72,6 @@ public class AIPlayer extends Player implements ArtificialIntelligence {
         // creates the units
         economicAI.run();
 
-        // the AI takes at least a certain time (AI_TIME_PLAY_MINIMUM) to play
-        if (System.currentTimeMillis() - time < AI_TIME_PLAY_MINIMUM)
-            try{ Thread.sleep(AI_TIME_PLAY_MINIMUM - System.currentTimeMillis() + time); }
-            catch(InterruptedException e){}
 
         Universe.get().next();
     }

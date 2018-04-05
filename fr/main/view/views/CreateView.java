@@ -136,6 +136,7 @@ public class CreateView extends View {
      * @return list of all players in the game
      */
     public Player[] getPlayers() {
+      Player.increment_id = 0;
       ArrayList<Player> ps = new ArrayList<>();
       for (int i = 0; i < selected.length; i++) {
         if (selected[i] == -1) continue;

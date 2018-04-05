@@ -13,21 +13,29 @@ import fr.main.model.units.air.*;
 
 import java.awt.Point;
 import java.util.Random;
-import java.util.function.Consumer;
+import java.util.ArrayList;
 import java.util.function.Function;
+import java.util.function.Consumer;
+
+/*
+    Import some classes of the view for the actions of the units 
+ */
+import fr.main.view.render.UniverseRenderer;
+import fr.main.view.render.PathRenderer;
+
 
 /**
  * Class used to find the action of an unit
  * It compares the possibilities to find the perfect one
  * Each instance is an FSM (finite state machine) which manages one unit (with total independence with other units)
  */
-public class UnitActionChooser {
+public class UnitActionChooser implements java.io.Serializable {
 
     /**
      * Represents the differents states of the FSM
      * Different actions are done depending on the state of the unit
      */
-    static enum State {
+    static enum State implements java.io.Serializable {
         AIMLESS   (u -> u::aimless),   // goes by the map without clear objective
         GO        (u -> u::go),        // goes toward a location
         FLEE      (u -> u::flee),      // flee from an opponent
@@ -48,13 +56,15 @@ public class UnitActionChooser {
         }
     }
 
+    public static final Random rand = new Random();
+
     public final AbstractUnit unit;
 
     private State state;
 
-    private Runnable action;
-    private Node[][] localMap;
-    private Point offset;
+    private transient Runnable action;
+    private transient Node[][] localMap;
+    private transient Point offset;
 
     public final boolean attack;
     public final boolean indirect;
@@ -116,8 +126,21 @@ public class UnitActionChooser {
      * Runnable doing what its name indicates
      */
     public void aimless (){
+        ArrayList<Point> points = new ArrayList<Point>();
+        for (int i = 0; i < localMap.length; i++)
+            for (int j = 0; j < localMap[i].length; j++)
+                if (localMap[i][j].canStop)
+                    points.add(new Point(i ,j));
+        if (points.isEmpty()) action = () -> {};
+        final Point pt = points.get(rand.nextInt(points.size()));
+        pt.translate(offset.x, offset.y);
 
-        action = () -> {};
+        action = () -> {
+            PathRenderer path = new PathRenderer(((UniverseRenderer)Universe.get()).controller.camera);
+            path.rebase(unit);
+            path.add(pt);
+            path.apply();
+        };
     }
 
     /**
@@ -189,8 +212,8 @@ public class UnitActionChooser {
                     else if (attack){
                         if (indirect && aU.canAttack(unit)) p -= aU.getCost() / 1000;
                         else {
-                            if (Unit.damage(unit, unit.getPrimaryWeapon() != null && unit.getPrimaryWeapon().canAttack(unit, aU), aU) > 
-                                    Unit.damage(aU, aU.getPrimaryWeapon() != null &&   aU.getPrimaryWeapon().canAttack(aU, unit), unit))
+                            if (AbstractUnit.damage(unit, unit.getPrimaryWeapon() != null && unit.getPrimaryWeapon().canAttack(unit, aU), aU) > 
+                                AbstractUnit.damage(aU,     aU.getPrimaryWeapon() != null &&   aU.getPrimaryWeapon().canAttack(aU, unit), unit))
                                 p += aU.getCost() / 1000;
                             else 
                                 p -= aU.getCost() / 1000;
@@ -210,8 +233,8 @@ public class UnitActionChooser {
      * @return how much points it earns to move to the point and then attack the unit
      */
     private int attack         (Point move, AbstractUnit attacked) {
-        int a = Unit.damage(unit,         unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
-        int b = Unit.damage(attacked, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
+        int a = AbstractUnit.damage(unit,         unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
+        int b = AbstractUnit.damage(attacked, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
         return move(move) + (a >= b ? 1 : -1) * (a * attacked.getCost() / 100 - b * unit.getCost() / 100) + (a >= attacked.getLife() ? 10 : 0);
     }
 

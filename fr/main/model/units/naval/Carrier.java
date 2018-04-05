@@ -63,7 +63,7 @@ public class Carrier extends Unit implements NavalUnit,TransportUnit {
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof AirUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof AirUnit;
     }
 
     public boolean charge(AbstractUnit u){

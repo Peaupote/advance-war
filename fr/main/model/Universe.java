@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.*;
@@ -22,6 +24,7 @@ import fr.main.model.units.land.*;
 import fr.main.model.commanders.FakeCommander;
 import fr.main.model.Weather;
 import fr.main.model.players.Player;
+
 
 /**
  * Represents the universe of a game (board, ...)
@@ -149,6 +152,10 @@ public class Universe {
 
         map.players[0].addFunds(100000);
         map.players[1].addFunds(100000);
+        if (map.players.length >= 3)
+            map.players[2].addFunds(100000);
+        if (map.players.length == 4)
+            map.players[3].addFunds(100000);
 
         if (getBuilding(6,10) != null)
             ((Dock)getBuilding(6,10)).create(Battleship.class);
@@ -391,12 +398,18 @@ public class Universe {
      * save the board described in parameter
      */
     public static void save (String mapName, AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {
+        Universe.save(mapName, new Board (units, ps, map, buildings));
+    }
+
+    /**
+     * @param mapName is the name of the save file
+     * @param board is the board to save
+     */
+    public static void save(String mapName, Board board){
         if (!Universe.save){
             System.out.println("Impossible to save.");
             return;
         }
-
-        Board board = new Board (units, ps, map, buildings);
 
         try {
             FileOutputStream fileOut = new FileOutputStream(mapPath+mapName);
@@ -407,7 +420,14 @@ public class Universe {
             System.out.println("Serialized data is saved in " + mapPath+mapName);
         } catch (IOException i) {
              i.printStackTrace();
-        }
+        }        
+    }
+
+    /**
+     * Saves the game with a default name with the format year-month-day-hour-minute-second
+     */
+    public void save(){
+        Universe.save((new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")).format(new Date(System.currentTimeMillis())) + ".map", map);
     }
 
     /**

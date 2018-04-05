@@ -123,6 +123,7 @@ public class Universe {
         new Airport(map.players[1], new Point(6,9));
         new Airport(map.players[0], new Point(7,9));
         new Barrack(null, new Point(9,5));
+        new Barrack(map.players[1], new Point(14,5));
         new Headquarter(map.players[0], new Point(12,5));
         new Headquarter(map.players[1], new Point(13,5));
         if (map.players.length > 2)

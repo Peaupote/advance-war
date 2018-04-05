@@ -11,7 +11,7 @@ import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.commanders.Commander;
 
 /**
- * Class representing a player (a human player for the basic class and AI for an inherited class)
+ * Class representing a player (a human player for the basic class and AI with an inherited class)
  */
 public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
@@ -37,21 +37,21 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     public final int id;
     public final Color color;
 
-    private Commander commander;
-    private int funds;
+    protected Commander commander;
+    protected int funds;
     /**
      * true if and only if the player has lost
      */
-    private boolean hasLost;
+    protected boolean hasLost;
 
     /**
      * The set of units owned by the player
      */
-    private HashSet<AbstractUnit> units;
+    protected HashSet<AbstractUnit> units;
     /**
      * The set of buildings owned by the player
      */
-    private HashSet<OwnableBuilding> buildings;
+    protected HashSet<OwnableBuilding> buildings;
 
     public Player (String name) {
         this.name = name;

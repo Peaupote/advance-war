@@ -4,9 +4,11 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import fr.main.model.generator.MapGenerator;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.Direction;
 import fr.main.model.Weather;
+import fr.main.model.terrains.Terrain;
 import fr.main.model.terrains.land.*;
 import fr.main.model.terrains.naval.*;
 import fr.main.model.Universe;
@@ -19,6 +21,8 @@ import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.*;
 import fr.main.view.render.animations.*;
 import fr.main.model.TerrainEnum;
+
+import static fr.main.model.TerrainEnum.*;
 
 public class TerrainRenderer {
 
@@ -124,7 +128,7 @@ public class TerrainRenderer {
 					case reef: tLocations[i][j] = TerrainLocation.ReefLocation.NORMAL;break;
 					case bridge:
 						if (isInMap(i, j - 1) &&
-								(tEnum[i][j - 1] == TerrainEnum.sea || tEnum[i][j - 1] == TerrainEnum.river))
+								(tEnum[i][j - 1] == sea || tEnum[i][j - 1] == TerrainEnum.river))
 							tLocations[i][j] = TerrainLocation.BridgeLocation.VERTICAL;
 						else tLocations[i][j] = TerrainLocation.BridgeLocation.HORIZONTAL;
 						break;
@@ -145,45 +149,45 @@ public class TerrainRenderer {
 
 	private static TerrainLocation.BeachLocation setBeachLocation(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = terrainCross(tEnum, x, y);
+		final TerrainEnum[] ground = {hill, mountain, lowland, road, wood};
 		int count = 0;
 
 		for (TerrainEnum t : cross)
-			if (t == TerrainEnum.beach
-					|| t == TerrainEnum.lowland
-					|| t == TerrainEnum.mountain
-					|| t == TerrainEnum.hill
-					|| t == TerrainEnum.road
-					|| t == TerrainEnum.wood) count++;
+			if (isAny(t, ground)) count++;
 
 		switch (count) {
 			case 3:
-				if (cross[0] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_BOTTOM;
-				if (cross[1] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_LEFT;
-				if (cross[2] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_TOP;
-				if (cross[3] == TerrainEnum.sea) return TerrainLocation.BeachLocation.FILLED_RIGHT;
+				if (cross[0] == sea) return TerrainLocation.BeachLocation.FILLED_BOTTOM;
+				if (cross[1] == sea) return TerrainLocation.BeachLocation.FILLED_LEFT;
+				if (cross[2] == sea) return TerrainLocation.BeachLocation.FILLED_TOP;
+				if (cross[3] == sea) return TerrainLocation.BeachLocation.FILLED_RIGHT;
 				break;
 			case 2:
 				for (int i = 0; i < 4; i++)
-					if (cross[i] == TerrainEnum.sea)
+					if (cross[i] == sea)
 						for (int j = i + 1; j < 4; j++)
-							if (cross[j] == TerrainEnum.sea)
+							if (cross[j] == sea)
 								switch (i + j) {
 									case 1: return TerrainLocation.BeachLocation.OUTER_BOTTOM_LEFT;
 									case 2: return TerrainLocation.BeachLocation.TOP; // error
 									case 3:
 										if (i == 0) return TerrainLocation.BeachLocation.OUTER_BOTTOM_RIGHT;
-										else return TerrainLocation.BeachLocation.OUTER_UPPER_RIGHT;
+										else return TerrainLocation.BeachLocation.OUTER_UPPER_LEFT;
 									case 4: return TerrainLocation.BeachLocation.TOP; // error
-									case 5: return TerrainLocation.BeachLocation.OUTER_UPPER_LEFT;
+									case 5: return TerrainLocation.BeachLocation.OUTER_UPPER_RIGHT;
 								}
 			    break;
 			case 1:
-				if (cross[0] == TerrainEnum.sea) return TerrainLocation.BeachLocation.BOTTOM;
-				if (cross[1] == TerrainEnum.sea) return TerrainLocation.BeachLocation.LEFT;
-				if (cross[2] == TerrainEnum.sea) return TerrainLocation.BeachLocation.TOP;
-				if (cross[3] == TerrainEnum.sea) return TerrainLocation.BeachLocation.RIGHT;
+				if (isAny(cross[0], ground)) return TerrainLocation.BeachLocation.BOTTOM;
+				if (isAny(cross[1], ground)) return TerrainLocation.BeachLocation.LEFT;
+				if (isAny(cross[2], ground)) return TerrainLocation.BeachLocation.TOP;
+				if (isAny(cross[3], ground)) return TerrainLocation.BeachLocation.RIGHT;
 			    break;
 			case 0:
+				if (cross[0] == beach && cross[1] == beach) return TerrainLocation.BeachLocation.INNER_BOTTOM_LEFT;
+				if (cross[0] == beach && cross[3] == beach) return TerrainLocation.BeachLocation.INNER_BOTTOM_RIGHT;
+				if (cross[2] == beach && cross[1] == beach) return TerrainLocation.BeachLocation.INNER_UPPER_LEFT;
+				if (cross[2] == beach && cross[3] == beach) return TerrainLocation.BeachLocation.INNER_UPPER_RIGHT;
 
 		    break;
 		}
@@ -192,6 +196,7 @@ public class TerrainRenderer {
 
 	private static TerrainLocation.SeaLocation setSeaLocation(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = terrainCross(tEnum, x, y);
+		final TerrainEnum[] naval = {sea, bridge, reef, beach, river};
 		int count = 0;
 
 		for (TerrainEnum t : cross)
@@ -204,9 +209,9 @@ public class TerrainRenderer {
 		switch (count) {
 			case 2:
 				for (int i = 0; i < 4; i++)
-					if (cross[i] == TerrainEnum.sea)
+					if (isAny(cross[i], naval))
 						for (int j = i + 1; j < 4; j++)
-							if (cross[j] == TerrainEnum.sea)
+							if (isAny(cross[j], naval))
 								switch (i + j) {
 									case 1: return TerrainLocation.SeaLocation.BOTTOM_LEFT;
 									case 2: return TerrainLocation.SeaLocation.NORMAL;
@@ -218,22 +223,10 @@ public class TerrainRenderer {
 								}
 		    break;
 			case 1:
-				if (cross[0] != TerrainEnum.sea
-						&& cross[0] != TerrainEnum.beach
-						&& cross[0] != TerrainEnum.bridge
-						&& cross[0] != TerrainEnum.reef) return TerrainLocation.SeaLocation.TOP;
-				if (cross[1] != TerrainEnum.sea
-						&& cross[1] != TerrainEnum.beach
-						&& cross[1] != TerrainEnum.bridge
-						&& cross[1] != TerrainEnum.reef) return TerrainLocation.SeaLocation.RIGHT;
-				if (cross[2] != TerrainEnum.sea
-						&& cross[2] != TerrainEnum.beach
-						&& cross[2] != TerrainEnum.bridge
-						&& cross[2] != TerrainEnum.reef) return TerrainLocation.SeaLocation.BOTTOM;
-				if (cross[3] != TerrainEnum.sea
-						&& cross[3] != TerrainEnum.beach
-						&& cross[3] != TerrainEnum.bridge
-						&& cross[3] != TerrainEnum.reef) return TerrainLocation.SeaLocation.LEFT;
+				if (!isAny(cross[0], naval)) return TerrainLocation.SeaLocation.TOP;
+				if (!isAny(cross[1], naval)) return TerrainLocation.SeaLocation.RIGHT;
+				if (!isAny(cross[2], naval)) return TerrainLocation.SeaLocation.BOTTOM;
+				if (!isAny(cross[3], naval)) return TerrainLocation.SeaLocation.LEFT;
 		    break;
 			case 0:
 		}
@@ -242,25 +235,27 @@ public class TerrainRenderer {
 
 	private static TerrainLocation.RiverLocation setRiverLocation(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = terrainCross(tEnum, x, y);
+		final TerrainEnum[] ground = {lowland, mountain, wood, hill, road};
+		final TerrainEnum[] naval = {river, bridge, sea};
 		int count = 0;
 
 		for (TerrainEnum t : cross)
-			if (t == TerrainEnum.river) count++;
+			if (isAny(t, naval)) count++;
 
 		switch (count) {
 			case 4:
 				return TerrainLocation.RiverLocation.CENTER;
 			case 3:
-				if (cross[0] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_BOTTOM;
-				if (cross[1] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_LEFT;
-				if (cross[2] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_TOP;
-				if (cross[3] != TerrainEnum.river) return TerrainLocation.RiverLocation.T_RIGHT;
+				if (cross[0] != TerrainEnum.river && cross[0] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_BOTTOM;
+				if (cross[1] != TerrainEnum.river && cross[1] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_LEFT;
+				if (cross[2] != TerrainEnum.river && cross[2] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_TOP;
+				if (cross[3] != TerrainEnum.river && cross[3] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_RIGHT;
 		    break;
 			case 2:
 				for (int i = 0; i < 4; i++)
-					if (cross[i] == TerrainEnum.river)
+					if (isAny(cross[i], naval))
 						for (int j = i + 1; j < 4; j++)
-							if (cross[j] == TerrainEnum.river)
+							if (isAny(cross[j], naval))
 								switch (i + j) {
 									case 1: return TerrainLocation.RiverLocation.TURN_TOP_RIGHT;
 									case 2: return TerrainLocation.RiverLocation.VERTICAL;
@@ -272,12 +267,22 @@ public class TerrainRenderer {
 								}
 		    break;
 			case 1:
-				if (cross[0] == TerrainEnum.river) return TerrainLocation.RiverLocation.TOP_END;
-				if (cross[1] == TerrainEnum.river) return TerrainLocation.RiverLocation.RIGHT_END;
-				if (cross[2] == TerrainEnum.river) return TerrainLocation.RiverLocation.BOTTOM_END;
-				if (cross[3] == TerrainEnum.river) return TerrainLocation.RiverLocation.LEFT_END;
+				if (isAny(cross[0], naval))
+					if(cross[2] == TerrainEnum.sea) return TerrainLocation.RiverLocation.VERTICAL;
+					else return TerrainLocation.RiverLocation.TOP_END;
+				if (isAny(cross[1], naval))
+					if(cross[3] == TerrainEnum.sea) return TerrainLocation.RiverLocation.HORIZONTAL;
+					else return TerrainLocation.RiverLocation.RIGHT_END;
+				if (isAny(cross[2], naval))
+					if(cross[0] == TerrainEnum.sea) return TerrainLocation.RiverLocation.VERTICAL;
+					else return TerrainLocation.RiverLocation.BOTTOM_END;
+				if (isAny(cross[3], naval))
+					if(cross[1] == TerrainEnum.sea) return TerrainLocation.RiverLocation.HORIZONTAL;
+					else return TerrainLocation.RiverLocation.LEFT_END;
 		    break;
 			case 0:
+				if(MapGenerator.isSandwiched(tEnum, x, y, ground)) return TerrainLocation.RiverLocation.HORIZONTAL;
+				return TerrainLocation.RiverLocation.VERTICAL;
 		}
 		return TerrainLocation.RiverLocation.CENTER;
 	}
@@ -331,6 +336,12 @@ public class TerrainRenderer {
 		cross[3] = isInMap(x, y - 1) ? tEnum[x][y - 1] : TerrainEnum.none;
 
 		return cross;
+	}
+
+	public static boolean isAny(TerrainEnum a, TerrainEnum[] ts) {
+		for(TerrainEnum t : ts)
+			if(a == t) return true;
+		return false;
 	}
 }
 

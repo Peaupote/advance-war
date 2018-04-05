@@ -376,8 +376,8 @@ public abstract class Unit implements AbstractUnit {
 
     @Override
     public boolean canAttack(AbstractUnit u){
-        return (primaryWeapon == null ? false : primaryWeapon.canAttack(this,u)) ||
-                (secondaryWeapon==null ? false : secondaryWeapon.canAttack(this,u));
+        return  (primaryWeapon   == null ? false : primaryWeapon.canAttack(this,u)) ||
+                (secondaryWeapon == null ? false : secondaryWeapon.canAttack(this,u));
     }
 
     @Override
@@ -391,13 +391,13 @@ public abstract class Unit implements AbstractUnit {
         if (primaryWeapon != null && primaryWeapon.canAttack(this,u)){
             // if possible we attack with the main weapon
             primaryWeapon.shoot();
-            int damages = damage(this,primaryWeapon,u);
+            int damages = damage(this,true,u);
             u.getPlayer().getCommander().powerBar.addValue(damages);
             u.removeLife(damages);
         } else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u)) {
             // else we use the secondary weapon
             secondaryWeapon.shoot();
-            int damages = damage(this,secondaryWeapon,u);
+            int damages = damage(this,false,u);
             u.getPlayer().getCommander().powerBar.addValue(damages);
             u.removeLife(damages);
         }
@@ -422,12 +422,15 @@ public abstract class Unit implements AbstractUnit {
 
     /**
      * @param attacker is the unit that attacks
-     * @param w is the weapon used to attack
+     * @param b is the weapon used to attack : true for the primary weapon and false for the secondary weapon
      * @param defender is the unit that defends
      * @return the damage inflicted by the attacker to the defender with the weapon
      */
-    public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){
-        int b       = w.damage(defender);
+    public static final int damage(AbstractUnit attacker, boolean b, AbstractUnit defender){
+        Weapon w    = b ? attacker.getPrimaryWeapon() : attacker.getSecondaryWeapon();
+        if (w == null || ! w.canAttack(attacker,defender)) return 0;
+        
+        int d       = w.damage(defender);
         int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
         Random rand = new Random(); int r = rand.nextInt(1000);
         int aHP     = attacker.getLife();
@@ -437,7 +440,7 @@ public abstract class Unit implements AbstractUnit {
         int dHP     = defender.getLife();
 
         // the formula isn't obvious but works nicely
-        return Math.max(0, (b * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
+        return Math.max(0, (d * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
     }
 
 }

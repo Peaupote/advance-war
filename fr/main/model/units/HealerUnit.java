@@ -12,11 +12,11 @@ public interface HealerUnit extends AbstractUnit {
      * @param u is the unit to heal
      */
     default void heal(AbstractUnit u){
-        if (canHeal(u))
-            if (u.getPlayer().spent(u.getCost()/5)){
-                u.addLife(10);
-                setMoveQuantity(0);
-            }
+        // healing units spent 10% of the price of the unit to heal it
+        if (canHeal(u) && getPlayer().spent(u.getCost() / 10)){
+            u.addLife(10);
+            setMoveQuantity(0);
+        }
     }
 
     /**

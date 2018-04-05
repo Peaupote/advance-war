@@ -3,6 +3,7 @@ package fr.main.model.generator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -12,16 +13,27 @@ public class MapGenerator {
     private long seed;
     private Random rand;
 
-    public MapGenerator() {
+	/**
+	 * Generates a MapGenerator of seed 1.
+	 */
+	public MapGenerator() {
     	this(1);
 	}
 
+	/**
+	 * Generates a MapGenerator with a LONG seed.
+	 * @param seed
+	 */
     public MapGenerator(long seed) {
         this.seed = seed;
         this.rand = new Random(seed);
     }
 
-    public MapGenerator(int seed) {
+	/**
+	 * Generates a map generator with an INTEGER seed.
+	 * @param seed
+	 */
+	public MapGenerator(int seed) {
         this((long) seed);
     }
 
@@ -40,14 +52,27 @@ public class MapGenerator {
         System.out.println("Rand reset to : " + seed);
     }
 
-    public TerrainEnum[][] randMap(int x, int y) {
+	/**
+	 * Creates a random map of size x*y.
+	 * @param x vertical size.
+	 * @param y horizontal size.
+	 * @return
+	 */
+	public TerrainEnum[][] randMap(int x, int y) {
         int power = 4; // power * 10 = size% of cells that will serve as reference;
         int smoothness = 2;
 
         return randMap(x, y, power, smoothness);
     }
-	/* x = vertical, y = horizontal */
-    // Voivonoi
+
+	/**
+	 * Creates a random map.
+	 * @param x vertical size.
+	 * @param y horizontal size.
+	 * @param power defines the number of reference points for the Voronoi algorithm.
+	 * @param smoothness number of iteration of the smoothness automaton.
+	 * @return
+	 */
     public TerrainEnum[][] randMap(int x, int y, int power, int smoothness) {
         System.out.println("Map size : " + x + "x" + y);
         if(x < 0) x = 1;
@@ -77,6 +102,9 @@ public class MapGenerator {
         int randX, randY, count = 0;
         int[][] referencePoints = new int[referenceNb][3];
 
+        /*
+        	Places the reference points for the Voronoi algorithm.
+         */
         for(int i = 0; i < terrainPortion.length; i ++) {
             System.out.println("Terrain : " + i + "\nNb : " + terrainLeft[i]);
             for(int j = 0; j < terrainLeft[i]; j ++) {
@@ -100,9 +128,23 @@ public class MapGenerator {
             }
         }
 
-        return placeWood(placeMountainsHills(placeBeach(surroundBySea(refineMap(map, smoothness), 4))));
+        map = refineMap(map,smoothness);
+        map = surroundBySea(map, 4);
+        map = placeBeach(map);
+        map = placeRivers(map);
+        map = placeMountainsHills(map);
+        map = placeWood(map);
+
+        return map;
     }
 
+	/**
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return distance between (x1, y1) and (x2, y2).
+	 */
     private int distance(int x1 , int y1, int x2, int y2) {
         int x, y;
 
@@ -130,6 +172,11 @@ public class MapGenerator {
         return closestPoint;
     }
 
+	/**
+	 * @param map
+	 * @param it
+	 * @return map refined by cellular automaton.
+	 */
     private TerrainEnum[][] refineMap(TerrainEnum[][] map, int it) {
         TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
         for(int i = 0; i < map.length; i ++)
@@ -246,13 +293,6 @@ public class MapGenerator {
                         left = terrainTypeNb(map, i, j, lowland, 2, 2),
                         down = terrainTypeNb(map, i, j, lowland, 1, 2),
                         up = terrainTypeNb(map, i, j, lowland, 3, 2);
-
-//                if(left + right == 1)
-//                    if(left > right && i + 1 < map.length && isValidLowland(map,i + 1, j)) map[i + 1][j] = lowland;
-//                    else if(i - 1 >= 0 && isValidLowland(map, i - 1, j)) map[i - 1][j] = lowland;
-//                if(up + down == 1)
-//                    if(up > down && j + 1 < map[0].length && isValidLowland(map, i, j + 1)) map[i][j + 1] = lowland;
-//                    else if(j - 1 >= 0 && isValidLowland(map, i, j - 1)) map[i][j - 1] = lowland;
                   if(left + right == 1 || up + down == 1) map[i][j] = sea;
             }
         }
@@ -265,9 +305,6 @@ public class MapGenerator {
                 terrainNb[2]= terrainTypeNb(map, i, j, lowland, 2, 1);
                 terrainNb[3]= terrainTypeNb(map, i, j, lowland, 3, 1);
 
-//                System.out.println("(" + i + ":" + j + ")" + "\n0 : " + terrainNb[0] + "\n1 : " + terrainNb[1] + "\n2 : " + terrainNb[2] + "\n3 : " + terrainNb[3]);
-//                System.out.println(terrainNb[0] + terrainNb[1] + terrainNb[2] + terrainNb[3]);
-
                 switch(terrainNb[0] + terrainNb[1] + terrainNb[2] + terrainNb[3]) {
                     case 0 : map[i][j] = sea; break;
                     case 1 : map[i][j] = sea; break;
@@ -277,23 +314,6 @@ public class MapGenerator {
 
             }
         }
-//        TerrainEnum[][] mapBis = map.clone();
-//
-//        boolean[] block = new boolean[4];
-//
-//        for(int i = 0; i < map.length; i ++) {
-//            for(int j = 0; j < map[0].length; j ++) {
-//                if(isSurrounded(map, lowland, i, j)) continue;
-//                for(int h = 0; h < 4; h ++)
-//                    block[h] = hasSide3x3Block(map, lowland, h, i, j);
-//
-//                if(block[0] && block[1] && isInMap(map, i + 2, j + 2)) mapBis[i + 2][j + 2] = lowland;
-//                else if(block[2] && block[1] && isInMap(map, i - 2, j + 2)) mapBis[i - 2][j + 2] = lowland;
-//                else if(block[2] && block[3] && isInMap(map, i - 2, j - 2)) mapBis[i - 2][j - 2] = lowland;
-//                else if(block[0] && block[3] && isInMap(map, i + 2, j - 2)) mapBis[i + 2][j - 2] = lowland;
-//                else map[i][j] = sea;
-//            }
-//        }
 
         return map;
     }
@@ -324,10 +344,10 @@ public class MapGenerator {
         }
     }
 
-    private void placeRivers (TerrainEnum[][] map) {
-    	/*** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
+    private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
+    	/** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
 //    	int nSea, nLowland, nBridge, nBeach, nRiver;
-    	TerrainEnum[] land = {lowland, bridge, beach}, naval = {sea, river};
+    	TerrainEnum[] land = {lowland, bridge}, naval = {sea, river};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
@@ -346,6 +366,7 @@ public class MapGenerator {
 			for(int j = 0; j < map[0].length; j ++)
 				if(map[i][j] == sea && getAdjacentTerrainNb(map, i, j, river) >= 2)
 					map[i][j] = river;
+    	return map;
 	}
 
     private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
@@ -355,26 +376,6 @@ public class MapGenerator {
                     return false;
         return true;
     }
-
-//    private boolean hasSide3x3Block(TerrainEnum[][] map, TerrainEnum type, int direction, int x, int y) {
-//        switch (direction) {
-//            case 0: return isBlock(map, type, x, y - 1, 3);
-//            case 1: return isBlock(map, type, x - 1, y, 3);
-//            case 2: return isBlock(map, type, x - 2, y - 1, 3);
-//            case 3: return isBlock(map, type, x - 1, y - 2, 3);
-//            default: System.out.println("Wrong argument in 'hasSide3x3Block' : direction = " + direction);
-//            return false;
-//        }
-//    }
-//
-//    private boolean isBlock(TerrainEnum[][] map, TerrainEnum type, int x, int y, int size) {
-//        for(int i = x; i <= size; i ++)
-//            for(int j = y; j <= size; j ++)
-//                if(!isInMap(map, i, j) || map[i][j] != type)
-//                    return false;
-//        return true;
-//    }
-
 
     private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
         // Direction: true = horizontal; false = vertical.
@@ -400,25 +401,41 @@ public class MapGenerator {
         return count;
     }
 
-    private boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
+    private TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
+    	TerrainEnum[] out = new TerrainEnum[8];
+    	Arrays.fill(out, null);
+
+		if(isInMap(map, x, y - 1)) 			out[0] = map[x][y - 1];
+		if(isInMap(map, x + 1, y - 1)) 		out[1] = map[x + 1][y - 1];
+		if(isInMap(map, x + 1, y)) 			out[2] = map[x + 1][y];
+		if(isInMap(map, x + 1, y + 1)) 		out[3] = map[x + 1][y + 1];
+		if(isInMap(map, x + 1, 1))			out[4] = map[x + 1][y];
+		if(isInMap(map, x + 1, y - 1)) 		out[5] = map[x + 1][y - 1];
+		if(isInMap(map, x - 1, y - 1)) 		out[6] = map[x - 1][y - 1];
+		if(isInMap(map, x, y - 1)) 			out[7] = map[x][y - 1];
+
+		return out;
+	}
+
+    public static boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
     	return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
 	}
 
-	private boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type[]) {
+	public static boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type[]) {
 		return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
 	}
 
-	private boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type, boolean horizontal) {
+	public static boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type, boolean horizontal) {
 		TerrainEnum[] ts = {type};
     	return isSandwiched(map, x, y, ts, horizontal);
 	}
 
-    private boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type[], boolean horizontal) {
+    public static boolean isSandwiched (TerrainEnum map[][], int x, int y, TerrainEnum type[], boolean horizontal) {
     	return (!horizontal && isInMap(map, x - 1, y) && isInMap(map, x + 1, y) && hasMatch(type, map[x - 1][y]) && hasMatch(type, map[x + 1][y]))
 				|| (horizontal && isInMap(map, x, y - 1) && isInMap(map, x, y + 1) && hasMatch(type, map[x][y - 1]) && hasMatch(type, map[x][y + 1])	);
 	}
 
-	private boolean hasMatch(TerrainEnum ts[], TerrainEnum type) {
+	public static boolean hasMatch(TerrainEnum ts[], TerrainEnum type) {
 		for (TerrainEnum t : ts)
 			if(t == type) return true;
 		return false;
@@ -444,6 +461,13 @@ public class MapGenerator {
         return getAdjacentTerrainNb(map, x, y, lowland) > 2;
     }
 
+	/**
+	 * @param map
+	 * @param x
+	 * @param y
+	 * @param type
+	 * @return the number of cells in the cardinal orientation that are of type "type".
+	 */
     private int getAdjacentTerrainNb(TerrainEnum[][] map, int x , int y, TerrainEnum type) {
       int count = 0;
 
@@ -455,10 +479,23 @@ public class MapGenerator {
       return count;
     }
 
-    private boolean isInMap(TerrainEnum[][] map, int x, int y) {
+	/**
+	 * Says if (x,y) is in map
+	 * @param map
+	 * @param x
+	 * @param y
+	 * @return boolean
+	 */
+    public static boolean isInMap(TerrainEnum[][] map, int x, int y) {
         return x >= 0 && x < map.length && y >= 0 && y < map[0].length;
     }
 
+	/**
+	 * Creates a wall of sea all around the map.
+	 * @param map
+	 * @param size
+	 * @return map with a wall of sea.
+	 */
     private TerrainEnum[][] surroundBySea(TerrainEnum[][] map, int size) {
         for(int i = 0; i < map.length; i ++)
             for (int j = 0; j < map[0].length; j++)

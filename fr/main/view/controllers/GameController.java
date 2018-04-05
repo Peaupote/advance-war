@@ -430,21 +430,26 @@ public class GameController extends Controller {
                             }
                         }).start();
                     } else if (mode == Mode.ATTACK) { // validing unit target
-                        AbstractUnit target = world.getUnit(unitCursor.position());
-                        if (targetUnit.canAttack(target)) {
-                            int aLife = targetUnit.getLife(),
-                                tLife = target.getLife();
-                            targetUnit.attack(target);
-                            world.flash ("" + (targetUnit.getLife() - aLife),
-                                (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                                (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                                UniverseRenderer.FlashMessage.Type.ALERT);
-                            world.flash ("" + (target.getLife() - tLife),
-                                (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                                (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                                UniverseRenderer.FlashMessage.Type.ALERT);
-                            if (targetUnit.dead()) UnitRenderer.remove(targetUnit);
-                            if (target.dead())     UnitRenderer.remove(target);
+                        if (world.isEnabled(unitCursor.getX(), unitCursor.getY())){
+                            AbstractUnit target = world.getUnit(unitCursor.position());
+                            if (targetUnit.canAttack(target)) {
+                                int aLife = targetUnit.getLife(),
+                                    tLife = target.getLife();
+                                targetUnit.attack(target);
+                                world.flash ("" + (targetUnit.getLife() - aLife),
+                                    (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                                    (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                                    UniverseRenderer.FlashMessage.Type.ALERT);
+                                world.flash ("" + (target.getLife() - tLife),
+                                    (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                                    (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                                    UniverseRenderer.FlashMessage.Type.ALERT);
+                                if (targetUnit.dead()) UnitRenderer.remove(targetUnit);
+                                if (target.dead())     UnitRenderer.remove(target);
+                            }else{
+                                targetUnit.setMoveQuantity(0);
+                                targetUnit.getPrimaryWeapon().shoot();
+                            }
                         }
                         mode = Mode.MOVE;
                         world.clearTarget();

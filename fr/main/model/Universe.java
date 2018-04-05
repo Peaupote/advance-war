@@ -75,9 +75,13 @@ public class Universe {
             this.players   = ps;
             this.buildings = buildings;
         }
+
+        public Board setPlayers(Player[] ps){
+            return new Board(units, ps, board, buildings);
+        }
     }
 
-    protected Board map;
+    protected final Board map;
     /**
      * An Iterator<Player> which is a cycle (when we're on the last player, the next is the first)
      */
@@ -92,24 +96,16 @@ public class Universe {
      */
     private Dimension size;
 
+    public Universe (AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings){
+        this (new Board(units, ps, map, buildings));
+    }
+
     public Universe (String mapName, Player[] ps) {
-        map = null;
+        this (Universe.restaure(mapName).setPlayers(ps));
+    }
 
-        if (save)
-            try {
-                FileInputStream fileIn = new FileInputStream(mapPath+mapName);
-                ObjectInputStream in = new ObjectInputStream(fileIn);
-                map = (Board) in.readObject();
-                in.close();
-                fileIn.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                System.err.println("Board class not found");
-                e.printStackTrace();
-            }
-
-        map.players = ps;
+    public Universe (Board b){
+        map = b;
 
         day = 0;
         instance = this;
@@ -163,6 +159,20 @@ public class Universe {
             ((Airport)getBuilding(7,9)).create(Stealth.class);
         if (getBuilding(6,9) != null)
             ((Airport)getBuilding(6,9)).create(Fighter.class);
+    }
+
+    public static Board restaure(String mapName){
+        if (save)
+            try (FileInputStream fileIn = new FileInputStream(mapPath+mapName);
+                    ObjectInputStream in = new ObjectInputStream(fileIn)) {
+                return (Board) in.readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                System.err.println("Board class not found");
+                e.printStackTrace();
+            }
+        return null;
     }
 
     /**

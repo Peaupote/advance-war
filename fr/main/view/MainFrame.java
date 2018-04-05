@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
     /**
      * Unique instance of the MainFrame
      */
-    private static MainFrame instance;
+    public static MainFrame instance;
 
     /**
      * Current controller

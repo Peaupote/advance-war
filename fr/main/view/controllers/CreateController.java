@@ -23,7 +23,7 @@ public class CreateController extends Controller {
     select = e -> view.players.updateCommander();
     play = e -> {
       Player[] ps = view.players.getPlayers();
-      MainFrame.setScene(new LoadController(ps));
+      MainFrame.setScene(new LoadController(new GameController("maptest.map", ps)));
     };
   }
 

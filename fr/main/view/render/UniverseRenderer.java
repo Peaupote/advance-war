@@ -90,6 +90,10 @@ public class UniverseRenderer extends Universe {
         TerrainRenderer.setLocations();
     }
 
+    public boolean isEnabled(int x, int y){
+        return targets[y][x];
+    }
+
     public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
         g.setFont(font);
         int w = map.board.length,

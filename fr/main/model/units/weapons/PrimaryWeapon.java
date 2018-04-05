@@ -67,7 +67,7 @@ public class PrimaryWeapon extends Weapon{
 
     @Override
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
-        return ammo!=0 && (canAttackAfterMove?shooter.isEnabled():shooter.getMoveQuantity()==shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter,target);
+        return ammo > 0 && (canAttackAfterMove?shooter.isEnabled():shooter.getMoveQuantity()==shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter,target);
     }
 
     /**

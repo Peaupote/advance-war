@@ -122,7 +122,7 @@ public abstract class Commander implements Serializable {
      * @return true if and only if the matching power can be activated
      */
     public boolean canActivate(boolean bigPower){
-        return !activated(bigPower) && powerBar.value >= (bigPower ? big.value : small.value);
+        return !activated(true) && !activated(false) && powerBar.value >= getPowerCost(bigPower);
     }
 
     /**
@@ -130,7 +130,7 @@ public abstract class Commander implements Serializable {
      * @return the value of the matching power
      */
     public final int getPowerCost (boolean bigPower) {
-        return bigPower ? (big == null ? 0 : big.value) : (small == null ? 0 : small.value);
+        return bigPower ? big.value : small.value;
     }
 
     /**

@@ -20,12 +20,19 @@ public interface RepairBuilding extends AbstractBuilding{
     public default void repair (AbstractUnit u){
         if (canRepair(u)){
             if (this instanceof OwnableBuilding){
+                // if the building is owned, the owner pays
                 Player p = ((OwnableBuilding)this).getOwner();
-                int pv   = Math.max(0, Math.min(Math.min(100 - u.getLife(), 20), 50 * p.getFunds() / u.getCost()));
+
+                // the building repairs between 0 and 20 life points
+                // the building cannot add life such as the unit has more than 100 life points
+                // one life point costs 1/80 of the unit's cost
+                // so the final formula is the one below :
+                int pv   = Math.max(0, Math.min(Math.min(100 - u.getLife(), 20), 80 * p.getFunds() / u.getCost()));
                 u.addLife(pv);
-                p.spent(pv * u.getCost() / 50);
+                p.spent(pv * u.getCost() / 80);
             } else u.addLife(20);
             u.getFuel().replenish();
+            if (u.getPrimaryWeapon() != null) u.getPrimaryWeapon().replenish();
         }
     }
 }

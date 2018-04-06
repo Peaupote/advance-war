@@ -538,6 +538,11 @@ public class GameController extends Controller {
         }
     }
 
+    public void mouseClicked(MouseEvent e) {
+      System.out.println("Cliked");
+      // TODO: bosse un peu Pierre
+    }
+
     /**
      * Call each frame
      */

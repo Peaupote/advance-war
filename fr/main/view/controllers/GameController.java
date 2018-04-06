@@ -378,9 +378,29 @@ public class GameController extends Controller {
         }
     }
 
+    public GameController (String mapName){
+        world      = new UniverseRenderer(mapName, this);
+        size       = world.getDimension();
+        camera     = new Position.Camera(size);
+        cursor     = new Position.Cursor(camera, size);
+        unitCursor = new Position.Cursor(camera, size);
 
-    public GameController (Player ps[]) {
-        world      = new UniverseRenderer("maptest.map", ps, this);
+        mouse              = new Point(1,1);
+        actionPanel        = new MainActionPanel();
+        dayPanel           = new DayPanel();
+        mode               = Mode.MOVE;
+        path               = new PathRenderer(camera);
+        unitActionPanel    = new UnitActionPanel();
+        transportUnitPanel = new TransportUnitPanel();
+
+        buildingPanel = new BuildingInterface(this);
+        new PlayerPanel (cursor, camera);
+        new Minimap (camera, new TerrainPanel (cursor, camera));
+        dayPanel.setVisible(true);
+    }
+
+    public GameController (String mapName, Player ps[]) {
+        world      = new UniverseRenderer(mapName, ps, this);
         size       = world.getDimension();
         camera     = new Position.Camera(size);
         cursor     = new Position.Cursor(camera, size);

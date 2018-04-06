@@ -20,6 +20,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HealerUnit;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.buildings.AbstractBuilding;
 
 import fr.main.view.MainFrame;
 import fr.main.view.controllers.GameController;
@@ -74,9 +75,9 @@ public class UniverseRenderer extends Universe {
 
     private final LinkedList<FlashMessage> flashs;
 
-    public UniverseRenderer (String mapName, Player[] ps, GameController controller) {
-        super (mapName, ps);
-
+    public UniverseRenderer (Universe.Board b, GameController controller){
+        super(b);
+        
         this.controller = controller;
         controller.makeView().getWeatherController().update(Weather.FOGGY);
         coords = new Point[map.board.length][map.board[0].length];
@@ -88,6 +89,18 @@ public class UniverseRenderer extends Universe {
         lowerRight = new Point(map.board.length, map.board[0].length);
         flashs     = new LinkedList<FlashMessage>();
         TerrainRenderer.setLocations();
+    }
+
+    public UniverseRenderer (AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings, GameController controller){
+        this (new Universe.Board(units, ps, map, buildings), controller);
+    }
+
+    public UniverseRenderer (String mapName, GameController controller) {
+        this (Universe.restaure(mapName), controller);
+    }
+
+    public UniverseRenderer (String mapName, Player[] ps, GameController controller) {
+        this (Universe.restaure(mapName).setPlayers(ps), controller);
     }
 
     public boolean isEnabled(int x, int y){

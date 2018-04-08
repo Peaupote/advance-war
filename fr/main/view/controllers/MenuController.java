@@ -2,7 +2,6 @@ package fr.main.view.controllers;
 
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.IOException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.main.model.Universe;

@@ -18,6 +18,7 @@ import fr.main.view.render.UniverseRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
+import fr.main.view.sound.Sdfx;
 
 /**
  * Game Controller
@@ -471,6 +472,7 @@ public class GameController extends Controller {
                                     (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                                     (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                                     UniverseRenderer.FlashMessage.Type.ALERT);
+                                Sdfx.EXPLOSION.play();
                             }else{
                                 targetUnit.setMoveQuantity(0);
                                 if (targetUnit.getPrimaryWeapon() != null)
@@ -504,6 +506,7 @@ public class GameController extends Controller {
                             else buildingPanel.setVisible (true);
                         } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                                      targetUnit.isEnabled()) {
+                            Sdfx.SELECT.play();
                             unitCursor.setCursor(true);
                             mode = Mode.UNIT;
                             world.updateTarget(targetUnit);

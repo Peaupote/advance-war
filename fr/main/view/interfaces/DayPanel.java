@@ -7,6 +7,7 @@ import java.lang.InterruptedException;
 
 import fr.main.model.Universe;
 import fr.main.view.MainFrame;
+import fr.main.view.sound.Sdfx;
 
 /**
  * Panel showing when a new day start
@@ -30,6 +31,7 @@ public class DayPanel extends InterfaceUI {
 
   @Override
   public void onOpen () {
+    Sdfx.NEW_DAY.play();
     // TODO: make a real animation here instead of a new thread each time
     new Thread(() -> {
       try {

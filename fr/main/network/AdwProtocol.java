@@ -1,129 +1,35 @@
 package fr.main.network;
 
+import java.io.IOException;
 import fr.main.model.players.Player;
-import fr.main.model.commanders.BasicCommander;
 
-/**
- * Representing each mode of the connection
- * between clients and the server.
- */
-public class AdwProtocol {
+class AdwProtocol {
 
-  public static class Client {
+  enum State {
+    HUB,
 
-    enum State {
-      /**
-       * Client waits the server to respond.
-       */
-      PROCESSING(0),
+    GAME
+  };
 
-      /**
-       * Client waiting while the other player
-       * are doing stuffs.
-       */
-      WAITING(1),
+  private State state;
+  private Server.ClientThread client;
 
-      /**
-       * The server is waiting for the player
-       * to send his action.
-       */
-      PLAY(2),
-      
-      
-      /**
-       * Client must send the player his is.
-       */
-      PLAYER(3);
-      
-      public final int code;
-
-      private State (int code) {
-        this.code = code;
-      }
-    }
-    
-    private State state;
-
-    public Client () {
-      this.state = State.PLAYER;
-    }
-
-    public Object processing () {
-      if (state == State.PLAYER) { 
-        System.out.println("Player name:");
-        Player p = new Player(System.console().readLine());
-        new BasicCommander (p); 
-        state = State.PROCESSING;
-        return p; 
-      }
-      return System.console().readLine();
-    }
-
-    public void processInput (Object input) {
-      if (input instanceof Exception) {
-        System.err.println(((Exception)input).getMessage());
-        state = State.PLAYER;
-      }
-    }
-
-    public State getState () {
-      return state;
-    }
-
-    public int getStatusCode () {
-      return state.code;
-    }
+  public AdwProtocol (Server.ClientThread client) {
+    state = State.HUB;
+    this.client = client;
   }
 
-  public static class Server {
+  public void proccessInput (Object data) throws IOException {
+    assert data instanceof Datagram;
+    Datagram d = (Datagram)data;
+    if (state == State.HUB) proccessHubInput(d);
+  }
 
-    enum State {
-      
-      /**
-       * Server waiting the client to send the player 
-       * he is.
-       */
-      WAITING_PLAYER(0),
-
-      /**
-       * Server waiting the client to send his play.
-       */
-      WAITING_ACTION(1);
-
-      public final int code;
-
-      private State (int code) {
-        this.code = code;
-      }
-
+  private void proccessHubInput (Datagram data) throws IOException {
+    if (data.data instanceof Slot) {
+      client.slot = (Slot)data.data;
+      client.sendAll (data);
     }
-
-    private State state;
-    private fr.main.network.Server.ClientThread server;
-
-    public Server (fr.main.network.Server.ClientThread server) {
-      state = State.WAITING_PLAYER;
-      this.server = server;
-    }
-
-    public void processInput (Object input) throws Exception {
-      if (state == State.WAITING_PLAYER) {
-        if (input instanceof Player)
-          server.setPlayer((Player) input);
-        else throw new Exception ("Not a player");
-      } else {
-        throw new Exception ("Unknow Exception");
-      }
-    }
-
-    public State getState () {
-      return state;
-    }
-
-    public int getStatusCode () {
-      return state.code;
-    }
-
   }
 
 }

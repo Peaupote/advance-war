@@ -50,54 +50,57 @@ public class Server extends ServerSocket {
     private Socket socket;
 
     /**
-     * Server side protocol.
+     * Tell the server what to do with the date he received.
      */
-    private AdwProtocol.Server protocol;
+    private AdwProtocol protocol;
 
     /**
-     * Client's Player.
+     * Client's Player informations.
      */
-    private Player player;
+    Slot slot;
 
-    public ClientThread(Socket socket) {
+    final int id;
+
+    public ClientThread(int id, Socket socket) {
       this.socket = socket;
+      this.id     = id;
     }
 
     public void run () {
       try {
         is = new ObjectInputStream(socket.getInputStream());
         os = new ObjectOutputStream(socket.getOutputStream());
-        System.out.println("New Client: " + socket);
-        protocol = new AdwProtocol.Server(this);
+        protocol = new AdwProtocol(this);
+        System.out.println("New Client " + id + ": " + socket);
+
+        // send to the client his id and already connected clients id and player
+        os.writeObject(new Integer(id));
+        for (int i = 0; i < id; i++)
+          os.writeObject(new Datagram(i, clients[i].slot));
 
         synchronized (this) {
-          Object line;
-          while ((line = is.readObject()) != null) {
-            try {
-              protocol.processInput(line);
-            } catch (Exception e) {
-              os.writeObject(e);
-            }
-            System.out.println(line);
+          Object data;
+          while ((data = is.readObject()) != null) {
+            System.out.println("Client " + id + ": " + data);
+            protocol.proccessInput(data);
           }
         }
 
-        for (ClientThread client: clients)
-          if (client == this) {
-            client = null;
-            break;
-          }
+        clients[id] = null;
 
         is.close();
         os.close();
         socket.close();
       } catch (Exception e) {
         System.err.println(e);
+        //e.printStackTrace();
       }
     }
 
-    void setPlayer(Player player) {
-      this.player = player;
+    public synchronized void sendAll (Datagram data) throws IOException {
+      for (int i = 0; i < clients.length; i++)
+        if (clients[i] != null && i != id)
+          clients[i].os.writeObject(data);
     }
 
   }
@@ -119,9 +122,8 @@ public class Server extends ServerSocket {
 
         int i;
         for (i = 0; i < MAX_CLIENT_COUNT && clients[i] != null; i++);
-        ClientThread clientThread = new ClientThread(socket);
-        clients[i] = clientThread;
-        clientThread.start();
+        clients[i] = new ClientThread(i, socket);
+        clients[i].start();
         connectedClients++;
       }
     } catch (Exception e) {

@@ -45,7 +45,6 @@ public class MenuController extends Controller {
                 new Thread(server::listen).start();
 
                 Client client = new Client("localhost", 8080);
-                new Thread(client::listen).start();
 
                 MainFrame.setScene(new HubController.Host(client, server));
             } catch (Exception ex) {

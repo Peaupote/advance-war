@@ -8,7 +8,7 @@ import java.net.InetAddress;
 /**
  * Represent client playing.
  */
-public class Client implements Runnable {
+public class Client {
 
   /**
    * Socket connecting to the server.
@@ -25,52 +25,38 @@ public class Client implements Runnable {
    */
   private ObjectInputStream is;
 
-  /**
-   * Advance war protocol telling client
-   * what he must do.
-   */
-  private AdwProtocol.Client protocol;
+  public final int id;
 
   public Client (String host, int port)
-      throws UnknownHostException, IOException {
+      throws UnknownHostException, IOException,
+             ClassNotFoundException {
     socket = new Socket(host, port);
     os = new ObjectOutputStream(socket.getOutputStream());
     is = new ObjectInputStream(socket.getInputStream());
-    protocol = new AdwProtocol.Client();
 
-    new Thread(this).start();
+    this.id = ((Integer)read()).intValue();
   }
 
-  public void listen () {
-    try {
-      Object data;
-      while ((data = protocol.processing()) != null)
-        os.writeObject(data);
-  
-      os.close();
-      is.close();
-      socket.close();
-    } catch (Exception e) {
-      System.err.println(e);
-    }
+  public void close () throws Exception {
+    os.close();
+    is.close();
+    socket.close();
   }
 
   /**
    * Listening from the server.
    */
-  public void run () {
-    Object data;
-
-    try {
-      while ((data = is.readObject()) != null)
-        protocol.processInput(data);
-    } catch (Exception e) {
-      System.err.println(e);
-    }
+  public Object read ()
+      throws IOException, ClassNotFoundException {
+    return is.readObject();
   }
 
   public InetAddress getInetAddress () {
     return socket.getInetAddress();
+  }
+
+  public final void send(Object data) throws IOException {
+    os.writeObject(new Datagram(id, data));
   }
 
 }

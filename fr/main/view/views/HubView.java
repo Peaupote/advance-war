@@ -3,6 +3,7 @@ package fr.main.view.views;
 import java.awt.*;
 import javax.swing.*;
 import fr.main.view.controllers.HubController;
+import fr.main.network.Slot;
 
 public class HubView extends View {
 
@@ -10,11 +11,36 @@ public class HubView extends View {
 
   private class Slot extends JPanel {
 
-    JLabel name;
+    JLabel label;
 
     public Slot () {
       setBorder(BorderFactory.createLineBorder(Color.black));
-      name = new JLabel("Empty slot");
+      label = new JLabel("Empty slot");
+
+      add(label);
+    }
+
+    public void set (fr.main.network.Slot slot) {
+      if (slot == null) label.setText("Empty slot");
+      else {
+        if (slot.ready) label.setForeground(Color.green);
+        else label.setForeground(Color.red);
+        label.setText("Player " + (slot.id + 1) + ": " + slot.name);
+      }
+    }
+
+  }
+
+  private class MutableSlot extends Slot {
+
+    private JTextField name;
+    
+    public MutableSlot () {
+      super();
+      HubView.this.clientSlot = this;
+      label.setText("Player name: ");
+      name = new JTextField(30);
+      name.addActionListener(controller.send);
 
       add(name);
     }
@@ -22,6 +48,7 @@ public class HubView extends View {
   }
 
   protected Slot[] slots;
+  protected MutableSlot clientSlot;
   protected JLabel header;
   protected JButton ready;
 
@@ -33,10 +60,13 @@ public class HubView extends View {
 
     header = new JLabel("Joining game on address " + controller.getAddress());
     ready  = new JButton("Ready to play");
+    ready.addActionListener(controller.readyAction);
+    ready.addActionListener(controller.send);
 
     slots = new Slot[4];
     for (int i = 0; i < slots.length; i++)
-      slots[i] = new Slot();
+      if (i == controller.getID()) slots[i] = new MutableSlot();
+      else slots[i] = new Slot();
 
     add (header);
     for (int i = 0; i < slots.length; i++)
@@ -55,7 +85,27 @@ public class HubView extends View {
       ready.setEnabled(false);
     }
 
+    public void update () {
+      boolean allReady = true;
+      // host ID = 0
+      for (int i = 1; i < slots.length; i++) {
+        slots[i].set(controller.slots[i]);
+        allReady = allReady && (controller.slots[i] == null || controller.slots[i].ready);
+      }
 
+      ready.setEnabled(allReady);
+    }
+
+  }
+
+  public void update () {
+    // TODO: not necessary to loop
+    for (int i = 0; i < slots.length; i++)
+      slots[i].set(controller.slots[i]);
+  }
+
+  public String getName () {
+    return clientSlot.name.getText();
   }
 
 }

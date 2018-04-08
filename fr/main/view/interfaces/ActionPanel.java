@@ -59,6 +59,10 @@ public class ActionPanel extends InterfaceUI {
       return ((Index)o).id == id;
     }
 
+    public int hashCode(){
+      return super.hashCode();
+    }
+
     public void setActive (boolean active) {
       if (active && !this.active) actives++;
       else if (!active && this.active) actives--;

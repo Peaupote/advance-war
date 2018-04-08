@@ -48,11 +48,12 @@ public class MusicEngine {
           
     }  
     
+    @SuppressWarnings("deprecation")
     protected void finalize() throws Throwable{  
-        super.finalize();  
-        sourceDataLine.drain();  
-        sourceDataLine.close();  
-        audioStream.close();  
+        super.finalize();
+        sourceDataLine.drain();
+        sourceDataLine.close();
+        audioStream.close();
     }  
        
     private void playMusic(boolean loop)throws InterruptedException {  

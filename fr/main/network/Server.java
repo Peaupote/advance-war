@@ -74,7 +74,7 @@ public class Server extends ServerSocket {
         System.out.println("New Client " + id + ": " + socket);
 
         // send to the client his id and already connected clients id and player
-        os.writeObject(new Integer(id));
+        os.writeObject(id);
         for (int i = 0; i < id; i++)
           os.writeObject(new Datagram(i, clients[i].slot));
 

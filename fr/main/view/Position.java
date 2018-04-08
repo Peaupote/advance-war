@@ -63,8 +63,9 @@ public abstract class Position {
     }
 
     public void draw (Graphics g, Color color) {
-      int s = MainFrame.UNIT + (MainFrame.getTimer() % 10);
-      g.drawImage (cursor, 2 + real.x - camera.real.x - (MainFrame.getTimer() % 10) / 2 + 1, 2 + real.y - camera.real.y - (MainFrame.getTimer() % 10) / 2 + 1, s, s, null);
+      int offset = (int)(5 * Math.cos(MainFrame.getTimer() / 5)),
+          s = MainFrame.UNIT + offset;
+      g.drawImage (cursor, 2 + real.x - camera.real.x - offset / 2 + 1, 2 + real.y - camera.real.y - offset / 2 + 1, s, s, null);
     }
 
     public void draw (Graphics g) {

@@ -444,11 +444,9 @@ public class GameController extends Controller {
                             path.visible = false;
                             boolean b = path.apply();
                             targetRender.setState("idle");
-                            if (targetUnit.dead()){
-                                world.displayDeathAnimation(targetUnit.position(), targetUnit instanceof NavalUnit);
-                                UnitRenderer.remove(targetRender);
+                            if (targetUnit.dead())
                                 mode = Mode.MOVE;
-                            }else{
+                            else{
                                 cursor.setLocation(unitCursor.position());
                                 if (b && targetUnit.isEnabled()){
                                     cursor.setLocation(targetUnit.position());
@@ -473,14 +471,6 @@ public class GameController extends Controller {
                                     (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                                     (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                                     UniverseRenderer.FlashMessage.Type.ALERT);
-                                if (targetUnit.dead()){
-                                    UnitRenderer.remove(targetUnit);
-                                    world.displayDeathAnimation(targetUnit.position(), targetUnit instanceof NavalUnit);
-                                }
-                                if (target.dead()){
-                                    UnitRenderer.remove(target);
-                                    world.displayDeathAnimation(target.position(), target instanceof NavalUnit);
-                                }
                             }else{
                                 targetUnit.setMoveQuantity(0);
                                 if (targetUnit.getPrimaryWeapon() != null)
@@ -534,9 +524,7 @@ public class GameController extends Controller {
                         mode = Mode.MOVE;
                         world.clearTarget();                        
                     }else if (mode == Mode.MISSILE_LAUNCHER){
-                        MissileLauncher missile = (MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY());
-                        missile.fire(unitCursor.getX(), unitCursor.getY());
-                        BuildingRenderer.getRender(missile).updateState("inactive");
+                        fireMissile((MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY()), unitCursor.getX(), unitCursor.getY());
                         targetUnit.setMoveQuantity(0);
                         mode = Mode.MOVE;
                         world.clearTarget();
@@ -688,5 +676,25 @@ public class GameController extends Controller {
     private boolean displayDamages;
     private Point point1 = new Point(-1,-1), point2 = new Point(-1, -1);
     private int damage1, damage2;
+
+    private void fireMissile(MissileLauncher missile, int x, int y){
+        HashMap<AbstractUnit, Integer> damages = new HashMap<AbstractUnit, Integer>();
+
+        for (int i = -3; i < 4; i++)
+            for (int j = -3; j < 4; j++){
+                AbstractUnit unit = world.getUnit(x + i, y + j);
+                if (Math.abs(i) + Math.abs(j) <= 3 && unit != null && !damages.containsKey(unit))
+                    damages.put(unit, unit.getLife());
+            }
+
+        missile.fire(x, y);
+        BuildingRenderer.getRender(missile).updateState("inactive");
+
+        for (Map.Entry<AbstractUnit, Integer> e : damages.entrySet())
+            world.flash ("" + (e.getKey().getLife() - e.getValue()),
+                (e.getKey().getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                (e.getKey().getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                UniverseRenderer.FlashMessage.Type.ALERT);
+    }
 
 }

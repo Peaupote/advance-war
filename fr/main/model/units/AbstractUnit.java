@@ -52,7 +52,9 @@ public interface AbstractUnit extends Serializable {
     /**
      * @return true if and only if the unit is dead
      */
-    boolean dead();
+    default boolean dead(){
+        return getLife() <= 0;
+    }
 
     /**
      * @return the life of the unit

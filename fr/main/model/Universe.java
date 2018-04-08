@@ -345,7 +345,7 @@ public class Universe {
      * @param u is the unit we place on the map
      * @return true if and only if the position is valid
      */
-    public final boolean setUnit(int x, int y, AbstractUnit u) {
+    public boolean setUnit(int x, int y, AbstractUnit u) {
         if (isValidPosition(x,y)){
             map.units[y][x] = u;
             return true;
@@ -360,7 +360,7 @@ public class Universe {
      * @param b is the building we place on the map
      * @return true if and only if the position is valid
      */
-    public final boolean setBuilding(int x, int y, AbstractBuilding b){
+    public boolean setBuilding(int x, int y, AbstractBuilding b){
         if (isValidPosition(x, y)){
             map.buildings[y][x] = b;
             return true;

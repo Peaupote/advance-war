@@ -7,6 +7,7 @@ import java.util.*;
 import fr.main.model.players.Player;
 import fr.main.model.*;
 import fr.main.model.units.*;
+import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.buildings.*;
 
 import fr.main.view.*;
@@ -16,6 +17,7 @@ import fr.main.view.render.PathRenderer;
 import fr.main.view.render.UniverseRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.buildings.BuildingRenderer;
+import fr.main.view.render.sprites.Sprite;
 
 /**
  * Game Controller
@@ -273,6 +275,7 @@ public class GameController extends Controller {
 
             new Index("Attack", () -> {
                 mode = Mode.ATTACK;
+                unitCursor.setCursor(false);
                 world.updateTarget(targetUnit);
                 unitCursor.setLocation(cursor.position());
             });
@@ -392,8 +395,8 @@ public class GameController extends Controller {
         path               = new PathRenderer(camera);
         unitActionPanel    = new UnitActionPanel();
         transportUnitPanel = new TransportUnitPanel();
+        buildingPanel      = new BuildingInterface(this);
 
-        buildingPanel = new BuildingInterface(this);
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
         dayPanel.setVisible(true);
@@ -413,8 +416,8 @@ public class GameController extends Controller {
         path               = new PathRenderer(camera);
         unitActionPanel    = new UnitActionPanel();
         transportUnitPanel = new TransportUnitPanel();
+        buildingPanel      = new BuildingInterface(this);
 
-        buildingPanel = new BuildingInterface(this);
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
         dayPanel.setVisible(true);
@@ -442,6 +445,7 @@ public class GameController extends Controller {
                             boolean b = path.apply();
                             targetRender.setState("idle");
                             if (targetUnit.dead()){
+                                world.displayDeathAnimation(targetUnit.position(), targetUnit instanceof NavalUnit);
                                 UnitRenderer.remove(targetRender);
                                 mode = Mode.MOVE;
                             }else{
@@ -469,13 +473,21 @@ public class GameController extends Controller {
                                     (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                                     (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                                     UniverseRenderer.FlashMessage.Type.ALERT);
-                                if (targetUnit.dead()) UnitRenderer.remove(targetUnit);
-                                if (target.dead())     UnitRenderer.remove(target);
+                                if (targetUnit.dead()){
+                                    UnitRenderer.remove(targetUnit);
+                                    world.displayDeathAnimation(targetUnit.position(), targetUnit instanceof NavalUnit);
+                                }
+                                if (target.dead()){
+                                    UnitRenderer.remove(target);
+                                    world.displayDeathAnimation(target.position(), target instanceof NavalUnit);
+                                }
                             }else{
                                 targetUnit.setMoveQuantity(0);
                                 targetUnit.getPrimaryWeapon().shoot();
                             }
                         }
+                        unitCursor.setCursor(true);
+                        displayDamages = false;
                         mode = Mode.MOVE;
                         world.clearTarget();
                     }else if (mode == Mode.HEAL){
@@ -540,7 +552,9 @@ public class GameController extends Controller {
                     }
             } else if (key == KeyEvent.VK_ESCAPE) { // exit and back move mode
                 mode = Mode.MOVE;
+                unitCursor.setCursor(true);
                 world.clearTarget();
+                displayDamages = false;
                 path.visible = false;
             }
         }
@@ -559,8 +573,8 @@ public class GameController extends Controller {
     }
 
     public void mouseClicked(MouseEvent e) {
-      System.out.println("Cliked");
-      // TODO: bosse un peu Pierre
+      // TODO:    bosse un peu Pierre
+      // update : Je te laisse faire Maxime
     }
 
     /**
@@ -571,6 +585,19 @@ public class GameController extends Controller {
         isListening = cursor.move() | camera.move() |
                             (mode != Mode.MOVE && mode.canMove() && unitCursor.move());
         if (!isListening && mode == Mode.MISSILE_LAUNCHER) world.updateTarget(unitCursor.position());
+
+        displayDamages = false;
+        if (!isListening && mode == Mode.ATTACK && world.isVisibleOpponentUnit(unitCursor.position())){
+            AbstractUnit attacker = world.getUnit(cursor.position()),
+                         defender = world.getUnit(unitCursor.position());
+            if (!point2.equals(cursor.position())) point1.move(-1,-1);
+            if (attacker.canAttack(defender) && !point1.equals(unitCursor.position())) {
+                point1  = unitCursor.position();
+                damage1 = Math.max(AbstractUnit.damage(attacker, true, defender), AbstractUnit.damage(attacker, false, defender));
+                damage2 = Math.max(AbstractUnit.damage(defender, true, attacker), AbstractUnit.damage(defender, false, attacker));            
+            }
+            if (attacker.canAttack(defender)) displayDamages = true;
+        }
 
         // make the cursor following the mouse
         if (!isListening && mode.canMove() && listenMouse) {
@@ -616,4 +643,44 @@ public class GameController extends Controller {
         if (gameViewController == null) gameViewController = new GameView(this);
         return gameViewController;
     }
+
+    private static final Image damageImage;
+    private static final Image[] numbers;
+
+    static{
+        Sprite d = Sprite.get("./assets/ingame/attack.png");
+        damageImage = d.getImage(3, 26, 32, 27);
+        numbers = new Image[10];
+        numbers[0]  = d.getImage(37, 37, 7, 12);
+        numbers[1]  = d.getImage(48, 37, 4, 12);
+        numbers[2]  = d.getImage(55, 37, 7, 12);
+        numbers[3]  = d.getImage(64, 37, 7, 12);
+        numbers[4]  = d.getImage(73, 37, 7, 12);
+        numbers[5]  = d.getImage(82, 37, 7, 12);
+        numbers[6]  = d.getImage(91, 37, 7, 12);
+        numbers[7]  = d.getImage(100, 37, 7, 12);
+        numbers[8]  = d.getImage(109, 37, 7, 12);
+        numbers[9]  = d.getImage(118, 37, 7, 12);
+    }
+
+    private void displayDamages(Graphics g, int damage, Point location){
+        int x = (location.x - camera.getX()) * MainFrame.UNIT,
+        y = (location.y - camera.getY()) * MainFrame.UNIT - (location.y != 0 ? MainFrame.UNIT / 2 : 0);
+        g.drawImage(damageImage, x, y, gameViewController);
+        g.drawImage(numbers[damage / 100],       x + 1,  y + 10, gameViewController);
+        g.drawImage(numbers[(damage / 10) % 10], x + 9,  y + 10, gameViewController);
+        g.drawImage(numbers[damage % 10],        x + 16, y + 10, gameViewController);
+    }
+
+    public void displayDamages(Graphics g){
+        if (displayDamages){
+            displayDamages(g, damage1, point1);
+            displayDamages(g, damage2, point2);
+        }
+    }
+
+    private boolean displayDamages;
+    private Point point1 = new Point(-1,-1), point2 = new Point(-1, -1);
+    private int damage1, damage2;
+
 }

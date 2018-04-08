@@ -11,22 +11,22 @@ import javax.swing.SwingConstants;
 
 public class MenuButton extends JButton{
 	Font font;
-	public MenuButton(String path, int x,int y) throws IOException{
-		super();
-		//path: the address of image
-		ImageIcon imageIcon = new ImageIcon(path);
-		
-		setBounds(x, y,imageIcon.getIconWidth(),imageIcon.getIconHeight());
+
+	public MenuButton(ImageIcon image, int x, int y){
+		setBounds(x, y,image.getIconWidth(),image.getIconHeight());
 		setContentAreaFilled(false);
 		setOpaque(false);
 	    //play.setBackground(new Color(0, 0, 255));
 		setFocusPainted(false); 
 		setBorder(null);
-		setIcon(imageIcon);
+		setIcon(image);
+	}
+
+	public MenuButton(String path, int x, int y) throws IOException{
+		this(new ImageIcon(path), x, y);
 	}
 	
-	public MenuButton(String nom,String path,int x, int y) throws IOException {
-		
+	public MenuButton(String nom, String path, int x, int y) throws IOException {
 		this(path,x,y);
 		
 		font = new Font("Courier", Font.BOLD+Font.ITALIC, 34);
@@ -37,13 +37,16 @@ public class MenuButton extends JButton{
 		setText(nom);
 	}
 	
-	public MenuButton(String nom,String path,int x, int y,int t) throws IOException {
+	public MenuButton(String nom, String path, int x, int y, int t) throws IOException {
 		this(nom, path, x, y);
+
 		font = new Font("Courier", Font.BOLD+Font.ITALIC, t);
 		setFont(font);
 	}
 	
-	public MenuButton(String nom,String path,int x, int y,int t,Color color) throws IOException{
+	public MenuButton(String nom, String path, int x, int y, int t, Color color) throws IOException{
+		this(nom, path, x, y, t);
+
 		setForeground(color);
 	}
 }

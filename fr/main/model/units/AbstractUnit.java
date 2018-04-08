@@ -351,6 +351,6 @@ public interface AbstractUnit extends Serializable {
         int dHP     = defender.getLife();
 
         // the formula isn't obvious but works nicely
-        return Math.max(0, (d * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
+        return Math.min(100, Math.max(0, (d * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000));
     }
 }

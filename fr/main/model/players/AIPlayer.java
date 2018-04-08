@@ -14,15 +14,16 @@ import fr.main.view.interfaces.DayPanel;
  */
 public class AIPlayer extends Player implements ArtificialIntelligence {
 
-    private static int num = 1;
-
     public final UnitControlAI unitControlAI;
     public final EconomicAI    economicAI;
 
     public AIPlayer(){
-        super("IA " + num);
-        num ++;
+        this ("IA " + Player.increment_id);
+    }
 
+    public AIPlayer(String name){
+        super(name);
+        
         this.economicAI    = new EconomicAI(this);
         this.unitControlAI = new UnitControlAI(this);
     }

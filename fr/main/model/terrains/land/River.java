@@ -21,11 +21,15 @@ public class River extends Terrain implements LandTerrain {
         sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
         sunnyWeatherMovementCosts.put(MoveType.INFANTRY,2);
         sunnyWeatherMovementCosts.put(MoveType.MECH,1);
+        sunnyWeatherMovementCosts.put(MoveType.LANDER,1);
+        sunnyWeatherMovementCosts.put(MoveType.NAVAL,1);
 
         Map<MoveType,Integer> snowyWeatherMovementCosts=new HashMap<MoveType,Integer>();
         snowyWeatherMovementCosts.put(MoveType.AIRY,2);
         snowyWeatherMovementCosts.put(MoveType.INFANTRY,2);
         snowyWeatherMovementCosts.put(MoveType.MECH,1);
+        sunnyWeatherMovementCosts.put(MoveType.LANDER,2);
+        sunnyWeatherMovementCosts.put(MoveType.NAVAL,2);
 
         weatherMovementCosts.put(Weather.SUNNY,sunnyWeatherMovementCosts);
         weatherMovementCosts.put(Weather.RAINY,sunnyWeatherMovementCosts);

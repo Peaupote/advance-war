@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
                               UNIT = 32;
 
     /**
-     * Time spend since the controller has been loaded (in ms)
+     * Time spend since the controller has been loaded (in number of loop turn)
      */
     private static int timer = 0;
 
@@ -59,16 +59,16 @@ public class MainFrame extends JFrame {
         // main loop
         
         new Thread(() -> {
-            while (true) {
-                timer = timer == Integer.MAX_VALUE ? 0 : timer + 1;
-                controller.update();
-                view.repaint();
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+          while (true) {
+            timer = timer == Integer.MAX_VALUE ? 0 : timer + 1;
+            controller.update();
+            view.repaint();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+          }
         }).start();
         
         pack();

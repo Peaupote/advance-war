@@ -36,7 +36,7 @@ public class App {
           System.out.println("The debug map doesn't exists. Please name a save debug.map");
         break;
       default: 
-//        save();
+        save();
         play();
         break;
     }

@@ -337,14 +337,14 @@ public interface AbstractUnit extends Serializable {
      * @param defender is the unit that defends
      * @return the damage inflicted by the attacker to the defender with the weapon
      */
-    public static int damage(AbstractUnit attacker, boolean b, AbstractUnit defender){
+    public static int damage(AbstractUnit attacker, int life_attacker, boolean b, AbstractUnit defender){
         Weapon w    = b ? attacker.getPrimaryWeapon() : attacker.getSecondaryWeapon();
         if (w == null || ! w.canAttack(attacker,defender)) return 0;
         
         int d       = w.damage(defender);
         int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
         Random rand = new Random(); int r = rand.nextInt(1000);
-        int aHP     = attacker.getLife();
+        int aHP     = life_attacker;
         int dCO     = defender.getPlayer().getCommander().getDefenseValue(defender);
         AbstractBuilding building = Universe.get().getBuilding(defender.getX(), defender.getY());
         int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender) + (building == null ? 0 : building.getDefense(defender));
@@ -352,5 +352,12 @@ public interface AbstractUnit extends Serializable {
 
         // the formula isn't obvious but works nicely
         return Math.min(100, Math.max(0, (d * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000));
+    }
+
+    /**
+     * Same method with default life_attacker (the actual life of the attacker)
+     */
+    public static int damage(AbstractUnit attacker, boolean b, AbstractUnit defender){
+        return damage(attacker, attacker.getLife(), b, defender);
     }
 }

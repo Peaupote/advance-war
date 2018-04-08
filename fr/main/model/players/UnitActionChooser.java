@@ -42,8 +42,8 @@ public class UnitActionChooser implements java.io.Serializable {
         FLEE_HEAL (u -> u::flee_heal), // flee from an opponent toward a place to get healed
         DEFEND    (u -> u::defend),    // defend a specific tile or building or unit
         ATTACK    (u -> u::attack),    // attack opponents
-        CAPTURE   (u -> u::capture),   // capture a specific building
         OBJECTIVE (u -> u::objective); // an objective is a tile, a building or an unit this unit wants to reach
+                                       // once the objective is reached, a specific action is done
 
         private final Function<UnitActionChooser,Runnable> action;
 
@@ -147,6 +147,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * Runnable doing what its name indicates
      */
     public void go (){
+
+
         action = () -> {};
     }
 
@@ -181,13 +183,6 @@ public class UnitActionChooser implements java.io.Serializable {
     /**
      * Runnable doing what its name indicates
      */
-    public void capture (){
-        action = () -> {};
-    }
-
-    /**
-     * Runnable doing what its name indicates
-     */
     public void objective (){
         action = () -> {};
     }
@@ -206,17 +201,18 @@ public class UnitActionChooser implements java.io.Serializable {
         int p = 0;
         for (int i = -5; i <= 5; i++)
             for (int j = -5; j <= 5; j++){
-                AbstractUnit     aU = u.getUnit(unit.position());
+                AbstractUnit aU = u.getUnit(unit.position());
                 if (aU != null){
                     if (aU.getPlayer() == unit.getPlayer()) p += aU.getCost() / 1000;
                     else if (attack){
                         if (indirect && aU.canAttack(unit)) p -= aU.getCost() / 1000;
                         else {
-                            if (AbstractUnit.damage(unit, unit.getPrimaryWeapon() != null && unit.getPrimaryWeapon().canAttack(unit, aU), aU) > 
-                                AbstractUnit.damage(aU,     aU.getPrimaryWeapon() != null &&   aU.getPrimaryWeapon().canAttack(aU, unit), unit))
-                                p += aU.getCost() / 1000;
+                            int damage2 = AbstractUnit.damage(unit,                     unit.getPrimaryWeapon() != null && unit.getPrimaryWeapon().canAttack(unit, aU), aU),
+                                damage1 = AbstractUnit.damage(aU, aU.getLife() - damage2, aU.getPrimaryWeapon() != null &&   aU.getPrimaryWeapon().canAttack(aU, unit), unit);
+                            if (damage2 > damage1)
+                                p += aU.getCost() * damage2 / 1000;
                             else 
-                                p -= aU.getCost() / 1000;
+                                p -= unit.getCost() * (damage2 - damage1) / 1000;
                         }
                     }
                     else if (aU.canAttack(unit)) p -= aU.getCost() / 1000;
@@ -233,8 +229,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @return how much points it earns to move to the point and then attack the unit
      */
     private int attack         (Point move, AbstractUnit attacked) {
-        int a = AbstractUnit.damage(unit,         unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
-        int b = AbstractUnit.damage(attacked, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
+        int a = AbstractUnit.damage(unit,                                 unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
+        int b = AbstractUnit.damage(attacked, attacked.getLife() - a, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
         return move(move) + (a >= b ? 1 : -1) * (a * attacked.getCost() / 100 - b * unit.getCost() / 100) + (a >= attacked.getLife() ? 10 : 0);
     }
 

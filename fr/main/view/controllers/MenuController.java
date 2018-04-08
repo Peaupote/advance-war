@@ -34,7 +34,7 @@ public class MenuController extends Controller {
             jfc.addChoosableFileFilter(new FileNameExtensionFilter("Only .map files are accepted", "map"));
             if (jfc.showOpenDialog(MainFrame.instance) == JFileChooser.APPROVE_OPTION){
                 try{
-                    MainFrame.setScene(new LoadController(new GameController(jfc.getSelectedFile().getName())));
+                    MainFrame.setScene(new LoadController(jfc.getSelectedFile().getName()));
                 }catch(Exception exc){}
             }
         };

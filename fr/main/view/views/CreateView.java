@@ -43,7 +43,7 @@ public class CreateView extends View {
             btns = new JButton[6];
             width = 140;
             height = 156;
-            backgroundImage = new ImageIcon("./assets/ingame/acc.jpg").getImage();
+            backgroundImage = new ImageIcon("./assets/screens/acc.jpg").getImage();
             
             setLayout(null);
             setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT / 2 + 100));
@@ -56,7 +56,7 @@ public class CreateView extends View {
             btns[4] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/basic.png")  .getImage(0,0,140,160)), 800, 20);
             btns[5] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/ranged.png") .getImage(0,0,140,160)), 800, 200);
             
-            startGame = new MenuButton("STARTGAME","./assets/button/startGame.png", 350, 450);
+            startGame = new MenuButton("START GAME","./assets/button/startGame.png", 350, 450);
 
             for (int i = 0; i < btns.length; i++) {
                 final int target = i;

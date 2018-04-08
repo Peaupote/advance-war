@@ -37,7 +37,7 @@ public class MenuView extends View {
     super(controller);
 		// TODO Auto-generated constructor stub
     try {
-		bg = new ImageIcon("./assets/ingame/bd.png");
+		bg = new ImageIcon("./assets/screens/bd.png");
 		label = new JLabel(bg);
 		
 		play   = new MenuButton("PLAY","./assets/button/b02.png", 350, 150);

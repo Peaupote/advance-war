@@ -11,21 +11,37 @@ import fr.main.view.MainFrame;
 public class LoadController extends Controller {
 
     private int load;
-    private final GameController controller;
+    private GameController controller;
+    private boolean ready;
 
-    public LoadController(GameController g){
-        this.controller = g;
+    public LoadController(String map, Player[] ps){
+        controller = null;
+        ready = false;
+        new Thread(() -> {
+          controller = new GameController(map, ps);
+          ready = true;
+        }).start();
+        load = 0;
+    }
+
+    public LoadController(String filename) {
+        ready = false;
+        controller = null;
+        new Thread(() -> {
+          controller = new GameController(filename);
+          ready = true;
+        }).start();
         load = 0;
     }
 
     public void update() {
-        load++;
+        load = Math.min(500, load + 1);
 
-        if (load == 100) MainFrame.setScene(controller);
+        if (load >= 500 && ready) MainFrame.setScene(controller);
     }
 
     public int getLoad () {
-        return load;
+        return load / 5;
     }
 
     public LoadView makeView () {

@@ -483,7 +483,10 @@ public class GameController extends Controller {
                                 }
                             }else{
                                 targetUnit.setMoveQuantity(0);
-                                targetUnit.getPrimaryWeapon().shoot();
+                                if (targetUnit.getPrimaryWeapon() != null)
+                                    targetUnit.getPrimaryWeapon().shoot();
+                                else
+                                    targetUnit.getSecondaryWeapon().shoot();
                             }
                         }
                         unitCursor.setCursor(true);
@@ -511,6 +514,7 @@ public class GameController extends Controller {
                             else buildingPanel.setVisible (true);
                         } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                                      targetUnit.isEnabled()) {
+                            unitCursor.setCursor(true);
                             mode = Mode.UNIT;
                             world.updateTarget(targetUnit);
                             path.rebase(targetUnit);
@@ -587,14 +591,16 @@ public class GameController extends Controller {
         if (!isListening && mode == Mode.MISSILE_LAUNCHER) world.updateTarget(unitCursor.position());
 
         displayDamages = false;
+
         if (!isListening && mode == Mode.ATTACK && world.isVisibleOpponentUnit(unitCursor.position())){
             AbstractUnit attacker = world.getUnit(cursor.position()),
                          defender = world.getUnit(unitCursor.position());
             if (!point2.equals(cursor.position())) point1.move(-1,-1);
             if (attacker.canAttack(defender) && !point1.equals(unitCursor.position())) {
                 point1  = unitCursor.position();
+                point2  = cursor.position();
                 damage1 = Math.max(AbstractUnit.damage(attacker, true, defender), AbstractUnit.damage(attacker, false, defender));
-                damage2 = Math.max(AbstractUnit.damage(defender, true, attacker), AbstractUnit.damage(defender, false, attacker));            
+                damage2 = Math.max(AbstractUnit.damage(defender, defender.getLife() - damage1, true, attacker), AbstractUnit.damage(defender, false, attacker));            
             }
             if (attacker.canAttack(defender)) displayDamages = true;
         }

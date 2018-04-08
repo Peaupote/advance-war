@@ -1,4 +1,4 @@
-NAME = picd
+NAME = advance-war
 BIN_FOLDER = bin/
 DEPS_FOLDER = ".:"
 

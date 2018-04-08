@@ -56,24 +56,19 @@ public class MusicEngine {
     }  
        
     private void playMusic(boolean loop)throws InterruptedException {  
-        try{  
-                if(loop){  
-                    while(true){  
-                        playMusic();  
-                    }  
-                }else{  
-                    playMusic();  
-                    sourceDataLine.drain();  
-                    sourceDataLine.close();  
-                    audioStream.close();  
-                }  
-              
-        }catch(IOException ex){  
-            ex.printStackTrace();  
-        }  
-          
-          
-    }  
+        try { 
+          if(loop) while(true) playMusic();  
+          else {
+            playMusic();
+            sourceDataLine.drain();
+            sourceDataLine.close();
+            audioStream.close();
+          }          
+        } catch(IOException ex) {
+          ex.printStackTrace();  
+        }
+    }
+
     private void playMusic(){  
         try{  
             synchronized(this){  

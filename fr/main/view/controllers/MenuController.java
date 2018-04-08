@@ -1,14 +1,15 @@
 package fr.main.view.controllers;
 
 import java.awt.event.*;
-import javax.swing.JOptionPane;
-import javax.swing.JFileChooser;
+import javax.swing.*;
+import java.io.IOException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.main.model.Universe;
 import fr.main.view.views.*;
 import fr.main.view.MainFrame;
 import fr.main.network.*;
+import fr.main.view.sound.MusicEngine;
 
 /**
  * Main Menu
@@ -20,6 +21,30 @@ public class MenuController extends Controller {
                                 host,
                                 join,
                                 load;
+
+    private boolean listen;
+	  private MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
+
+    public class Music implements ActionListener {
+     
+      private final JButton sound;
+
+      public Music (JButton enableMusic) {
+        enableMusic.addActionListener(this);
+        sound = enableMusic;
+      }
+
+      public void actionPerformed (ActionEvent e) {
+        if(listen) {
+          sound.setIcon(new ImageIcon("./assets/button/music03.png"));
+          bm.start(true);
+        } else {
+          sound.setIcon(new ImageIcon("./assets/button/music02.png"));
+          bm.stop();
+        }
+        listen = !listen;
+      }
+    }
 
     public MenuController () {
         super();

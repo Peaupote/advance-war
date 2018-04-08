@@ -1,15 +1,7 @@
 package fr.main.view.views;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import fr.main.view.sound.MusicEngine;
+import javax.swing.*;
 import fr.main.view.components.*;
 import fr.main.view.controllers.*;
 
@@ -28,10 +20,7 @@ public class MenuView extends View {
                     option,
                     sound;
 
-	static MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
-	static boolean listen = true;
-
-    protected MenuController controller;
+  protected MenuController controller;
 	
 	public MenuView (MenuController controller) {
     super(controller);
@@ -73,17 +62,7 @@ public class MenuView extends View {
     exit.addActionListener(controller.exit);
     host.addActionListener(controller.host);
     join.addActionListener(controller.join);
-    sound.addActionListener((ActionEvent e) -> {
-		if(listen) {
-			sound.setIcon(new ImageIcon("./assets/button/music03.png"));
-			bm.start(true);
-		} else {
-			sound.setIcon(new ImageIcon("./assets/button/music02.png"));
-			bm.stop();
-		}
-		listen = !listen;
-    });
-    
+    controller.new Music(sound); 
 	}
 
 }

@@ -18,6 +18,7 @@ import fr.main.model.terrains.naval.Reef;
 import fr.main.model.terrains.naval.Sea;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HealerUnit;
+import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.buildings.MissileLauncher;
 import fr.main.model.buildings.AbstractBuilding;
@@ -74,7 +75,8 @@ public class UniverseRenderer extends Universe {
 
     }
 
-    private final LinkedList<FlashMessage> flashs;
+    private final LinkedList<FlashMessage>   flashs;
+    private final LinkedList<DeathAnimation> deathAnimation;
 
     public UniverseRenderer (Universe.Board b, GameController controller){
         super(b);
@@ -86,9 +88,10 @@ public class UniverseRenderer extends Universe {
             for (int j = 0; j < map.board[i].length; j++)
                 coords[i][j] = new Point(0, 0);
 
-        targets    = new boolean[map.board.length][map.board[0].length];
-        lowerRight = new Point(map.board.length, map.board[0].length);
-        flashs     = new LinkedList<FlashMessage>();
+        targets        = new boolean[map.board.length][map.board[0].length];
+        lowerRight     = new Point(map.board.length, map.board[0].length);
+        flashs         = new LinkedList<FlashMessage>();
+        deathAnimation = new LinkedList<DeathAnimation>();
         TerrainRenderer.setLocations();
     }
 
@@ -150,6 +153,14 @@ public class UniverseRenderer extends Universe {
             g.drawString (message.message, message.x, message.y);
             message.time -= 10;
             if (message.time <= 0) iterator.remove();
+        }
+
+        Iterator<DeathAnimation> iterator2 = deathAnimation.iterator();
+        while (iterator2.hasNext()){
+            DeathAnimation d = iterator2.next();
+            g.drawImage(d.getImage(), d.x * MainFrame.UNIT, d.y * MainFrame.UNIT, null);
+            d.time --;
+            if (d.time <= 0) iterator2.remove();
         }
     }
 
@@ -263,15 +274,33 @@ public class UniverseRenderer extends Universe {
      * @param sink is true to display the sink animation and false for the explosion
      */
     public void displayDeathAnimation(Point pt, boolean naval){
-        if (explosion[0] != null){
-            Graphics g = controller.makeView().getGraphics();
-            Image[] anim = naval ? sink : explosion;
-            for (Image i : anim){
-                g.drawImage(i, pt.x * MainFrame.UNIT, pt.y * MainFrame.UNIT, null);
+        deathAnimation.add(new DeathAnimation(pt, naval ? sink : explosion));
+    }
 
-                try{ Thread.sleep(75); }
-                catch(InterruptedException e){}            
-            }
+    class DeathAnimation{
+        public final int x, y;
+        public int time;
+        private final Image[] animation;
+
+        public DeathAnimation(Point location, Image[] animation){
+            this.x = location.x;
+            this.y = location.y;
+            this.animation = animation;
+            this.time     = animation.length * 5;
         }
+
+        public Image getImage(){
+            return animation[(time - 1) / 5];
+        }
+    }
+
+    @Override
+    public boolean setUnit(int x, int y, AbstractUnit u){
+        AbstractUnit unit = getUnit(x, y);
+        if (unit != null && unit.dead()){
+            UnitRenderer.remove(unit);
+            displayDeathAnimation(new Point(x, y), unit instanceof NavalUnit);
+        }
+        return super.setUnit(x, y, u);
     }
 }

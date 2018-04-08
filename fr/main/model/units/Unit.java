@@ -28,7 +28,6 @@ public abstract class Unit implements AbstractUnit {
     protected Point location;
     protected Player player;
     protected int life, moveQuantity;
-    protected boolean dead;
 
     public final Fuel fuel;
     public final MoveType moveType;
@@ -69,7 +68,6 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public Unit (Player player, Point location, String fuelName, int maxFuel, boolean diesIfNoFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name, int cost) {
-        this.dead            = false;
         this.life            = 100;
         this.player          = player;
         if (player != null) player.add(this);
@@ -89,10 +87,10 @@ public abstract class Unit implements AbstractUnit {
 
     @Override
     public void dies(){
+        life = 0;
         Universe.get().setUnit(getX(), getY(), null);
         player.remove(this);
-        player          = null;
-        dead            = true;
+        player = null;
     }
 
     @Override
@@ -118,11 +116,6 @@ public abstract class Unit implements AbstractUnit {
     @Override
     public Fuel getFuel(){
         return fuel;
-    }
-
-    @Override
-    public boolean dead(){
-        return dead;
     }
 
     /**
@@ -201,7 +194,7 @@ public abstract class Unit implements AbstractUnit {
             u.setUnit(x, y, this);
             fuel.consume(fuelQuantity);
             u.updateVision();
-            return !dead;
+            return life > 0;
         }
 
         return false;

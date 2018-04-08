@@ -3,9 +3,13 @@ package fr.main.view.views;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import fr.main.model.units.AbstractUnit;
+
 import fr.main.view.interfaces.*;
 import fr.main.view.render.weather.*;
 import fr.main.view.controllers.GameController;
+import fr.main.view.render.sprites.Sprite;
+import fr.main.view.MainFrame;
 
 public class GameView extends View {
 
@@ -42,6 +46,9 @@ public class GameView extends View {
       // render path
       if (controller.path.visible)
         controller.path.draw(g, offsetX, offsetY);
+
+      // render damages
+      controller.displayDamages(g);
       
       // render weather
       weather.render(g);

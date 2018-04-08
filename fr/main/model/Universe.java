@@ -399,6 +399,10 @@ public class Universe {
         return false;
     }
 
+    public boolean isVisibleOpponentUnit (Point pt){
+        return isVisibleOpponentUnit(pt.x, pt.y);
+    }
+
     /**
      * @param mapName is the name of the save file
      * @param units is the units board

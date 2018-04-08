@@ -6,6 +6,7 @@ import java.io.*;
 
 import fr.main.view.MainFrame;
 import fr.main.model.Direction;
+import fr.main.view.render.sprites.Sprite;
 
 /**
  * Represents a moving point on the map
@@ -27,35 +28,24 @@ public abstract class Position {
      */
     private final Camera camera;
 
-    private Image image;
-    private int cursorScale;
+    public static final Image cursorBasic;
+    public static final Image cursorAttack;
+
+    static{
+      Sprite attack = Sprite.get("./assets/ingame/attack.png");
+      cursorBasic = attack.getImage(39, 2, 28, 31);
+      cursorAttack = attack.getImage(70, 1, 30, 29);
+    }
+
+    private Image cursor;
 
     public Cursor (Camera camera, Dimension size) {
       super(0, 0);
 
       this.size   = size;
       this.camera = camera;
-      cursorScale = 1;
 
-      image = null;
-      // TODO: make better stuff with getTimer()
-      try {
-        image = ImageIO.read(new File("./assets/cursor.png"));
-
-        new Thread(() -> {
-          while(true) {
-            cursorScale = (cursorScale + 1) % 10;
-
-            try {
-              Thread.sleep(50);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            }
-          }
-        }).start();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      cursor = cursorBasic;
     }
 
     @Override
@@ -73,8 +63,8 @@ public abstract class Position {
     }
 
     public void draw (Graphics g, Color color) {
-      int s = MainFrame.UNIT + cursorScale;
-      g.drawImage (image, 2 + real.x - camera.real.x - cursorScale / 2 + 1, 2 + real.y - camera.real.y - cursorScale / 2 + 1, s, s, null);
+      int s = MainFrame.UNIT + (MainFrame.getTimer() % 10);
+      g.drawImage (cursor, 2 + real.x - camera.real.x - (MainFrame.getTimer() % 10) / 2 + 1, 2 + real.y - camera.real.y - (MainFrame.getTimer() % 10) / 2 + 1, s, s, null);
     }
 
     public void draw (Graphics g) {
@@ -95,6 +85,10 @@ public abstract class Position {
 
     public void setLocation (Point pt) {
       setLocation (pt.x, pt.y);
+    }
+
+    public void setCursor(boolean normal){
+      cursor = normal ? cursorBasic : cursorAttack;
     }
 
   }

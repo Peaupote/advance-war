@@ -28,7 +28,7 @@ public class TerrainPanel extends InterfaceUI {
   /**
    * Unit icons
    */
-  private static Sprite sp = Sprite.get("./assets/small_sprites.png");
+  private static Sprite sp = Sprite.get("./assets/ingame/small_sprites.png");
   public static final Image lifeImage = sp.getImage(0, 8, 8, 8, 2),
                             munitionsImage = sp.getImage(0, 16, 8, 7, 2),
                             fuelImage = sp.getImage(0, 23, 8, 8, 2),

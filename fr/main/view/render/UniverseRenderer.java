@@ -28,6 +28,7 @@ import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.buildings.BuildingRenderer;
+import fr.main.view.render.sprites.Sprite;
 
 public class UniverseRenderer extends Universe {
 
@@ -233,5 +234,44 @@ public class UniverseRenderer extends Universe {
         flashs.add(new FlashMessage(message, x, y, time, type));
     }
 
-}
+    private static final Image[] explosion = new Image[10];
+    private static final Image[] sink      = new Image[6];
 
+    static{
+        Sprite s = Sprite.get("./assets/ingame/death.png");
+        sink[0] = s.getImage(5, 59, 24, 32);
+        sink[1] = s.getImage(5, 93, 24, 32);
+        sink[2] = s.getImage(5, 127, 24, 32);
+        sink[3] = s.getImage(5, 161, 24, 32);
+        sink[4] = s.getImage(5, 195, 24, 32);
+        sink[5] = s.getImage(5, 229, 24, 32);
+
+        explosion[0] = s.getImage(35, 5, 33, 32);
+        explosion[1] = s.getImage(35, 34, 33, 32);
+        explosion[2] = s.getImage(35, 66, 33, 32);
+        explosion[3] = s.getImage(35, 96, 33, 32);
+        explosion[4] = s.getImage(35, 127, 33, 32);
+        explosion[5] = s.getImage(35, 159, 33, 32);
+        explosion[6] = s.getImage(35, 195, 33, 32);
+        explosion[7] = s.getImage(35, 227, 33, 32);
+        explosion[8] = s.getImage(35, 261, 33, 32);
+        explosion[9] = s.getImage(35, 295, 33, 30);
+    }
+
+    /**
+     * @param pt the position of the animation to display
+     * @param sink is true to display the sink animation and false for the explosion
+     */
+    public void displayDeathAnimation(Point pt, boolean naval){
+        if (explosion[0] != null){
+            Graphics g = controller.makeView().getGraphics();
+            Image[] anim = naval ? sink : explosion;
+            for (Image i : anim){
+                g.drawImage(i, pt.x * MainFrame.UNIT, pt.y * MainFrame.UNIT, null);
+
+                try{ Thread.sleep(75); }
+                catch(InterruptedException e){}            
+            }
+        }
+    }
+}

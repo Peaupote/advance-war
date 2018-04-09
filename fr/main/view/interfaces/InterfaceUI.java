@@ -6,16 +6,20 @@ import java.lang.Iterable;
 import java.awt.Graphics;
 
 /**
- * User interface panels
+ * User interface panels.
  */
 public abstract class InterfaceUI {
 
   private boolean visible;
 
   /**
-   * List of all interfaces
+   * List of all interfaces.
    */
   private static LinkedList<InterfaceUI> comps = new LinkedList<>();
+
+  public static void clear () {
+    comps.clear();
+  }
 
   public static Iterable<InterfaceUI> components () {
     return comps;
@@ -33,7 +37,7 @@ public abstract class InterfaceUI {
   protected abstract void draw (Graphics g);
 
   /**
-   * Render interface visual if visible
+   * Render interface visual if visible.
    */
   public final void render (Graphics g) {
     if (visible) draw(g);

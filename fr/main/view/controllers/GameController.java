@@ -388,6 +388,7 @@ public class GameController extends Controller {
         camera     = new Position.Camera(size);
         cursor     = new Position.Cursor(camera, size);
         unitCursor = new Position.Cursor(camera, size);
+        InterfaceUI.clear();
 
         mouse              = new Point(1,1);
         actionPanel        = new MainActionPanel();
@@ -409,6 +410,7 @@ public class GameController extends Controller {
         camera     = new Position.Camera(size);
         cursor     = new Position.Cursor(camera, size);
         unitCursor = new Position.Cursor(camera, size);
+        InterfaceUI.clear();
 
         mouse              = new Point(1,1);
         actionPanel        = new MainActionPanel();

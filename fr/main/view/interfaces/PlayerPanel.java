@@ -59,8 +59,10 @@ public class PlayerPanel extends InterfaceUI {
     r = x + c.getPowerCost(true) * WIDTH / c.powerBar.maxValue;
     g.drawLine(r, y + HEIGHT - 20, r, y + HEIGHT);
 
+    g.setColor(p.color);
+    g.fillRect(x + WIDTH - 80, y, 80, 80);
     CommanderRenderer.getRender(p.getCommander().toString())
-                     .draw(g, x + WIDTH - 70, y + 35);
+                     .draw(g, x + 130, y + 35);
   }
 
 }

@@ -575,7 +575,7 @@ public class GameController extends Controller {
     }
 
     /**
-     * Call each frame
+     * Called each frame
      */
     public void update () {
         // isListening if none of the cursors move
@@ -590,15 +590,19 @@ public class GameController extends Controller {
                          defender = world.getUnit(unitCursor.position());
             if (!point2.equals(cursor.position())) point1.move(-1,-1);
             if (attacker.canAttack(defender) && !point1.equals(unitCursor.position())) {
-                point1  = unitCursor.position();
-                point2  = cursor.position();
-                damage1 = Math.max(AbstractUnit.damage(attacker, true, defender), AbstractUnit.damage(attacker, false, defender));
-                damage2 = Math.max(AbstractUnit.damage(defender, defender.getLife() - damage1, true, attacker), AbstractUnit.damage(defender, false, attacker));            
+                point1  = unitCursor.position(); // the target
+                point2  = cursor.position(); // the selected unit
+                damage1 = AbstractUnit.damage(attacker, 
+                            attacker.getPrimaryWeapon() != null && attacker.getPrimaryWeapon().canAttack(attacker, defender),
+                            defender);
+                damage2 = AbstractUnit.damage(defender, defender.getLife() - damage1, 
+                            defender.getPrimaryWeapon() != null && defender.getPrimaryWeapon().canAttack(defender, attacker),
+                            attacker);
             }
             if (attacker.canAttack(defender)) displayDamages = true;
         }
 
-        // make the cursor following the mouse
+        // make the cursor follow the mouse
         if (!isListening && mode.canMove() && listenMouse) {
             if (camera.getX() > 0 && mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
             else if (camera.getX() + camera.width < size.width && camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);

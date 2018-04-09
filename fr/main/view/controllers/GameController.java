@@ -21,12 +21,12 @@ import fr.main.view.render.sprites.Sprite;
 import fr.main.view.sound.Sdfx;
 
 /**
- * Game Controller
+ * Game Controller.
  */
 public class GameController extends Controller {
 
     /**
-     * View associated with the game controller
+     * View associated with the game controller.
      */
     protected GameView gameViewController;
 
@@ -44,7 +44,7 @@ public class GameController extends Controller {
     public final Position.Camera camera;
 
     /**
-     * Renderer for the map
+     * Renderer for the map.
      */
     public final UniverseRenderer world;
 
@@ -58,53 +58,53 @@ public class GameController extends Controller {
      * is listening to user inputs
      *
      * listenMouse is true if and only if the controller
-     * is listening to user mouse inputs
+     * is listening to user mouse inputs.
      */
     private boolean isListening = false, listenMouse = false;
 
     /**
-     * Dimension of the world
+     * Dimension of the world.
      */
     private final Dimension size;
 
     /**
-     * Last recorded position of the mouse on the screen
+     * Last recorded position of the mouse on the screen.
      */
     private Point mouse;
 
     /**
-     * Current user mode
+     * Current user mode.
      */
     private Mode mode;
 
     /**
-     * actionPanel 
+     * actionPanel.
      */
     private ActionPanel focusedActionPanel;
 
     /**
-     * MainActionPanel for user actions at the end ot the turn
+     * MainActionPanel for user actions at the end ot the turn.
      */
     private MainActionPanel actionPanel;
 
     /**
-     * Panel for choosing what unit to create
+     * Panel for choosing what unit to create.
      */
     private BuildingInterface buildingPanel;
 
     /**
      * Last unit selected by a player
-     * can be null if no unit is selected
+     * can be null if no unit is selected.
      */
     private AbstractUnit targetUnit;
 
     /**
-     * Choose unit to unload from a transport unit
+     * Choose unit to unload from a transport unit.
      */
     private TransportUnitPanel transportUnitPanel;
 
     /**
-     * All units actions
+     * All units actions.
      */
     private UnitActionPanel unitActionPanel;
 
@@ -112,62 +112,62 @@ public class GameController extends Controller {
     public PathRenderer path;
 
     /**
-     * Enumerate all possibles modes for user
+     * Enumerate all possibles modes for user.
      */
     public enum Mode {
 
         /**
-         * Can't do any action
+         * Can't do any action.
          */ 
         IDLE(false),
 
         /**
-         * Can move the cursor
+         * Can move the cursor.
          */
         MOVE(true),
 
         /**
-         * When a menu is open
+         * When a menu is open.
          */
         MENU(false),
 
         /**
-         * When user choose target to attack
+         * When user choose target to attack.
          */
         ATTACK(true),
 
         /**
-         * When user move the targetUnit
+         * When user move the targetUnit.
          */
         UNIT(true),
 
         /**
-         * When choosing you want to go in
+         * When choosing you want to go in.
          */
         LOAD(true),
 
         /**
-         * When choosing unit to unload
+         * When choosing unit to unload.
          */
         UNLOAD_CHOOSE(false),
 
         /**
-         * When choosing where to unload the unit
+         * When choosing where to unload the unit.
          */
         UNLOAD_LOCATE(true),
 
         /**
-         * When choosing target for the missile launcher
+         * When choosing target for the missile launcher.
          */
         MISSILE_LAUNCHER(true),
 
         /**
-         * When choosing unit to heal
+         * When choosing unit to heal.
          */
         HEAL(true);
 
         /**
-         * Can the cursor move in this mode
+         * Can the cursor move in this mode.
          */
         private boolean moveable;
 
@@ -183,7 +183,7 @@ public class GameController extends Controller {
     /**
      * GameController action panel
      * each action panel's game must inherits from
-     * this class to update the focusedActionPanel
+     * this class to update the focusedActionPanel.
      */
     public class ControllerPanel extends ActionPanel {
 
@@ -208,7 +208,7 @@ public class GameController extends Controller {
 
         public MainActionPanel () {
             super();
-            x = MainFrame.WIDTH - 200;
+            x = MainFrame.width() - 200;
             y = 10;
 
             new Index("Finish turn", () -> {
@@ -242,7 +242,7 @@ public class GameController extends Controller {
 
         public TransportUnitPanel (){
             super();
-            x = MainFrame.WIDTH - 200;
+            x = MainFrame.width() - 200;
             y = 10;
         }
 
@@ -269,7 +269,7 @@ public class GameController extends Controller {
 
         public UnitActionPanel () {
             super();
-            x = MainFrame.WIDTH - 200;
+            x = MainFrame.width() - 200;
             y = 10;
          
             new Index("Stay", () -> {});
@@ -382,6 +382,7 @@ public class GameController extends Controller {
         }
     }
 
+    // TODO: make clean stuff to avoid copy-past
     public GameController (String mapName){
         world      = new UniverseRenderer(mapName, this);
         size       = world.getDimension();
@@ -389,6 +390,7 @@ public class GameController extends Controller {
         cursor     = new Position.Cursor(camera, size);
         unitCursor = new Position.Cursor(camera, size);
         InterfaceUI.clear();
+        MainFrame.setCamera(camera);
 
         mouse              = new Point(1,1);
         actionPanel        = new MainActionPanel();
@@ -411,6 +413,7 @@ public class GameController extends Controller {
         cursor     = new Position.Cursor(camera, size);
         unitCursor = new Position.Cursor(camera, size);
         InterfaceUI.clear();
+        MainFrame.setCamera(camera);
 
         mouse              = new Point(1,1);
         actionPanel        = new MainActionPanel();

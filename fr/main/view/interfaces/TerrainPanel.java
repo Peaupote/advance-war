@@ -15,18 +15,17 @@ import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
 
 /**
- * User interface showing informations about the terrain, unit or building under the cursor
+ * User interface showing informations about the terrain,
+ * unit or building under the cursor.
  */
 public class TerrainPanel extends InterfaceUI {
 
   static final Color BACKGROUNDCOLOR = new Color(0,0,0,230);
   static final Color FOREGROUNDCOLOR = Color.white;
-  static final int WIDTH = 100, HEIGHT = 200, MARGIN = 10,
-          HALFW = MainFrame.WIDTH / (2 * MainFrame.UNIT),
-          HALFH = MainFrame.HEIGHT / (2 * MainFrame.UNIT);
+  static final int WIDTH = 100, HEIGHT = 200, MARGIN = 10;
 
   /**
-   * Unit icons
+   * Unit icons.
    */
   private static Sprite sp = Sprite.get("./assets/ingame/small_sprites.png");
   public static final Image lifeImage = sp.getImage(0, 8, 8, 8, 2),
@@ -45,13 +44,15 @@ public class TerrainPanel extends InterfaceUI {
     this.cursor = cursor;
     this.camera = camera;
     world = Universe.get();
-    y = MainFrame.HEIGHT - HEIGHT - MARGIN;
   }
 
   @Override
   protected void draw (Graphics g) {
-    leftSide = cursor.getX() - camera.getX() >= HALFW && cursor.getY() - camera.getY() >= HALFH; 
-    x = leftSide ? MARGIN : MainFrame.WIDTH - WIDTH - MARGIN;
+    int halfw = MainFrame.width() / (2 * MainFrame.UNIT),
+        halfh = MainFrame.height() / (2 * MainFrame.UNIT);
+    leftSide = cursor.getX() - camera.getX() >= halfw && cursor.getY() - camera.getY() >= halfh; 
+    x = leftSide ? MARGIN : MainFrame.width() - WIDTH - MARGIN;
+    y = MainFrame.height() - HEIGHT - MARGIN;
     
     g.setColor (BACKGROUNDCOLOR);
     g.fillRect (x, y, WIDTH, HEIGHT);

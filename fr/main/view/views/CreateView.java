@@ -46,7 +46,7 @@ public class CreateView extends View {
             backgroundImage = new ImageIcon("./assets/screens/acc.jpg").getImage();
             
             setLayout(null);
-            setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT / 2 + 100));
+            setPreferredSize(new Dimension(MainFrame.width(), MainFrame.height() / 2 + 100));
             setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
             
             btns[0] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/contact.png").getImage(0,0,140,160)), 300, 20);
@@ -105,7 +105,7 @@ public class CreateView extends View {
 
         public PlayersPanel () throws IOException {
             setLayout(new GridBagLayout());
-            setPreferredSize(new Dimension(MainFrame.WIDTH/2, MainFrame.HEIGHT * 4 / 5));
+            setPreferredSize(new Dimension(MainFrame.width()/2, MainFrame.height() * 4 / 5));
 
             setOpaque(false);
             setBorder(null);

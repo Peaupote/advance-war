@@ -15,7 +15,7 @@ import fr.main.view.sound.Sdfx;
 public class DayPanel extends InterfaceUI {
 
   public static final int PANEL_TIME = 1500;
-  private static final int HEIGHT = 200, MARGINTOP = MainFrame.HEIGHT / 2 - HEIGHT;
+  private static final int HEIGHT = 200, MARGINTOP = MainFrame.height() / 2 - HEIGHT;
 
   public DayPanel () {
     super(false);
@@ -23,10 +23,10 @@ public class DayPanel extends InterfaceUI {
 
   public void draw (Graphics g) {
     g.setColor (Color.black);
-    g.fillRect(0, MARGINTOP, MainFrame.WIDTH, HEIGHT);
+    g.fillRect(0, MARGINTOP, MainFrame.width(), HEIGHT);
 
     g.setColor (Color.white);
-    g.drawString ("Day " + Universe.get().getDay(), MainFrame.WIDTH / 2 - 100, MARGINTOP + 50);
+    g.drawString ("Day " + Universe.get().getDay(), MainFrame.width() / 2 - 100, MARGINTOP + 50);
   }
 
   @Override

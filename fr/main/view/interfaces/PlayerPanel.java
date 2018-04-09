@@ -16,7 +16,7 @@ public class PlayerPanel extends InterfaceUI {
 
   private static final Color BACKGROUNDCOLOR = new Color(0,0,0,230);
   private static final Color FOREGROUNDCOLOR = Color.white;
-  private static final int WIDTH = 200, HEIGHT = 100, MARGIN = 10,
+  private static final int WIDTH = 150, HEIGHT = 81, MARGIN = 10,
           HALFW = MainFrame.WIDTH / (2 * MainFrame.UNIT),
           HALFH = MainFrame.HEIGHT / (2 * MainFrame.UNIT);
 
@@ -60,9 +60,9 @@ public class PlayerPanel extends InterfaceUI {
     g.drawLine(r, y + HEIGHT - 20, r, y + HEIGHT);
 
     g.setColor(p.color);
-    g.fillRect(x + WIDTH - 80, y, 80, 80);
+    g.fillRect(x + WIDTH - 60, y, 60, 60);
     CommanderRenderer.getRender(p.getCommander().toString())
-                     .draw(g, x + 130, y + 35);
+                     .draw(g, x + WIDTH - 60, y);
   }
 
 }

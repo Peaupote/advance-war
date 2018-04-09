@@ -34,7 +34,13 @@ public class LoadView extends View {
     "Les Armes ont tu leurs ordres en attendant<br>" +
       "De vibrer à nouveau dans des mains admirables<br>" +
       "Ou scélérates, et, tristes, le bras pendant,<br>" + 
-      "Nous allons, mal rêveurs, dans le vague des Fables."
+      "Nous allons, mal rêveurs, dans le vague des Fables.",
+    "Mieux vaut une bonne guerre qu'une mauvaise paix.",
+    "Qui lance une guerre en devient la poule",
+    "Les chevaux de guerre naissent sur les frontières.",
+    "Faites fondre le beurre à feu trés doux,<br>" +
+      "dans une casserole ou au bain-marie.<br>" +
+      "Puis, laissez refroidir."
   };
 
   private static Font font = new Font ("Hevetica", Font.PLAIN, 16);

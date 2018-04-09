@@ -14,34 +14,40 @@ import fr.main.view.controllers.*;
 import fr.main.view.views.View;
 
 /**
- * Frame for the application
+ * Frame for the application.
  */
 public class MainFrame extends JFrame {
 
     /**
-     * Dimension of the window
+     * Dimension of the window.
      */
     public static final int WIDTH = 960,
-                              HEIGHT = 704,
-                              UNIT = 32;
+                            HEIGHT = 704,
+                            UNIT = 32;
 
     /**
-     * Time spend since the controller has been loaded (in number of loop turn)
+     * Time spend since the controller has been
+     * loaded (in number of loop turn).
      */
     private static int timer = 0;
 
     /**
-     * Unique instance of the MainFrame
+     * Unique instance of the MainFrame.
      */
     public static MainFrame instance;
 
     /**
-     * Current controller
+     * In-game camera to adjust his size on frame size.
+     */
+    private static Position.Camera camera = null;
+
+    /**
+     * Current controller.
      */
     Controller controller;
 
     /**
-     * View associated with the controller
+     * View associated with the controller.
      */
     View view;
     
@@ -52,7 +58,8 @@ public class MainFrame extends JFrame {
         instance = this;
         
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
+        setMinimumSize(new Dimension(WIDTH, HEIGHT));
 
         setController(new MenuController());
 
@@ -101,10 +108,30 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Change Scene
+     * Change Scene.
      */
     public static void setScene (Controller controller) {
       instance.setController (controller);
+    }
+
+    public static int width() {
+      return instance.view.getWidth();
+    }
+
+    public static int height () {
+      return instance.view.getHeight();
+    }
+
+    public static void setCamera (Position.Camera camera) {
+      MainFrame.camera = camera;
+    }
+
+    public void validate () {
+      super.validate();
+      if (camera != null) {
+        camera.width = width() / UNIT;
+        camera.height = height() / UNIT;
+      }
     }
 
 }

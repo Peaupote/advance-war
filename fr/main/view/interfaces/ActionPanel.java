@@ -90,7 +90,7 @@ public class ActionPanel extends InterfaceUI {
   @Override
   protected void draw (Graphics g) {
     g.setColor(BACKGROUNDCOLOR);
-    g.fillRect (x, y, MainFrame.WIDTH - x - 10, 20 + actives * 20);
+    g.fillRect (x, y, MainFrame.width() - x - 10, 20 + actives * 20);
 
     g.setColor (FOREGROUNDCOLOR);
     int j = 0;

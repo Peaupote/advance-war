@@ -9,22 +9,22 @@ import fr.main.model.Direction;
 import fr.main.view.render.sprites.Sprite;
 
 /**
- * Represents a moving point on the map
+ * Represents a moving point on the map.
  */
 public abstract class Position {
 
   /**
-   * Represents the user cursor
+   * Represents the user cursor.
    */
   public static class Cursor extends Position {
 
     /**
-     * Dimension of the universe
+     * Dimension of the universe.
      */
     protected final Dimension size;
 
     /**
-     * Camera showing the game
+     * Camera showing the game.
      */
     private final Camera camera;
 
@@ -95,25 +95,22 @@ public abstract class Position {
   }
 
   /**
-   * Class representing the camera, ie what the user can see
+   * Class representing the camera, ie what the user can see.
    */
   public static class Camera extends Position {
 
     /**
-     * Dimension of the camera
+     * Dimension of the camera.
      */
-    public final int width, height;
+    public int width, height;
 
     /**
-     * Dimension of the universe
+     * Dimension of the universe.
      */
     private final Dimension size;
 
     public Camera (Dimension size) {
       super();
-
-      width  = MainFrame.WIDTH / MainFrame.UNIT;
-      height = MainFrame.HEIGHT / MainFrame.UNIT;
       this.size = size;
     }
 
@@ -134,12 +131,14 @@ public abstract class Position {
   }
 
   /**
-   * Point representing respectivly position on the map, the position on the screen and the target position on the map while moving
+   * Point representing respectivly position on the map, 
+   * the position on the screen and the target position
+   * on the map while moving.
    */
   protected Point position, real, target;
 
   /**
-   * Moving direction
+   * Moving direction.
    */
   protected Direction direction;
 
@@ -190,7 +189,7 @@ public abstract class Position {
   }
 
   /**
-   * Set the movement of the position if he can move by the given way
+   * Set the movement of the position if he can move by the given way.
    */
   public final void setDirection (Direction d) {
     if (canMove(d)) {

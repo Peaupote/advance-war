@@ -17,9 +17,9 @@ public class LoadView extends View {
   private LoadController controller;
   private static int width  = 350,
                      height = 50,
-                     x      = (MainFrame.WIDTH - width) / 2,
-                     y      = (MainFrame.HEIGHT - height) / 2,
-                     x2     = (MainFrame.WIDTH - (width * 3 / 2)) / 2,
+                     x      = (MainFrame.width() - width) / 2,
+                     y      = (MainFrame.height() - height) / 2,
+                     x2     = (MainFrame.width() - (width * 3 / 2)) / 2,
                      y2     = y + height + 50;
 
   private static String[] sentences = new String[]{
@@ -34,7 +34,13 @@ public class LoadView extends View {
     "Les Armes ont tu leurs ordres en attendant<br>" +
       "De vibrer à nouveau dans des mains admirables<br>" +
       "Ou scélérates, et, tristes, le bras pendant,<br>" + 
-      "Nous allons, mal rêveurs, dans le vague des Fables."
+      "Nous allons, mal rêveurs, dans le vague des Fables.",
+    "Mieux vaut une bonne guerre qu'une mauvaise paix.",
+    "Qui lance une guerre en devient la poule",
+    "Les chevaux de guerre naissent sur les frontières.",
+    "Faites fondre le beurre à feu trés doux,<br>" +
+      "dans une casserole ou au bain-marie.<br>" +
+      "Puis, laissez refroidir."
   };
 
   private static Font font = new Font ("Hevetica", Font.PLAIN, 16);
@@ -82,7 +88,7 @@ public class LoadView extends View {
   public void paintComponent (Graphics g) {
     super.paintComponent(g);
     g.setFont(font);
-    g.drawImage(bkg, 0, 0, MainFrame.WIDTH, MainFrame.HEIGHT, Color.black, null);
+    g.drawImage(bkg, 0, 0, MainFrame.width(), MainFrame.height(), Color.black, null);
 
     g.setColor(Color.black);
     g.drawRect (x, y, width, height);

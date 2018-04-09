@@ -27,7 +27,7 @@ public abstract class WeatherRender {
       double speed = rand.nextInt(15) + 10;
       incrX        = (int)(dx * speed) + 1;
       incrY        = (int)(dy * speed) + 1;
-      x            = rand.nextInt(MainFrame.WIDTH) - rand.nextInt(MainFrame.WIDTH);
+      x            = rand.nextInt(MainFrame.width()) - rand.nextInt(MainFrame.width());
       y            = -rand.nextInt(200);
     }
 
@@ -36,7 +36,7 @@ public abstract class WeatherRender {
 
       x += incrX;
       y += incrY;
-      if (y > MainFrame.HEIGHT) backTop();
+      if (y > MainFrame.height()) backTop();
     }
 
     protected abstract void draw (Graphics g);

@@ -24,8 +24,8 @@ public class CommanderRenderer {
 
       LinkedList<ScaleRect> areas = new LinkedList<>();
 
-      areas.add(new ScaleRect( 0, 170, 30, 30));
-      areas.add(new ScaleRect(37, 170, 30, 30));
+      areas.add(new ScaleRect( 0, 170, 30, 30, 2));
+      areas.add(new ScaleRect(37, 170, 30, 30, 2));
 
       String path = "./assets/commanders/" + commander + ".png";
       AnimationState good = new AnimationState(new SpriteList(path, areas), 50);
@@ -40,7 +40,8 @@ public class CommanderRenderer {
     }
 
     public void draw (Graphics g, int x, int y) {
-      anim.draw(g, x, y);
+      // "+29" is a quick fix, i have no idea why it doesn't work without
+      anim.draw(g, x, y + 29);
     }
   }
 

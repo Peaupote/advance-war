@@ -16,6 +16,7 @@ import fr.main.model.Node;
 import fr.main.model.Universe;
 import fr.main.model.Weather;
 import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.MissileLauncher;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;

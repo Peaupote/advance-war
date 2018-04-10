@@ -33,6 +33,9 @@ public class MissileLauncherRenderer extends BuildingRenderer.BuildingRender {
     }
 
     public void updateState(String s){
-        updateState();
+        if (s.equals("active") || s.equals("inactive"))
+            anim.setState(s);
+        else 
+            updateState();
     }
 }

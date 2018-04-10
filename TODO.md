@@ -22,17 +22,20 @@ TODO
 - [x] Add the few missings unit sprites (to have at least one image for each unit)
 - [x] add a few commanders
 - [x] Implement the missile launcher
+    - [x] Display missile's damages
+    - [x] Real animation when launching a missile
 - [x] Multiples pages (multiple controllers)
 - [x] Be able to save the game and resume it
 - [x] Access to the menu from the game
-- [ ] Victory panel
 - [x] Choose player's name
 - [x] Choose whether a player is human or AI
 - [x] Display damages in attack selection
-- [ ] Display ammunitions
 - [x] Display death/destruction animation
+- [x] Display building's life
+- [x] Change the size of the frame
+- [ ] Display ammunitions
 - [ ] Improve design of the panels (in game)
-- [ ] Display building's life
+- [ ] Victory panel
 
 
 TODO of Peaupote

@@ -3,6 +3,8 @@ package fr.main.view.render;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.Node;
@@ -162,6 +164,9 @@ public class UniverseRenderer extends Universe {
             d.time --;
             if (d.time <= 0) iterator2.remove();
         }
+
+        if (missileAnimation != null)
+            missileAnimation.draw(g);
     }
 
     public void next(){
@@ -267,7 +272,23 @@ public class UniverseRenderer extends Universe {
         explosion[7] = s.getImage(35, 227, 33, 32);
         explosion[8] = s.getImage(35, 261, 33, 32);
         explosion[9] = s.getImage(35, 295, 33, 30);
+
+
+        Sprite d        = Sprite.get("./assets/ingame/missile.png");
+        arrival         = d.getImage(31,  1,  8, 19);
+        launch          = d.getImage(32, 51,  8, 32);
+        fly             = d.getImage(33, 86,  8, 46);
+        smokeUp         = d.getImage(2,   2, 12, 28);
+        smokeDown       = d.getImage(15,  0, 13, 31);
+        explosionBis    = new Image[]{
+            d.getImage(0, 33, 30, 30),
+            d.getImage(0, 67, 30, 30),
+            d.getImage(2, 101, 30, 32)
+        };
     }
+
+    public static final Image arrival, launch, fly, smokeUp, smokeDown;
+    protected static final Image[] explosionBis;
 
     /**
      * @param pt the position of the animation to display
@@ -302,5 +323,101 @@ public class UniverseRenderer extends Universe {
             displayDeathAnimation(new Point(x, y), unit instanceof NavalUnit);
         }
         return super.setUnit(x, y, u);
+    }
+
+    private MissileAnimation missileAnimation;
+
+    public void fireMissile(MissileLauncher missile, int x, int y){
+        BuildingRenderer.getRender(missile).updateState("inactive");
+        missileAnimation = new MissileAnimation(missile, x, y);
+    }
+
+    class MissileAnimation{
+        private int x, y;
+        private boolean goingUp;
+        public final int beginX, beginY, endX, endY;
+
+        private final HashMap<AbstractUnit, Integer> damages;
+        private final MissileLauncher missile;
+
+        /**
+         * used to know what image is displayed
+         */
+        private int explosionNumber;
+
+        public MissileAnimation(MissileLauncher missile, int endX, int endY){
+            this.missile    = missile;
+            this.beginX     = (missile.getX() - controller.camera.getX()) * MainFrame.UNIT;
+            this.beginY     = (missile.getY() - controller.camera.getY()) * MainFrame.UNIT;
+            this.x          = beginX;
+            this.y          = beginY - (controller.camera.getY() - 1) * MainFrame.UNIT - UniverseRenderer.launch.getHeight(controller.makeView());
+            this.endX       = (endX - controller.camera.getX()) * MainFrame.UNIT;
+            this.endY       = (endY - controller.camera.getY()) * MainFrame.UNIT;
+            this.goingUp    = true;
+            explosionNumber = 0;
+            damages = new HashMap<AbstractUnit, Integer>();
+
+            if (!missile.canFire(endX, endY)){
+                UniverseRenderer.this.missileAnimation = null;
+                return;
+            }
+
+            if (x >= controller.camera.width * MainFrame.UNIT || x < 0){
+                    y = arrival.getHeight(controller.makeView());
+                    goingUp = false;
+                    x = endX;
+            }
+
+
+            for (int i = -3; i < 4; i++)
+                for (int j = -3; j < 4; j++){
+                    AbstractUnit unit = getUnit(endX + i, endY + j);
+                    if (Math.abs(i) + Math.abs(j) <= 3 && unit != null && !damages.containsKey(unit))
+                        damages.put(unit, unit.getLife());
+                }
+        }
+
+        public void draw(Graphics g){
+            if (!goingUp && x == endX && y >= endY){
+
+                if (explosionNumber < 24){
+                    g.drawImage(explosionBis[explosionNumber / 8], endX, endY, controller.makeView());
+                    explosionNumber ++;
+                }else{
+                    missile.fire(endX / MainFrame.UNIT + controller.camera.getX(), endY / MainFrame.UNIT + controller.camera.getY());
+
+                    for (Map.Entry<AbstractUnit, Integer> e : damages.entrySet())
+                        flash ("" + (e.getKey().getLife() - e.getValue()),
+                            (e.getKey().getX() - controller.camera.getX() + 1) * MainFrame.UNIT + 5,
+                            (e.getKey().getY() - controller.camera.getY()) * MainFrame.UNIT + 5, 1000,
+                            FlashMessage.Type.ALERT);
+                    UniverseRenderer.this.missileAnimation = null;
+                    controller.setMode(GameController.Mode.MOVE);
+                }
+            }else{
+                if (y <= 0){
+                    y = arrival.getHeight(controller.makeView());
+                    goingUp = false;
+                    x = endX;
+                }
+
+                if (goingUp){
+                    if (beginY + MainFrame.UNIT - y <= fly.getHeight(controller.makeView()))
+                        g.drawImage(launch, x + MainFrame.UNIT / 3, y, controller.makeView());
+                    else if (beginY + MainFrame.UNIT - y >= fly.getHeight(controller.makeView()) + smokeUp.getHeight(controller.makeView())) {
+                        g.drawImage(fly, x + MainFrame.UNIT / 3, y, controller.makeView());
+                        g.drawImage(smokeUp, x + MainFrame.UNIT / 4, y + fly.getHeight(controller.makeView()), controller.makeView());
+                    }
+                    else
+                        g.drawImage(fly, x + MainFrame.UNIT / 3, y, controller.makeView());
+                }else{
+                    g.drawImage(arrival, x + MainFrame.UNIT / 3, y - arrival.getHeight(controller.makeView()), controller.makeView());
+                    if (y >= arrival.getHeight(controller.makeView()) + smokeDown.getHeight(controller.makeView()))
+                        g.drawImage(smokeDown, x + MainFrame.UNIT / 5, y - arrival.getHeight(controller.makeView()) - smokeDown.getHeight(controller.makeView()), controller.makeView());
+                }
+
+                y += (goingUp ? -1 : 2) * 2;
+            }
+        }
     }
 }

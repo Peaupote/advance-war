@@ -534,7 +534,6 @@ public class GameController extends Controller {
                     }else if (mode == Mode.MISSILE_LAUNCHER){
                         fireMissile((MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY()), unitCursor.getX(), unitCursor.getY());
                         targetUnit.setMoveQuantity(0);
-                        mode = Mode.MOVE;
                         world.clearTarget();
                     }
                 } else if (key == KeyEvent.VK_ESCAPE) { // exit and back to move mode
@@ -690,23 +689,8 @@ public class GameController extends Controller {
     private int damage1, damage2;
 
     private void fireMissile(MissileLauncher missile, int x, int y){
-        HashMap<AbstractUnit, Integer> damages = new HashMap<AbstractUnit, Integer>();
-
-        for (int i = -3; i < 4; i++)
-            for (int j = -3; j < 4; j++){
-                AbstractUnit unit = world.getUnit(x + i, y + j);
-                if (Math.abs(i) + Math.abs(j) <= 3 && unit != null && !damages.containsKey(unit))
-                    damages.put(unit, unit.getLife());
-            }
-
-        missile.fire(x, y);
-        BuildingRenderer.getRender(missile).updateState("inactive");
-
-        for (Map.Entry<AbstractUnit, Integer> e : damages.entrySet())
-            world.flash ("" + (e.getKey().getLife() - e.getValue()),
-                (e.getKey().getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                (e.getKey().getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                UniverseRenderer.FlashMessage.Type.ALERT);
+        mode = Mode.IDLE;
+        world.fireMissile(missile, x, y);
     }
 
 }

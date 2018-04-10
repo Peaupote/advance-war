@@ -29,6 +29,7 @@ public abstract class OwnableBuildingRenderer extends BuildingRenderer.BuildingR
     @Override
     public void draw(Graphics g, int x, int y){
         super.draw(g, x, y);
+        g.setColor(Color.BLACK);
         g.drawString(oBuilding.getLife() + "", x, y);
     }
 

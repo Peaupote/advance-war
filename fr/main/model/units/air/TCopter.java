@@ -16,7 +16,11 @@ import fr.main.model.units.TransportUnit;
  */
 public class TCopter extends Unit implements CopterUnit,TransportUnit {
 
-    public static final String NAME = "Chinook";
+    /**
+	 * Add TCopter UID
+	 */
+	private static final long serialVersionUID = -5511602412414336987L;
+	public static final String NAME = "Chinook";
     public static final int PRICE   = 5000;
 
     private final HashSet<AbstractUnit> units = new HashSet<AbstractUnit>();

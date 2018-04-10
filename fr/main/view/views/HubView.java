@@ -1,17 +1,31 @@
 package fr.main.view.views;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import fr.main.view.controllers.HubController;
-import fr.main.network.Slot;
 
 public class HubView extends View {
 
-  protected HubController controller;
+  /**
+	 * Add HubView UID
+	 */
+	private static final long serialVersionUID = -923055948058584266L;
+protected HubController controller;
 
   private class Slot extends JPanel {
 
-    JLabel label;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5396856905092558764L;
+	JLabel label;
 
     public Slot () {
       setBorder(BorderFactory.createLineBorder(Color.black));
@@ -33,7 +47,11 @@ public class HubView extends View {
 
   private class MutableSlot extends Slot {
 
-    private JTextField name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3930931454918781690L;
+	private JTextField name;
     
     public MutableSlot () {
       super();
@@ -77,7 +95,12 @@ public class HubView extends View {
 
   public static class Host extends HubView {
 
-    public Host (HubController controller) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5149836324936765823L;
+
+	public Host (HubController controller) {
       super(controller);
       header.setText("Hosting game on addr " + controller.getAddress());
 

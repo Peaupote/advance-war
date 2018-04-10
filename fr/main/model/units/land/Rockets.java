@@ -17,7 +17,11 @@ import fr.main.model.units.naval.*;
  */
 public class Rockets extends Unit implements LandVehicleUnit{
 
-    public static final String NAME = "Lance-missile";
+    /**
+	 * Add Rockers UID
+	 */
+	private static final long serialVersionUID = -2180587284032566672L;
+	public static final String NAME = "Lance-missile";
     public static final int PRICE   = 15000;
 
     public static final String PRIMARYWEAPON_NAME = "Roquettes";

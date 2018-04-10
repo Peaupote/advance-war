@@ -1,21 +1,24 @@
 package fr.main.model.terrains.naval;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import fr.main.model.Weather;
-import fr.main.model.units.MoveType;
-import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.naval.NavalUnit;
-import fr.main.model.units.air.AirUnit;
 import fr.main.model.terrains.Terrain;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.MoveType;
+import fr.main.model.units.air.AirUnit;
 
 /**
  * represents a reef
  */
 public class Reef extends Terrain implements NavalTerrain {
 
-    private static Reef instance;
+    /**
+	 * Add Reef UID
+	 */
+	private static final long serialVersionUID = -544222409543153408L;
+	private static Reef instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
 
     static{

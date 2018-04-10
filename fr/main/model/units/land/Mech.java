@@ -21,7 +21,11 @@ import fr.main.model.units.air.TCopter;
  */
 public class Mech extends Unit implements WalkingUnit,CaptureBuilding{
 
-    public static final String NAME = "Bazooka";
+    /**
+	 * Add Mech UID
+	 */
+	private static final long serialVersionUID = 3852484982934507981L;
+	public static final String NAME = "Bazooka";
     public static final int PRICE   = 3000;
 
     public static final String PRIMARYWEAPON_NAME = "Bazooka";

@@ -9,7 +9,12 @@ import fr.main.model.units.weapons.PrimaryWeapon;
  * A commander with good contact units
  */
 public class ContactCommander extends Commander{
-    public ContactCommander(Player player){
+    /**
+	 * Add ContactCommander
+	 */
+	private static final long serialVersionUID = -8757886844575012196L;
+
+	public ContactCommander(Player player){
         super(player, new Power(800), new Power(1600));
     }
 

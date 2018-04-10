@@ -19,7 +19,11 @@ import fr.main.model.units.naval.*;
  */
 public class Megatank extends Unit implements TankUnit{
 
-    public static final String NAME = "Megatank";
+    /**
+	 * Add Megatank UID
+	 */
+	private static final long serialVersionUID = -4255598680415531691L;
+	public static final String NAME = "Megatank";
     public static final int PRICE   = 28000;
 
     public static final String PRIMARYWEAPON_NAME = "Mega canon";

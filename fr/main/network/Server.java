@@ -1,10 +1,11 @@
 package fr.main.network;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
-
-import fr.main.model.players.Player;
+import java.net.Socket;
 
 /**
  * Represent the server side.

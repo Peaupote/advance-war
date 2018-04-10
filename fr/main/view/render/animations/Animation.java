@@ -5,7 +5,11 @@ import java.util.HashMap;
 
 public class Animation extends HashMap<String, AnimationState> {
 
-  private AnimationState current;
+  /**
+	 * Add Animation UID
+	 */
+	private static final long serialVersionUID = -8517367548023000613L;
+private AnimationState current;
 
   public void setState (String state) {
     if (containsKey(state))

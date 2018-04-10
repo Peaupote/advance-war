@@ -1,23 +1,32 @@
 package fr.main.model.buildings;
 
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+
 import fr.main.model.Universe;
 import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.units.naval.*;
-
-import java.util.Set;
-import java.util.HashMap;
-import java.util.Map;
-import java.awt.Point;
-import java.util.function.BiFunction;
+import fr.main.model.units.naval.Battleship;
+import fr.main.model.units.naval.BlackBoat;
+import fr.main.model.units.naval.Carrier;
+import fr.main.model.units.naval.Cruiser;
+import fr.main.model.units.naval.Lander;
+import fr.main.model.units.naval.NavalUnit;
+import fr.main.model.units.naval.Sub;
 
 /**
  * Represent a dock
  */
 public class Dock extends OwnableBuilding implements FactoryBuilding,RepairBuilding {
 
-    public static final int defense     = 3;
+    /**
+	 * Add Dock UID
+	 */
+	private static final long serialVersionUID = -1480350998762193555L;
+	public static final int defense     = 3;
     public static final int income      = 1000;
     public static final String name     = "Port";
     public static final int maximumLife = 200;

@@ -1,28 +1,27 @@
 package fr.main.model.units.naval;
 
 import java.awt.Point;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import fr.main.model.players.Player;
-
-import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.land.Beach;
-
-import fr.main.model.units.Unit;
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HideableUnit;
-import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.weapons.PrimaryWeapon;
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
-import fr.main.model.units.land.LandUnit;
+import fr.main.model.units.Unit;
+import fr.main.model.units.weapons.PrimaryWeapon;
 
 /**
  * Represents a submarine
  */
 public class Sub extends Unit implements NavalUnit, HideableUnit {
 
-    private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
+    /**
+	 * Add Sub UID
+	 */
+	private static final long serialVersionUID = -5913149726212166566L;
+
+	private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
     public static final String PRIMARYWEAPON_NAME = "Torpilles";
 

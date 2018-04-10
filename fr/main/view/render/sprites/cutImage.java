@@ -1,6 +1,5 @@
 package fr.main.view.render.sprites;
 
-import java.awt.Button;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,6 +7,7 @@ import javax.imageio.ImageIO;
 
 public class cutImage {
 	
+	@SuppressWarnings("unused")
 	private ScaleRect scaleRect;
 	private Sprite sprite;
 	

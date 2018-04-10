@@ -7,6 +7,11 @@ import fr.main.model.units.AbstractUnit;
  * A basic commander with no real power but to increase attack and defense of its units
  */
 public class BasicCommander extends Commander{
+	/**
+	 * add BasicCommander
+	 */
+	private static final long serialVersionUID = 8930666798497469048L;
+
 	public BasicCommander(Player player){
 		super(player, new Power(600), new Power(1200));
 	}

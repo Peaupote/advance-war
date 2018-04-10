@@ -2,7 +2,11 @@ package fr.main.network;
 
 public class Slot implements java.io.Serializable {
 
-  public final String name;
+  /**
+	 * Add Slot UID
+	 */
+	private static final long serialVersionUID = -5066920581822549100L;
+public final String name;
   public final int id;
   public final int commander;
   public final boolean ready;

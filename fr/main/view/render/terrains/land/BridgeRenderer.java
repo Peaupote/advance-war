@@ -1,12 +1,7 @@
 package fr.main.view.render.terrains.land;
 
-import java.util.LinkedList;
-
-import fr.main.model.terrains.land.Lowland;
 import fr.main.view.render.terrains.TerrainLocation;
 import fr.main.view.render.terrains.TerrainRenderer;
-import fr.main.view.render.sprites.*;
-import fr.main.view.render.animations.*;
 
 public class BridgeRenderer extends TerrainRenderer.Render {
 

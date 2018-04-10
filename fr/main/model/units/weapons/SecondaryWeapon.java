@@ -10,7 +10,12 @@ import fr.main.model.Direction;
  */
 public class SecondaryWeapon extends Weapon{
 
-    public SecondaryWeapon(String name, Map<Class<? extends AbstractUnit>,Integer> damages){
+    /**
+	 * Add SecondaryWeapon UID
+	 */
+	private static final long serialVersionUID = 293126153446291195L;
+
+	public SecondaryWeapon(String name, Map<Class<? extends AbstractUnit>,Integer> damages){
         super(name,damages,true);
     }
 

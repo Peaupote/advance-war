@@ -147,7 +147,8 @@ public class UnitRenderer {
     remove(renderers.get(u));
   }
 
-  public static void remove(Render r){
+  @SuppressWarnings("unlikely-arg-type")
+public static void remove(Render r){
     renderers.remove(r);
   }
 

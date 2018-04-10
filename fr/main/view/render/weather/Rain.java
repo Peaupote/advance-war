@@ -1,9 +1,7 @@
 package fr.main.view.render.weather;
 
-import java.awt.*;
-import java.util.*;
-
-import fr.main.view.MainFrame;
+import java.awt.Color;
+import java.awt.Graphics;
 
 public class Rain extends WeatherRender {
 

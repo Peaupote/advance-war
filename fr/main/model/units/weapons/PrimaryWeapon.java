@@ -9,7 +9,11 @@ import fr.main.model.units.AbstractUnit;
  */
 public class PrimaryWeapon extends Weapon{
 
-    private int ammo;
+    /**
+	 * Add PrimaryWeapon UID
+	 */
+	private static final long serialVersionUID = 2204854764828219000L;
+	private int ammo;
     public final int minimumRange, maximumRange, maximumAmmo;
 
     public PrimaryWeapon (String name, int maximumAmmo, int minimumRange, int maximumRange, Map<Class<? extends AbstractUnit>,Integer> damages, boolean canAttackAfterMove){

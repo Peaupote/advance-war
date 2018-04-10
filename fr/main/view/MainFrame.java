@@ -1,16 +1,14 @@
 package fr.main.view;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.event.ActionEvent;
-import java.io.FileNotFoundException;
+import java.awt.Dimension;
 import java.io.IOException;
 
-import fr.main.model.players.Player;
-import fr.main.view.controllers.*;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JFrame;
+
+import fr.main.view.controllers.Controller;
+import fr.main.view.controllers.MenuController;
 import fr.main.view.views.View;
 
 /**
@@ -19,6 +17,11 @@ import fr.main.view.views.View;
 public class MainFrame extends JFrame {
 
     /**
+	 * Add MainFrame UID
+	 */
+	private static final long serialVersionUID = 9055437267173802003L;
+
+	/**
      * Dimension of the window.
      */
     public static final int WIDTH = 960,

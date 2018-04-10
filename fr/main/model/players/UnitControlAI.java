@@ -1,9 +1,7 @@
 package fr.main.model.players;
 
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
@@ -11,6 +9,10 @@ import fr.main.model.units.AbstractUnit;
 
 public class UnitControlAI implements ArtificialIntelligence {
 
+	/**
+	 * Add UnitControlAI UID
+	 */
+	private static final long serialVersionUID = 7107098815082828456L;
 	public final AIPlayer player;
 	private final HashMap<AbstractUnit, UnitActionChooser> units;
 
@@ -27,6 +29,7 @@ public class UnitControlAI implements ArtificialIntelligence {
 		units.remove(u);
 	}
 
+	@SuppressWarnings("unused")
 	private UnitActionChooser get(AbstractUnit u){
 		return units.get(u);
 	}

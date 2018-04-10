@@ -9,7 +9,11 @@ import fr.main.model.units.AbstractUnit;
  */
 public abstract class Weapon implements java.io.Serializable {
 
-    public final String name;
+    /**
+	 * Add Weapon UID
+	 */
+	private static final long serialVersionUID = -9179538407425524566L;
+	public final String name;
     /**
      * Represent the damages inflicted to the other units
      */

@@ -8,6 +8,11 @@ import fr.main.model.units.AbstractUnit;
  * A commander whose power is to earn money
  */
 public class MoneyCommander extends Commander{
+	/**
+	 * Add MoneyCommander
+	 */
+	private static final long serialVersionUID = 2721532289936600221L;
+
 	public MoneyCommander(Player player){
 		super(player, new Power(1000, p -> {
 			for (OwnableBuilding o : p.buildingList())

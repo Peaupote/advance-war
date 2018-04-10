@@ -4,7 +4,12 @@ import java.awt.Rectangle;
 
 public class ScaleRect extends Rectangle {
 
-    public enum Flip {
+    /**
+	 * Add ScaleRecct
+	 */
+	private static final long serialVersionUID = -699446863176420163L;
+
+	public enum Flip {
       NONE,
       HORIZONTALLY,
       VERTICALY

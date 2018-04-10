@@ -1,29 +1,35 @@
 package fr.main.model;
 
-import java.io.*;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
-import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.buildings.*;
 import fr.main.model.PlayerIt.Cycle;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.Airport;
+import fr.main.model.buildings.Barrack;
+import fr.main.model.buildings.City;
+import fr.main.model.buildings.Dock;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.players.Player;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HideableUnit;
-import fr.main.view.render.units.naval.*;
-import fr.main.view.render.units.air.*;
-import fr.main.view.render.units.land.*;
-import fr.main.model.units.naval.*;
-import fr.main.model.units.air.*;
-import fr.main.model.units.land.*;
-import fr.main.model.commanders.FakeCommander;
-import fr.main.model.Weather;
-import fr.main.model.players.Player;
+import fr.main.model.units.air.Fighter;
+import fr.main.model.units.air.Stealth;
+import fr.main.model.units.land.Infantry;
+import fr.main.model.units.naval.Battleship;
+import fr.main.model.units.naval.Lander;
 
 
 /**
@@ -62,7 +68,11 @@ public class Universe {
      */
     protected static class Board implements Serializable {
 
-        public AbstractTerrain[][] board;
+        /**
+		 * Add Board UID
+		 */
+		private static final long serialVersionUID = -8731719580943357396L;
+		public AbstractTerrain[][] board;
         public Player[] players;
         public AbstractUnit[][] units;
         public AbstractBuilding[][] buildings;

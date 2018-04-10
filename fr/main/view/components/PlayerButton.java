@@ -7,7 +7,11 @@ import javax.swing.JButton;
 
 public class PlayerButton extends JButton {
 
-  private static Image BACKGROUND;
+  /**
+	 * Add PlayerButton UID
+	 */
+	private static final long serialVersionUID = 2027924046883153186L;
+private static Image BACKGROUND;
 
   static {
     try {

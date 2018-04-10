@@ -7,7 +7,12 @@ import fr.main.model.players.Player;
  */
 public class FakeCommander extends Commander {
 
-  public FakeCommander (Player player) {
+  /**
+	 * Add FakeCommander
+	 */
+	private static final long serialVersionUID = 6149992353986990767L;
+
+public FakeCommander (Player player) {
     super(player, new Power(1000), new Power(2000));
   }
 

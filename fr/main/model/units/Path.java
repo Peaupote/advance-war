@@ -1,15 +1,11 @@
 package fr.main.model.units;
 
-import java.util.LinkedList;
-import java.util.HashSet;
 import java.awt.Point;
+import java.util.LinkedList;
 
+import fr.main.model.Direction;
 import fr.main.model.MoveZone;
 import fr.main.model.Node;
-import fr.main.model.Direction;
-import fr.main.model.Universe;
-import fr.main.model.units.naval.NavalUnit;
-import fr.main.model.buildings.Dock;
 
 /**
  * A class representing a path for the move of an unit
@@ -17,6 +13,11 @@ import fr.main.model.buildings.Dock;
 public class Path extends LinkedList<Direction> {
 
     /**
+	 * Add Path UID
+	 */
+	private static final long serialVersionUID = -3190430267430534047L;
+
+	/**
      * The unit that is moving
      */
     protected AbstractUnit unit;

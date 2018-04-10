@@ -1,13 +1,12 @@
 package fr.main.view.render.buildings;
 
 import java.util.LinkedList;
-import java.awt.Color;
 
 import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.buildings.MissileLauncher;
-import fr.main.view.render.sprites.*;
-import fr.main.view.render.animations.*;
+import fr.main.view.render.animations.AnimationState;
+import fr.main.view.render.sprites.ScaleRect;
+import fr.main.view.render.sprites.SpriteList;
 
 public class MissileLauncherRenderer extends BuildingRenderer.BuildingRender {
 

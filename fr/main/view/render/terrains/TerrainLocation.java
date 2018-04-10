@@ -1,10 +1,9 @@
 package fr.main.view.render.terrains;
 
 
-import fr.main.view.render.animations.Animation;
-import fr.main.view.render.sprites.ScaleRect;
-
 import java.io.Serializable;
+
+import fr.main.view.render.sprites.ScaleRect;
 
 public interface TerrainLocation extends Serializable{
 

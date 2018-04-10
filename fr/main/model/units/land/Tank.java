@@ -19,7 +19,11 @@ import fr.main.model.units.naval.*;
  */
 public class Tank extends Unit implements TankUnit{
 
-    public static final String NAME = "Tank";
+    /**
+	 * Add Tank UID
+	 */
+	private static final long serialVersionUID = -7721715961361976976L;
+	public static final String NAME = "Tank";
     public static final int PRICE   = 7000;
 
     public static final String PRIMARYWEAPON_NAME = "Canon";

@@ -1,15 +1,18 @@
 package fr.main.view.render.buildings;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.util.HashMap;
 
-import fr.main.model.Direction;
-import fr.main.model.buildings.*;
-
-import fr.main.view.MainFrame;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.Airport;
+import fr.main.model.buildings.Barrack;
+import fr.main.model.buildings.City;
+import fr.main.model.buildings.Dock;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.MissileLauncher;
 import fr.main.view.render.Renderer;
-import fr.main.view.render.buildings.*;
-import fr.main.view.render.animations.*;
+import fr.main.view.render.animations.Animation;
 
 public class BuildingRenderer{
 

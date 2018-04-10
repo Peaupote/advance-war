@@ -4,14 +4,17 @@ import java.awt.Point;
 
 import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
-import fr.main.model.terrains.Terrain;
 
 /**
  * Class representing a building that can be owned by a player
  */
 public abstract class OwnableBuilding extends Building {
 
-    protected int life;
+    /**
+	 * Add OwanbleBuilding UID
+	 */
+	private static final long serialVersionUID = -5960094226961291343L;
+	protected int life;
     public final int maximumLife, income;
     protected Player owner;
 

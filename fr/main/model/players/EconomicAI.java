@@ -11,7 +11,11 @@ import java.util.Random;
 
 public class EconomicAI implements ArtificialIntelligence {
 
-    public final AIPlayer player;
+    /**
+	 * Add EconomicAI UID
+	 */
+	private static final long serialVersionUID = 8076973207707324406L;
+	public final AIPlayer player;
     private final HashSet<FactoryBuilding> factories = new HashSet<FactoryBuilding>();
 
     public EconomicAI (AIPlayer player){
@@ -22,7 +26,8 @@ public class EconomicAI implements ArtificialIntelligence {
         if (b instanceof Airport || b instanceof Dock || b instanceof Barrack) factories.add((FactoryBuilding)b);
     }
 
-    public void remove(OwnableBuilding b){
+    @SuppressWarnings("unlikely-arg-type")
+	public void remove(OwnableBuilding b){
     	factories.remove(b);
     }
 

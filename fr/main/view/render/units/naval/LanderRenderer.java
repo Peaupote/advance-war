@@ -3,10 +3,10 @@ package fr.main.view.render.units.naval;
 import java.util.LinkedList;
 
 import fr.main.model.units.AbstractUnit;
+import fr.main.view.render.animations.AnimationState;
+import fr.main.view.render.sprites.ScaleRect;
+import fr.main.view.render.sprites.SpriteList;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.render.sprites.*;
-import fr.main.view.render.animations.*;
-import fr.main.model.units.naval.Lander;
 
 public class LanderRenderer extends UnitRenderer.Render {
 

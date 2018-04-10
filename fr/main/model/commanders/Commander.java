@@ -12,7 +12,12 @@ import fr.main.model.units.weapons.PrimaryWeapon;
  */
 public abstract class Commander implements Serializable {
 
-    public final PowerBar powerBar;
+    /**
+	 * Add commander UID
+	 */
+	private static final long serialVersionUID = 5437070831420752334L;
+
+	public final PowerBar powerBar;
 
     /**
      * The powers of the commander
@@ -28,7 +33,11 @@ public abstract class Commander implements Serializable {
      * The power bar of the commander, showing how much points he has to activate its powers
      */
     public class PowerBar implements Serializable {
-        public final int maxValue;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1112411098868108680L;
+		public final int maxValue;
         private int value;
 
         public PowerBar(int max){
@@ -52,6 +61,11 @@ public abstract class Commander implements Serializable {
      */
     protected static class Power implements Serializable {
         /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6830482137600479680L;
+
+		/**
          * Set to true if and only if the power is activated this turn
          */
         private boolean activated;

@@ -26,7 +26,8 @@ public class EconomicAI implements ArtificialIntelligence {
         if (b instanceof Airport || b instanceof Dock || b instanceof Barrack) factories.add((FactoryBuilding)b);
     }
 
-    public void remove(OwnableBuilding b){
+    @SuppressWarnings("unlikely-arg-type")
+	public void remove(OwnableBuilding b){
     	factories.remove(b);
     }
 

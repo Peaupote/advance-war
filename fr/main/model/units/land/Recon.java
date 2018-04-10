@@ -18,7 +18,11 @@ import fr.main.model.units.air.TCopter;
  */
 public class Recon extends Unit implements LandVehicleUnit{
 
-    public static final String NAME = "Recon";
+    /**
+	 * Add Recon UID
+	 */
+	private static final long serialVersionUID = -5001011990032884023L;
+	public static final String NAME = "Recon";
     public static final int PRICE   = 4000;
 
     public static final String SECONDARYWEAPON_NAME = "Mitrailleuse";

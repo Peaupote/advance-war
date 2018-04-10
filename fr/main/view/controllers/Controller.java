@@ -1,8 +1,10 @@
 package fr.main.view.controllers;
 
-import java.awt.event.*;
-import java.awt.*;
-import java.util.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import fr.main.view.views.View;
 

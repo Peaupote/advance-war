@@ -2,7 +2,12 @@ package fr.main.network;
 
 public class Datagram implements java.io.Serializable {
 
-  public final int id;
+  /**
+	 * Add Datagram UID
+	 */
+	private static final long serialVersionUID = -3791265471569436926L;
+
+public final int id;
 
   public final Object data;
 

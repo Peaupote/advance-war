@@ -1,11 +1,15 @@
 package fr.main.view.render.sprites;
 
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.awt.Rectangle;
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class SpriteArray extends ArrayList<Image> {
+
+	/**
+	 * Add SpriteArray UID
+	 */
+	private static final long serialVersionUID = -8302059632789547463L;
 
 	public SpriteArray(String path, LinkedList<ScaleRect> images) {
 		super();

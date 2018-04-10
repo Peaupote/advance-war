@@ -1,10 +1,11 @@
 package fr.main.view;
 
-import java.awt.*;
-import javax.imageio.ImageIO;
-import java.io.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
 
-import fr.main.view.MainFrame;
 import fr.main.model.Direction;
 import fr.main.view.render.sprites.Sprite;
 

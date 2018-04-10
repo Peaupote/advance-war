@@ -19,7 +19,11 @@ import fr.main.model.units.land.WalkingUnit;
  */
 public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUnit,SupplyUnit {
 
-    public static final String NAME = "NavLog"; // => navire logistique
+    /**
+	 * Add BlackBoat UID
+	 */
+	private static final long serialVersionUID = 1962756539216419078L;
+	public static final String NAME = "NavLog"; // => navire logistique
     public static final int PRICE   = 7500;
 
     private HashSet<AbstractUnit> units = new HashSet<AbstractUnit>();

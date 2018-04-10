@@ -1,13 +1,11 @@
 package fr.main.view.controllers;
 
-import java.awt.event.*;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.*;
-
-import fr.main.view.views.CreateView;
-import fr.main.view.MainFrame;
 import fr.main.model.players.Player;
+import fr.main.view.MainFrame;
+import fr.main.view.views.CreateView;
 
 /**
  * Controller to choose each commanders for each players

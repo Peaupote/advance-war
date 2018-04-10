@@ -1,21 +1,15 @@
 package fr.main.model.units;
 
-import java.awt.*;
-import java.util.HashSet;
-import java.io.Serializable;
+import java.awt.Point;
 
+import fr.main.model.Direction;
+import fr.main.model.Universe;
 import fr.main.model.players.Player;
-import fr.main.model.Weather;
-import fr.main.model.units.AbstractUnit;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.air.AirUnit;
-import fr.main.model.units.weapons.Weapon;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
-import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.RepairBuilding;
-import fr.main.model.Universe;
-import fr.main.model.Direction;
+import fr.main.model.units.weapons.Weapon;
 
 /**
  * Represents an unit on the board
@@ -23,6 +17,10 @@ import fr.main.model.Direction;
 public abstract class Unit implements AbstractUnit {
 
     /**
+	 * Add Unit UID
+	 */
+	private static final long serialVersionUID = 5902107581192600020L;
+	/**
      * Life in percentage
      */
     protected Point location;
@@ -37,7 +35,11 @@ public abstract class Unit implements AbstractUnit {
     public final SecondaryWeapon secondaryWeapon;
 
     public class Fuel implements java.io.Serializable{
-        public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5637502351862309798L;
+		public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
         public final int maximumQuantity;
         private int quantity;
         public final boolean diesIfNoFuel;
@@ -210,7 +212,8 @@ public abstract class Unit implements AbstractUnit {
         int x = location.x, y = location.y, visionT = getVision(),
             height = this instanceof AirUnit ? 2 : Universe.get().getTerrain(x,y).getHeight();
 
-        Point start = location.getLocation();
+        @SuppressWarnings("unused")
+		Point start = location.getLocation();
         fog[y][x] = true; // the current tile can always be seen
         if (visionT != 0){
             // we decompose the tiles in 2 categories according to the position of the unit (to avoid checking multiple times the same tile)
@@ -249,7 +252,8 @@ public abstract class Unit implements AbstractUnit {
         // change coordinates to make it easier
         x = 2 * (x - startX); y = 2 * (y - startY);
         if (Math.abs(x) + Math.abs(y) <= 2) return true; // the two tiles are adjacents
-        Universe u = Universe.get();
+        @SuppressWarnings("unused")
+		Universe u = Universe.get();
 
         // we use two int to know if the move is oriented to the right or the left and the top or the bottom
         int epsilonX = x > 0 ? 1 : -1, epsilonY = y > 0 ? 1 : -1;
@@ -269,7 +273,8 @@ public abstract class Unit implements AbstractUnit {
             b = 2 * epsilonY; d = y - 2 * epsilonY;
         }
 
-        AbstractTerrain t;
+        @SuppressWarnings("unused")
+		AbstractTerrain t;
 
         // if the move was diagonal then we check if one of the two tiles possibles :
         // if we're going from the tile q to the tile i, we check if we can see through tiles l or r, tile m, and tile h or n

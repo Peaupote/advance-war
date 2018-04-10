@@ -1,28 +1,42 @@
 package fr.main.view.render.terrains;
 
-import java.awt.*;
+import static fr.main.model.TerrainEnum.beach;
+import static fr.main.model.TerrainEnum.bridge;
+import static fr.main.model.TerrainEnum.hill;
+import static fr.main.model.TerrainEnum.lowland;
+import static fr.main.model.TerrainEnum.mountain;
+import static fr.main.model.TerrainEnum.reef;
+import static fr.main.model.TerrainEnum.river;
+import static fr.main.model.TerrainEnum.road;
+import static fr.main.model.TerrainEnum.sea;
+import static fr.main.model.TerrainEnum.wood;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import fr.main.model.TerrainEnum;
+import fr.main.model.Universe;
+import fr.main.model.Weather;
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.Direction;
-import fr.main.model.Weather;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.*;
-import fr.main.model.Universe;
-
-import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
+import fr.main.view.render.animations.Animation;
+import fr.main.view.render.animations.AnimationState;
 import fr.main.view.render.sprites.ScaleRect;
 import fr.main.view.render.sprites.SpriteList;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.*;
-import fr.main.view.render.animations.*;
-import fr.main.model.TerrainEnum;
-
-import static fr.main.model.TerrainEnum.*;
+import fr.main.view.render.terrains.land.BeachRenderer;
+import fr.main.view.render.terrains.land.BridgeRenderer;
+import fr.main.view.render.terrains.land.HillRenderer;
+import fr.main.view.render.terrains.land.LowlandRenderer;
+import fr.main.view.render.terrains.land.MountainRenderer;
+import fr.main.view.render.terrains.land.RiverRenderer;
+import fr.main.view.render.terrains.land.RoadRenderer;
+import fr.main.view.render.terrains.land.WoodRenderer;
+import fr.main.view.render.terrains.naval.ReefRenderer;
+import fr.main.view.render.terrains.naval.SeaRenderer;
 
 public class TerrainRenderer {
 
@@ -328,6 +342,7 @@ public class TerrainRenderer {
 
 	private static TerrainEnum[] terrainCross(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = new TerrainEnum[4];
+		@SuppressWarnings("unused")
 		int count = 0;
 
 		cross[0] = isInMap(x - 1, y) ? tEnum[x - 1][y] : TerrainEnum.none;

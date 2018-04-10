@@ -1,10 +1,8 @@
 package fr.main.model.players;
 
 import fr.main.model.Universe;
-import fr.main.model.units.AbstractUnit;
-import fr.main.model.commanders.Commander;
 import fr.main.model.buildings.OwnableBuilding;
-
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.interfaces.DayPanel;
 
 /**
@@ -14,7 +12,11 @@ import fr.main.view.interfaces.DayPanel;
  */
 public class AIPlayer extends Player implements ArtificialIntelligence {
 
-    public final UnitControlAI unitControlAI;
+    /**
+	 * Add AIPlayer UID
+	 */
+	private static final long serialVersionUID = 6173011940333917004L;
+	public final UnitControlAI unitControlAI;
     public final EconomicAI    economicAI;
 
     public AIPlayer(){

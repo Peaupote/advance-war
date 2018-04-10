@@ -20,7 +20,11 @@ import fr.main.model.units.air.TCopter;
  */
 public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
 
-    public static final String NAME = "Infanterie";
+    /**
+	 * Add Infantry UID
+	 */
+	private static final long serialVersionUID = -5362992611188633526L;
+	public static final String NAME = "Infanterie";
     public static final int PRICE   = 1000;
 
     public static final String SECONDARYWEAPON_NAME = "Mitraillette";

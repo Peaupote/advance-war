@@ -16,6 +16,11 @@ import fr.main.model.commanders.Commander;
 public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     /**
+	 * Add Player UID
+	 */
+	private static final long serialVersionUID = -2022049310756570442L;
+
+	/**
      * The colors of the players
      */
     public static final Color[] colors = new Color[]{

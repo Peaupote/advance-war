@@ -14,8 +14,13 @@ import fr.main.view.MainFrame;
  */
 public class LoadView extends View {
 
-  private LoadController controller;
-  private static int width  = 350,
+  /**
+	 * Add LoadView UID
+	 */
+	private static final long serialVersionUID = -3124911512496474049L;
+private LoadController controller;
+  @SuppressWarnings("unused")
+private static int width  = 350,
                      height = 50,
                      x      = (MainFrame.width() - width) / 2,
                      y      = (MainFrame.height() - height) / 2,
@@ -49,7 +54,12 @@ public class LoadView extends View {
 
   private static class AdvicePanel extends JLabel {
 
-    public AdvicePanel (Random rand) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3916570691607413042L;
+
+	public AdvicePanel (Random rand) {
       super("<html><em style='text-align:center'>" + 
             sentences[rand.nextInt(sentences.length)] +
             "</em></html>");

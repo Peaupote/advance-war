@@ -19,7 +19,11 @@ import fr.main.model.units.naval.*;
  */
 public class Neotank extends Unit implements TankUnit{
 
-    public static final String NAME = "Neotank";
+    /**
+	 * Add NeoTank UID
+	 */
+	private static final long serialVersionUID = -6422166856223420531L;
+	public static final String NAME = "Neotank";
     public static final int PRICE   = 22000;
 
     public static final String PRIMARYWEAPON_NAME   = "Neo canon";

@@ -1,14 +1,15 @@
 package fr.main.view.render.sprites;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.util.LinkedList;
-import java.awt.Rectangle;
 import java.awt.Image;
+import java.util.LinkedList;
 
 public class SpriteList extends LinkedList<Image> {
 
-  private Sprite sprite;
+  /**
+	 * Add SpriteList
+	 */
+	private static final long serialVersionUID = -8016901697482659870L;
+	private Sprite sprite;
 
   public SpriteList (String path, LinkedList<ScaleRect> images) {
     super();

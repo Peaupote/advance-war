@@ -1,7 +1,6 @@
 package fr.main.network;
 
 import java.io.IOException;
-import fr.main.model.players.Player;
 
 class AdwProtocol {
 

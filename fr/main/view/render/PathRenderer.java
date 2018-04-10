@@ -16,7 +16,11 @@ import fr.main.view.render.units.UnitRenderer;
  */
 public class PathRenderer extends Path {
 
-    private Position.Camera camera;
+    /**
+	 * Add PathRenderer UID
+	 */
+	private static final long serialVersionUID = 7566614956368710772L;
+	private Position.Camera camera;
     private UniverseRenderer world;
     public boolean visible;
     private Image[] images;
@@ -118,7 +122,8 @@ public class PathRenderer extends Path {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
         Point pt = unit.position();
-        boolean previouslyUnit = false;
+        @SuppressWarnings("unused")
+		boolean previouslyUnit = false;
 
         while (!isEmpty()) {
             Direction d = poll();

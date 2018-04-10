@@ -18,7 +18,11 @@ import fr.main.model.units.land.LandUnit;
  */
 public class Lander extends Unit implements NavalUnit, TransportUnit {
 
-    public static final String NAME = "Barge";
+    /**
+	 * Add Lander UID
+	 */
+	private static final long serialVersionUID = 8827130583732930678L;
+	public static final String NAME = "Barge";
     public static final int PRICE   = 12000;
 
     private final HashSet<AbstractUnit> units = new HashSet<AbstractUnit>();

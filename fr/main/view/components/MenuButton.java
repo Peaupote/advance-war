@@ -2,7 +2,6 @@ package fr.main.view.components;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Insets;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -10,6 +9,10 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 public class MenuButton extends JButton{
+	/**
+	 * Add MenuButton UID
+	 */
+	private static final long serialVersionUID = -8499019277702804686L;
 	Font font;
 
 	public MenuButton(ImageIcon image, int x, int y){

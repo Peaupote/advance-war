@@ -18,7 +18,11 @@ import fr.main.model.units.naval.*;
  */
 public class BCopter extends Unit implements CopterUnit {
 
-    public static final String NAME = "Hélicoptère";
+    /**
+	 * Add BCopter UID
+	 */
+	private static final long serialVersionUID = -2175843834675603102L;
+	public static final String NAME = "Hélicoptère";
     public static final int PRICE   = 9000;
 
     public static final String PRIMARYWEAPON_NAME   = "Missiles";

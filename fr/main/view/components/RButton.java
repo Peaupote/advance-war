@@ -5,7 +5,11 @@ import java.awt.geom.*;
 import javax.swing.*;
 
 public class RButton extends JButton {
-  public RButton(String label) {
+  /**
+	 * Add Rbutton UID
+	 */
+	private static final long serialVersionUID = 5197721930800322906L;
+public RButton(String label) {
     super(label);
 
     Dimension size = getPreferredSize();

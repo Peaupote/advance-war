@@ -16,7 +16,11 @@ import fr.main.model.units.weapons.PrimaryWeapon;
  */
 public class Artillery extends Unit implements LandVehicleUnit{
 
-    public static final String NAME = "Artillerie";
+    /**
+	 * Add Artillery UID
+	 */
+	private static final long serialVersionUID = 1805421806176320005L;
+	public static final String NAME = "Artillerie";
     public static final int PRICE   = 6000;
 
     public static final String PRIMARYWEAPON_NAME = "Canon";

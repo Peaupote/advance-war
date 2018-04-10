@@ -1,11 +1,16 @@
 package fr.main.view.controllers;
 
 import java.awt.event.ActionListener;
-import javax.swing.*;
 import java.io.IOException;
-import fr.main.network.*;
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+
+import fr.main.network.Client;
+import fr.main.network.Datagram;
+import fr.main.network.Server;
+import fr.main.network.Slot;
 import fr.main.view.views.HubView;
-import fr.main.model.players.Player;
 
 public class HubController extends Controller {
 

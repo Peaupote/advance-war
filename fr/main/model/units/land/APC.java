@@ -17,6 +17,10 @@ import fr.main.model.units.MoveType;
  */
 public class APC extends Unit implements LandVehicleUnit,TransportUnit,SupplyUnit{
 
+	/**
+	 * Add APC UID
+	 */
+	private static final long serialVersionUID = 1699926491587696984L;
 	public static final String NAME = "VTB";
 	public static final int PRICE   = 5000;
 

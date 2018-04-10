@@ -1,20 +1,33 @@
 package fr.main.view.views;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-
-import javax.swing.*;
-import javax.swing.JTextField;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.io.IOException;
+import java.util.ArrayList;
 
-import fr.main.model.players.Player;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import fr.main.model.commanders.BasicCommander;
+import fr.main.model.commanders.ContactCommander;
+import fr.main.model.commanders.DestroyCommander;
+import fr.main.model.commanders.MoneyCommander;
+import fr.main.model.commanders.RangedCommander;
+import fr.main.model.commanders.RepairCommander;
 import fr.main.model.players.AIPlayer;
-import fr.main.model.commanders.*;
+import fr.main.model.players.Player;
 import fr.main.view.MainFrame;
 import fr.main.view.components.MenuButton;
 import fr.main.view.controllers.CreateController;
-import fr.main.view.controllers.LoadController;
 import fr.main.view.render.sprites.Sprite;
 
 /**
@@ -22,16 +35,25 @@ import fr.main.view.render.sprites.Sprite;
  */
 public class CreateView extends View {
 
-    protected CreateController controller;
+    /**
+	 * Add Create View UID
+	 */
+	private static final long serialVersionUID = -692072409517044931L;
+	protected CreateController controller;
 
     /**
      * Panels with all commanders
      */
     public class CommandersPanel extends JPanel {
 
-        private final JButton[] btns;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1555559396069340858L;
+		private final JButton[] btns;
         private final JButton   startGame;
-        private final int width, height;
+        @SuppressWarnings("unused")
+		private final int width, height;
 
         /**
          * Index of which commander is selected
@@ -85,7 +107,12 @@ public class CreateView extends View {
      */
     public class PlayersPanel extends JPanel {
 
-        private final int width, height;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -4035849789017813034L;
+
+		private final int width, height;
 
         /**
          * Index of focused player

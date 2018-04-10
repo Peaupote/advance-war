@@ -1,23 +1,25 @@
 package fr.main.model.units.air;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
 
-import fr.main.model.units.Unit;
+import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
-import fr.main.model.units.weapons.PrimaryWeapon;
-import fr.main.model.units.weapons.SecondaryWeapon;
-import fr.main.model.players.Player;
 import fr.main.model.units.Unit;
+import fr.main.model.units.weapons.PrimaryWeapon;
 
 /**
  * Represents a fighter
  */
 public class Fighter extends Unit implements PlaneUnit{
 
-    public static final String NAME = "Chasseur";
+    /**
+	 * Add Fighter UID
+	 */
+	private static final long serialVersionUID = 2457067878395974135L;
+	public static final String NAME = "Chasseur";
     public static final int PRICE   = 20000;
 
     public static final String PRIMARYWEAPON_NAME = "Missiles";

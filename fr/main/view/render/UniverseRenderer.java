@@ -1,35 +1,31 @@
 package fr.main.view.render;
 
-import java.awt.*;
-import java.util.LinkedList;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
 import java.util.Iterator;
+import java.util.LinkedList;
 
-import fr.main.model.TerrainEnum;
-import fr.main.model.Node;
 import fr.main.model.Direction;
 import fr.main.model.MoveZone;
+import fr.main.model.Node;
 import fr.main.model.Universe;
-import fr.main.model.players.Player;
 import fr.main.model.Weather;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.Reef;
-import fr.main.model.terrains.naval.Sea;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HealerUnit;
-import fr.main.model.units.naval.NavalUnit;
 import fr.main.model.units.TransportUnit;
-import fr.main.model.buildings.MissileLauncher;
-import fr.main.model.buildings.AbstractBuilding;
-
+import fr.main.model.units.naval.NavalUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.controllers.GameController;
-import fr.main.view.render.terrains.TerrainLocation;
-import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
+import fr.main.view.render.terrains.TerrainRenderer;
+import fr.main.view.render.units.UnitRenderer;
 
 public class UniverseRenderer extends Universe {
 

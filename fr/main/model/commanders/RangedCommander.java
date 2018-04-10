@@ -9,7 +9,12 @@ import fr.main.model.units.weapons.PrimaryWeapon;
  * A commander with good ranged units
  */
 public class RangedCommander extends Commander{
-    public RangedCommander(Player player){
+    /**
+	 * Add RangedCommander UID
+	 */
+	private static final long serialVersionUID = 1028124949092657216L;
+
+	public RangedCommander(Player player){
         super(player, new Power(800), new Power(1600));
     }
 

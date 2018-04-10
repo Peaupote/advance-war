@@ -1,24 +1,30 @@
 package fr.main.model.units.land;
 
 import java.awt.Point;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import fr.main.model.players.Player;
-import fr.main.model.units.Unit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
-import fr.main.model.units.weapons.PrimaryWeapon;
-import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.Unit;
-import fr.main.model.units.air.*;
+import fr.main.model.units.air.BCopter;
+import fr.main.model.units.air.Bomber;
+import fr.main.model.units.air.Fighter;
+import fr.main.model.units.air.Stealth;
+import fr.main.model.units.air.TCopter;
+import fr.main.model.units.weapons.PrimaryWeapon;
 
 /**
  * Represents an anti air unit
  */
 public class AntiAir extends Unit implements LandVehicleUnit{
 
-    public static final String NAME = "DCA";
+    /**
+	 * Add AntiAir UID
+	 */
+	private static final long serialVersionUID = -294124235474859813L;
+	public static final String NAME = "DCA";
     public static final int PRICE   = 8000;
 
     public static final String PRIMARYWEAPON_NAME = "Vulcain";

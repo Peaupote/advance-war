@@ -1,19 +1,20 @@
 package fr.main.view.views;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import fr.main.model.units.AbstractUnit;
-
-import fr.main.view.interfaces.*;
-import fr.main.view.render.weather.*;
 import fr.main.view.controllers.GameController;
-import fr.main.view.render.sprites.Sprite;
-import fr.main.view.MainFrame;
+import fr.main.view.interfaces.InterfaceUI;
+import fr.main.view.render.weather.WeatherController;
 
 public class GameView extends View {
 
   /**
+	 *Add GameView UID 
+	 */
+	private static final long serialVersionUID = 8815300245977000650L;
+/**
    * Rendering weather controller
    */
   private final WeatherController weather;

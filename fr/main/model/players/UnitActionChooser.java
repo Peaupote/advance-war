@@ -1,28 +1,27 @@
 package fr.main.model.players;
 
-import fr.main.model.Universe;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.function.Function;
+
 import fr.main.model.Direction;
 import fr.main.model.MoveZone;
 import fr.main.model.Node;
-import fr.main.model.commanders.*;
-import fr.main.model.buildings.*;
-import fr.main.model.units.*;
-import fr.main.model.units.land.*;
-import fr.main.model.units.naval.*;
-import fr.main.model.units.air.*;
-
-import java.awt.Point;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.function.Function;
-import java.util.function.Consumer;
-import java.util.LinkedList;
-
+import fr.main.model.Universe;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.CaptureBuilding;
+import fr.main.model.units.HealerUnit;
+import fr.main.model.units.HideableUnit;
+import fr.main.model.units.SupplyUnit;
+import fr.main.model.units.TransportUnit;
+import fr.main.view.render.PathRenderer;
 /*
     Import some classes of the view for the actions of the units 
  */
 import fr.main.view.render.UniverseRenderer;
-import fr.main.view.render.PathRenderer;
 
 
 /**
@@ -33,6 +32,11 @@ import fr.main.view.render.PathRenderer;
 public class UnitActionChooser implements java.io.Serializable {
 
     /**
+	 * Add UnitActionChooser UID
+	 */
+	private static final long serialVersionUID = 7642686049267806350L;
+
+	/**
      * Represents the differents states of the FSM
      * Different actions are done depending on the state of the unit
      */
@@ -77,7 +81,7 @@ public class UnitActionChooser implements java.io.Serializable {
 
     public UnitActionChooser(AbstractUnit unit){
         this.unit      = unit;
-        this.objective = null;
+        this.setObjective(null);
         this.localMap  = null;
         this.offset    = null;
         this.action    = null;
@@ -124,18 +128,22 @@ public class UnitActionChooser implements java.io.Serializable {
      */
     private class Objective implements java.io.Serializable {
         /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1886235246950234142L;
+		/**
          * The location of the target tile
          */
-        public final Point target;
+        private final Point target;
         /**
          * The distance to the objective to consider it reached
          * If approx == 1, then if the unit is on a tile next to the target it is considered that the unit reached the target
          */
-        public final int approx;
+        private final int approx;
         /**
          * The action done once the objective is reached
          */
-        public final Runnable todo;
+        private final Runnable todo;
         /**
          * The timer is used to check that an objective is reachable, once the timer is 0 then the objective is re-calculated
          */
@@ -149,7 +157,7 @@ public class UnitActionChooser implements java.io.Serializable {
             this.target = target;
             this.approx = approx;
             this.todo   = todo;
-            this.timer  = timer;
+            this.setTimer(timer);
             this.path   = path;
         }
 
@@ -157,12 +165,43 @@ public class UnitActionChooser implements java.io.Serializable {
             this(target, 0, todo, timer, path);
         }
 
-        public Objective(Point target, Runnable todo, int timer){
+        @SuppressWarnings("unused")
+		public Objective(Point target, Runnable todo, int timer){
             this(target, todo, timer, UnitActionChooser.this.unit.findPath(target));
         }
+
+		@SuppressWarnings("unused")
+		public Point getTarget() {
+			return target;
+		}
+
+		@SuppressWarnings("unused")
+		public int getApprox() {
+			return approx;
+		}
+
+		@SuppressWarnings("unused")
+		public Runnable getTodo() {
+			return todo;
+		}
+
+		@SuppressWarnings("unused")
+		public int getTimer() {
+			return timer;
+		}
+
+		public void setTimer(int timer) {
+			this.timer = timer;
+		}
+
+		@SuppressWarnings("unused")
+		public LinkedList<Direction> getPath() {
+			return path;
+		}
     } 
 
-    private Objective objective;
+    @SuppressWarnings("unused")
+	private Objective objective;
 
     /**
      * Runnable doing what its name indicates : random moves, TODO : improve it
@@ -270,7 +309,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param attacked is the unit to attack
      * @return how much points it earns to move to the point and then attack the unit
      */
-    private int attack         (Point move, AbstractUnit attacked) {
+    @SuppressWarnings("unused")
+	private int attack         (Point move, AbstractUnit attacked) {
         int a = AbstractUnit.damage(unit,                                 unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
         int b = AbstractUnit.damage(attacked, attacked.getLife() - a, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
         return move(move) + (a >= b ? 1 : -1) * (a * attacked.getCost() / 100 - b * unit.getCost() / 100) + (a >= attacked.getLife() ? 10 : 0);
@@ -281,7 +321,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param healed is the unit to heal
      * @return how much points it earns to move to the point and then heal the unit
      */
-    private int heal           (Point move, AbstractUnit healed) {
+    @SuppressWarnings("unused")
+	private int heal           (Point move, AbstractUnit healed) {
         return move(move) + unit.getPlayer().getFunds() >= healed.getCost() / 10 && healed.getLife() <= 90 ? healed.getCost() / 1000 : 0;
     }
 
@@ -289,7 +330,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param move is the tile to which the unit will move
      * @return how much points it earns to move to the point and then supply
      */
-    private int supply         (Point move) {
+    @SuppressWarnings("unused")
+	private int supply         (Point move) {
         int n = 0;
         for (Direction d : Direction.cardinalDirections())
             if (((SupplyUnit)unit).canSupply(Universe.get().getUnit(move.x + d.x, move.y + d.y))) n += 5;
@@ -300,7 +342,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param captured is the building to capture
      * @return how much points it earns to move to the building and then capturing it
      */
-    private int capture        (AbstractBuilding captured) {
+    @SuppressWarnings("unused")
+	private int capture        (AbstractBuilding captured) {
         return move(new Point(captured.getX(), captured.getY())) + 150;
     }
 
@@ -308,7 +351,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param move is the tile to which the unit will move
      * @return how much points it earns to move to the point and then hide or reveal (depends on if the unit is already hidden or not)
      */
-    private int hide           (Point move){
+    @SuppressWarnings("unused")
+	private int hide           (Point move){
         return move(move);
     }
 
@@ -316,7 +360,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param transport is the transport to go in
      * @return how much points it earns to go in the transport
      */
-    private int goInTransport  (TransportUnit transport) {
+    @SuppressWarnings("unused")
+	private int goInTransport  (TransportUnit transport) {
         return 0;
     }
 
@@ -326,7 +371,16 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param dir is the direction in which the unit should be removed
      * @return how much points it earns to move to the point and then remove the unit on the tile specified by the direction
      */
-    private int goOutTransport (Point move, AbstractUnit toRemove, Direction dir){
+    @SuppressWarnings("unused")
+	private int goOutTransport (Point move, AbstractUnit toRemove, Direction dir){
         return move(move) + 0;
     }
+
+	public Objective getObjective() {
+		return objective;
+	}
+
+	public void setObjective(Objective objective) {
+		this.objective = objective;
+	}
 }

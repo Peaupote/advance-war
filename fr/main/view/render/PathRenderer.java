@@ -122,8 +122,6 @@ public class PathRenderer extends Path {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
         Point pt = unit.position();
-        @SuppressWarnings("unused")
-		boolean previouslyUnit = false;
 
         while (!isEmpty()) {
             Direction d = poll();
@@ -154,7 +152,7 @@ public class PathRenderer extends Path {
             unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
             unit.getFuel().consume(1);
             if (unit.dead()) return false;
-            previouslyUnit = u != null;
+
             if (u == null){
                 world.setUnit(unit.getX(), unit.getY(), null);
                 render.cancelOffset();

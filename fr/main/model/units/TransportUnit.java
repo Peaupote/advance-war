@@ -5,6 +5,7 @@ import java.util.HashSet;
 /**
  * Interface used to represent the units that can transport other units
  */
+@SuppressWarnings("serial")
 public interface TransportUnit extends AbstractUnit {
 
     /**

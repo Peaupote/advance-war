@@ -6,7 +6,9 @@ import fr.main.model.players.Player;
 /**
   * Represents buildings that can repair and replenish specific units
   */
+@SuppressWarnings("serial")
 public interface RepairBuilding extends AbstractBuilding{
+
     /**
      * @param u is the unit we want to repair
      * @return true if and only if the building can repair the unit given in parameter

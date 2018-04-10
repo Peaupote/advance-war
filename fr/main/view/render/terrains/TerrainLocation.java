@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import fr.main.view.render.sprites.ScaleRect;
 
+@SuppressWarnings("serial")
 public interface TerrainLocation extends Serializable{
 
 	public static String getDir () {

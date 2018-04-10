@@ -212,8 +212,6 @@ public abstract class Unit implements AbstractUnit {
         int x = location.x, y = location.y, visionT = getVision(),
             height = this instanceof AirUnit ? 2 : Universe.get().getTerrain(x,y).getHeight();
 
-        @SuppressWarnings("unused")
-		Point start = location.getLocation();
         fog[y][x] = true; // the current tile can always be seen
         if (visionT != 0){
             // we decompose the tiles in 2 categories according to the position of the unit (to avoid checking multiple times the same tile)
@@ -252,8 +250,6 @@ public abstract class Unit implements AbstractUnit {
         // change coordinates to make it easier
         x = 2 * (x - startX); y = 2 * (y - startY);
         if (Math.abs(x) + Math.abs(y) <= 2) return true; // the two tiles are adjacents
-        @SuppressWarnings("unused")
-		Universe u = Universe.get();
 
         // we use two int to know if the move is oriented to the right or the left and the top or the bottom
         int epsilonX = x > 0 ? 1 : -1, epsilonY = y > 0 ? 1 : -1;
@@ -273,8 +269,6 @@ public abstract class Unit implements AbstractUnit {
             b = 2 * epsilonY; d = y - 2 * epsilonY;
         }
 
-        @SuppressWarnings("unused")
-		AbstractTerrain t;
 
         // if the move was diagonal then we check if one of the two tiles possibles :
         // if we're going from the tile q to the tile i, we check if we can see through tiles l or r, tile m, and tile h or n

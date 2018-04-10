@@ -6,6 +6,7 @@ import fr.main.model.Direction;
 /**
  * Interface used to represent the units that can replenish other units
  */
+@SuppressWarnings("serial")
 public interface SupplyUnit extends AbstractUnit {
 
     /**

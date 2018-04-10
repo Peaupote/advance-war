@@ -21,8 +21,8 @@ import java.io.Serializable;
 /**
  * Interface used to represent an unit
  */
+@SuppressWarnings("serial")
 public interface AbstractUnit extends Serializable {
-
     String fuelName="Carburant";
 
     /**
@@ -379,8 +379,6 @@ public interface AbstractUnit extends Serializable {
      */
     default Integer moveCost(int x, int y){
         Universe u = Universe.get();
-        @SuppressWarnings("unused")
-		AbstractUnit unit = u.getUnit(x,y);
         if (u.isVisibleOpponentUnit(x,y)) // if there is an opponent unit we can't go through
             return null;
         else if (this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) // if this is a ship, it can go in a dock

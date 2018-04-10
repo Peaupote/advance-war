@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Consumer;
+import java.util.LinkedList;
 
 /*
     Import some classes of the view for the actions of the units 
@@ -75,11 +76,12 @@ public class UnitActionChooser implements java.io.Serializable {
     public final boolean transport;
 
     public UnitActionChooser(AbstractUnit unit){
-        this.unit     = unit;
-        this.state    = findState();
-        this.localMap = null;
-        this.offset   = null;
-        this.action   = null;
+        this.unit      = unit;
+        this.objective = null;
+        this.localMap  = null;
+        this.offset    = null;
+        this.action    = null;
+        this.state     = findState();
 
         attack    = unit.getPrimaryWeapon() != null || unit.getSecondaryWeapon() != null;
         indirect  = unit.getPrimaryWeapon() != null && !unit.getPrimaryWeapon().isContactWeapon();
@@ -117,13 +119,53 @@ public class UnitActionChooser implements java.io.Serializable {
         return action;
     }
 
+    /**
+     * This class describe an objective (used when mode is OBJECTIVE)
+     */
+    private class Objective implements java.io.Serializable {
+        /**
+         * The location of the target tile
+         */
+        public final Point target;
+        /**
+         * The distance to the objective to consider it reached
+         * If approx == 1, then if the unit is on a tile next to the target it is considered that the unit reached the target
+         */
+        public final int approx;
+        /**
+         * The action done once the objective is reached
+         */
+        public final Runnable todo;
+        /**
+         * The timer is used to check that an objective is reachable, once the timer is 0 then the objective is re-calculated
+         */
+        private int timer;
+        /**
+         * The path to follow to go to the objective, can be checked sometimes to be sure it is still valid
+         */
+        private final LinkedList<Direction> path;
 
+        public Objective(Point target, int approx, Runnable todo, int timer, LinkedList<Direction> path){
+            this.target = target;
+            this.approx = approx;
+            this.todo   = todo;
+            this.timer  = timer;
+            this.path   = path;
+        }
 
+        public Objective(Point target, Runnable todo, int timer, LinkedList<Direction> path){
+            this(target, 0, todo, timer, path);
+        }
 
+        public Objective(Point target, Runnable todo, int timer){
+            this(target, todo, timer, UnitActionChooser.this.unit.findPath(target));
+        }
+    } 
 
+    private Objective objective;
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : random moves, TODO : improve it
      */
     public void aimless (){
         ArrayList<Point> points = new ArrayList<Point>();
@@ -144,7 +186,7 @@ public class UnitActionChooser implements java.io.Serializable {
     }
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : brings the unit on a specified tile
      */
     public void go (){
 

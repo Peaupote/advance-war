@@ -3,6 +3,7 @@ package fr.main.model.units;
 import java.awt.Point;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.LinkedList;
 
 import fr.main.model.units.weapons.*;
 import fr.main.model.Universe;
@@ -173,6 +174,68 @@ public interface AbstractUnit extends Serializable {
         }
         return new MoveZone(map, offset);
         // the object MoveZone is used to return both the offset and the Node[][] map
+    }
+
+    default LinkedList<Direction> findPath(Point point){
+        Universe u = Universe.get();
+        int posX   = getX(), posY = getY(),
+            max    = Math.max(u.getMapWidth(), u.getMapHeight());
+
+        Node[][] map = new Node[u.getMapHeight()][u.getMapWidth()];
+        
+        // initialization
+        for (int i = 0; i < map.length; i ++)
+            for (int j = 0; j < map[i].length; j ++)
+                // creation of the new nodes, by default there is no way to go to it
+                map[i][j] = new Node(j, i, canStop(j, i), moveCost(j, i), max);
+        Node current = new Node(posX, posY, true, 0, 0),
+             pt = map[point.y][point.x];
+        map[posY][posX] = current;
+        // the node on which the unit is has a moveCost of 0
+
+        // these two sets are used to know which one are already evaluated and which are yet to evaluate
+        // the nodes that are to evaluate
+        HashSet<Node> unsettled = new HashSet<Node>();
+        // the nodes that are already evaluated
+        HashSet<Node> settled   = new HashSet<Node>();
+
+        // the first node to evaluate is the one on which the unit is
+        unsettled.add(current);
+
+
+        //  evaluation
+        while (!unsettled.isEmpty() && pt.previous == Direction.NONE){
+            // we get the closest node (the node for which there is a path with the smallest move quantity needed to go on it)
+            Node actual = null;
+            for (Node n : unsettled)
+                if (actual == null || n.compareTo(actual) < 0)
+                    actual = n;
+            unsettled.remove(actual);
+            // could be quickier if we used priority list or something like that but the distance to the node may change
+            // so if we did so we may need to remove some elements and put them back in the list
+            // and other operations would take longer
+
+            for (Direction d : Direction.cardinalDirections())
+                // we add to the unsettled list all adjacent nodes (except those who are already evaluated)
+                if (u.isValidPosition(actual.x + d.x, actual.y + d.y)){
+                    Node target = map[actual.y+d.y][actual.x+d.x];
+                    if (!settled.contains(target) && actual.lowestCost + target.moveCost < target.lowestCost){
+                        // if this path is shorter, change the move quantity needed to go on this Node
+                        target.previous = d;
+                        target.lowestCost = actual.lowestCost + target.moveCost;
+                        unsettled.add(target);
+                    }
+                }
+            settled.add(actual);
+        }
+
+        LinkedList<Direction> path = new LinkedList<Direction>();
+        Direction d;
+        while ((d = map[pt.y][pt.x].previous) != Direction.NONE){
+            path.addFirst(d);
+            d.opposed().move(point);
+        }
+        return path;
     }
 
     /**

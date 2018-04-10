@@ -1,18 +1,16 @@
 package fr.main;
 
 import java.io.File;
-import java.io.IOException;
 
-import fr.main.model.generator.MapGenerator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
-import fr.main.model.players.Player;
-import fr.main.model.commanders.FakeCommander;
-import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.generator.MapGenerator;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
+import fr.main.network.Client;
+import fr.main.network.Server;
 import fr.main.view.MainFrame;
-import fr.main.network.*;
 import fr.main.view.controllers.GameController;
 
 /**

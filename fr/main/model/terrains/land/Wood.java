@@ -1,21 +1,24 @@
 package fr.main.model.terrains.land;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import fr.main.model.Weather;
+import fr.main.model.terrains.Terrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
-import fr.main.model.units.land.LandUnit;
 import fr.main.model.units.air.AirUnit;
-import fr.main.model.terrains.Terrain;
 
 /**
  * represents a forest
  */
 public class Wood extends Terrain implements LandTerrain {
 
-    private static Wood instance;
+    /**
+	 * Add Wood UID
+	 */
+	private static final long serialVersionUID = -1019883747349507778L;
+	private static Wood instance;
     public static final String name="Forêt";
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
 

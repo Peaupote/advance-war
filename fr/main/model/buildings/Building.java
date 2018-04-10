@@ -3,18 +3,20 @@ package fr.main.model.buildings;
 import java.awt.Point;
 
 import fr.main.model.Universe;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.air.AirUnit;
-import fr.main.model.terrains.AbstractTerrain;
-
-import java.io.Serializable;
 
 /**
  * Class representing a 'basic' building
  */
 public abstract class Building implements AbstractBuilding{
 
-    protected final int defense;
+    /**
+	 * Add Building UID
+	 */
+	private static final long serialVersionUID = 5827740138370372452L;
+	protected final int defense;
     protected final Point location;
     public final String name;
 

@@ -15,7 +15,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class Mountain extends Terrain implements LandTerrain {
 
-    private static Mountain instance;
+    /**
+	 * Add Mountain UID
+	 */
+	private static final long serialVersionUID = 8602237467620707177L;
+	private static Mountain instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
     public static final String name="Montagne";
 

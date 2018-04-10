@@ -12,7 +12,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class Road extends Terrain implements LandTerrain {
 
-    private static Road instance;
+    /**
+	 * Add Road UID
+	 */
+	private static final long serialVersionUID = 4359565654338863950L;
+	private static Road instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
     public static final String name="Route";
 

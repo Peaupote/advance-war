@@ -11,7 +11,11 @@ import java.util.Random;
 
 public class EconomicAI implements ArtificialIntelligence {
 
-    public final AIPlayer player;
+    /**
+	 * Add EconomicAI UID
+	 */
+	private static final long serialVersionUID = 8076973207707324406L;
+	public final AIPlayer player;
     private final HashSet<FactoryBuilding> factories = new HashSet<FactoryBuilding>();
 
     public EconomicAI (AIPlayer player){

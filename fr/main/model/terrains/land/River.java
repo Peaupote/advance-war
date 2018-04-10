@@ -12,7 +12,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class River extends Terrain implements LandTerrain {
 
-    private static River instance;
+    /**
+	 * Add River UID
+	 */
+	private static final long serialVersionUID = -5995606505466883666L;
+	private static River instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
     public static final String name="Rivière";
 

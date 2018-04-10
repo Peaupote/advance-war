@@ -1,10 +1,16 @@
 package fr.main.model;
 
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.*;
-
-import java.time.temporal.TemporalAccessor;
+import fr.main.model.terrains.land.Beach;
+import fr.main.model.terrains.land.Bridge;
+import fr.main.model.terrains.land.Hill;
+import fr.main.model.terrains.land.Lowland;
+import fr.main.model.terrains.land.Mountain;
+import fr.main.model.terrains.land.River;
+import fr.main.model.terrains.land.Road;
+import fr.main.model.terrains.land.Wood;
+import fr.main.model.terrains.naval.Reef;
+import fr.main.model.terrains.naval.Sea;
 
 public enum TerrainEnum {
   none     (-1, null),

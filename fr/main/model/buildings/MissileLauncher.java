@@ -1,11 +1,10 @@
 package fr.main.model.buildings;
 
-import fr.main.model.Universe;
-import fr.main.model.Direction;
-import fr.main.model.units.AbstractUnit;
-import fr.main.model.terrains.Terrain;
-
 import java.awt.Point;
+
+import fr.main.model.Direction;
+import fr.main.model.Universe;
+import fr.main.model.units.AbstractUnit;
 
 /*
 * Represents a missile launcher
@@ -13,6 +12,10 @@ import java.awt.Point;
 public class MissileLauncher extends Building {
 
     /**
+	 * Add MissileLauncher UID
+	 */
+	private static final long serialVersionUID = 2599496054309721599L;
+	/**
      * set to true if the missile was fired and false otherwise
      */
     private boolean fired;

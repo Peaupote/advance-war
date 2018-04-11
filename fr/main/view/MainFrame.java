@@ -98,15 +98,16 @@ public class MainFrame extends JFrame {
 
     public void setController (Controller controller) {
       this.controller = controller;
+      int height = view == null ? HEIGHT : view.getHeight(),
+          width  = view == null ? WIDTH  : view.getWidth();
       this.view       = controller.makeView();
       timer           = 0;
         
       setContentPane(view);
       // set view to listen key events
       view.requestFocus(true);
+      view.setPreferredSize(new Dimension(width, height));
 
-      // set view content
-      view.setPreferredSize(new Dimension(WIDTH, HEIGHT));
       pack();
     }
 

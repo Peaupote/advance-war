@@ -429,6 +429,115 @@ public class GameController extends Controller {
         dayPanel.setVisible(true);
     }
 
+    private void validUnitMove () {
+      mode = Mode.IDLE;
+      new Thread(() -> { // apply the movement
+        world.clearTarget();
+        UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
+        targetRender.setState("move");
+        path.visible = false;
+        boolean b = path.apply();
+        targetRender.setState("idle");
+        if (targetUnit.dead()) mode = Mode.MOVE;
+        else {
+          cursor.setLocation(unitCursor.position());
+          if (b && targetUnit.isEnabled()){
+            cursor.setLocation(targetUnit.position());
+            unitCursor.setLocation(targetUnit.position());
+            unitActionPanel.setVisible(true);
+          } else mode = Mode.MOVE;
+        }
+      }).start();
+    }
+
+    private void validUnitTarget () {
+      if (world.isEnabled(unitCursor.getX(), unitCursor.getY())){
+        AbstractUnit target = world.getUnit(unitCursor.position());
+        if (targetUnit.canAttack(target)) {
+          int aLife = targetUnit.getLife(),
+              tLife = target.getLife();
+          targetUnit.attack(target);
+          world.flash ("" + (targetUnit.getLife() - aLife),
+                       (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                       (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                       UniverseRenderer.FlashMessage.Type.ALERT);
+          world.flash ("" + (target.getLife() - tLife),
+                       (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                       (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                       UniverseRenderer.FlashMessage.Type.ALERT);
+          Sdfx.EXPLOSION.play();
+        } else {
+          targetUnit.setMoveQuantity(0);
+          if (targetUnit.getPrimaryWeapon() != null) targetUnit.getPrimaryWeapon().shoot();
+          else targetUnit.getSecondaryWeapon().shoot();
+        }
+      }
+      unitCursor.setCursor(true);
+      displayDamages = false;
+      mode = Mode.MOVE;
+      world.clearTarget();
+    }
+
+    public void selectOnMove () {
+      if (targetUnit == null) {
+        AbstractBuilding b = world.getBuilding (cursor.position());
+        if (!world.isVisible(cursor.position()) || b == null 
+                || !(b instanceof FactoryBuilding)
+                || ((OwnableBuilding)b).getOwner() != world.getCurrentPlayer())
+            actionPanel.setVisible (true);
+        else buildingPanel.setVisible (true);
+      } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
+                 targetUnit.isEnabled()) {
+        Sdfx.SELECT.play();
+        mode = Mode.UNIT;
+        world.updateTarget(targetUnit);
+        path.rebase(targetUnit);
+        path.visible = true;
+      } else actionPanel.setVisible(true);
+      unitCursor.setLocation(cursor.position());
+    }
+
+    private void validHeal () {
+      AbstractUnit target = world.getUnit(unitCursor.position());
+      if (((HealerUnit)targetUnit).canHeal(target)) {
+        int life = target.getLife();
+        ((HealerUnit)targetUnit).heal(target);
+        world.flash("+" + (target.getLife() - life),
+                    (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                    (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000);
+      }
+      mode = Mode.MOVE;
+      world.clearTarget();
+    }
+
+    private void validLoad () {
+      AbstractUnit target = world.getUnit(unitCursor.position());
+      if (target instanceof TransportUnit && ((TransportUnit)target).canCharge(targetUnit))
+          ((TransportUnit)target).charge(targetUnit);
+      mode = Mode.MOVE;
+      world.clearTarget();
+    }
+
+    private void validUnloadLocate () {
+      ((TransportUnit)targetUnit).remove(getTransportUnit(),
+                                         unitCursor.getX(), unitCursor.getY());
+      mode = Mode.MOVE;
+      world.clearTarget();                        
+    }
+
+    private void validMissileLauncher () {
+      fireMissile((MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY()), unitCursor.getX(), unitCursor.getY());
+      targetUnit.setMoveQuantity(0);
+      world.clearTarget();
+    }
+
+    private void escape () {
+      mode = Mode.MOVE;
+      unitCursor.setCursor(true);
+      world.clearTarget();
+      path.visible = false;
+    }
+
     @Override
     public void keyPressed (KeyEvent e) {
         int key = e.getKeyCode();
@@ -441,106 +550,14 @@ public class GameController extends Controller {
                 else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
                 else if (key == KeyEvent.VK_DOWN) move(Direction.BOTTOM);
                 else if (key == KeyEvent.VK_ENTER) {
-                    if (mode == Mode.UNIT) { // validing unit move
-                        mode = Mode.IDLE;
-                        new Thread(() -> { // apply the movement
-                            world.clearTarget();
-                            UnitRenderer.Render targetRender = UnitRenderer.getRender(targetUnit);
-                            targetRender.setState("move");
-                            path.visible = false;
-                            boolean b = path.apply();
-                            targetRender.setState("idle");
-                            if (targetUnit.dead())
-                                mode = Mode.MOVE;
-                            else{
-                                cursor.setLocation(unitCursor.position());
-                                if (b && targetUnit.isEnabled()){
-                                    cursor.setLocation(targetUnit.position());
-                                    unitCursor.setLocation(targetUnit.position());
-                                    unitActionPanel.setVisible(true);
-                                }
-                                else mode = Mode.MOVE;
-                            }
-                        }).start();
-                    } else if (mode == Mode.ATTACK) { // validing unit target
-                        if (world.isEnabled(unitCursor.getX(), unitCursor.getY())){
-                            AbstractUnit target = world.getUnit(unitCursor.position());
-                            if (targetUnit.canAttack(target)) {
-                                int aLife = targetUnit.getLife(),
-                                    tLife = target.getLife();
-                                targetUnit.attack(target);
-                                world.flash ("" + (targetUnit.getLife() - aLife),
-                                    (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                                    (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                                    UniverseRenderer.FlashMessage.Type.ALERT);
-                                world.flash ("" + (target.getLife() - tLife),
-                                    (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                                    (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                                    UniverseRenderer.FlashMessage.Type.ALERT);
-                                Sdfx.EXPLOSION.play();
-                            }else{
-                                targetUnit.setMoveQuantity(0);
-                                if (targetUnit.getPrimaryWeapon() != null)
-                                    targetUnit.getPrimaryWeapon().shoot();
-                                else
-                                    targetUnit.getSecondaryWeapon().shoot();
-                            }
-                        }
-                        unitCursor.setCursor(true);
-                        displayDamages = false;
-                        mode = Mode.MOVE;
-                        world.clearTarget();
-                    }else if (mode == Mode.HEAL){
-                        AbstractUnit target = world.getUnit(unitCursor.position());
-                        if (((HealerUnit)targetUnit).canHeal(target)) {
-                            int life = target.getLife();
-                            ((HealerUnit)targetUnit).heal(target);
-                            world.flash("+" + (target.getLife() - life),
-                                (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                                (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000);
-                        }
-                        mode = Mode.MOVE;
-                        world.clearTarget();
-                    } else if (mode == Mode.MOVE) {
-                        if (targetUnit == null) {
-                            AbstractBuilding b = world.getBuilding (cursor.position());
-                            if (!world.isVisible(cursor.position()) || b == null 
-                                    || !(b instanceof FactoryBuilding)
-                                    || ((OwnableBuilding)b).getOwner() != world.getCurrentPlayer())
-                                actionPanel.setVisible (true);
-                            else buildingPanel.setVisible (true);
-                        } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
-                                     targetUnit.isEnabled()) {
-                            Sdfx.SELECT.play();
-                            mode = Mode.UNIT;
-                            world.updateTarget(targetUnit);
-                            path.rebase(targetUnit);
-                            path.visible = true;
-                        }
-                        else actionPanel.setVisible(true);
-                        unitCursor.setLocation(cursor.position());
-                    }else if (mode == Mode.LOAD){
-                        AbstractUnit target = world.getUnit(unitCursor.position());
-                        if (target instanceof TransportUnit && ((TransportUnit)target).canCharge(targetUnit))
-                            ((TransportUnit)target).charge(targetUnit);
-                        mode = Mode.MOVE;
-                        world.clearTarget();
-                    }else if (mode == Mode.UNLOAD_LOCATE){
-                        ((TransportUnit)targetUnit).remove(getTransportUnit(),
-                                                           unitCursor.getX(), unitCursor.getY());
-                        mode = Mode.MOVE;
-                        world.clearTarget();                        
-                    }else if (mode == Mode.MISSILE_LAUNCHER){
-                        fireMissile((MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY()), unitCursor.getX(), unitCursor.getY());
-                        targetUnit.setMoveQuantity(0);
-                        world.clearTarget();
-                    }
-                } else if (key == KeyEvent.VK_ESCAPE) { // exit and back to move mode
-                    mode = Mode.MOVE;
-                    unitCursor.setCursor(true);
-                    world.clearTarget();
-                    path.visible = false;
-                }
+                    if (mode == Mode.UNIT) validUnitMove();
+                    else if (mode == Mode.ATTACK) validUnitTarget();
+                    else if (mode == Mode.HEAL) validHeal();
+                    else if (mode == Mode.MOVE) selectOnMove();
+                    else if (mode == Mode.LOAD) validLoad();
+                    else if (mode == Mode.UNLOAD_LOCATE) validUnloadLocate();
+                    else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
+                } else if (key == KeyEvent.VK_ESCAPE) escape();
             } else if (mode == Mode.MENU) { // update index and valid menu action for focusedActionPanel
                     if      (key == KeyEvent.VK_UP)    focusedActionPanel.goUp();
                     else if (key == KeyEvent.VK_DOWN)  focusedActionPanel.goDown();
@@ -549,34 +566,43 @@ public class GameController extends Controller {
                         focusedActionPanel.setVisible (false);
                         world.clearTarget();
                     }
-            } else if (key == KeyEvent.VK_ESCAPE) { // exit and back move mode
-                mode = Mode.MOVE;
-                world.clearTarget();
-                displayDamages = false;
-                path.visible = false;
-            }
+            } else if (key == KeyEvent.VK_ESCAPE) escape();
         }
     }
 
     /**
-     * Update mouse position on the screen
+     * Update mouse position on the screen.
      */
     @Override
     public void mouseMoved (MouseEvent e) {
-        if (mode == Mode.MOVE){
+        if (mode.canMove()){
             mouse.x = e.getX() / MainFrame.UNIT;
             mouse.y = e.getY() / MainFrame.UNIT;
+
+            if (mode == Mode.UNIT && targetUnit.canStop(unitCursor.position()))
+                path.add(unitCursor.position().getLocation());
             listenMouse = true;
         }
     }
 
     public void mouseClicked(MouseEvent e) {
-      // TODO:    bosse un peu Pierre
-      // update : Je te laisse faire Maxime
+      if (listenMouse) {
+        targetUnit = world.getUnit(cursor.position());
+        if (e.getButton() == MouseEvent.BUTTON3) escape();
+        else {
+          if (mode == Mode.UNIT) validUnitMove();
+          else if (mode == Mode.ATTACK) validUnitTarget();
+          else if (mode == Mode.HEAL) validHeal();
+          else if (mode == Mode.MOVE) selectOnMove();
+          else if (mode == Mode.LOAD) validLoad();
+          else if (mode == Mode.UNLOAD_LOCATE) validUnloadLocate();
+          else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
+        }
+      }
     }
 
     /**
-     * Called each frame
+     * Called each frame.
      */
     public void update () {
         // isListening if none of the cursors move
@@ -606,16 +632,18 @@ public class GameController extends Controller {
         // make the cursor follow the mouse
         if (!isListening && mode.canMove() && listenMouse) {
             if (camera.getX() > 0 && mouse.x <= moveRange) camera.setDirection(Direction.LEFT);
-            else if (camera.getX() + camera.width < size.width && camera.width - mouse.x <= moveRange) camera.setDirection(Direction.RIGHT);
+            else if (camera.getX() + camera.width < size.width && camera.width - mouse.x <= moveRange)
+              camera.setDirection(Direction.RIGHT);
             else if (mouse.y <= moveRange) camera.setDirection(Direction.TOP);
             else if (camera.height - mouse.y <= moveRange) camera.setDirection(Direction.BOTTOM);
 
-            cursor.setLocation(mouse.x + camera.getX(), mouse.y + camera.getY());
+            Position.Cursor c = mode == Mode.MOVE || mode == Mode.MENU ? cursor : unitCursor;
+            c.setLocation(mouse.x + camera.getX(), mouse.y + camera.getY());
         }
     }
 
     /**
-     * Tell the cursor to move by the given direction
+     * Tell the cursor to move by the given direction.
      */
     private void move (Direction d) {
         listenMouse = false;

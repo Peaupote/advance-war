@@ -386,6 +386,14 @@ public interface AbstractUnit extends Serializable {
         else
             return u.getTerrain(x,y).moveCost(this);
     }
+
+    /**
+     * @return true if and only if the unit can stop on the given position
+     */
+    default boolean canStop (Point pt) {
+      return canStop(pt.x, pt.y);
+    }
+
     /**
      * @return true if and only if the unit can stop on the tile
      */

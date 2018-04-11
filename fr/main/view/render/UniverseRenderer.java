@@ -338,7 +338,7 @@ public class UniverseRenderer extends Universe {
         private final MissileLauncher missile;
 
         /**
-         * used to know what image is displayed
+         * used to know what image is displayed.
          */
         private int explosionNumber;
 

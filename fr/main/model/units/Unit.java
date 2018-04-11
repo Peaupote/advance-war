@@ -129,9 +129,7 @@ public abstract class Unit implements AbstractUnit {
         if (this.life == 0){
             dies();
             return false;
-        }
-        else
-            return true;
+        } else return true;
     }
 
     @Override

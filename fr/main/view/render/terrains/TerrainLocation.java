@@ -1,10 +1,16 @@
 package fr.main.view.render.terrains;
 
 
+import com.sun.org.apache.bcel.internal.generic.GETFIELD;
+import fr.main.model.TerrainEnum;
 import fr.main.view.render.animations.Animation;
 import fr.main.view.render.sprites.ScaleRect;
+import sun.nio.fs.GnomeFileTypeDetector;
 
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public interface TerrainLocation extends Serializable{
 
@@ -14,6 +20,7 @@ public interface TerrainLocation extends Serializable{
 
 	public String getPath();
 	public ScaleRect getRect();
+	public ScaleRect getDefaultRect();
 
 	public enum TerrainImageRect {
 		LEFT(0, 17), RIGHT(34, 17), TOP(17, 0), BOTTOM(17, 34), CENTER(17, 17),
@@ -69,6 +76,11 @@ public interface TerrainLocation extends Serializable{
 		public ScaleRect getRect() {
 			return location.getRect();
 		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return TOP.getRect();
+		}
 	}
 
 	public enum BridgeLocation implements TerrainLocation {
@@ -94,6 +106,11 @@ public interface TerrainLocation extends Serializable{
 		public ScaleRect getRect() {
 			return location.getRect();
 		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return HORIZONTAL.getDefaultRect();
+		}
 	}
 
 	public enum HillLocation implements TerrainLocation {
@@ -118,6 +135,11 @@ public interface TerrainLocation extends Serializable{
 		@Override
 		public ScaleRect getRect() {
 			return location.getRect();
+		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return NORMAL.getRect();
 		}
 	}
 
@@ -146,6 +168,11 @@ public interface TerrainLocation extends Serializable{
 		public ScaleRect getRect() {
 			return location.getRect();
 		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return NORMAL.getRect();
+		}
 	}
 
 	public enum WoodLocation implements TerrainLocation {
@@ -169,6 +196,11 @@ public interface TerrainLocation extends Serializable{
 		@Override
 		public ScaleRect getRect() {
 			return location.getRect();
+		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return NORMAL.getRect();
 		}
 	}
 
@@ -194,6 +226,11 @@ public interface TerrainLocation extends Serializable{
 		public ScaleRect getRect() {
 			return location.getRect();
 		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return NORMAL.getRect();
+		}
 	}
 
 	public enum MountainLocation implements TerrainLocation {
@@ -217,6 +254,11 @@ public interface TerrainLocation extends Serializable{
 		@Override
 		public ScaleRect getRect() {
 			return location.getRect();
+		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return NORMAL.getRect();
 		}
 	}
 
@@ -251,6 +293,11 @@ public interface TerrainLocation extends Serializable{
 		public ScaleRect getRect() {
 			return location.getRect();
 		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return CENTER.getRect();
+		}
 	}
 
 	public enum SeaLocation implements TerrainLocation {
@@ -284,6 +331,11 @@ public interface TerrainLocation extends Serializable{
 		public ScaleRect getRect() {
 			return location.getRect();
 		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return NORMAL.getDefaultRect();
+		}
 	}
 
 	public enum RoadLocation implements TerrainLocation {
@@ -314,6 +366,118 @@ public interface TerrainLocation extends Serializable{
 		@Override
 		public ScaleRect getRect() {
 			return location.getRect();
+		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return CENTER.getRect();
+		}
+	}
+
+	public class GenericTerrainLocation implements TerrainLocation {
+		private String[] paths;
+		private String name;
+		private LinkedList<Sticker> stickers;
+		private final TerrainLocation base;
+
+		public GenericTerrainLocation (TerrainLocation base) {
+			this.base = base;
+			this.stickers = new LinkedList<>();
+		}
+
+		public GenericTerrainLocation (TerrainLocation base, Sticker s) {
+			this.base = base;
+			LinkedList<Sticker> ss = new LinkedList<>();
+			ss.add(s);
+
+			stickers = ss;
+		}
+
+		public GenericTerrainLocation (TerrainLocation base, LinkedList<Sticker> ss) {
+			this.stickers = ss;
+			this.base = base;
+		}
+
+		public void addSticker(Sticker sticker) {
+			this.stickers.add(sticker);
+		}
+
+		@Override
+		public ScaleRect getRect() {
+			return base.getRect(); // TODO.
+		}
+
+		@Override
+		public ScaleRect getDefaultRect() {
+			return base.getRect(); // TODO.
+		}
+
+		@Override
+		public String getPath() {
+			return base.getPath(); // TODO.
+		}
+
+		public BufferedImage getBufferedImage() {
+			return null; // TODO.
+		}
+
+		public TerrainLocation getBase() {
+			return base;
+		}
+
+		public LinkedList<Sticker> getStickers() {
+			return stickers;
+		}
+
+		public int listLength () {
+			return stickers.size();
+		}
+
+		public boolean isEmpty() {
+			return stickers.isEmpty();
+		}
+	}
+
+	public class Sticker {
+//		private static ArrayList<Sticker> instances;
+		public final TerrainLocation loc;
+		public final int x, y;
+
+//		public Sticker(TerrainLocation loc, int x, int y) {
+//			Sticker s = addSticker(loc, x, y);
+//			loc = s.loc;
+//			x = s.x;
+//			y = s.y;
+//		}
+
+		public Sticker(TerrainLocation loc, int x, int y) {
+			this.loc = loc;
+			this.x = x;
+			this.y = y;
+		}
+
+//		private Sticker addSticker(Sticker s) {
+//			return addSticker(s.loc, s.x, s.y);
+//		}
+//
+//		private Sticker addSticker (TerrainLocation loc, int x, int y) {
+//			if(instances == null) instances = new ArrayList<>();
+//
+//			for(Sticker s : instances)
+//				if(s.is(loc, x, y)) return s;
+//
+//			Sticker foo = new Sticker(loc, x, y);
+//			instances.add(foo);
+//
+//			return foo;
+//		}
+
+		private boolean is(Sticker s) {
+			return s.loc == this.loc && s.y == this.y && s.x == this.x;
+		}
+
+		private boolean is(TerrainLocation loc, int x, int y) {
+			return loc == this.loc && y == this.y && x == this.x;
 		}
 	}
 }

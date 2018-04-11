@@ -401,18 +401,18 @@ public class MapGenerator {
         return count;
     }
 
-    private TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
+    public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
     	Arrays.fill(out, null);
 
-		if(isInMap(map, x, y - 1)) 			out[0] = map[x][y - 1];
-		if(isInMap(map, x + 1, y - 1)) 		out[1] = map[x + 1][y - 1];
-		if(isInMap(map, x + 1, y)) 			out[2] = map[x + 1][y];
+		if(isInMap(map, x - 1, y)) 			out[0] = map[x - 1][y];
+		if(isInMap(map, x - 1, y + 1)) 		out[1] = map[x - 1][y + 1];
+		if(isInMap(map, x, y + 1)) 			out[2] = map[x][y + 1];
 		if(isInMap(map, x + 1, y + 1)) 		out[3] = map[x + 1][y + 1];
-		if(isInMap(map, x + 1, 1))			out[4] = map[x + 1][y];
+		if(isInMap(map, x + 1, y))			out[4] = map[x + 1][y];
 		if(isInMap(map, x + 1, y - 1)) 		out[5] = map[x + 1][y - 1];
-		if(isInMap(map, x - 1, y - 1)) 		out[6] = map[x - 1][y - 1];
-		if(isInMap(map, x, y - 1)) 			out[7] = map[x][y - 1];
+		if(isInMap(map, x, y - 1)) 			out[6] = map[x][y - 1];
+		if(isInMap(map, x - 1, y - 1)) 		out[7] = map[x - 1][y - 1];
 
 		return out;
 	}

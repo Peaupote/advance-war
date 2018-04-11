@@ -272,11 +272,11 @@ public class UniverseRenderer extends Universe {
 
 
         Sprite d        = Sprite.get("./assets/ingame/missile.png");
-        arrival         = d.getImage(31,  1,  8, 19);
-        launch          = d.getImage(32, 51,  8, 32);
-        fly             = d.getImage(33, 86,  8, 46);
-        smokeUp         = d.getImage(2,   2, 12, 28);
-        smokeDown       = d.getImage(15,  0, 13, 31);
+        arrival         = d.getImage(31,  1,  8, 19, 2);
+        launch          = d.getImage(32, 51,  8, 32, 2);
+        fly             = d.getImage(33, 86,  8, 46, 2);
+        smokeUp         = d.getImage(2,   2, 12, 28, 2);
+        smokeDown       = d.getImage(15,  0, 13, 31, 2);
         explosionBis    = new Image[]{
             d.getImage(0, 33, 30, 30),
             d.getImage(0, 67, 30, 30),
@@ -372,13 +372,23 @@ public class UniverseRenderer extends Universe {
                     if (Math.abs(i) + Math.abs(j) <= 3 && unit != null && !damages.containsKey(unit))
                         damages.put(unit, unit.getLife());
                 }
+            if (getUnit(missile.getX(), missile.getY()) != null)
+                getUnit(missile.getX(), missile.getY()).dies();
         }
 
         public void draw(Graphics g){
             if (!goingUp && x == endX && y >= endY){
 
                 if (explosionNumber < 24){
-                    g.drawImage(explosionBis[explosionNumber / 8], endX, endY, controller.makeView());
+                    for (int i = -3; i < 4; i++)
+                        for (int j = -3; j < 4; j++){
+                            int tmpX = endX + i * MainFrame.UNIT, tmpY = endY + j * MainFrame.UNIT;
+                            if (Math.abs(i) + Math.abs(j) <= 3 && tmpX >= 0 && tmpY >= 0 &&
+                                    tmpX < (controller.camera.getX() + controller.camera.width)  * MainFrame.UNIT &&
+                                    tmpY < (controller.camera.getY() + controller.camera.height) * MainFrame.UNIT)
+                                g.drawImage(explosionBis[explosionNumber / 8], tmpX, tmpY, controller.makeView());
+                        }
+
                     explosionNumber ++;
                 }else{
                     missile.fire(endX / MainFrame.UNIT + controller.camera.getX(), endY / MainFrame.UNIT + controller.camera.getY());
@@ -392,25 +402,24 @@ public class UniverseRenderer extends Universe {
                     controller.setMode(GameController.Mode.MOVE);
                 }
             }else{
-                if (y <= 0){
-                    y = arrival.getHeight(controller.makeView());
+                if (y <= - fly.getHeight(controller.makeView()) - smokeUp.getHeight(controller.makeView())) {
+                    y = 0;
                     goingUp = false;
                     x = endX;
                 }
 
                 if (goingUp){
                     if (beginY + MainFrame.UNIT - y <= fly.getHeight(controller.makeView()))
-                        g.drawImage(launch, x + MainFrame.UNIT / 3, y, controller.makeView());
+                        g.drawImage(launch, x + (MainFrame.UNIT - launch.getWidth(controller.makeView())) / 2, y, controller.makeView());
                     else if (beginY + MainFrame.UNIT - y >= fly.getHeight(controller.makeView()) + smokeUp.getHeight(controller.makeView())) {
-                        g.drawImage(fly, x + MainFrame.UNIT / 3, y, controller.makeView());
-                        g.drawImage(smokeUp, x + MainFrame.UNIT / 4, y + fly.getHeight(controller.makeView()), controller.makeView());
+                        g.drawImage(fly, x + (MainFrame.UNIT - fly.getWidth(controller.makeView())) / 2, y, controller.makeView());
+                        g.drawImage(smokeUp, x + (MainFrame.UNIT - smokeUp.getWidth(controller.makeView())) / 2, y + fly.getHeight(controller.makeView()), controller.makeView());
                     }
                     else
-                        g.drawImage(fly, x + MainFrame.UNIT / 3, y, controller.makeView());
+                        g.drawImage(fly, x + (MainFrame.UNIT - fly.getWidth(controller.makeView())) / 2, y, controller.makeView());
                 }else{
-                    g.drawImage(arrival, x + MainFrame.UNIT / 3, y - arrival.getHeight(controller.makeView()), controller.makeView());
-                    if (y >= arrival.getHeight(controller.makeView()) + smokeDown.getHeight(controller.makeView()))
-                        g.drawImage(smokeDown, x + MainFrame.UNIT / 5, y - arrival.getHeight(controller.makeView()) - smokeDown.getHeight(controller.makeView()), controller.makeView());
+                    g.drawImage(arrival, x + (MainFrame.UNIT - arrival.getWidth(controller.makeView())) / 2, y - arrival.getHeight(controller.makeView()), controller.makeView());
+                    g.drawImage(smokeDown, x + (MainFrame.UNIT - smokeDown.getWidth(controller.makeView())) / 2, y - arrival.getHeight(controller.makeView()) - smokeDown.getHeight(controller.makeView()), controller.makeView());
                 }
 
                 y += (goingUp ? -1 : 2) * 2;

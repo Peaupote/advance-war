@@ -512,7 +512,6 @@ public class GameController extends Controller {
                         } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                                      targetUnit.isEnabled()) {
                             Sdfx.SELECT.play();
-                            unitCursor.setCursor(true);
                             mode = Mode.UNIT;
                             world.updateTarget(targetUnit);
                             path.rebase(targetUnit);
@@ -538,6 +537,7 @@ public class GameController extends Controller {
                     }
                 } else if (key == KeyEvent.VK_ESCAPE) { // exit and back to move mode
                     mode = Mode.MOVE;
+                    unitCursor.setCursor(true);
                     world.clearTarget();
                     path.visible = false;
                 }
@@ -551,7 +551,6 @@ public class GameController extends Controller {
                     }
             } else if (key == KeyEvent.VK_ESCAPE) { // exit and back move mode
                 mode = Mode.MOVE;
-                unitCursor.setCursor(true);
                 world.clearTarget();
                 displayDamages = false;
                 path.visible = false;

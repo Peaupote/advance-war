@@ -43,7 +43,10 @@ public class MissileLauncher extends Building {
         if(!canFire(x, y)) return;
         fired = true;
         Universe u = Universe.get();
-        AbstractUnit unit = u.getUnit(x, y);
+        AbstractUnit unit = u.getUnit(getX(), getY());
+        if (unit != null)
+            unit.dies();
+        unit = u.getUnit(x, y);
         if (unit != null) // center of the target
             unit.removeLife(30);
         for (int i = 1; i < 4; i++) // cardinal directions from the target

@@ -1,15 +1,11 @@
 package fr.main.view.render.terrains;
 
 
-import fr.main.view.render.animations.Animation;
 import fr.main.view.render.sprites.ScaleRect;
 
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
-import fr.main.view.render.sprites.ScaleRect;
 
 @SuppressWarnings("serial")
 public interface TerrainLocation extends Serializable{
@@ -432,10 +428,6 @@ public interface TerrainLocation extends Serializable{
 			return base.getPath(); // TODO.
 		}
 
-		public BufferedImage getBufferedImage() {
-			return null; // TODO.
-		}
-
 		public TerrainLocation getBase() {
 			return base;
 		}
@@ -454,38 +446,15 @@ public interface TerrainLocation extends Serializable{
 	}
 
 	public class Sticker {
-//		private static ArrayList<Sticker> instances;
 		public final TerrainLocation loc;
 		public final int x, y;
 
-//		public Sticker(TerrainLocation loc, int x, int y) {
-//			Sticker s = addSticker(loc, x, y);
-//			loc = s.loc;
-//			x = s.x;
-//			y = s.y;
-//		}
 
 		public Sticker(TerrainLocation loc, int x, int y) {
 			this.loc = loc;
 			this.x = x;
 			this.y = y;
 		}
-
-//		private Sticker addSticker(Sticker s) {
-//			return addSticker(s.loc, s.x, s.y);
-//		}
-//
-//		private Sticker addSticker (TerrainLocation loc, int x, int y) {
-//			if(instances == null) instances = new ArrayList<>();
-//
-//			for(Sticker s : instances)
-//				if(s.is(loc, x, y)) return s;
-//
-//			Sticker foo = new Sticker(loc, x, y);
-//			instances.add(foo);
-//
-//			return foo;
-//		}
 
 		private boolean is(Sticker s) {
 			return s.loc == this.loc && s.y == this.y && s.x == this.x;

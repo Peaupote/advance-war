@@ -2,7 +2,7 @@ package fr.main.view.render.terrains;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -19,16 +19,12 @@ import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.sprites.SpriteList;
 import fr.main.view.render.terrains.land.*;
 import fr.main.view.render.terrains.naval.*;
-import fr.main.view.render.animations.*;
-import fr.main.model.TerrainEnum;
-import sun.awt.image.ImageWatched;
-import sun.awt.image.ToolkitImage;
 
 import static fr.main.model.TerrainEnum.*;
 
 public class TerrainRenderer {
 
-	public static HashMap<TerrainLocation, Render> renderers = new HashMap<>();
+	private static HashMap<TerrainLocation, Render> renderers = new HashMap<>();
 	private static TerrainLocation[][] tLocations;
 	private static Dimension size;
 
@@ -68,8 +64,6 @@ public class TerrainRenderer {
 			BufferedImage baseNormal = castToBufferedImage(Sprite.get(normDir + loc.getPath()).getImage(loc.getRect())),
 					baseSnow = castToBufferedImage(Sprite.get(snowDir + loc.getPath()).getImage(loc.getRect()));
 
-			System.out.println(nameNorm);
-
 			if(ss != null && ss.size() > 0)
 			for(TerrainLocation.Sticker s : ss) {
 				try {
@@ -98,7 +92,7 @@ public class TerrainRenderer {
 			Sprite normSprite = new Sprite(nameNorm, baseNormal);
 			Sprite snowSprite = new Sprite(nameSnow, baseSnow);
 
-			if(normSprite.getSprite() == null) System.out.println("Nope");
+			if(normSprite.getSprite() == null) System.out.println("Error in TerrainRenderer constructor : Sprite null");
 
 			AnimationState normal = new AnimationState(new SpriteList(Sprite.getSprite(nameNorm)), 20);
 			AnimationState snow = new AnimationState(new SpriteList(Sprite.getSprite(nameSnow)), 20);
@@ -119,7 +113,7 @@ public class TerrainRenderer {
 		for (Render render : renderers.values()) render.anim.setState(s);
 	}
 
-	public static Render getRender(TerrainLocation location) {
+	private static Render getRender(TerrainLocation location) {
 		if (renderers.containsKey(location))
 			return renderers.get(location);
 
@@ -159,7 +153,7 @@ public class TerrainRenderer {
 		getRender(tLocations[t.y][t.x]).draw(g, coords.x, coords.y);
 	}
 
-	public static BufferedImage joinBufferedImage(BufferedImage base, BufferedImage sticker, int x, int y) {
+	private static BufferedImage joinBufferedImage(BufferedImage base, BufferedImage sticker, int x, int y) {
 		int width = base.getWidth();
 		int height = base.getHeight();
 
@@ -216,7 +210,6 @@ public class TerrainRenderer {
 			for (int j = 0; j < tEnum[0].length; j++) {
 				switch (tEnum[i][j]) {
 					case sea: tLocations[i][j] = setSeaLocation(tEnum, i, j); break;
-//					case sea: tLocations[i][j] = new TerrainLocation.GenericTerrainLocation(setSeaLocation(tEnum, i, j)); break;
 					case lowland:
 						if (isInMap(i, j - 1) &&
 								(tEnum[i][j - 1] == TerrainEnum.mountain
@@ -236,7 +229,7 @@ public class TerrainRenderer {
 						else tLocations[i][j] = TerrainLocation.BridgeLocation.HORIZONTAL;
 						break;
 					case river: tLocations[i][j] = setRiverLocation(tEnum, i, j);break;
-					case beach: tLocations[i][j] = setBeachLocation(tEnum, i, j);break; // TODO
+					case beach: tLocations[i][j] = setBeachLocation(tEnum, i, j);break;
 					case road: tLocations[i][j] = setRoadLocation(tEnum, i, j);break;
 					default: {
 					}
@@ -244,6 +237,7 @@ public class TerrainRenderer {
 				}
 			}
 
+		// Set the cliff corners.
 		TerrainEnum[] surroundings;
 		TerrainLocation.GenericTerrainLocation genLoc;
 		for (int i = 0; i < tEnum.length; i++)
@@ -375,12 +369,6 @@ public class TerrainRenderer {
 				if (!isAny(cross[2], naval)) return TerrainLocation.SeaLocation.BOTTOM;
 				if (!isAny(cross[3], naval)) return TerrainLocation.SeaLocation.LEFT;
 		    break;
-//			case 0:
-//				TerrainEnum[] around = MapGenerator.getSurroundingTerrain(tEnum, x, y);
-//				if(isAny(around[1], ground)) return TerrainLocation.SeaLocation.CORNER_TOP_RIGHT;
-//				if(isAny(around[3], ground)) return TerrainLocation.SeaLocation.CORNER_BOTTOM_RIGHT;
-//				if(isAny(around[5], ground)) return TerrainLocation.SeaLocation.CORNER_BOTTOM_LEFT;
-//				if(isAny(around[7], ground)) return TerrainLocation.SeaLocation.CORNER_TOP_LEFT;
 		}
 		return TerrainLocation.SeaLocation.NORMAL;
 	}

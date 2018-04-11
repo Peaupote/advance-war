@@ -295,7 +295,7 @@ public class UniverseRenderer extends Universe {
 
     /**
      * @param pt the position of the animation to display
-     * @param navals is true to display the sink animation and false for the explosion
+     * @param naval is true to display the sink animation and false for the explosion
      */
     public void displayDeathAnimation(Point pt, boolean naval){
         deathAnimation.add(new DeathAnimation(pt, naval ? sink : explosion));

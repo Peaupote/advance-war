@@ -29,6 +29,7 @@ import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.controllers.MenuController;
 
 public class UniverseRenderer extends Universe {
 
@@ -141,7 +142,7 @@ public class UniverseRenderer extends Universe {
                 }
 
                 if (map.units[i][j] != null)
-                    if (map.units[i][j].getPlayer() == current || isVisibleOpponentUnit(j, i))
+                    if (map.units[i][j].getPlayer() == getCurrentPlayer() || isVisibleOpponentUnit(j, i))
                         UnitRenderer.render(g, coords[i][j], map.units[i][j]);
             }
 
@@ -167,9 +168,14 @@ public class UniverseRenderer extends Universe {
     }
 
     public void next(){
-        Weather w = weather;
+        Weather w = getWeather();
         super.next();
-        if (w != weather && controller != null) controller.makeView().getWeatherController().update(w);
+        if (w != getWeather() && controller != null) controller.makeView().getWeatherController().update(w);
+    }
+
+    @Override
+    public void playerLoose(Player p){
+        MainFrame.setScene(new MenuController());
     }
 
     public void updateTarget (AbstractUnit unit) {
@@ -183,7 +189,7 @@ public class UniverseRenderer extends Universe {
             for (int j = upperLeft.y; j < lowerRight.y; j++)
                 for (int i = upperLeft.x; i < lowerRight.x; i ++)
                     targets[j][i] = n[j - upperLeft.y][i - upperLeft.x].lowestCost <= moveQuantity;
-            tColor = unit.getPlayer() == current ? moveColor : targetColor;
+            tColor = unit.getPlayer() == getCurrentPlayer() ? moveColor : targetColor;
         } else if (controller.getMode() == GameController.Mode.ATTACK) {
             unit.renderTarget(targets);
             upperLeft.move(0,0);

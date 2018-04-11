@@ -49,12 +49,7 @@ public class Universe {
      * boolean set to true if and only if the game can be saved
      */
     public static boolean save=false;
-    protected Weather weather;
 
-    /**
-     * the number of the day
-     */
-    protected int day;
 
     static{
         File maps = new File(mapPath);
@@ -69,25 +64,38 @@ public class Universe {
     protected static class Board implements Serializable {
 
         /**
-		 * Add Board UID
-		 */
-		private static final long serialVersionUID = -8731719580943357396L;
-		public AbstractTerrain[][] board;
+         * Add Board UID
+         */
+        private static final long serialVersionUID = -8731719580943357396L;
+        public AbstractTerrain[][] board;
         public Player[] players;
         public AbstractUnit[][] units;
         public AbstractBuilding[][] buildings;
         private final boolean fog;
+        protected Weather weather;
+        protected Player current;
+        /**
+         * the number of the day
+         */
+        protected int day;
 
-        public Board (AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings) {
+        public Board (AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings, Weather weather, Player current, int day) {
             this.fog       = true;
             this.board     = board;
             this.units     = units;
             this.players   = ps;
             this.buildings = buildings;
+            this.weather   = weather;
+            this.current   = current;
+            this.day       = day;
+        }
+
+        public Board(AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings){
+            this(units, ps, board, buildings, Weather.random(true), null, 0);
         }
 
         public Board setPlayers(Player[] ps){
-            return new Board(units, ps, board, buildings);
+            return new Board(units, ps, board, buildings, weather, current, day);
         }
     }
 
@@ -96,7 +104,6 @@ public class Universe {
      * An Iterator<Player> which is a cycle (when we're on the last player, the next is the first)
      */
     protected final Cycle players;
-    protected Player current;
     /**
      * The vision of the map (the tiles that the current player can see are true)
      */
@@ -117,12 +124,17 @@ public class Universe {
     public Universe (Board b){
         map = b;
 
-        day = 0;
         instance = this;
-        weather  = Weather.FOGGY;
         fogwar   = new boolean[map.board.length][map.board[0].length];
         players  = new PlayerIt(map.players).cycle();
-        next();
+        if (map.current == null){
+            next();
+        }
+        else{
+            do{}
+            while(map.current != players.next());
+        }
+
 
         /*
             Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
@@ -206,7 +218,7 @@ public class Universe {
      * @return the player currently playing
      */
     public Player getCurrentPlayer () {
-        return current;
+        return map.current;
     }
 
     /**
@@ -235,33 +247,30 @@ public class Universe {
      * @return the day number
      */
     public int getDay(){
-        return day;
+        return map.day;
     }
 
     /**
      * Goes to the next player (that hasn't lose yet)
      */
     public synchronized void next () {
-        if (current != null)
-            current.turnEnds();
-
-        if (!players.hasNext())
-            System.exit(0);
+        if (map.current != null)
+            map.current.turnEnds();
 
         do
-            current = players.next(); 
-        while (current.hasLost());
+            map.current = players.next(); 
+        while (map.current.hasLost());
 
-        current.turnBegins();
+        map.current.turnBegins();
 
-        if (players.isFirst(current)){
-            day ++;
+        if (players.isFirst(map.current)){
+            map.day ++;
             Weather w = Weather.random(map.fog);
-            if (w.fog && !weather.fog)
+            if (w.fog && !map.weather.fog)
                 for (int i = 0; i < map.board.length; i++)
                     for (int j = 0; j < map.board[0].length; j++)
                         fogwar[i][j] = true;
-            weather = w;
+            map.weather = w;
         }
 
         updateVision ();
@@ -271,11 +280,11 @@ public class Universe {
      * update the vision of the current player
      */
     public void updateVision () {
-        if (weather.fog){
+        if (map.weather.fog){
             for (int i = 0; i < map.board.length; i++)
                 for (int j = 0; j < map.board[0].length; j++)
                     fogwar[i][j] = false;
-            current.renderVision(fogwar);
+            map.current.renderVision(fogwar);
         }
     }
 
@@ -465,7 +474,7 @@ public class Universe {
      * @return the weather
      */
     public Weather getWeather(){
-        return weather;
+        return map.weather;
     }
 
     /**

@@ -59,6 +59,6 @@ public class BuildingRenderer{
     public static void updateAll(){
         for (BuildingRender b : renderers.values())
             if (! (b instanceof HeadquarterRenderer))
-                b.updateState(null);
+                b.updateState("");
     }
 }

@@ -71,6 +71,8 @@ public class TerrainRenderer {
 			BufferedImage baseNormal = castToBufferedImage(Sprite.get(normDir + loc.getPath()).getImage(loc.getRect())),
 					baseSnow = castToBufferedImage(Sprite.get(snowDir + loc.getPath()).getImage(loc.getRect()));
 
+			System.out.println(nameNorm);
+
 			if(ss != null && ss.size() > 0)
 			for(TerrainLocation.Sticker s : ss) {
 				try {
@@ -88,7 +90,10 @@ public class TerrainRenderer {
 							s.y);
 					nameNorm += s.loc.getPath() + s.x + s.y;
 					nameSnow += s.loc.getPath() + s.x + s.y;
+
+					System.out.println(nameNorm);
 				} catch (NullPointerException e) {
+					System.out.println(e.toString());
 					break;
 				}
 			}
@@ -214,6 +219,7 @@ public class TerrainRenderer {
 			for (int j = 0; j < tEnum[0].length; j++) {
 				switch (tEnum[i][j]) {
 					case sea: tLocations[i][j] = setSeaLocation(tEnum, i, j); break;
+//					case sea: tLocations[i][j] = new TerrainLocation.GenericTerrainLocation(setSeaLocation(tEnum, i, j)); break;
 					case lowland:
 						if (isInMap(i, j - 1) &&
 								(tEnum[i][j - 1] == TerrainEnum.mountain
@@ -261,11 +267,11 @@ public class TerrainRenderer {
 		boolean used[] = {false, false, false, false};
 		TerrainLocation.GenericTerrainLocation loc = new TerrainLocation.GenericTerrainLocation(base);
 		for(int i = 0; i < 8; i += 2)
-			if(surroundings[i] == sea) {
-				if (!isAny(surroundings[posMod(i - 1, 8)], not) && !used[(posMod(i - 1, 8) - 1) / 2])
-					loc.addSticker(getSeaStickerLocation((i - 1) % 8));
-				if (!isAny(surroundings[posMod(i + 1, 8)], not) && !used[(posMod(i + 1, 8) - 1) / 2])
-					loc.addSticker(getSeaStickerLocation((i + 1) % 8));
+			if(surroundings[i] == sea || surroundings [i] == reef) {
+				if (isAny(surroundings[posMod(i - 2, 8)], not) && !isAny(surroundings[posMod(i - 1, 8)], not) && !used[(posMod(i - 1, 8) - 1) / 2])
+					loc.addSticker(getSeaStickerLocation(posMod(i - 1, 8)));
+				if (isAny(surroundings[posMod(i + 2, 8)], not) && !isAny(surroundings[posMod(i + 1, 8)], not) && !used[(posMod(i + 1, 8) - 1) / 2])
+					loc.addSticker(getSeaStickerLocation(posMod(i + 1, 8)));
 			}
 		return loc;
 	}
@@ -277,10 +283,13 @@ public class TerrainRenderer {
 
 	private static TerrainLocation.Sticker getSeaStickerLocation(int i) {
 		TerrainLocation.Sticker sticker = null;
+
+		// TODO replace *2 by a const program-wide
+
 		switch (i) {
-			case 1: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_TOP_RIGHT, 8, 0); 		break;
-			case 3: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_BOTTOM_RIGHT, 8, 8); 	break;
-			case 5: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_BOTTOM_LEFT, 0, 8);	break;
+			case 1: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_TOP_RIGHT, 8 * 2, 0); 		break;
+			case 3: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_BOTTOM_RIGHT, 8 * 2, 8 * 2); 	break;
+			case 5: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_BOTTOM_LEFT, 0, 8 * 2);	break;
 			case 7: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_TOP_LEFT, 0, 0);		break;
 			default: return null;
 		}
@@ -369,12 +378,12 @@ public class TerrainRenderer {
 				if (!isAny(cross[2], naval)) return TerrainLocation.SeaLocation.BOTTOM;
 				if (!isAny(cross[3], naval)) return TerrainLocation.SeaLocation.LEFT;
 		    break;
-			case 0:
-				TerrainEnum[] around = MapGenerator.getSurroundingTerrain(tEnum, x, y);
-				if(isAny(around[1], ground)) return TerrainLocation.SeaLocation.CORNER_TOP_RIGHT;
-				if(isAny(around[3], ground)) return TerrainLocation.SeaLocation.CORNER_BOTTOM_RIGHT;
-				if(isAny(around[5], ground)) return TerrainLocation.SeaLocation.CORNER_BOTTOM_LEFT;
-				if(isAny(around[7], ground)) return TerrainLocation.SeaLocation.CORNER_TOP_LEFT;
+//			case 0:
+//				TerrainEnum[] around = MapGenerator.getSurroundingTerrain(tEnum, x, y);
+//				if(isAny(around[1], ground)) return TerrainLocation.SeaLocation.CORNER_TOP_RIGHT;
+//				if(isAny(around[3], ground)) return TerrainLocation.SeaLocation.CORNER_BOTTOM_RIGHT;
+//				if(isAny(around[5], ground)) return TerrainLocation.SeaLocation.CORNER_BOTTOM_LEFT;
+//				if(isAny(around[7], ground)) return TerrainLocation.SeaLocation.CORNER_TOP_LEFT;
 		}
 		return TerrainLocation.SeaLocation.NORMAL;
 	}

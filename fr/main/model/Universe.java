@@ -221,7 +221,7 @@ public class Universe {
             System.exit(0);
 
         do
-            current = players.next(); 
+            current = players.next();
         while (current.hasLost());
 
         current.turnBegins();
@@ -312,7 +312,7 @@ public class Universe {
      */
     public final boolean isValidPosition(int x, int y){
         return y>=0 && x>=0 && y<map.units.length && x<map.units[0].length;
-    } 
+    }
 
     /**
      * @return true if and only if the specified location is valid
@@ -347,7 +347,7 @@ public class Universe {
             map.buildings[y][x] = b;
             return true;
         }
-        
+
         return false;
     }
 
@@ -436,5 +436,9 @@ public class Universe {
     public int getMapWidth(){
         return map.board[0].length;
     }
+
+    public int getNumberOfPlayers() {
+    	return this.map.players.length;
+	}
 
 }

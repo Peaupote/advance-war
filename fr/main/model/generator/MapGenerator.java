@@ -403,7 +403,7 @@ public class MapGenerator {
 
     public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
-    	Arrays.fill(out, null);
+    	Arrays.fill(out, none);
 
 		if(isInMap(map, x - 1, y)) 			out[0] = map[x - 1][y];
 		if(isInMap(map, x - 1, y + 1)) 		out[1] = map[x - 1][y + 1];

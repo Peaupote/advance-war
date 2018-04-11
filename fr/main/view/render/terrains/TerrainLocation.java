@@ -375,7 +375,7 @@ public interface TerrainLocation extends Serializable{
 	}
 
 	public class GenericTerrainLocation implements TerrainLocation {
-		private String[] paths;
+		private String path;
 		private String name;
 		private LinkedList<Sticker> stickers;
 		private final TerrainLocation base;
@@ -383,6 +383,7 @@ public interface TerrainLocation extends Serializable{
 		public GenericTerrainLocation (TerrainLocation base) {
 			this.base = base;
 			this.stickers = new LinkedList<>();
+			setPath();
 		}
 
 		public GenericTerrainLocation (TerrainLocation base, Sticker s) {
@@ -391,15 +392,29 @@ public interface TerrainLocation extends Serializable{
 			ss.add(s);
 
 			stickers = ss;
+
+			setPath();
 		}
 
 		public GenericTerrainLocation (TerrainLocation base, LinkedList<Sticker> ss) {
 			this.stickers = ss;
 			this.base = base;
+			setPath();
 		}
 
 		public void addSticker(Sticker sticker) {
 			this.stickers.add(sticker);
+			addToPath(sticker);
+		}
+
+		private void setPath() {
+			this.path = base.getPath();
+			for (Sticker s : stickers)
+				addToPath(s);
+		}
+
+		private void addToPath (Sticker s) {
+			path += s.loc.getPath() + s.x + "_" + s.y;
 		}
 
 		@Override

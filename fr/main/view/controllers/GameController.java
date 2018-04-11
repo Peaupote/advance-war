@@ -429,6 +429,9 @@ public class GameController extends Controller {
         dayPanel.setVisible(true);
     }
 
+    /**
+     * Make targetUnit move to the selected position.
+     */
     private void validUnitMove () {
       mode = Mode.IDLE;
       new Thread(() -> { // apply the movement
@@ -450,6 +453,9 @@ public class GameController extends Controller {
       }).start();
     }
 
+    /**
+     * Make targetUnit fight against the selected unit.
+     */
     private void validUnitTarget () {
       if (world.isEnabled(unitCursor.getX(), unitCursor.getY())){
         AbstractUnit target = world.getUnit(unitCursor.position());
@@ -478,6 +484,9 @@ public class GameController extends Controller {
       world.clearTarget();
     }
 
+    /**
+     * Action when click on a tile while the user in MOVE mode.
+     */
     public void selectOnMove () {
       if (targetUnit == null) {
         AbstractBuilding b = world.getBuilding (cursor.position());
@@ -497,6 +506,9 @@ public class GameController extends Controller {
       unitCursor.setLocation(cursor.position());
     }
 
+    /**
+     * targetUnit heals the selected unit.
+     */
     private void validHeal () {
       AbstractUnit target = world.getUnit(unitCursor.position());
       if (((HealerUnit)targetUnit).canHeal(target)) {
@@ -510,6 +522,9 @@ public class GameController extends Controller {
       world.clearTarget();
     }
 
+    /**
+     * targetUnit loads the selected unit.
+     */
     private void validLoad () {
       AbstractUnit target = world.getUnit(unitCursor.position());
       if (target instanceof TransportUnit && ((TransportUnit)target).canCharge(targetUnit))
@@ -518,6 +533,9 @@ public class GameController extends Controller {
       world.clearTarget();
     }
 
+    /**
+     * targetUnit unloads the selected unit.
+     */
     private void validUnloadLocate () {
       ((TransportUnit)targetUnit).remove(getTransportUnit(),
                                          unitCursor.getX(), unitCursor.getY());
@@ -525,12 +543,18 @@ public class GameController extends Controller {
       world.clearTarget();                        
     }
 
+    /**
+     * missile launcher attack the given position.
+     */
     private void validMissileLauncher () {
       fireMissile((MissileLauncher)world.getBuilding(targetUnit.getX(), targetUnit.getY()), unitCursor.getX(), unitCursor.getY());
       targetUnit.setMoveQuantity(0);
       world.clearTarget();
     }
 
+    /**
+     * Quit current mode to go back to MOVE mode.
+     */
     private void escape () {
       mode = Mode.MOVE;
       unitCursor.setCursor(true);
@@ -538,6 +562,9 @@ public class GameController extends Controller {
       path.visible = false;
     }
 
+    /**
+     * Key events.
+     */
     @Override
     public void keyPressed (KeyEvent e) {
         int key = e.getKeyCode();
@@ -585,6 +612,9 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * Mouse events.
+     */
     public void mouseClicked(MouseEvent e) {
       if (listenMouse) {
         targetUnit = world.getUnit(cursor.position());

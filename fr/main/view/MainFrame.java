@@ -97,7 +97,9 @@ public class MainFrame extends JFrame {
     }
 
     public void setController (Controller controller) {
+      if (this.controller != null) this.controller.onClose();
       this.controller = controller;
+      controller.onOpen();
       int height = view == null ? HEIGHT : view.getHeight(),
           width  = view == null ? WIDTH  : view.getWidth();
       this.view       = controller.makeView();

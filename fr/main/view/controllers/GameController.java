@@ -403,7 +403,6 @@ public class GameController extends Controller {
 
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
-        dayPanel.setVisible(true);
     }
 
     public GameController (String mapName, Player ps[]) {
@@ -426,6 +425,9 @@ public class GameController extends Controller {
 
         new PlayerPanel (cursor, camera);
         new Minimap (camera, new TerrainPanel (cursor, camera));
+    }
+
+    public void onOpen () {
         dayPanel.setVisible(true);
     }
 

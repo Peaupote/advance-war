@@ -80,7 +80,7 @@ public class UniverseRenderer extends Universe {
 
     public UniverseRenderer (Universe.Board b, GameController controller){
         super(b);
-        
+
         this.controller = controller;
         controller.makeView().getWeatherController().update(Weather.FOGGY);
         coords = new Point[map.board.length][map.board[0].length];
@@ -195,8 +195,8 @@ public class UniverseRenderer extends Universe {
             upperLeft.move(0,0);
             lowerRight.move(targets.length, targets[0].length);
             tColor = targetColor;
-        } else if (controller.getMode() == GameController.Mode.HEAL || 
-                   controller.getMode() == GameController.Mode.LOAD || 
+        } else if (controller.getMode() == GameController.Mode.HEAL ||
+                   controller.getMode() == GameController.Mode.LOAD ||
                    controller.getMode() == GameController.Mode.UNLOAD_LOCATE) {
             int x = unit.getX(), y = unit.getY();
             HealerUnit healer = controller.getMode() == GameController.Mode.HEAL ? (HealerUnit)unit : null;
@@ -295,7 +295,7 @@ public class UniverseRenderer extends Universe {
 
     /**
      * @param pt the position of the animation to display
-     * @param sink is true to display the sink animation and false for the explosion
+     * @param navals is true to display the sink animation and false for the explosion
      */
     public void displayDeathAnimation(Point pt, boolean naval){
         deathAnimation.add(new DeathAnimation(pt, naval ? sink : explosion));

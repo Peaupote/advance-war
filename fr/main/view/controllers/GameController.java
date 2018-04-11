@@ -32,7 +32,7 @@ public class GameController extends Controller {
 
     /**
      * Cursor is the cursor used when the player is in
-     * mode MOVE or MENU; unitCursor is the cursor used 
+     * mode MOVE or MENU; unitCursor is the cursor used
      * otherwise.
      */
     public final Position.Cursor cursor, unitCursor;
@@ -118,7 +118,7 @@ public class GameController extends Controller {
 
         /**
          * Can't do any action.
-         */ 
+         */
         IDLE(false),
 
         /**
@@ -271,7 +271,7 @@ public class GameController extends Controller {
             super();
             x = MainFrame.width() - 200;
             y = 10;
-         
+
             new Index("Stay", () -> {});
 
             new Index("Attack", () -> {
@@ -333,7 +333,7 @@ public class GameController extends Controller {
                 transportUnitPanel.update((TransportUnit)targetUnit);
             });
         }
-        
+
         @Override
         public void onOpen () {
             targetUnit = world.getUnit(cursor.position());
@@ -492,7 +492,7 @@ public class GameController extends Controller {
     public void selectOnMove () {
       if (targetUnit == null) {
         AbstractBuilding b = world.getBuilding (cursor.position());
-        if (!world.isVisible(cursor.position()) || b == null 
+        if (!world.isVisible(cursor.position()) || b == null
                 || !(b instanceof FactoryBuilding)
                 || ((OwnableBuilding)b).getOwner() != world.getCurrentPlayer())
             actionPanel.setVisible (true);
@@ -542,7 +542,7 @@ public class GameController extends Controller {
       ((TransportUnit)targetUnit).remove(getTransportUnit(),
                                          unitCursor.getX(), unitCursor.getY());
       mode = Mode.MOVE;
-      world.clearTarget();                        
+      world.clearTarget();
     }
 
     /**
@@ -651,10 +651,10 @@ public class GameController extends Controller {
             if (attacker.canAttack(defender) && !point1.equals(unitCursor.position())) {
                 point1  = unitCursor.position(); // the target
                 point2  = cursor.position(); // the selected unit
-                damage1 = AbstractUnit.damage(attacker, 
+                damage1 = AbstractUnit.damage(attacker,
                             attacker.getPrimaryWeapon() != null && attacker.getPrimaryWeapon().canAttack(attacker, defender),
                             defender);
-                damage2 = AbstractUnit.damage(defender, defender.getLife() - damage1, 
+                damage2 = AbstractUnit.damage(defender, defender.getLife() - damage1,
                             defender.getPrimaryWeapon() != null && defender.getPrimaryWeapon().canAttack(defender, attacker),
                             attacker);
             }
@@ -687,7 +687,7 @@ public class GameController extends Controller {
             camera.setDirection (d);
 
         c.setDirection (d);
-            
+
         if (mode == Mode.UNIT && unitCursor.canMove(d)){
             Point p = unitCursor.position().getLocation();
             d.move(p);
@@ -728,7 +728,7 @@ public class GameController extends Controller {
     }
 
     private void displayDamages(Graphics g, int damage, Point location){
-        int x = (location.x - camera.getX()) * MainFrame.UNIT,
+        int x = (location.x - camera.getX()) * MainFrame.UNIT,
         y = (location.y - camera.getY()) * MainFrame.UNIT - (location.y != 0 ? MainFrame.UNIT / 2 : 0);
         g.drawImage(damageImage, x, y, gameViewController);
         g.drawImage(numbers[damage / 100],       x + 1,  y + 10, gameViewController);

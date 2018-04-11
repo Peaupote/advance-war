@@ -4,6 +4,7 @@ package fr.main.view.render.terrains;
 import fr.main.view.render.animations.Animation;
 import fr.main.view.render.sprites.ScaleRect;
 
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;

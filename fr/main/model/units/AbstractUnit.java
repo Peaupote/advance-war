@@ -107,7 +107,7 @@ public interface AbstractUnit extends Serializable {
      * @param fog is a representation of the map, true if the tile if visible and false otherwise
      * @param b true to use "linear regression" (some tiles may not be visible if a mountain is between it and the unit for example)
      * Airunits can see every tiles in their range of vision.
-     * For navalunits and landunits, it depends on the height of the terrain compared to the one of the unit, and if the terrain hide its content from the unit  
+     * For navalunits and landunits, it depends on the height of the terrain compared to the one of the unit, and if the terrain hide its content from the unit
      */
     void renderVision(boolean[][] fog, boolean b);
     default void renderVision (boolean[][] fog){
@@ -127,7 +127,7 @@ public interface AbstractUnit extends Serializable {
         Point offset = new Point(posX - x, posY - y);
         Node[][] map = new Node[height][width];
 
-        
+
         // initialization
         for (int i = 0; i < height; i ++)
             for (int j = 0; j < width; j ++)
@@ -182,7 +182,7 @@ public interface AbstractUnit extends Serializable {
             max    = Math.max(u.getMapWidth(), u.getMapHeight());
 
         Node[][] map = new Node[u.getMapHeight()][u.getMapWidth()];
-        
+
         // initialization
         for (int i = 0; i < map.length; i ++)
             for (int j = 0; j < map[i].length; j ++)
@@ -260,7 +260,7 @@ public interface AbstractUnit extends Serializable {
      */
     boolean canAttack(AbstractUnit u);
     /**
-     * @return true if and only if the unit may attack something (doesn't depend on the thing) 
+     * @return true if and only if the unit may attack something (doesn't depend on the thing)
      */
     boolean canAttack();
 
@@ -309,7 +309,7 @@ public interface AbstractUnit extends Serializable {
      */
     int getMaxMoveQuantity();
     /**
-     * @param int the new move quantity of the unit
+     * @param x the new move quantity of the unit
      */
     void setMoveQuantity(int x);
 
@@ -319,7 +319,7 @@ public interface AbstractUnit extends Serializable {
     default void removeMoveQuantity(int q){
         setMoveQuantity(getMoveQuantity() - q);
     }
-    
+
     /**
      * @return true if and only if the unit still has move points
      */
@@ -371,7 +371,7 @@ public interface AbstractUnit extends Serializable {
      * Things that happen at the end of the turn
      */
     default void turnEnds(){
-        setMoveQuantity(getMaxMoveQuantity());        
+        setMoveQuantity(getMaxMoveQuantity());
     }
 
     /**
@@ -399,7 +399,7 @@ public interface AbstractUnit extends Serializable {
      */
     default boolean canStop (int x, int y){
         Universe u = Universe.get();
-        return (u.getUnit(x,y) == null || (u.getUnit(x, y).getPlayer() != getPlayer() && !u.isVisibleOpponentUnit(x, y))) && 
+        return (u.getUnit(x,y) == null || (u.getUnit(x, y).getPlayer() != getPlayer() && !u.isVisibleOpponentUnit(x, y))) &&
                 ((this instanceof NavalUnit && u.getBuilding(x,y) instanceof Dock) || u.getTerrain(x,y).canStop(this));
     }
 
@@ -412,7 +412,7 @@ public interface AbstractUnit extends Serializable {
     public static int damage(AbstractUnit attacker, int life_attacker, boolean b, AbstractUnit defender){
         Weapon w    = b ? attacker.getPrimaryWeapon() : attacker.getSecondaryWeapon();
         if (w == null || ! w.canAttack(attacker,defender)) return 0;
-        
+
         int d       = w.damage(defender);
         int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
         Random rand = new Random(); int r = rand.nextInt(1000);

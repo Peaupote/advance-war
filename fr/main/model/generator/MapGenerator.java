@@ -407,7 +407,7 @@ public class MapGenerator {
     }
 
     @SuppressWarnings("unused")
-	private TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
+	public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
     	Arrays.fill(out, none);
 

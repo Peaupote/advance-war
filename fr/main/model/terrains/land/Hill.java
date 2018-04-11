@@ -15,7 +15,11 @@ import fr.main.model.units.weapons.PrimaryWeapon;
  */
 public class Hill extends Terrain implements LandTerrain {
 
-    private static Hill instance;
+    /**
+	 * Add Hill UID
+	 */
+	private static final long serialVersionUID = 4031715748156091572L;
+	private static Hill instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
     public static final String name="Colline";
 

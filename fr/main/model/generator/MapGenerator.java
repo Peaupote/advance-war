@@ -3,7 +3,6 @@ package fr.main.model.generator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.terrains.Terrain;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -189,7 +188,8 @@ public class MapGenerator {
         return mapBis;
     }
 
-    private TerrainEnum[][] refineMap(TerrainEnum[][] map) {
+    @SuppressWarnings("unused")
+	private TerrainEnum[][] refineMap(TerrainEnum[][] map) {
         return refineMap(map, 1);
     }
 
@@ -285,7 +285,8 @@ public class MapGenerator {
         return map;
     }
 
-    private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
+    @SuppressWarnings("unused")
+	private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
                 if(map[i][j] == sea) continue;
@@ -320,7 +321,8 @@ public class MapGenerator {
 
     private void validLowland2 (TerrainEnum[][] map, int[] adj, int x, int y) {
         if(adj[0] == adj[2]) return;
-        TerrainEnum[][] out = map.clone();
+        @SuppressWarnings("unused")
+		TerrainEnum[][] out = map.clone();
         if(adj[0] + adj[1] == 2 && map[x + 1][y + 1] == sea
                 || adj[1] + adj[2] == 2 && map[x - 1][y + 1] == sea
                 || adj[2] + adj[3] == 2 && map[x - 1][y - 1] == sea
@@ -347,7 +349,8 @@ public class MapGenerator {
     private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
     	/** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
 //    	int nSea, nLowland, nBridge, nBeach, nRiver;
-    	TerrainEnum[] land = {lowland, bridge}, naval = {sea, river};
+    	@SuppressWarnings("unused")
+		TerrainEnum[] land = {lowland, bridge}, naval = {sea, river};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
@@ -369,7 +372,8 @@ public class MapGenerator {
     	return map;
 	}
 
-    private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
+    @SuppressWarnings("unused")
+	private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
         for(int i = x - 1; i <= x + 1; i ++)
             for(int j = y - 1; j <= y + 1; j ++)
                 if(isInMap(map, i, j) && map[i][j] != type)
@@ -377,7 +381,8 @@ public class MapGenerator {
         return true;
     }
 
-    private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
+    @SuppressWarnings("unused")
+	private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
         // Direction: true = horizontal; false = vertical.
         int beginning = 0, end = 0, count = 0;
 
@@ -401,7 +406,8 @@ public class MapGenerator {
         return count;
     }
 
-    public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
+    @SuppressWarnings("unused")
+	private TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
     	Arrays.fill(out, none);
 
@@ -457,7 +463,8 @@ public class MapGenerator {
         return count;
     }
 
-    private boolean isValidLowland(TerrainEnum[][] map, int x, int y) {
+    @SuppressWarnings("unused")
+	private boolean isValidLowland(TerrainEnum[][] map, int x, int y) {
         return getAdjacentTerrainNb(map, x, y, lowland) > 2;
     }
 
@@ -504,7 +511,8 @@ public class MapGenerator {
         return map;
     }
 
-    private TerrainEnum[][] placeRoads(TerrainEnum[][] map, int nb) {
+    @SuppressWarnings("unused")
+	private TerrainEnum[][] placeRoads(TerrainEnum[][] map, int nb) {
         while(nb > 0)
             for(int i = 0; i < map.length; i ++)
                 for (int j = 0; j < map[0].length; j++) {

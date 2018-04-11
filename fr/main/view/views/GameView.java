@@ -1,15 +1,20 @@
 package fr.main.view.views;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import fr.main.view.interfaces.*;
-import fr.main.view.render.weather.*;
 import fr.main.view.controllers.GameController;
+import fr.main.view.interfaces.InterfaceUI;
+import fr.main.view.render.weather.WeatherController;
 
 public class GameView extends View {
 
   /**
+	 *Add GameView UID 
+	 */
+	private static final long serialVersionUID = 8815300245977000650L;
+/**
    * Rendering weather controller
    */
   private final WeatherController weather;
@@ -42,6 +47,9 @@ public class GameView extends View {
       // render path
       if (controller.path.visible)
         controller.path.draw(g, offsetX, offsetY);
+
+      // render damages
+      controller.displayDamages(g);
       
       // render weather
       weather.render(g);

@@ -41,7 +41,7 @@ public class BuildingInterface extends GameController.ControllerPanel {
   public BuildingInterface (GameController controller) {
     controller.super();
     this.controller = controller;
-    x = MainFrame.WIDTH - 200;
+    x = MainFrame.width() - 200;
     y = 10;
 
     try {

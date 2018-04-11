@@ -7,6 +7,10 @@ import java.awt.Image;
 
 public class SpriteList extends LinkedList<Image> {
 
+  /**
+	 * Add SpriteList
+	 */
+	private static final long serialVersionUID = -8016901697482659870L;
 	private Sprite sprite;
 
 	public SpriteList(String path, LinkedList<ScaleRect> images) {

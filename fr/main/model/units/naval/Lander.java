@@ -18,8 +18,12 @@ import fr.main.model.units.land.LandUnit;
  */
 public class Lander extends Unit implements NavalUnit, TransportUnit {
 
-    public static final String NAME = "Barge";
-    public static final int PRICE   = 100;
+    /**
+	 * Add Lander UID
+	 */
+	private static final long serialVersionUID = 8827130583732930678L;
+	public static final String NAME = "Barge";
+    public static final int PRICE   = 12000;
 
     private final HashSet<AbstractUnit> units = new HashSet<AbstractUnit>();
 
@@ -44,7 +48,7 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof LandUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof LandUnit;
     }
 
     public boolean charge(AbstractUnit u){

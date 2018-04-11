@@ -11,3 +11,5 @@
 *.txt
 .classpath
 .project
+MANIFEST.MF
+*.jar

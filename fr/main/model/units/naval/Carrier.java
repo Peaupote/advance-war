@@ -1,27 +1,34 @@
 package fr.main.model.units.naval;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
-
-import fr.main.model.players.Player;
 
 import fr.main.model.Universe;
-import fr.main.model.units.Unit;
+import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.MoveType;
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.TransportUnit;
-import fr.main.model.units.air.*;
+import fr.main.model.units.Unit;
+import fr.main.model.units.air.AirUnit;
+import fr.main.model.units.air.BCopter;
+import fr.main.model.units.air.Bomber;
+import fr.main.model.units.air.Fighter;
+import fr.main.model.units.air.Stealth;
+import fr.main.model.units.air.TCopter;
+import fr.main.model.units.weapons.PrimaryWeapon;
 
 /**
  * Represents a carrier
  */
 public class Carrier extends Unit implements NavalUnit,TransportUnit {
 
-    public static final String NAME = "Porte-avion";
+    /**
+	 * Add Carrier UID
+	 */
+	private static final long serialVersionUID = -1332871683462333912L;
+	public static final String NAME = "Porte-avion";
     public static final int PRICE   = 30000;
 
     public static final String PRIMARYWEAPON_NAME = "Missiles anti-aériens";
@@ -63,7 +70,7 @@ public class Carrier extends Unit implements NavalUnit,TransportUnit {
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && !units.contains(u) && u instanceof AirUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof AirUnit;
     }
 
     public boolean charge(AbstractUnit u){

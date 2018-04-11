@@ -12,7 +12,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class River extends Terrain implements LandTerrain {
 
-    private static River instance;
+    /**
+	 * Add River UID
+	 */
+	private static final long serialVersionUID = -5995606505466883666L;
+	private static River instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
     public static final String name="Rivière";
 
@@ -21,11 +25,15 @@ public class River extends Terrain implements LandTerrain {
         sunnyWeatherMovementCosts.put(MoveType.AIRY,1);
         sunnyWeatherMovementCosts.put(MoveType.INFANTRY,2);
         sunnyWeatherMovementCosts.put(MoveType.MECH,1);
+        sunnyWeatherMovementCosts.put(MoveType.LANDER,1);
+        sunnyWeatherMovementCosts.put(MoveType.NAVAL,1);
 
         Map<MoveType,Integer> snowyWeatherMovementCosts=new HashMap<MoveType,Integer>();
         snowyWeatherMovementCosts.put(MoveType.AIRY,2);
         snowyWeatherMovementCosts.put(MoveType.INFANTRY,2);
         snowyWeatherMovementCosts.put(MoveType.MECH,1);
+        sunnyWeatherMovementCosts.put(MoveType.LANDER,2);
+        sunnyWeatherMovementCosts.put(MoveType.NAVAL,2);
 
         weatherMovementCosts.put(Weather.SUNNY,sunnyWeatherMovementCosts);
         weatherMovementCosts.put(Weather.RAINY,sunnyWeatherMovementCosts);

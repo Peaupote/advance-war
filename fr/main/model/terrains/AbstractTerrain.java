@@ -9,8 +9,8 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 /**
  * Interface for all the terrains
  */
+@SuppressWarnings("serial")
 public interface AbstractTerrain extends java.io.Serializable {
-
     /**
      * @return the height of the terrain
      * Heights of the different terrains :

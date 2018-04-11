@@ -1,65 +1,52 @@
 package fr.main.view;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.Graphics;
 import java.awt.Image;
-import javax.imageio.ImageIO;
-import java.io.*;
+import java.awt.Point;
 
-import fr.main.view.MainFrame;
 import fr.main.model.Direction;
+import fr.main.view.render.sprites.Sprite;
 
 /**
- * Represents a moving point on the map
+ * Represents a moving point on the map.
  */
 public abstract class Position {
 
   /**
-   * Represents the user cursor
+   * Represents the user cursor.
    */
   public static class Cursor extends Position {
 
     /**
-     * Dimension of the universe
+     * Dimension of the universe.
      */
     protected final Dimension size;
 
     /**
-     * Camera showing the game
+     * Camera showing the game.
      */
     private final Camera camera;
 
-    private Image image;
-    private int cursorScale;
+    public static final Image cursorBasic;
+    public static final Image cursorAttack;
+
+    static{
+      Sprite attack = Sprite.get("./assets/ingame/attack.png");
+      cursorBasic = attack.getImage(39, 2, 28, 31);
+      cursorAttack = attack.getImage(70, 1, 30, 29);
+    }
+
+    private Image cursor;
 
     public Cursor (Camera camera, Dimension size) {
       super(0, 0);
 
       this.size   = size;
       this.camera = camera;
-      cursorScale = 1;
 
-      image = null;
-      // TODO: make better stuff with getTimer()
-      try {
-        image = ImageIO.read(new File("./assets/cursor.png"));
-
-        new Thread(() -> {
-          while(true) {
-            cursorScale = (cursorScale + 1) % 10;
-
-            try {
-              Thread.sleep(50);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            }
-          }
-        }).start();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      cursor = cursorBasic;
     }
 
     @Override
@@ -77,8 +64,9 @@ public abstract class Position {
     }
 
     public void draw (Graphics g, Color color) {
-      int s = MainFrame.UNIT + cursorScale;
-      g.drawImage (image, 2 + real.x - camera.real.x - cursorScale / 2 + 1, 2 + real.y - camera.real.y - cursorScale / 2 + 1, s, s, null);
+      int offset = (int)(5 * Math.cos(MainFrame.getTimer() / 5)),
+               s = MainFrame.UNIT + offset;
+      g.drawImage (cursor, 2 + real.x - camera.real.x - offset / 2 + 1, 2 + real.y - camera.real.y - offset / 2 + 1, s, s, null);
     }
 
     public void draw (Graphics g) {
@@ -101,28 +89,29 @@ public abstract class Position {
       setLocation (pt.x, pt.y);
     }
 
+    public void setCursor(boolean normal){
+      cursor = normal ? cursorBasic : cursorAttack;
+    }
+
   }
 
   /**
-   * Class representing the camera, ie what the user can see
+   * Class representing the camera, ie what the user can see.
    */
   public static class Camera extends Position {
 
     /**
-     * Dimension of the camera
+     * Dimension of the camera.
      */
-    public final int width, height;
+    public int width, height;
 
     /**
-     * Dimension of the universe
+     * Dimension of the universe.
      */
     private final Dimension size;
 
     public Camera (Dimension size) {
       super();
-
-      width  = MainFrame.WIDTH / MainFrame.UNIT;
-      height = MainFrame.HEIGHT / MainFrame.UNIT;
       this.size = size;
     }
 
@@ -143,12 +132,14 @@ public abstract class Position {
   }
 
   /**
-   * Point representing respectivly position on the map, the position on the screen and the target position on the map while moving
+   * Point representing respectivly position on the map, 
+   * the position on the screen and the target position
+   * on the map while moving.
    */
   protected Point position, real, target;
 
   /**
-   * Moving direction
+   * Moving direction.
    */
   protected Direction direction;
 
@@ -199,7 +190,7 @@ public abstract class Position {
   }
 
   /**
-   * Set the movement of the position if he can move by the given way
+   * Set the movement of the position if he can move by the given way.
    */
   public final void setDirection (Direction d) {
     if (canMove(d)) {

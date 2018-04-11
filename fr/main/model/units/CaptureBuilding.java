@@ -6,6 +6,7 @@ import fr.main.model.buildings.OwnableBuilding;
 /**
  * Interface used to represent units that can capture a building
  */
+@SuppressWarnings("serial")
 public interface CaptureBuilding extends AbstractUnit{
 
     /**

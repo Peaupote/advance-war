@@ -1,14 +1,15 @@
 package fr.main.view.render.sprites;
 
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
-import java.awt.image.DataBuffer;
-import java.util.HashMap;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
-import java.io.*;
-import javax.imageio.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+
+import javax.imageio.ImageIO;
 
 public class Sprite {
 

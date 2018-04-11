@@ -1,83 +1,134 @@
 package fr.main.network;
 
-import java.io.DataInputStream;
-import java.io.PrintStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
+import java.net.Socket;
 
+/**
+ * Represent the server side.
+ */
 public class Server extends ServerSocket {
 
+  /**
+   * Can't be more than 4 players.
+   */
   private static final int MAX_CLIENT_COUNT = 4;
 
+  /**
+   * Thread for each player.
+   */
   private final ClientThread[] clients;
+
+  /**
+   * Number of connected clients
+   * number of non-null ClientThread in clients.
+   */
   private int connectedClients;
+
+  /**
+   * Connection with the last socket.
+   */
   private Socket socket;
 
-  private class ClientThread extends Thread {
+  class ClientThread extends Thread {
 
-    DataInputStream is;
-    PrintStream os;
-    Socket socket;
+    /**
+     * Receive messages from client.
+     */
+    private ObjectInputStream is;
 
-    public ClientThread(Socket socket) {
+    /**
+     * Send messages to the client.
+     */
+    private ObjectOutputStream os;
+
+    /**
+     * Socket connection with the client.
+     */
+    private Socket socket;
+
+    /**
+     * Tell the server what to do with the date he received.
+     */
+    private AdwProtocol protocol;
+
+    /**
+     * Client's Player informations.
+     */
+    Slot slot;
+
+    final int id;
+
+    public ClientThread(int id, Socket socket) {
       this.socket = socket;
+      this.id     = id;
     }
 
     public void run () {
       try {
-        is = new DataInputStream(socket.getInputStream());
-        os = new PrintStream(socket.getOutputStream());
-        os.println("Coucou");
-        sendAll("Hi !");
+        is = new ObjectInputStream(socket.getInputStream());
+        os = new ObjectOutputStream(socket.getOutputStream());
+        protocol = new AdwProtocol(this);
+        System.out.println("New Client " + id + ": " + socket);
+
+        // send to the client his id and already connected clients id and player
+        os.writeObject(id);
+        for (int i = 0; i < id; i++)
+          os.writeObject(new Datagram(i, clients[i].slot));
 
         synchronized (this) {
-          String line = is.readLine();
-          while ((line != null)) {
-            if (line.equals("quit")) {
-              sendAll(line);
-              break;
-            }
+          Object data;
+          while ((data = is.readObject()) != null) {
+            System.out.println("Client " + id + ": " + data);
+            protocol.proccessInput(data);
           }
         }
-        sendAll("Bye.");
-        os.println("Bye.");
 
-        for (ClientThread client: clients)
-          if (client == this)
-            client = null;
+        clients[id] = null;
 
         is.close();
         os.close();
         socket.close();
-      } catch (IOException e) {
+      } catch (Exception e) {
         System.err.println(e);
+        //e.printStackTrace();
       }
     }
 
-    public synchronized void sendAll (String message) {
-      for (ClientThread client: clients)
-        if (client != this && client != null)
-          client.os.println(message);
+    public synchronized void sendAll (Datagram data) throws IOException {
+      for (int i = 0; i < clients.length; i++)
+        if (clients[i] != null && i != id)
+          clients[i].os.writeObject(data);
     }
-  
+
   }
 
   public Server (int port) throws IOException {
     super (port);
     clients = new ClientThread[MAX_CLIENT_COUNT];
+    System.out.println("Start server");
+  }
 
-    while (true) {
-      socket = accept();
-      if (connectedClients == MAX_CLIENT_COUNT) 
-        exitConnectionWithMessage("Server is to busy. Try later");
+  public void listen () {
+    System.out.println("Start to listen");
 
-      int i;
-      for (i = 0; i < MAX_CLIENT_COUNT && clients[i] != null; i++);
-      ClientThread clientThread = new ClientThread(socket);
-      clients[i] = clientThread;
-      clientThread.start();
-      connectedClients++;
+    try {
+      while (true) {
+        socket = accept();
+        if (connectedClients == MAX_CLIENT_COUNT) 
+          exitConnectionWithMessage("Server is to busy. Try later");
+
+        int i;
+        for (i = 0; i < MAX_CLIENT_COUNT && clients[i] != null; i++);
+        clients[i] = new ClientThread(i, socket);
+        clients[i].start();
+        connectedClients++;
+      }
+    } catch (Exception e) {
+      System.err.println(e);
     }
   }
 

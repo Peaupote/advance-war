@@ -6,17 +6,14 @@ import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import fr.main.model.TerrainEnum;
+import fr.main.model.Universe;
+import fr.main.model.Weather;
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.Direction;
-import fr.main.model.Weather;
-import fr.main.model.terrains.Terrain;
-import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.*;
-import fr.main.model.Universe;
-
-import fr.main.view.MainFrame;
 import fr.main.view.render.Renderer;
+import fr.main.view.render.animations.Animation;
+import fr.main.view.render.animations.AnimationState;
 import fr.main.view.render.sprites.ScaleRect;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.sprites.SpriteList;
@@ -483,6 +480,7 @@ public class TerrainRenderer {
 
 	private static TerrainEnum[] terrainCross(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = new TerrainEnum[4];
+		@SuppressWarnings("unused")
 		int count = 0;
 
 		cross[0] = isInMap(x - 1, y) ? tEnum[x - 1][y] : TerrainEnum.none;

@@ -22,12 +22,20 @@ TODO
 - [x] Add the few missings unit sprites (to have at least one image for each unit)
 - [x] add a few commanders
 - [x] Implement the missile launcher
+    - [x] Display missile's damages
+    - [x] Real animation when launching a missile
 - [x] Multiples pages (multiple controllers)
+- [x] Be able to save the game and resume it
+- [x] Access to the menu from the game
+- [x] Choose player's name
+- [x] Choose whether a player is human or AI
+- [x] Display damages in attack selection
+- [x] Display death/destruction animation
+- [x] Display building's life
+- [x] Change the size of the frame
+- [ ] Display ammunitions
+- [ ] Improve design of the panels (in game)
 - [ ] Victory panel
-- [ ] Be able to save the game and resume it
-- [ ] Access to the menu from the game
-- [ ] Choose player's names
-- [ ] Choose whether a player is human or AI
 
 
 TODO of Peaupote
@@ -46,6 +54,19 @@ TODO of pgimalac
 ====
 
 - [ ] Create an AI
+    - [ ] Economic AI
+        - [x] Random unit creation
+        - [ ] Smart unit creation (unit type)
+        - [ ] Smart unit creation (unit place)
+    - [ ] Unit manager AI
+        - [ ] Finite state machine to manage each unit independently
+            - [x] Random unit move
+            - [ ] Clever unit move
+            - [ ] Switch from one state to another
+        - [ ] Objective manager to tell units to do something (units don't act separatly)
+    - [ ] Global AI
+        - [x] Power activation
+        - [ ] Finds objectives and affect unit manager on it
 
 
 TODO of firgaty

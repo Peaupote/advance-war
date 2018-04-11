@@ -48,32 +48,28 @@ public class MusicEngine {
           
     }  
     
+    @SuppressWarnings("deprecation")
     protected void finalize() throws Throwable{  
-        super.finalize();  
-        sourceDataLine.drain();  
-        sourceDataLine.close();  
-        audioStream.close();  
+        super.finalize();
+        sourceDataLine.drain();
+        sourceDataLine.close();
+        audioStream.close();
     }  
        
     private void playMusic(boolean loop)throws InterruptedException {  
-        try{  
-                if(loop){  
-                    while(true){  
-                        playMusic();  
-                    }  
-                }else{  
-                    playMusic();  
-                    sourceDataLine.drain();  
-                    sourceDataLine.close();  
-                    audioStream.close();  
-                }  
-              
-        }catch(IOException ex){  
-            ex.printStackTrace();  
-        }  
-          
-          
-    }  
+        try { 
+          if(loop) while(true) playMusic();  
+          else {
+            playMusic();
+            sourceDataLine.drain();
+            sourceDataLine.close();
+            audioStream.close();
+          }          
+        } catch(IOException ex) {
+          ex.printStackTrace();  
+        }
+    }
+
     private void playMusic(){  
         try{  
             synchronized(this){  

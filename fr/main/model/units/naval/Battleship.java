@@ -17,7 +17,12 @@ import fr.main.model.units.weapons.PrimaryWeapon;
  */
 public class Battleship extends Unit implements NavalUnit {
 
-    private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
+    /**
+	 * Add Battleship UID
+	 */
+	private static final long serialVersionUID = -5985539079224875484L;
+
+	private static final Map<Class<? extends AbstractUnit>, Integer> PRIMARYWEAPON_DAMAGES = new HashMap<Class<? extends AbstractUnit>, Integer>();
 
     public static final String NAME = "Cuirassée";
     public static final int PRICE   = 28000;

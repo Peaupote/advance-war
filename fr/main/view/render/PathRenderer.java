@@ -16,7 +16,11 @@ import fr.main.view.render.units.UnitRenderer;
  */
 public class PathRenderer extends Path {
 
-    private Position.Camera camera;
+    /**
+	 * Add PathRenderer UID
+	 */
+	private static final long serialVersionUID = 7566614956368710772L;
+	private Position.Camera camera;
     private UniverseRenderer world;
     public boolean visible;
     private Image[] images;
@@ -118,7 +122,6 @@ public class PathRenderer extends Path {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);
 
         Point pt = unit.position();
-        boolean previouslyUnit = false;
 
         while (!isEmpty()) {
             Direction d = poll();
@@ -126,7 +129,7 @@ public class PathRenderer extends Path {
             d.move(pt);
 
             AbstractUnit u = world.getUnit(pt);
-            // if we meet an opponent unit, we can go any further
+            // if we meet an opponent unit, we can't go any further
             if (u != null && u.getPlayer() != unit.getPlayer()){
                 if (u.canAttack(unit)) {
                     int life = unit.getLife();
@@ -148,7 +151,8 @@ public class PathRenderer extends Path {
             }
             unit.removeMoveQuantity(unit.moveCost(pt.x, pt.y));
             unit.getFuel().consume(1);
-            previouslyUnit = u != null;
+            if (unit.dead()) return false;
+
             if (u == null){
                 world.setUnit(unit.getX(), unit.getY(), null);
                 render.cancelOffset();

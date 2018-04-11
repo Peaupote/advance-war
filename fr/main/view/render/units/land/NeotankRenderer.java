@@ -1,15 +1,12 @@
 package fr.main.view.render.units.land;
 
-import java.awt.*;
 import java.util.LinkedList;
 
-import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.Direction;
-import fr.main.view.MainFrame;
+import fr.main.view.render.animations.AnimationState;
+import fr.main.view.render.sprites.ScaleRect;
+import fr.main.view.render.sprites.SpriteList;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.render.sprites.*;
-import fr.main.view.render.animations.*;
 
 public class NeotankRenderer extends UnitRenderer.Render {
 

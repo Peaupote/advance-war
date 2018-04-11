@@ -1,22 +1,15 @@
 package fr.main.model.units;
 
-import java.awt.*;
-import java.util.Random;
-import java.util.HashSet;
-import java.io.Serializable;
+import java.awt.Point;
 
+import fr.main.model.Direction;
+import fr.main.model.Universe;
 import fr.main.model.players.Player;
-import fr.main.model.Weather;
-import fr.main.model.units.AbstractUnit;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.air.AirUnit;
-import fr.main.model.units.weapons.Weapon;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
-import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.RepairBuilding;
-import fr.main.model.Universe;
-import fr.main.model.Direction;
+import fr.main.model.units.weapons.Weapon;
 
 /**
  * Represents an unit on the board
@@ -24,12 +17,15 @@ import fr.main.model.Direction;
 public abstract class Unit implements AbstractUnit {
 
     /**
+	 * Add Unit UID
+	 */
+	private static final long serialVersionUID = 5902107581192600020L;
+	/**
      * Life in percentage
      */
     protected Point location;
     protected Player player;
     protected int life, moveQuantity;
-    protected boolean dead;
 
     public final Fuel fuel;
     public final MoveType moveType;
@@ -39,7 +35,11 @@ public abstract class Unit implements AbstractUnit {
     public final SecondaryWeapon secondaryWeapon;
 
     public class Fuel implements java.io.Serializable{
-        public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5637502351862309798L;
+		public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
         public final int maximumQuantity;
         private int quantity;
         public final boolean diesIfNoFuel;
@@ -57,8 +57,8 @@ public abstract class Unit implements AbstractUnit {
         public boolean consume(int quantity){
             quantity *= Universe.get().getWeather().malusFuel;
             this.quantity = Math.max(0,this.quantity-quantity);
-            if (fuel.quantity == 0 && diesIfNoFuel) dies();
-            return quantity!=0;
+            if (fuel.quantity <= 0 && diesIfNoFuel) dies();
+            return quantity != 0;
         }
 
         public void replenish(){
@@ -70,7 +70,6 @@ public abstract class Unit implements AbstractUnit {
     }
 
     public Unit (Player player, Point location, String fuelName, int maxFuel, boolean diesIfNoFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name, int cost) {
-        this.dead            = false;
         this.life            = 100;
         this.player          = player;
         if (player != null) player.add(this);
@@ -90,10 +89,10 @@ public abstract class Unit implements AbstractUnit {
 
     @Override
     public void dies(){
+        life = 0;
         Universe.get().setUnit(getX(), getY(), null);
         player.remove(this);
-        player          = null;
-        dead            = true;
+        player = null;
     }
 
     @Override
@@ -121,11 +120,6 @@ public abstract class Unit implements AbstractUnit {
         return fuel;
     }
 
-    @Override
-    public boolean dead(){
-        return dead;
-    }
-
     /**
      * @return true if and only if the unit is still alive
      */
@@ -135,9 +129,7 @@ public abstract class Unit implements AbstractUnit {
         if (this.life == 0){
             dies();
             return false;
-        }
-        else
-            return true;
+        } else return true;
     }
 
     @Override
@@ -202,7 +194,7 @@ public abstract class Unit implements AbstractUnit {
             u.setUnit(x, y, this);
             fuel.consume(fuelQuantity);
             u.updateVision();
-            return !dead;
+            return life > 0;
         }
 
         return false;
@@ -218,7 +210,6 @@ public abstract class Unit implements AbstractUnit {
         int x = location.x, y = location.y, visionT = getVision(),
             height = this instanceof AirUnit ? 2 : Universe.get().getTerrain(x,y).getHeight();
 
-        Point start = location.getLocation();
         fog[y][x] = true; // the current tile can always be seen
         if (visionT != 0){
             // we decompose the tiles in 2 categories according to the position of the unit (to avoid checking multiple times the same tile)
@@ -257,7 +248,6 @@ public abstract class Unit implements AbstractUnit {
         // change coordinates to make it easier
         x = 2 * (x - startX); y = 2 * (y - startY);
         if (Math.abs(x) + Math.abs(y) <= 2) return true; // the two tiles are adjacents
-        Universe u = Universe.get();
 
         // we use two int to know if the move is oriented to the right or the left and the top or the bottom
         int epsilonX = x > 0 ? 1 : -1, epsilonY = y > 0 ? 1 : -1;
@@ -277,7 +267,6 @@ public abstract class Unit implements AbstractUnit {
             b = 2 * epsilonY; d = y - 2 * epsilonY;
         }
 
-        AbstractTerrain t;
 
         // if the move was diagonal then we check if one of the two tiles possibles :
         // if we're going from the tile q to the tile i, we check if we can see through tiles l or r, tile m, and tile h or n
@@ -376,8 +365,8 @@ public abstract class Unit implements AbstractUnit {
 
     @Override
     public boolean canAttack(AbstractUnit u){
-        return (primaryWeapon == null ? false : primaryWeapon.canAttack(this,u)) ||
-                (secondaryWeapon==null ? false : secondaryWeapon.canAttack(this,u));
+        return  (primaryWeapon   == null ? false : primaryWeapon.canAttack(this,u)) ||
+                (secondaryWeapon == null ? false : secondaryWeapon.canAttack(this,u));
     }
 
     @Override
@@ -388,16 +377,18 @@ public abstract class Unit implements AbstractUnit {
     @Override
     public void attack(AbstractUnit u, boolean counter){
         if (getMoveQuantity()==0) return;
-        if (primaryWeapon != null && primaryWeapon.canAttack(this,u)){
+        Weapon w = null;
+
+        if (primaryWeapon != null && primaryWeapon.canAttack(this,u))
+            w = primaryWeapon;
             // if possible we attack with the main weapon
-            primaryWeapon.shoot();
-            int damages = damage(this,primaryWeapon,u);
-            u.getPlayer().getCommander().powerBar.addValue(damages);
-            u.removeLife(damages);
-        } else if (secondaryWeapon!=null && secondaryWeapon.canAttack(this,u)) {
+        else if (secondaryWeapon != null && secondaryWeapon.canAttack(this,u))
+            w = secondaryWeapon;
             // else we use the secondary weapon
-            secondaryWeapon.shoot();
-            int damages = damage(this,secondaryWeapon,u);
+
+        if (w != null){
+            w.shoot();
+            int damages = AbstractUnit.damage(this, w == primaryWeapon ,u);
             u.getPlayer().getCommander().powerBar.addValue(damages);
             u.removeLife(damages);
         }
@@ -419,25 +410,4 @@ public abstract class Unit implements AbstractUnit {
     public int getCost(){
         return cost;
     }
-
-    /**
-     * @param attacker is the unit that attacks
-     * @param w is the weapon used to attack
-     * @param defender is the unit that defends
-     * @return the damage inflicted by the attacker to the defender with the weapon
-     */
-    public static final int damage(AbstractUnit attacker, Weapon w, AbstractUnit defender){
-        int b       = w.damage(defender);
-        int aCO     = attacker.getPlayer().getCommander().getAttackValue(attacker);
-        Random rand = new Random(); int r = rand.nextInt(1000);
-        int aHP     = attacker.getLife();
-        int dCO     = defender.getPlayer().getCommander().getDefenseValue(defender);
-        AbstractBuilding building = Universe.get().getBuilding(defender.getX(), defender.getY());
-        int dTR     = Universe.get().getTerrain(defender.getX(),defender.getY()).getDefense(defender) + (building == null ? 0 : building.getDefense(defender));
-        int dHP     = defender.getLife();
-
-        // the formula isn't obvious but works nicely
-        return Math.max(0, (b * aCO + r) * aHP * (2000 - 10 * dCO - dTR * dHP) / 10000000);
-    }
-
 }

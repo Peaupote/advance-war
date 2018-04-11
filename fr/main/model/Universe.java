@@ -3,25 +3,35 @@ package fr.main.model;
 import java.io.*;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Arrays;
+import java.util.Date;
 
-import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.buildings.*;
 import fr.main.model.PlayerIt.Cycle;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.Airport;
+import fr.main.model.buildings.Barrack;
+import fr.main.model.buildings.City;
+import fr.main.model.buildings.Dock;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.players.Player;
+import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HideableUnit;
-import fr.main.view.render.units.naval.*;
-import fr.main.view.render.units.air.*;
-import fr.main.view.render.units.land.*;
-import fr.main.model.units.naval.*;
-import fr.main.model.units.air.*;
-import fr.main.model.units.land.*;
-import fr.main.model.commanders.FakeCommander;
-import fr.main.model.Weather;
-import fr.main.model.players.Player;
+import fr.main.model.units.air.Fighter;
+import fr.main.model.units.air.Stealth;
+import fr.main.model.units.land.Infantry;
+import fr.main.model.units.naval.Battleship;
+import fr.main.model.units.naval.Lander;
+
 
 /**
  * Represents the universe of a game (board, ...)
@@ -40,12 +50,7 @@ public class Universe {
      * boolean set to true if and only if the game can be saved
      */
     public static boolean save=false;
-    protected Weather weather;
 
-    /**
-     * the number of the day
-     */
-    protected int day;
 
     static{
         File maps = new File(mapPath);
@@ -59,27 +64,47 @@ public class Universe {
      */
     protected static class Board implements Serializable {
 
+        /**
+         * Add Board UID
+         */
+        private static final long serialVersionUID = -8731719580943357396L;
         public AbstractTerrain[][] board;
         public Player[] players;
         public AbstractUnit[][] units;
         public AbstractBuilding[][] buildings;
         private final boolean fog;
+        protected Weather weather;
+        protected Player current;
+        /**
+         * the number of the day
+         */
+        protected int day;
 
-        public Board (AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings) {
+        public Board (AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings, Weather weather, Player current, int day) {
             this.fog       = true;
             this.board     = board;
             this.units     = units;
             this.players   = ps;
             this.buildings = buildings;
+            this.weather   = weather;
+            this.current   = current;
+            this.day       = day;
+        }
+
+        public Board(AbstractUnit[][] units, Player[] ps, AbstractTerrain[][] board, AbstractBuilding[][] buildings){
+            this(units, ps, board, buildings, Weather.random(true), null, 0);
+        }
+
+        public Board setPlayers(Player[] ps){
+            return new Board(units, ps, board, buildings, weather, current, day);
         }
     }
 
-    protected Board map;
+    protected final Board map;
     /**
      * An Iterator<Player> which is a cycle (when we're on the last player, the next is the first)
      */
     protected final Cycle players;
-    protected Player current;
     /**
      * The vision of the map (the tiles that the current player can see are true)
      */
@@ -89,31 +114,28 @@ public class Universe {
      */
     private Dimension size;
 
+    public Universe (AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings){
+        this (new Board(units, ps, map, buildings));
+    }
+
     public Universe (String mapName, Player[] ps) {
-        map = null;
+        this (Universe.restaure(mapName).setPlayers(ps));
+    }
 
-        if (save)
-            try {
-                FileInputStream fileIn = new FileInputStream(mapPath+mapName);
-                ObjectInputStream in = new ObjectInputStream(fileIn);
-                map = (Board) in.readObject();
-                in.close();
-                fileIn.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                System.err.println("Board class not found");
-                e.printStackTrace();
-            }
+    public Universe (Board b){
+        map = b;
 
-        map.players = ps;
-
-        day = 0;
         instance = this;
-        weather  = Weather.FOGGY;
         fogwar   = new boolean[map.board.length][map.board[0].length];
         players  = new PlayerIt(map.players).cycle();
-        next();
+        if (map.current == null){
+            next();
+        }
+        else{
+            do{}
+            while(map.current != players.next());
+        }
+
 
         /*
             Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
@@ -123,6 +145,7 @@ public class Universe {
         new Airport(map.players[1], new Point(6,9));
         new Airport(map.players[0], new Point(7,9));
         new Barrack(null, new Point(9,5));
+        new Barrack(map.players[1], new Point(14,5));
         new Headquarter(map.players[0], new Point(12,5));
         new Headquarter(map.players[1], new Point(13,5));
         if (map.players.length > 2)
@@ -148,6 +171,10 @@ public class Universe {
 
         map.players[0].addFunds(100000);
         map.players[1].addFunds(100000);
+        if (map.players.length >= 3)
+            map.players[2].addFunds(100000);
+        if (map.players.length == 4)
+            map.players[3].addFunds(100000);
 
         if (getBuilding(6,10) != null)
             ((Dock)getBuilding(6,10)).create(Battleship.class);
@@ -155,6 +182,20 @@ public class Universe {
             ((Airport)getBuilding(7,9)).create(Stealth.class);
         if (getBuilding(6,9) != null)
             ((Airport)getBuilding(6,9)).create(Fighter.class);
+    }
+
+    public static Board restaure(String mapName){
+        if (save)
+            try (FileInputStream fileIn = new FileInputStream(mapPath+mapName);
+                    ObjectInputStream in = new ObjectInputStream(fileIn)) {
+                return (Board) in.readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                System.err.println("Board class not found");
+                e.printStackTrace();
+            }
+        return null;
     }
 
     /**
@@ -178,7 +219,7 @@ public class Universe {
      * @return the player currently playing
      */
     public Player getCurrentPlayer () {
-        return current;
+        return map.current;
     }
 
     /**
@@ -207,33 +248,30 @@ public class Universe {
      * @return the day number
      */
     public int getDay(){
-        return day;
+        return map.day;
     }
 
     /**
      * Goes to the next player (that hasn't lose yet)
      */
     public synchronized void next () {
-        if (current != null)
-            current.turnEnds();
-
-        if (!players.hasNext())
-            System.exit(0);
+        if (map.current != null)
+            map.current.turnEnds();
 
         do
-            current = players.next();
-        while (current.hasLost());
+            map.current = players.next();
+        while (map.current.hasLost());
 
-        current.turnBegins();
+        map.current.turnBegins();
 
-        if (players.isFirst(current)){
-            day ++;
+        if (players.isFirst(map.current)){
+            map.day ++;
             Weather w = Weather.random(map.fog);
-            if (w.fog && !weather.fog)
+            if (w.fog && !map.weather.fog)
                 for (int i = 0; i < map.board.length; i++)
                     for (int j = 0; j < map.board[0].length; j++)
                         fogwar[i][j] = true;
-            weather = w;
+            map.weather = w;
         }
 
         updateVision ();
@@ -243,11 +281,11 @@ public class Universe {
      * update the vision of the current player
      */
     public void updateVision () {
-        if (weather.fog){
+        if (map.weather.fog){
             for (int i = 0; i < map.board.length; i++)
                 for (int j = 0; j < map.board[0].length; j++)
                     fogwar[i][j] = false;
-            current.renderVision(fogwar);
+            map.current.renderVision(fogwar);
         }
     }
 
@@ -327,7 +365,7 @@ public class Universe {
      * @param u is the unit we place on the map
      * @return true if and only if the position is valid
      */
-    public final boolean setUnit(int x, int y, AbstractUnit u) {
+    public boolean setUnit(int x, int y, AbstractUnit u) {
         if (isValidPosition(x,y)){
             map.units[y][x] = u;
             return true;
@@ -342,7 +380,7 @@ public class Universe {
      * @param b is the building we place on the map
      * @return true if and only if the position is valid
      */
-    public final boolean setBuilding(int x, int y, AbstractBuilding b){
+    public boolean setBuilding(int x, int y, AbstractBuilding b){
         if (isValidPosition(x, y)){
             map.buildings[y][x] = b;
             return true;
@@ -381,6 +419,10 @@ public class Universe {
         return false;
     }
 
+    public boolean isVisibleOpponentUnit (Point pt){
+        return isVisibleOpponentUnit(pt.x, pt.y);
+    }
+
     /**
      * @param mapName is the name of the save file
      * @param units is the units board
@@ -390,12 +432,18 @@ public class Universe {
      * save the board described in parameter
      */
     public static void save (String mapName, AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings) {
+        Universe.save(mapName, new Board (units, ps, map, buildings));
+    }
+
+    /**
+     * @param mapName is the name of the save file
+     * @param board is the board to save
+     */
+    public static void save(String mapName, Board board){
         if (!Universe.save){
             System.out.println("Impossible to save.");
             return;
         }
-
-        Board board = new Board (units, ps, map, buildings);
 
         try {
             FileOutputStream fileOut = new FileOutputStream(mapPath+mapName);
@@ -410,6 +458,13 @@ public class Universe {
     }
 
     /**
+     * Saves the game with a default name with the format year-month-day-hour-minute-second
+     */
+    public void save(){
+        Universe.save((new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")).format(new Date(System.currentTimeMillis())) + ".map", map);
+    }
+
+    /**
      * @return the current instance of the universe
      */
     public static Universe get () {
@@ -420,7 +475,7 @@ public class Universe {
      * @return the weather
      */
     public Weather getWeather(){
-        return weather;
+        return map.weather;
     }
 
     /**

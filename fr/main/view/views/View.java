@@ -1,8 +1,6 @@
 package fr.main.view.views;
 
-import java.util.LinkedList;
 import javax.swing.JPanel;
-import java.awt.*;
 
 import fr.main.view.controllers.Controller;
 
@@ -11,9 +9,15 @@ import fr.main.view.controllers.Controller;
  */
 public class View extends JPanel {
 
-    public View (Controller controller) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3106932721264035758L;
+
+	public View (Controller controller) {
         addKeyListener(controller);
         addMouseMotionListener(controller);
+        addMouseListener(controller);
     }
 
 }

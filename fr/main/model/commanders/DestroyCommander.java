@@ -2,13 +2,17 @@ package fr.main.model.commanders;
 
 import fr.main.model.Universe;
 import fr.main.model.players.Player;
-import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
 
 /**
  * A commander whose power is to remove life of all opponent units
  */
 public class DestroyCommander extends Commander{
+	/**
+	 * Add DestroyCommander
+	 */
+	private static final long serialVersionUID = 3536665169061833228L;
+
 	public DestroyCommander(Player player){
 		super(player, new Power(1000, p -> {
 			for (Player pl : Universe.get().playerList())

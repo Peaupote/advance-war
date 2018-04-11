@@ -1,11 +1,10 @@
 package fr.main.model.buildings;
 
-import fr.main.model.Universe;
-import fr.main.model.Direction;
-import fr.main.model.units.AbstractUnit;
-import fr.main.model.terrains.Terrain;
-
 import java.awt.Point;
+
+import fr.main.model.Direction;
+import fr.main.model.Universe;
+import fr.main.model.units.AbstractUnit;
 
 /*
 * Represents a missile launcher
@@ -13,6 +12,10 @@ import java.awt.Point;
 public class MissileLauncher extends Building {
 
     /**
+	 * Add MissileLauncher UID
+	 */
+	private static final long serialVersionUID = 2599496054309721599L;
+	/**
      * set to true if the missile was fired and false otherwise
      */
     private boolean fired;
@@ -40,7 +43,10 @@ public class MissileLauncher extends Building {
         if(!canFire(x, y)) return;
         fired = true;
         Universe u = Universe.get();
-        AbstractUnit unit = u.getUnit(x, y);
+        AbstractUnit unit = u.getUnit(getX(), getY());
+        if (unit != null)
+            unit.dies();
+        unit = u.getUnit(x, y);
         if (unit != null) // center of the target
             unit.removeLife(30);
         for (int i = 1; i < 4; i++) // cardinal directions from the target

@@ -18,7 +18,11 @@ import fr.main.model.units.naval.*;
  */
 public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 
-    public static final String NAME = "Furtif";
+    /**
+	 * Add Stealth UID
+	 */
+	private static final long serialVersionUID = -74106295396216707L;
+	public static final String NAME = "Furtif";
     public static final int PRICE   = 24000;
 
     public static final String PRIMARYWEAPON_NAME = "Missiles";

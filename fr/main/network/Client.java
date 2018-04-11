@@ -1,49 +1,62 @@
 package fr.main.network;
 
-import java.io.DataInputStream;
-import java.io.PrintStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.net.InetAddress;
 
-public class Client implements Runnable {
+/**
+ * Represent client playing.
+ */
+public class Client {
 
+  /**
+   * Socket connecting to the server.
+   */
   private Socket socket;
 
-  private PrintStream os;
-  private DataInputStream is;
+  /**
+   * Send messages to the server with this stream.
+   */
+  private ObjectOutputStream os;
 
-  private BufferedReader inputLine;
-  private static boolean closed;
+  /**
+   * Receive messages from the server with this stream.
+   */
+  private ObjectInputStream is;
+
+  public final int id;
 
   public Client (String host, int port)
-      throws UnknownHostException, IOException {
+      throws UnknownHostException, IOException,
+             ClassNotFoundException {
     socket = new Socket(host, port);
-    inputLine = new BufferedReader(new InputStreamReader(System.in));
-    os = new PrintStream(socket.getOutputStream());
-    is = new DataInputStream(socket.getInputStream());
+    os = new ObjectOutputStream(socket.getOutputStream());
+    is = new ObjectInputStream(socket.getInputStream());
 
-    new Thread(this).start();
-    while (!closed) os.println(inputLine.readLine());
+    this.id = ((Integer)read()).intValue();
+  }
 
+  public void close () throws Exception {
     os.close();
     is.close();
     socket.close();
   }
 
-  public void run () {
-    String response;
+  /**
+   * Listening from the server.
+   */
+  public Object read ()
+      throws IOException, ClassNotFoundException {
+    return is.readObject();
+  }
 
-    try {
-      while ((response = is.readLine()) != null) {
-        System.out.println(response);
-        if (response.equals("quit")) closed = true;
-      }
-    } catch (IOException e) {
-      System.err.println(e);
-    }
+  public InetAddress getInetAddress () {
+    return socket.getInetAddress();
+  }
+
+  public final void send(Object data) throws IOException {
+    os.writeObject(new Datagram(id, data));
   }
 
 }

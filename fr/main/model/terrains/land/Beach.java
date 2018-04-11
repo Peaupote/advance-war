@@ -13,7 +13,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class Beach extends Terrain implements LandTerrain,NavalTerrain {
 
-    private static Beach instance;
+    /**
+	 * Add Beach UID
+	 */
+	private static final long serialVersionUID = 3790207400855052504L;
+	private static Beach instance;
     public static final String name="Plage";
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
 

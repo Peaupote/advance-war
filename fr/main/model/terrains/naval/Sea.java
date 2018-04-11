@@ -12,7 +12,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class Sea extends Terrain implements NavalTerrain {
 
-    private static Sea instance;
+    /**
+	 * Add Sea UID
+	 */
+	private static final long serialVersionUID = -3963530451255190200L;
+	private static Sea instance;
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
     public static final String name="Mer";
 

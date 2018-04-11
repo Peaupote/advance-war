@@ -12,7 +12,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class Bridge extends Terrain implements LandTerrain{
 
-    private static Bridge instance;
+    /**
+	 * Add Bridge UID
+	 */
+	private static final long serialVersionUID = -2512930917092156634L;
+	private static Bridge instance;
     public static final String name="Pont";
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
 

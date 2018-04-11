@@ -12,7 +12,11 @@ import fr.main.model.terrains.Terrain;
  */
 public class Lowland extends Terrain implements LandTerrain {
 
-    private static Lowland instance;
+    /**
+	 * Add Lowland UID
+	 */
+	private static final long serialVersionUID = 8130230126646489124L;
+	private static Lowland instance;
     public static final String name="Plaine";
     protected static final Map<Weather,Map<MoveType,Integer>> weatherMovementCosts=new HashMap<Weather,Map<MoveType,Integer>>();
 

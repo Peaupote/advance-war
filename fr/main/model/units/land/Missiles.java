@@ -17,7 +17,11 @@ import fr.main.model.units.air.*;
  */
 public class Missiles extends Unit implements LandVehicleUnit{
 
-    public static final String NAME = "Anti-aérien";
+    /**
+	 * Add Missiles UID
+	 */
+	private static final long serialVersionUID = 1955629571556942103L;
+	public static final String NAME = "Anti-aérien";
     public static final int PRICE   = 12000;
 
     public static final String PRIMARYWEAPON_NAME = "Missiles";

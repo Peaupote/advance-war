@@ -1,17 +1,16 @@
 package fr.main.view.render.terrains;
 
 
-import com.sun.org.apache.bcel.internal.generic.GETFIELD;
-import fr.main.model.TerrainEnum;
 import fr.main.view.render.animations.Animation;
 import fr.main.view.render.sprites.ScaleRect;
-import sun.nio.fs.GnomeFileTypeDetector;
 
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import fr.main.view.render.sprites.ScaleRect;
+
+@SuppressWarnings("serial")
 public interface TerrainLocation extends Serializable{
 
 	public static String getDir () {

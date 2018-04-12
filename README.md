@@ -24,6 +24,13 @@ $ make            # Build le jeu
 $ make run        # Lance le jeu
 ```
 
+### Documentation
+Le Makefile permet de générer la documentation java associée au projet. Pour ce faire executer à la racine du dossier la commande
+```
+$ make doc
+```
+puis ouvrir le fichier `doc/index.html`
+
 Applications autour du jeu
 ==========================
 

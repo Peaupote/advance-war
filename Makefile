@@ -1,5 +1,6 @@
 NAME = advance-war
 BIN_FOLDER = bin/
+DOC_FOLDER = doc/
 DEPS_FOLDER = ".:"
 
 MAIN_PATH = "fr/main/App"
@@ -33,4 +34,7 @@ clean:
 
 fclean: clean
 	@rm -rf $(JAR)
+
+doc:
+	javadoc -subpackages fr -charset utf-8 -d $(DOC_FOLDER)
 

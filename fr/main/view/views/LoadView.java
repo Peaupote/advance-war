@@ -18,7 +18,7 @@ public class LoadView extends View {
 	 * Add LoadView UID
 	 */
 	private static final long serialVersionUID = -3124911512496474049L;
-private LoadController controller;
+  private LoadController controller;
   @SuppressWarnings("unused")
 private static int width  = 350,
                      height = 50,
@@ -43,7 +43,7 @@ private static int width  = 350,
     "Mieux vaut une bonne guerre qu'une mauvaise paix.",
     "Qui lance une guerre en devient la poule",
     "Les chevaux de guerre naissent sur les frontières.",
-    "Faites fondre le beurre à feu trés doux,<br>" +
+    "Faites fondre le beurre à feu très doux,<br>" +
       "dans une casserole ou au bain-marie.<br>" +
       "Puis, laissez refroidir."
   };
@@ -54,9 +54,6 @@ private static int width  = 350,
 
   private static class AdvicePanel extends JLabel {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -3916570691607413042L;
 
 	public AdvicePanel (Random rand) {

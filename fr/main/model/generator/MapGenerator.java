@@ -1,19 +1,12 @@
 package fr.main.model.generator;
 
-import static fr.main.model.TerrainEnum.beach;
-import static fr.main.model.TerrainEnum.bridge;
-import static fr.main.model.TerrainEnum.getTerrainEnum;
-import static fr.main.model.TerrainEnum.hill;
-import static fr.main.model.TerrainEnum.lowland;
-import static fr.main.model.TerrainEnum.mountain;
-import static fr.main.model.TerrainEnum.none;
-import static fr.main.model.TerrainEnum.reef;
-import static fr.main.model.TerrainEnum.river;
-import static fr.main.model.TerrainEnum.sea;
-import static fr.main.model.TerrainEnum.wood;
+import fr.main.model.TerrainEnum;
+import fr.main.model.terrains.Terrain;
+
 import java.util.Arrays;
 import java.util.Random;
-import fr.main.model.TerrainEnum;
+
+import static fr.main.model.TerrainEnum.*;
 
 public class MapGenerator {
     private long seed;
@@ -414,18 +407,18 @@ public class MapGenerator {
     }
 
     @SuppressWarnings("unused")
-	private TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
+	public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
-    	Arrays.fill(out, null);
+    	Arrays.fill(out, none);
 
-		if(isInMap(map, x, y - 1)) 			out[0] = map[x][y - 1];
-		if(isInMap(map, x + 1, y - 1)) 		out[1] = map[x + 1][y - 1];
-		if(isInMap(map, x + 1, y)) 			out[2] = map[x + 1][y];
+		if(isInMap(map, x - 1, y)) 			out[0] = map[x - 1][y];
+		if(isInMap(map, x - 1, y + 1)) 		out[1] = map[x - 1][y + 1];
+		if(isInMap(map, x, y + 1)) 			out[2] = map[x][y + 1];
 		if(isInMap(map, x + 1, y + 1)) 		out[3] = map[x + 1][y + 1];
-		if(isInMap(map, x + 1, 1))			out[4] = map[x + 1][y];
+		if(isInMap(map, x + 1, y))			out[4] = map[x + 1][y];
 		if(isInMap(map, x + 1, y - 1)) 		out[5] = map[x + 1][y - 1];
-		if(isInMap(map, x - 1, y - 1)) 		out[6] = map[x - 1][y - 1];
-		if(isInMap(map, x, y - 1)) 			out[7] = map[x][y - 1];
+		if(isInMap(map, x, y - 1)) 			out[6] = map[x][y - 1];
+		if(isInMap(map, x - 1, y - 1)) 		out[7] = map[x - 1][y - 1];
 
 		return out;
 	}

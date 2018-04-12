@@ -48,7 +48,7 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof LandUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u.moveCost(getX(), getY()) != null && u instanceof LandUnit;
     }
 
     public boolean charge(AbstractUnit u){
@@ -61,7 +61,7 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
     }
 
     public boolean canRemove(AbstractUnit u, int x, int y){
-        return units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.canStop(x, y);
+        return units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.moveCost(getX(), getY()) != null && u.canStop(x, y);
     }
 
     public boolean remove(AbstractUnit u, int x, int y){

@@ -8,7 +8,7 @@ totale.*
 
 Installation
 ============
-Pour installer le jeu il suffit d'avoir installer java 8 sur son ordinateur.
+Pour installer le jeu il suffit d'avoir installé java 8 sur son ordinateur.
 Puis de cloner le dépôt:
 
 ```
@@ -16,13 +16,20 @@ $  git clone https://github.com/Peaupote/advance-war.git
 ```
 
 ### Build le jeu
-Une Makefile est à disposition pour compiler le jeu. La classe principale est `fr/main/App.java`
+Un Makefile est à disposition pour compiler le jeu. La classe principale est `fr/main/App.java`
 
 ```
 $ cd advance-war
 $ make            # Build le jeu
 $ make run        # Lance le jeu
 ```
+
+### Documentation
+Le Makefile permet de générer la documentation java associée au projet. Pour se faire, il faut executer à la racine du dossier la commande
+```
+$ make doc
+```
+puis ouvrir le fichier `doc/index.html`
 
 Applications autour du jeu
 ==========================

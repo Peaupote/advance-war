@@ -34,7 +34,7 @@ public abstract class Commander implements Serializable {
      */
     public class PowerBar implements Serializable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -1112411098868108680L;
 		public final int maxValue;
@@ -61,7 +61,7 @@ public abstract class Commander implements Serializable {
      */
     protected static class Power implements Serializable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 6830482137600479680L;
 
@@ -180,8 +180,8 @@ public abstract class Commander implements Serializable {
     }
 
     /**
-     * @param AbstractUnit the unit we want to know the minimum range
-     * @param PrimaryWeapon the weapon of the unit we want to know the minimum range
+     * @param u the unit we want to know the minimum range
+     * @param p the weapon of the unit we want to know the minimum range
      * @return the minimum range of the unit
      */
     public int getMinimumRange(AbstractUnit u, PrimaryWeapon p){

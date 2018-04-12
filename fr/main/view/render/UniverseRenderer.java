@@ -81,7 +81,7 @@ public class UniverseRenderer extends Universe {
 
     public UniverseRenderer (Universe.Board b, GameController controller){
         super(b);
-        
+
         this.controller = controller;
         controller.makeView().getWeatherController().update(Weather.FOGGY);
         coords = new Point[map.board.length][map.board[0].length];
@@ -176,7 +176,8 @@ public class UniverseRenderer extends Universe {
 
     @Override
     public void playerLoose(Player p){
-        MainFrame.setScene(new MenuController());
+        if (!players.hasNext())
+            MainFrame.setScene(new MenuController());
     }
 
     public void updateTarget (AbstractUnit unit) {
@@ -196,8 +197,8 @@ public class UniverseRenderer extends Universe {
             upperLeft.move(0,0);
             lowerRight.move(targets.length, targets[0].length);
             tColor = targetColor;
-        } else if (controller.getMode() == GameController.Mode.HEAL || 
-                   controller.getMode() == GameController.Mode.LOAD || 
+        } else if (controller.getMode() == GameController.Mode.HEAL ||
+                   controller.getMode() == GameController.Mode.LOAD ||
                    controller.getMode() == GameController.Mode.UNLOAD_LOCATE) {
             int x = unit.getX(), y = unit.getY();
             HealerUnit healer = controller.getMode() == GameController.Mode.HEAL ? (HealerUnit)unit : null;
@@ -301,7 +302,7 @@ public class UniverseRenderer extends Universe {
 
     /**
      * @param pt the position of the animation to display
-     * @param sink is true to display the sink animation and false for the explosion
+     * @param naval is true to display the sink animation and false for the explosion
      */
     public void displayDeathAnimation(Point pt, boolean naval){
         deathAnimation.add(new DeathAnimation(pt, naval ? sink : explosion));
@@ -350,7 +351,7 @@ public class UniverseRenderer extends Universe {
         private final MissileLauncher missile;
 
         /**
-         * used to know what image is displayed
+         * used to know what image is displayed.
          */
         private int explosionNumber;
 

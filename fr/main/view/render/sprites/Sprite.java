@@ -23,9 +23,16 @@ public class Sprite {
 		try {
 			sprite = ImageIO.read(new File(path));
 		} catch (IOException e) {
-      System.err.println(path);
+			System.err.println(path);
 			e.printStackTrace();
 		}
+	}
+
+	public Sprite(String name, BufferedImage image) {
+		if (instances.containsKey(name)) return;
+		if (image == null) System.out.println("Image null.");
+		sprite = image;
+		instances.put(name, this);
 	}
 
 	public static Sprite get(String path) {
@@ -51,31 +58,61 @@ public class Sprite {
 	public Image getImage(int x, int y, int w, int h, double scale) {
 		Image img = getImage(x, y, w, h);
 
-		if(img == null) {
+		if (img == null) {
 			System.out.println("x : " + x + "| y : " + y + "| w : " + w + "| h : " + h);
 			System.exit(11);
 		}
-		return img.getScaledInstance((int) (((double)w) * scale), (int) (((double)h) * scale), Image.SCALE_SMOOTH);
+		return img.getScaledInstance((int) (((double) w) * scale), (int) (((double) h) * scale), Image.SCALE_SMOOTH);
 	}
 
 	public Image getReverseImage(int x, int y, int w, int h, double scale, boolean vertical) {
 		BufferedImage img = getImage(x, y, w, h);
 
 		AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-    // TODO: find out why cant flip horizontally
-    tx.translate(-img.getWidth(null), 0);
+		// TODO: find out why cant flip horizontally
+		tx.translate(-img.getWidth(null), 0);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		return op.filter(img, null).getScaledInstance((int) (((double)w) * scale), (int) (((double)h) * scale), Image.SCALE_SMOOTH);
+		return op.filter(img, null).getScaledInstance((int) (((double) w) * scale), (int) (((double) h) * scale), Image.SCALE_SMOOTH);
 	}
 
-  public Image getImage (ScaleRect rect) {
-    if (rect.reverse == ScaleRect.Flip.NONE)
-      return getImage (rect.x, rect.y, rect.width, rect.height, rect.scale);
+	public Image getImage(ScaleRect rect) {
+		if (rect.reverse == ScaleRect.Flip.NONE)
+			return getImage(rect.x, rect.y, rect.width, rect.height, rect.scale);
 
-    if (rect.reverse == ScaleRect.Flip.HORIZONTALLY)
-      return getReverseImage(rect.x, rect.y, rect.width, rect.height, rect.scale, true);
+		if (rect.reverse == ScaleRect.Flip.HORIZONTALLY)
+			return getReverseImage(rect.x, rect.y, rect.width, rect.height, rect.scale, true);
 
-    return getReverseImage(rect.x, rect.y, rect.width, rect.height, rect.scale, false);
-  }
+		return getReverseImage(rect.x, rect.y, rect.width, rect.height, rect.scale, false);
+	}
+
+	public boolean contains(String path) {
+		return instances.containsKey(path);
+	}
+
+	public static BufferedImage getSprite(String path) {
+		return instances.get(path).getSprite();
+	}
+
+	public BufferedImage getSprite() {
+		return sprite;
+	}
+
+	public class SpriteTuple {
+		public final String path;
+		public final ScaleRect rect;
+
+		public SpriteTuple(String path, ScaleRect rect) {
+			this.path = path;
+			this.rect = rect;
+		}
+
+		public String getPath() {
+			return path;
+		}
+
+		public ScaleRect getRect() {
+			return rect;
+		}
+	}
 
 }

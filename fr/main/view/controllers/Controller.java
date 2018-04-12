@@ -54,4 +54,7 @@ public abstract class Controller
   public void mouseEntered (MouseEvent e) {}
   public void mouseExited (MouseEvent e) {}
   public void mouseReleased (MouseEvent e) {}
+
+  public void onOpen () {}
+  public void onClose () {}
 }

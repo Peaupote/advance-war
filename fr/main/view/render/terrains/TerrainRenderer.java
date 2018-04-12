@@ -1,19 +1,8 @@
 package fr.main.view.render.terrains;
 
-import static fr.main.model.TerrainEnum.beach;
-import static fr.main.model.TerrainEnum.bridge;
-import static fr.main.model.TerrainEnum.hill;
-import static fr.main.model.TerrainEnum.lowland;
-import static fr.main.model.TerrainEnum.mountain;
-import static fr.main.model.TerrainEnum.reef;
-import static fr.main.model.TerrainEnum.river;
-import static fr.main.model.TerrainEnum.road;
-import static fr.main.model.TerrainEnum.sea;
-import static fr.main.model.TerrainEnum.wood;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -26,22 +15,19 @@ import fr.main.view.render.Renderer;
 import fr.main.view.render.animations.Animation;
 import fr.main.view.render.animations.AnimationState;
 import fr.main.view.render.sprites.ScaleRect;
+import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.sprites.SpriteList;
-import fr.main.view.render.terrains.land.BeachRenderer;
-import fr.main.view.render.terrains.land.BridgeRenderer;
-import fr.main.view.render.terrains.land.HillRenderer;
-import fr.main.view.render.terrains.land.LowlandRenderer;
-import fr.main.view.render.terrains.land.MountainRenderer;
-import fr.main.view.render.terrains.land.RiverRenderer;
-import fr.main.view.render.terrains.land.RoadRenderer;
-import fr.main.view.render.terrains.land.WoodRenderer;
-import fr.main.view.render.terrains.naval.ReefRenderer;
-import fr.main.view.render.terrains.naval.SeaRenderer;
+import fr.main.view.render.terrains.land.*;
+import fr.main.view.render.terrains.naval.*;
+
+import static fr.main.model.TerrainEnum.*;
 
 public class TerrainRenderer {
 
-	public static HashMap<TerrainLocation, Render> renderers = new HashMap<>();
+	private static HashMap<TerrainLocation, Render> renderers = new HashMap<>();
 	private static TerrainLocation[][] tLocations;
+	private static Dimension size;
+
 
 	public static class Render extends Renderer {
 
@@ -63,6 +49,59 @@ public class TerrainRenderer {
 			anim.setState("normal");
 		}
 
+		public Render(TerrainLocation.GenericTerrainLocation location) {
+			anim = new Animation();
+
+			TerrainLocation loc = location.getBase();
+			LinkedList<TerrainLocation.Sticker> ss = location.getStickers();
+
+			final String normDir = TerrainLocation.getDir() + "normal/",
+					snowDir = TerrainLocation.getDir() + "snow/";
+			String nameNorm = "normal/" + loc.getPath(),
+					nameSnow = "snow/" + loc.getPath();
+
+			// TODO ToolkitImage casting to BufferedImage is not working, need to adapt solution without using sun.com func.
+			BufferedImage baseNormal = castToBufferedImage(Sprite.get(normDir + loc.getPath()).getImage(loc.getRect())),
+					baseSnow = castToBufferedImage(Sprite.get(snowDir + loc.getPath()).getImage(loc.getRect()));
+
+			if(ss != null && ss.size() > 0)
+			for(TerrainLocation.Sticker s : ss) {
+				try {
+					Image normImg = Sprite.get(normDir + s.loc.getPath()).getImage(s.loc.getRect()),
+							snowImg = Sprite.get(snowDir + s.loc.getPath()).getImage(s.loc.getRect());
+					baseNormal = joinBufferedImage(
+							baseNormal,
+							castToBufferedImage(normImg),
+							s.x,
+							s.y);
+					baseSnow = joinBufferedImage(
+							baseSnow,
+							castToBufferedImage(snowImg),
+							s.x,
+							s.y);
+					nameNorm += s.loc.getPath() + s.x + s.y;
+					nameSnow += s.loc.getPath() + s.x + s.y;
+
+					System.out.println(nameNorm);
+				} catch (NullPointerException e) {
+					System.out.println(e.toString());
+					break;
+				}
+			}
+
+			Sprite normSprite = new Sprite(nameNorm, baseNormal);
+			Sprite snowSprite = new Sprite(nameSnow, baseSnow);
+
+			if(normSprite.getSprite() == null) System.out.println("Error in TerrainRenderer constructor : Sprite null");
+
+			AnimationState normal = new AnimationState(new SpriteList(Sprite.getSprite(nameNorm)), 20);
+			AnimationState snow = new AnimationState(new SpriteList(Sprite.getSprite(nameSnow)), 20);
+
+			anim.put("normal", normal);
+			anim.put("snow", snow);
+			anim.setState("normal");
+		}
+
 		public void draw(Graphics g, int x, int y) {
 			anim.draw(g, x, y);
 		}
@@ -74,7 +113,7 @@ public class TerrainRenderer {
 		for (Render render : renderers.values()) render.anim.setState(s);
 	}
 
-	public static Render getRender(AbstractTerrain terrain, TerrainLocation location) {
+	private static Render getRender(TerrainLocation location) {
 		if (renderers.containsKey(location))
 			return renderers.get(location);
 
@@ -99,6 +138,8 @@ public class TerrainRenderer {
 			renderers.put(location, new ReefRenderer((TerrainLocation.ReefLocation) location));
 		else if (location instanceof TerrainLocation.SeaLocation)
 			renderers.put(location, new SeaRenderer((TerrainLocation.SeaLocation) location));
+		else if (location instanceof TerrainLocation.GenericTerrainLocation)
+			renderers.put(location, new SeaRenderer((TerrainLocation.GenericTerrainLocation) location));
 		else {
 			System.err.println("ERROR in TerrainRenderer");
 			System.exit(10);
@@ -107,12 +148,53 @@ public class TerrainRenderer {
 		return renderers.get(location);
 	}
 
-	private static Dimension size;
-
 	public static void render(Graphics g, Point coords, Point t) {
 		AbstractTerrain terrain = Universe.get().getTerrain(t.x, t.y);
-		getRender(terrain, tLocations[t.y][t.x]).draw(g, coords.x, coords.y);
+		getRender(tLocations[t.y][t.x]).draw(g, coords.x, coords.y);
 	}
+
+	private static BufferedImage joinBufferedImage(BufferedImage base, BufferedImage sticker, int x, int y) {
+		int width = base.getWidth();
+		int height = base.getHeight();
+
+		BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = newImage.createGraphics();
+
+		Color oldColor = g2.getColor();
+		g2.setPaint(Color.BLACK);
+		g2.fillRect(0, 0, width, height);
+		g2.setColor(oldColor);
+		g2.drawImage(base, null, 0, 0);
+		g2.drawImage(sticker, null, x, y);
+		g2.dispose();
+
+		return newImage;
+	}
+
+	/**
+	 * Converts a given Image into a BufferedImage
+	 *
+	 * @param img The Image to be converted
+	 * @return The converted BufferedImage
+	 */
+	private static BufferedImage castToBufferedImage(Image img) {
+		if (img instanceof BufferedImage)
+		{
+			return (BufferedImage) img;
+		}
+
+		// Create a buffered image with transparency
+		BufferedImage bImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+		// Draw the image on to the buffered image
+		Graphics2D bGr = bImage.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
+
+		// Return the buffered image
+		return bImage;
+	}
+
 
 	public static void setLocations() {
 		if (size == null) size = Universe.get().getDimension();
@@ -127,7 +209,7 @@ public class TerrainRenderer {
 		for (int i = 0; i < tEnum.length; i++)
 			for (int j = 0; j < tEnum[0].length; j++) {
 				switch (tEnum[i][j]) {
-					case sea: tLocations[i][j] = setSeaLocation(tEnum, i, j) ;break;
+					case sea: tLocations[i][j] = setSeaLocation(tEnum, i, j); break;
 					case lowland:
 						if (isInMap(i, j - 1) &&
 								(tEnum[i][j - 1] == TerrainEnum.mountain
@@ -147,13 +229,62 @@ public class TerrainRenderer {
 						else tLocations[i][j] = TerrainLocation.BridgeLocation.HORIZONTAL;
 						break;
 					case river: tLocations[i][j] = setRiverLocation(tEnum, i, j);break;
-					case beach: tLocations[i][j] = setBeachLocation(tEnum, i, j);break; // TODO
+					case beach: tLocations[i][j] = setBeachLocation(tEnum, i, j);break;
 					case road: tLocations[i][j] = setRoadLocation(tEnum, i, j);break;
 					default: {
 					}
 
 				}
 			}
+
+		// Set the cliff corners.
+		TerrainEnum[] surroundings;
+		TerrainLocation.GenericTerrainLocation genLoc;
+		for (int i = 0; i < tEnum.length; i++)
+			for (int j = 0; j < tEnum[0].length; j++) {
+				surroundings = null;
+				genLoc = null;
+
+				if (tEnum[i][j] == sea || tEnum[i][j] == reef) {
+					surroundings = MapGenerator.getSurroundingTerrain(tEnum, i, j);
+					genLoc = addSeaSticker((TerrainLocation.SeaLocation) tLocations[i][j], surroundings);
+					if(genLoc.listLength() > 0) tLocations[i][j] = genLoc;
+				}
+			}
+	}
+
+	private static TerrainLocation.GenericTerrainLocation addSeaSticker(TerrainLocation.SeaLocation base, TerrainEnum[] surroundings) {
+		final TerrainEnum[] not = {sea, beach, reef, none};
+		boolean used[] = {false, false, false, false};
+		TerrainLocation.GenericTerrainLocation loc = new TerrainLocation.GenericTerrainLocation(base);
+		for(int i = 0; i < 8; i += 2)
+			if(surroundings[i] == sea || surroundings [i] == reef) {
+				if (isAny(surroundings[posMod(i - 2, 8)], not) && !isAny(surroundings[posMod(i - 1, 8)], not) && !used[(posMod(i - 1, 8) - 1) / 2])
+					loc.addSticker(getSeaStickerLocation(posMod(i - 1, 8)));
+				if (isAny(surroundings[posMod(i + 2, 8)], not) && !isAny(surroundings[posMod(i + 1, 8)], not) && !used[(posMod(i + 1, 8) - 1) / 2])
+					loc.addSticker(getSeaStickerLocation(posMod(i + 1, 8)));
+			}
+		return loc;
+	}
+
+	private static int posMod(int x, int p) {
+		x = x % p;
+		return x >= 0 ? x : -x;
+	}
+
+	private static TerrainLocation.Sticker getSeaStickerLocation(int i) {
+		TerrainLocation.Sticker sticker = null;
+
+		// TODO replace *2 by a const program-wide
+
+		switch (i) {
+			case 1: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_TOP_RIGHT, 8 * 2, 0); 		break;
+			case 3: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_BOTTOM_RIGHT, 8 * 2, 8 * 2); 	break;
+			case 5: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_BOTTOM_LEFT, 0, 8 * 2);	break;
+			case 7: sticker = new TerrainLocation.Sticker(TerrainLocation.SeaLocation.CORNER_TOP_LEFT, 0, 0);		break;
+			default: return null;
+		}
+		return sticker;
 	}
 
 	private static boolean isInMap(int x, int y) {
@@ -210,15 +341,11 @@ public class TerrainRenderer {
 
 	private static TerrainLocation.SeaLocation setSeaLocation(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = terrainCross(tEnum, x, y);
-		final TerrainEnum[] naval = {sea, bridge, reef, beach, river};
+		final TerrainEnum[] naval = {sea, bridge, reef, beach, river}, ground = {lowland, mountain, road, hill, wood};
 		int count = 0;
 
 		for (TerrainEnum t : cross)
-			if (t == TerrainEnum.lowland
-					|| t == TerrainEnum.mountain
-					|| t == TerrainEnum.road
-					|| t == TerrainEnum.hill
-					|| t == TerrainEnum.wood) count++;
+			if (isAny(t, ground)) count++;
 
 		switch (count) {
 			case 2:
@@ -242,7 +369,6 @@ public class TerrainRenderer {
 				if (!isAny(cross[2], naval)) return TerrainLocation.SeaLocation.BOTTOM;
 				if (!isAny(cross[3], naval)) return TerrainLocation.SeaLocation.LEFT;
 		    break;
-			case 0:
 		}
 		return TerrainLocation.SeaLocation.NORMAL;
 	}

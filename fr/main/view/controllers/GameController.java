@@ -3,6 +3,7 @@ package fr.main.view.controllers;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+import java.io.File;
 
 import fr.main.model.players.Player;
 import fr.main.model.*;
@@ -164,7 +165,12 @@ public class GameController extends Controller {
         /**
          * When choosing unit to heal.
          */
-        HEAL(true);
+        HEAL(true),
+
+        /**
+         * When looking at an unit move and / or attack range
+         */
+        RANGE(true);
 
         /**
          * Can the cursor move in this mode.
@@ -429,18 +435,103 @@ public class GameController extends Controller {
         dayPanel.setVisible(true);
     }
 
+
+    public static enum Controls {
+
+        MOVE_LEFT("MOVE_LEFT", KeyEvent.VK_LEFT, KeyEvent.VK_Q),
+        MOVE_TOP("MOVE_TOP", KeyEvent.VK_UP, KeyEvent.VK_Z),
+        MOVE_RIGHT("MOVE_RIGHT", KeyEvent.VK_RIGHT, KeyEvent.VK_D),
+        MOVE_BOTTOM("MOVE_BOTTOM", KeyEvent.VK_DOWN, KeyEvent.VK_S),
+        ENTER("ENTER", KeyEvent.VK_ENTER),
+        ESCAPE("ESCAPE", KeyEvent.VK_ESCAPE),
+        SHORTEN_PATH("SHORTEN_PATH", KeyEvent.VK_A),
+        RANGE("RANGE", KeyEvent.VK_E);
+
+        public static final File parameters = new File("./parameters");
+        private static final HashMap<Integer, Controls> commands = new HashMap<Integer, Controls>();
+
+        static{
+            updateAll();
+        }
+
+        private final String name;
+        private final int[] defaultValue;
+
+        private Controls(String name, int... defaultValue){
+            this.defaultValue = defaultValue;
+            this.name         = name;
+        }
+
+        public String toString(){
+            return name;
+        }
+
+        public LinkedList<Integer> keys(){
+            LinkedList<Integer> list = new LinkedList<Integer>();
+            for (Map.Entry<Integer, Controls> e : commands.entrySet())
+                if (e.getValue() == this)
+                    list.add(e.getKey());
+            return list;
+        } 
+
+        public void add(int i){
+            commands.putIfAbsent(i, this);
+        }
+
+        public static void updateAll(){
+            boolean b = true;
+            if (parameters.exists() && parameters.isFile() && parameters.canRead() && parameters.canWrite()){
+                b = false;
+                try(Scanner br = new Scanner(parameters)){
+                    Controls c = null;
+                    loop:
+                    while (br.hasNext()){
+                        String s = br.next();
+                        for (Controls cc : Controls.values())
+                            if (cc.toString().equals(s)){
+                                c = cc;
+                                continue loop;
+                            }
+                        c.add(Integer.parseInt(s));
+                    }
+                }catch(Exception e){
+                    b = true;
+                }
+            }
+            if (b){
+                defaultValues();
+            }
+        }
+
+        public static void defaultValues(){
+            commands.clear();
+            for (Controls c : Controls.values())
+                for (Integer i : c.defaultValue)
+                    c.add(i);
+        }
+
+        public static Controls getControl(int i){
+            return commands.get(i);
+        }
+    }
+
     @Override
     public void keyPressed (KeyEvent e) {
-        int key = e.getKeyCode();
+        if (mode == Mode.RANGE){
+            mode = Mode.MOVE;
+            world.clearTarget();
+        } // any action removes this mode
+
+        Controls key = Controls.getControl(e.getKeyCode());
         if (!isListening) {
             isListening = true;
             if (mode.canMove()) {
                 targetUnit = world.getUnit(cursor.position());
-                if      (key == KeyEvent.VK_UP) move(Direction.TOP);
-                else if (key == KeyEvent.VK_LEFT) move(Direction.LEFT);
-                else if (key == KeyEvent.VK_RIGHT) move(Direction.RIGHT);
-                else if (key == KeyEvent.VK_DOWN) move(Direction.BOTTOM);
-                else if (key == KeyEvent.VK_ENTER) {
+                if      (key == Controls.MOVE_TOP)     move(Direction.TOP);
+                else if (key == Controls.MOVE_LEFT)   move(Direction.LEFT);
+                else if (key == Controls.MOVE_RIGHT)  move(Direction.RIGHT);
+                else if (key == Controls.MOVE_BOTTOM) move(Direction.BOTTOM);
+                else if (key == Controls.ENTER) {
                     if (mode == Mode.UNIT) { // validing unit move
                         mode = Mode.IDLE;
                         new Thread(() -> { // apply the movement
@@ -473,10 +564,11 @@ public class GameController extends Controller {
                                     (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                                     (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                                     UniverseRenderer.FlashMessage.Type.ALERT);
-                                world.flash ("" + (target.getLife() - tLife),
-                                    (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
-                                    (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
-                                    UniverseRenderer.FlashMessage.Type.ALERT);
+                                if (world.isVisible(target.getX(), target.getY()))
+                                    world.flash ("" + (target.getLife() - tLife),
+                                        (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                                        (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                                        UniverseRenderer.FlashMessage.Type.ALERT);
                                 Sdfx.EXPLOSION.play();
                             }else{
                                 targetUnit.setMoveQuantity(0);
@@ -535,21 +627,28 @@ public class GameController extends Controller {
                         targetUnit.setMoveQuantity(0);
                         world.clearTarget();
                     }
-                } else if (key == KeyEvent.VK_ESCAPE) { // exit and back to move mode
+                } else if (key == Controls.SHORTEN_PATH && mode == Mode.UNIT){
+                    path.shorten();
+                } else if (key == Controls.RANGE && mode == Mode.MOVE && 
+                           world.isVisible(cursor.getX(), cursor.getY()) &&
+                           world.getUnit(cursor.getX(), cursor.getY()) != null) {
+                    mode = Mode.RANGE;
+                    world.updateTarget(targetUnit);
+                } else if (key == Controls.ESCAPE) { // exit and back to move mode
                     mode = Mode.MOVE;
                     unitCursor.setCursor(true);
                     world.clearTarget();
                     path.visible = false;
                 }
             } else if (mode == Mode.MENU) { // update index and valid menu action for focusedActionPanel
-                    if      (key == KeyEvent.VK_UP)    focusedActionPanel.goUp();
-                    else if (key == KeyEvent.VK_DOWN)  focusedActionPanel.goDown();
-                    else if (key == KeyEvent.VK_ENTER) focusedActionPanel.perform();
-                    else if (key == KeyEvent.VK_ESCAPE){
+                    if      (key == Controls.MOVE_TOP)    focusedActionPanel.goUp();
+                    else if (key == Controls.MOVE_BOTTOM)  focusedActionPanel.goDown();
+                    else if (key == Controls.ENTER) focusedActionPanel.perform();
+                    else if (key == Controls.ESCAPE){
                         focusedActionPanel.setVisible (false);
                         world.clearTarget();
                     }
-            } else if (key == KeyEvent.VK_ESCAPE) { // exit and back move mode
+            } else if (key == Controls.ESCAPE) { // exit and back move mode
                 mode = Mode.MOVE;
                 world.clearTarget();
                 displayDamages = false;

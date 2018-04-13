@@ -12,6 +12,7 @@ import fr.main.model.units.weapons.*;
 import fr.main.model.units.land.*;
 import fr.main.model.units.air.*;
 import fr.main.model.units.naval.*;
+import fr.main.model.units.MoveType;
 
 import fr.main.view.MainFrame;
 import fr.main.view.interfaces.TerrainPanel;
@@ -20,6 +21,7 @@ import fr.main.view.render.units.air.*;
 import fr.main.view.render.units.land.*;
 import fr.main.view.render.units.naval.*;
 import fr.main.view.render.animations.*;
+import fr.main.view.render.sprites.Sprite;
 
 public class UnitRenderer {
 
@@ -54,6 +56,39 @@ public class UnitRenderer {
     }
 
     public static abstract class Render extends Renderer {
+
+        public static final Image lifeImage, ammoImage, lockImage, fuelImage,
+                                  inftry, mech, tires, tread, ships, trans, air;
+
+        static{
+            Sprite sp = Sprite.get("./assets/ingame/things.png");
+
+            lifeImage = sp.getImage(1, 44, 7, 6, 2);
+            ammoImage = sp.getImage(1, 64, 7, 5, 2);
+            lockImage = sp.getImage(0, 69, 8, 8, 2);
+            fuelImage = sp.getImage(1, 53, 7, 8, 2);
+
+            inftry = sp.getImage(10, 48, 32, 15);
+            mech   = sp.getImage(44, 55, 26, 15);
+            tires  = sp.getImage(10, 64, 31, 15);
+            tread  = sp.getImage(49, 71, 31, 15);
+            ships  = sp.getImage(10, 80, 31, 15);
+            trans  = sp.getImage(49, 89, 32, 15);
+            air    = sp.getImage( 9, 95, 31, 15);
+        }
+
+        public static Image getMoveImage(AbstractUnit u){
+            switch (u.getMoveType()){
+                case AIRY     : return air;
+                case NAVAL    : return ships;
+                case LANDER   : return trans;
+                case WHEEL    : return tires;
+                case TREAD    : return tread;
+                case INFANTRY : return inftry;
+                case MECH     : return mech;
+            }
+            return null;
+        }
 
         protected Point offset;
         protected String state;
@@ -100,14 +135,6 @@ public class UnitRenderer {
         public void draw (Graphics g, int x, int y) {
             anim.draw(g, x + offset.x, y + offset.y);
 
-            if (unit.getPrimaryWeapon() != null){
-                PrimaryWeapon p = unit.getPrimaryWeapon();
-                String s        = p.getAmmunition() + "/" + p.getMaximumAmmunition();
-                Rectangle r = g.getFont().createGlyphVector(((Graphics2D)g).getFontRenderContext(), s).getPixelBounds(null, 0, 0);
-                g.setColor(Color.BLACK);
-                g.drawString(s, x + offset.x + MainFrame.UNIT / 2 - r.height / 2 - 2, y + offset.y + MainFrame.UNIT - 4);
-            }
-
             if (MainFrame.getTimer() % 50 <= 15)
                 return;
 
@@ -119,10 +146,10 @@ public class UnitRenderer {
 
             PrimaryWeapon pr = unit.getPrimaryWeapon();
             if (pr != null && pr.getAmmunition() <= pr.maximumAmmo / 2)
-                g.drawImage(TerrainPanel.munitionsImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y, null);
+                g.drawImage(TerrainPanel.ammoImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y, null);
 
             if (unit instanceof HideableUnit && ((HideableUnit)unit).hidden())
-                g.drawImage(TerrainPanel.moveImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y + MainFrame.UNIT / 2, null);
+                g.drawImage(lockImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y + MainFrame.UNIT / 2, null);
         }
 
         public void setState (String state) {

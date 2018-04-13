@@ -2,6 +2,7 @@ package fr.main.view.controllers;
 
 import java.awt.event.*;
 import java.awt.*;
+import javax.swing.SwingUtilities;
 import java.util.*;
 import java.io.File;
 
@@ -647,6 +648,7 @@ public class GameController extends Controller {
         world.clearTarget();
         unitCursor.setCursor(true);
         displayDamages = false;
+        focusedActionPanel.setVisible (false);
         path.visible = false;
     }
 
@@ -682,7 +684,7 @@ public class GameController extends Controller {
                     else if (mode == Mode.LOAD)             validLoad();
                     else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
                     else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
-                } else if (key == Controls.ESCAPE) escape();
+                }
                 else if (key == Controls.SHORTEN_PATH && mode == Mode.UNIT) path.shorten();
                 else if (key == Controls.RANGE && mode == Mode.MOVE && 
                            world.isVisible(cursor.getX(), cursor.getY()) &&
@@ -693,11 +695,8 @@ public class GameController extends Controller {
                     if      (key == Controls.MOVE_TOP)    focusedActionPanel.goUp();
                     else if (key == Controls.MOVE_BOTTOM) focusedActionPanel.goDown();
                     else if (key == Controls.ENTER)       focusedActionPanel.perform();
-                    else if (key == Controls.ESCAPE){
-                        focusedActionPanel.setVisible (false);
-                        world.clearTarget();
-                    }
-            } else if (key == Controls.ESCAPE) escape();
+            }
+            if (key == Controls.ESCAPE) escape();
         }
     }
 
@@ -710,7 +709,7 @@ public class GameController extends Controller {
             mouse.x = e.getX() / MainFrame.UNIT;
             mouse.y = e.getY() / MainFrame.UNIT;
 
-            if (mode == Mode.UNIT && targetUnit.canStop(unitCursor.position()))
+            if (mode == Mode.UNIT)
                 path.add(unitCursor.position().getLocation());
             listenMouse = true;
         }
@@ -720,19 +719,24 @@ public class GameController extends Controller {
      * Mouse events.
      */
     public void mouseClicked(MouseEvent e) {
-      if (listenMouse) {
-        targetUnit = world.getUnit(cursor.position());
-        if (e.getButton() == MouseEvent.BUTTON3) escape();
-        else {
-          if (mode == Mode.UNIT) validUnitMove();
-          else if (mode == Mode.ATTACK) validUnitTarget();
-          else if (mode == Mode.HEAL) validHeal();
-          else if (mode == Mode.MOVE) selectOnMove();
-          else if (mode == Mode.LOAD) validLoad();
-          else if (mode == Mode.UNLOAD_LOCATE) validUnloadLocate();
-          else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
+        if (listenMouse) {
+            targetUnit = world.getUnit(cursor.position());
+            if (SwingUtilities.isRightMouseButton(e)) escape();
+            else if (SwingUtilities.isLeftMouseButton(e)) {
+                if (mode == Mode.RANGE){
+                    mode = Mode.MOVE;
+                    world.clearTarget();
+                } // any action removes this mode
+
+                if      (mode == Mode.UNIT)             validUnitMove();
+                else if (mode == Mode.ATTACK)           validUnitTarget();
+                else if (mode == Mode.HEAL)             validHeal();
+                else if (mode == Mode.MOVE)             selectOnMove();
+                else if (mode == Mode.LOAD)             validLoad();
+                else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
+                else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
+            }
         }
-      }
     }
 
     /**

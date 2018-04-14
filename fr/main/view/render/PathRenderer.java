@@ -26,25 +26,20 @@ public class PathRenderer extends Path {
     public boolean visible;
     private static Image[] images;
 
-    /**
-     * All images path
-     * TODO: change for sprites
-     */
-
     static{
         Sprite d = Sprite.get("./assets/ingame/things.png");
 
         images = new Image[]{
-            d.getImage(12, 32, 16, 16, 2),               // arrow bottom
-            d.getImage(88, 94, 16, 16, 2),               // arrow left
+            d.getImage       (12, 32, 16, 16, 2),        // arrow bottom
+            d.getImage       (88, 94, 16, 16, 2),        // arrow left
             d.getReverseImage(88, 94, 16, 16, 2, false), // arrow right
-            d.getImage(85, 76, 16, 16, 2),               // arrow top
-            d.getImage(45, 15, 16, 16, 2),               // left bottom
-            d.getImage(28, 32, 16, 16, 2),               // left top
-            d.getImage(62, 33, 16, 16, 2),               // left right
-            d.getImage(28, 15, 16, 16, 2),               // right bottom
-            d.getImage(45, 32, 16, 16, 2),               // right top
-            d.getImage(12, 15, 16, 16, 2)                // top bottom
+            d.getImage       (85, 76, 16, 16, 2),        // arrow top
+            d.getImage       (45, 15, 16, 16, 2),        // left bottom
+            d.getImage       (28, 32, 16, 16, 2),        // left top
+            d.getImage       (62, 33, 16, 16, 2),        // left right
+            d.getImage       (28, 15, 16, 16, 2),        // right bottom
+            d.getImage       (45, 32, 16, 16, 2),        // right top
+            d.getImage       (12, 15, 16, 16, 2)         // top bottom
         };
     }
 

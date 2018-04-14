@@ -21,7 +21,7 @@ public class MissileLauncher extends Building {
     private boolean fired;
 
     public MissileLauncher(Point p) {
-        super(p, 2, "Missile Launcher");
+        super(p, 2, "Missile");
         this.fired = false;
     }
 

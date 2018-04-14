@@ -648,7 +648,8 @@ public class GameController extends Controller {
         world.clearTarget();
         unitCursor.setCursor(true);
         displayDamages = false;
-        focusedActionPanel.setVisible (false);
+        if (focusedActionPanel != null)
+            focusedActionPanel.setVisible (false);
         path.visible = false;
     }
 

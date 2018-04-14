@@ -45,7 +45,7 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding, RepairB
         return u.getPlayer()==getOwner() && (u instanceof LandUnit);
     }
 
-    public static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
+    private static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
 
     static{
         UNIT_LIST = new HashMap<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>>();
@@ -64,6 +64,10 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding, RepairB
     }
 
     public Set<Class<? extends AbstractUnit>> getUnitList(){
+        return Barrack.getUnits();
+    }
+
+    public static Set<Class<? extends AbstractUnit>> getUnits(){
         return UNIT_LIST.keySet();
     }
 

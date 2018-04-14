@@ -30,7 +30,7 @@ public class Airport extends OwnableBuilding implements FactoryBuilding, RepairB
     public static final String name     = "Aéroport";
     public static final int maximumLife = 200;
 
-    public static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
+    private static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
 
     static{
         UNIT_LIST = new HashMap<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>>();
@@ -50,6 +50,10 @@ public class Airport extends OwnableBuilding implements FactoryBuilding, RepairB
     }
 
     public Set<Class<? extends AbstractUnit>> getUnitList(){
+        return Airport.getUnits();
+    }
+
+    public static Set<Class<? extends AbstractUnit>> getUnits(){
         return UNIT_LIST.keySet();
     }
 

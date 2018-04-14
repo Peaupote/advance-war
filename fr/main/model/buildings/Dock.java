@@ -31,7 +31,7 @@ public class Dock extends OwnableBuilding implements FactoryBuilding,RepairBuild
     public static final String name     = "Port";
     public static final int maximumLife = 200;
 
-    public static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
+    private static final Map<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>> UNIT_LIST;
 
     static{
         UNIT_LIST = new HashMap<Class<? extends AbstractUnit>,BiFunction<Player,Point,? extends AbstractUnit>>();
@@ -52,6 +52,10 @@ public class Dock extends OwnableBuilding implements FactoryBuilding,RepairBuild
     }
 
     public Set<Class<? extends AbstractUnit>> getUnitList(){
+        return Dock.getUnits();
+    }
+
+    public static Set<Class<? extends AbstractUnit>> getUnits(){
         return UNIT_LIST.keySet();
     }
 

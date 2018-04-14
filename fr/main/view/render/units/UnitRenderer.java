@@ -69,7 +69,7 @@ public class UnitRenderer {
             fuelImage = sp.getImage(1, 53, 7, 8, 2);
 
             inftry = sp.getImage(10, 48, 32, 15);
-            mech   = sp.getImage(44, 55, 26, 15);
+            mech   = sp.getImage(44, 55, 32, 15);
             tires  = sp.getImage(10, 64, 31, 15);
             tread  = sp.getImage(49, 71, 31, 15);
             ships  = sp.getImage(10, 80, 31, 15);

@@ -48,6 +48,9 @@ public class UniverseRenderer extends Universe {
     private Point upperLeft = new Point(0,0), lowerRight;
     private Color tColor;
 
+    /**
+     * A text message displayed for an specific amount of time on a specific position
+     */
     public static class FlashMessage {
 
         public enum Type {
@@ -122,6 +125,7 @@ public class UniverseRenderer extends Universe {
                 lastX  = x + w + (offsetX > 0 ? 1 : 0),
                 lastY  = y + h + (offsetY > 0 ? 1 : 0);
 
+        // draw terrains and buildings
         for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
             for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
                 coords[i][j].x = (j - x) * MainFrame.UNIT - offsetX;
@@ -136,6 +140,7 @@ public class UniverseRenderer extends Universe {
                 }
             }
 
+        // draw the units
         for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
             for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
                 if (!fogwar[i][j]) {
@@ -148,6 +153,7 @@ public class UniverseRenderer extends Universe {
                         UnitRenderer.render(g, coords[i][j], map.units[i][j]);
             }
 
+        // draw the flash messages
         Iterator<FlashMessage> iterator = flashs.iterator();
         while (iterator.hasNext()) {
             FlashMessage message = iterator.next();
@@ -157,6 +163,7 @@ public class UniverseRenderer extends Universe {
             if (message.time <= 0) iterator.remove();
         }
 
+        // draw the death animations
         Iterator<DeathAnimation> iterator2 = deathAnimation.iterator();
         while (iterator2.hasNext()){
             DeathAnimation d = iterator2.next();
@@ -165,10 +172,15 @@ public class UniverseRenderer extends Universe {
             if (d.time <= 0) iterator2.remove();
         }
 
+        // draw the missile animation
         if (missileAnimation != null)
             missileAnimation.draw(g);
     }
 
+    /**
+     * Goes to the next player
+     */
+    @Override
     public void next(){
         Weather w = getWeather();
         super.next();
@@ -184,6 +196,10 @@ public class UniverseRenderer extends Universe {
             MainFrame.setScene(new MenuController());
     }
 
+    /**
+     * Depending on the mode, sets some tiles to true
+     * For example in attack mode, it will set to true the tiles that can be attacked
+     */
     public void updateTarget (AbstractUnit unit) {
         clearTarget();
         if (controller.getMode() == GameController.Mode.UNIT) {
@@ -248,6 +264,9 @@ public class UniverseRenderer extends Universe {
         return false;
     }
 
+    /**
+     * Sets all the booleans in the boolean map to false
+     */
     public void clearTarget () {
         for (int i = upperLeft.x; i < lowerRight.x; i++)
             for (int j = upperLeft.y; j < lowerRight.y; j++)
@@ -256,6 +275,19 @@ public class UniverseRenderer extends Universe {
         lowerRight.move(coords[0].length, coords.length);
     }
 
+    @Override
+    public boolean setUnit(int x, int y, AbstractUnit u){
+        AbstractUnit unit = getUnit(x, y);
+        if (unit != null && unit.dead()){
+            UnitRenderer.remove(unit);
+            displayDeathAnimation(new Point(x, y), unit instanceof NavalUnit);
+        }
+        return super.setUnit(x, y, u);
+    }
+
+    /**
+     * Add a flash message
+     */
     public void flash (String message, int x, int y, int time) {
         flashs.add(new FlashMessage(message, x, y, time, FlashMessage.Type.SUCCESS));
     }
@@ -312,6 +344,9 @@ public class UniverseRenderer extends Universe {
         deathAnimation.add(new DeathAnimation(pt, naval ? sink : explosion));
     }
 
+    /**
+     * Class representing a death animation
+     */
     class DeathAnimation{
         public final int x, y;
         public int time;
@@ -329,16 +364,6 @@ public class UniverseRenderer extends Universe {
         }
     }
 
-    @Override
-    public boolean setUnit(int x, int y, AbstractUnit u){
-        AbstractUnit unit = getUnit(x, y);
-        if (unit != null && unit.dead()){
-            UnitRenderer.remove(unit);
-            displayDeathAnimation(new Point(x, y), unit instanceof NavalUnit);
-        }
-        return super.setUnit(x, y, u);
-    }
-
     private MissileAnimation missileAnimation;
 
     public void fireMissile(MissileLauncher missile, int x, int y){
@@ -346,6 +371,9 @@ public class UniverseRenderer extends Universe {
         missileAnimation = new MissileAnimation(missile, x, y);
     }
 
+    /**
+     * Represents a missile animation
+     */
     class MissileAnimation{
         private int x, y;
         private boolean goingUp;
@@ -394,9 +422,9 @@ public class UniverseRenderer extends Universe {
         }
 
         public void draw(Graphics g){
-            if (!goingUp && x == endX && y >= endY){
+            if (!goingUp && x == endX && y >= endY){ // end of the animation
 
-                if (explosionNumber < 24){
+                if (explosionNumber < 24){ // display final explosion
                     for (int i = -3; i < 4; i++)
                         for (int j = -3; j < 4; j++){
                             int tmpX = endX + i * MainFrame.UNIT, tmpY = endY + j * MainFrame.UNIT;
@@ -407,7 +435,7 @@ public class UniverseRenderer extends Universe {
                         }
 
                     explosionNumber ++;
-                }else{
+                }else{ // do the actual damages and delete this animation
                     missile.fire(endX / MainFrame.UNIT + controller.camera.getX(), endY / MainFrame.UNIT + controller.camera.getY());
 
                     for (Map.Entry<AbstractUnit, Integer> e : damages.entrySet())
@@ -418,23 +446,24 @@ public class UniverseRenderer extends Universe {
                     UniverseRenderer.this.missileAnimation = null;
                     controller.setMode(GameController.Mode.MOVE);
                 }
-            }else{
+            }else{ // display the rise and fall of the missile
                 if (y <= - fly.getHeight(controller.makeView()) - smokeUp.getHeight(controller.makeView())) {
                     y = 0;
                     goingUp = false;
                     x = endX;
                 }
 
-                if (goingUp){
+                if (goingUp){ // rise of the missile
                     if (beginY + MainFrame.UNIT - y <= fly.getHeight(controller.makeView()))
                         g.drawImage(launch, x + (MainFrame.UNIT - launch.getWidth(controller.makeView())) / 2, y, controller.makeView());
                     else if (beginY + MainFrame.UNIT - y >= fly.getHeight(controller.makeView()) + smokeUp.getHeight(controller.makeView())) {
+                        // engines are turned on
                         g.drawImage(fly, x + (MainFrame.UNIT - fly.getWidth(controller.makeView())) / 2, y, controller.makeView());
                         g.drawImage(smokeUp, x + (MainFrame.UNIT - smokeUp.getWidth(controller.makeView())) / 2, y + fly.getHeight(controller.makeView()), controller.makeView());
                     }
                     else
                         g.drawImage(fly, x + (MainFrame.UNIT - fly.getWidth(controller.makeView())) / 2, y, controller.makeView());
-                }else{
+                }else{ // fall of the missile
                     g.drawImage(arrival, x + (MainFrame.UNIT - arrival.getWidth(controller.makeView())) / 2, y - arrival.getHeight(controller.makeView()), controller.makeView());
                     g.drawImage(smokeDown, x + (MainFrame.UNIT - smokeDown.getWidth(controller.makeView())) / 2, y - arrival.getHeight(controller.makeView()) - smokeDown.getHeight(controller.makeView()), controller.makeView());
                 }

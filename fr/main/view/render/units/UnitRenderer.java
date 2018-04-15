@@ -77,6 +77,10 @@ public class UnitRenderer {
             air    = sp.getImage( 9, 95, 31, 15);
         }
 
+        /**
+         * @param u the unit considered
+         * @return the image associated to the unit's move type
+         */
         public static Image getMoveImage(AbstractUnit u){
             switch (u.getMoveType()){
                 case AIRY     : return air;
@@ -137,17 +141,21 @@ public class UnitRenderer {
 
             if (MainFrame.getTimer() % 50 <= 15)
                 return;
-
+            
+            // draw a heart to show that the unit's life is low
             if (unit.getLife() < 34)
                 g.drawImage(TerrainPanel.lifeImage, x + offset.x, y + offset.y, null);
 
+            // draw a jerrycan to show that the unit's fuel is low
             if (unit.getFuel().getQuantity() <= unit.getFuel().maximumQuantity / 2)
                 g.drawImage(TerrainPanel.fuelImage, x + offset.x, y + offset.y + MainFrame.UNIT / 2, null);
 
+            // draw a bullet to show that the unit's ammo is low
             PrimaryWeapon pr = unit.getPrimaryWeapon();
             if (pr != null && pr.getAmmunition() <= pr.maximumAmmo / 2)
                 g.drawImage(TerrainPanel.ammoImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y, null);
 
+            // draw a lock to show that the unit is hidden
             if (unit instanceof HideableUnit && ((HideableUnit)unit).hidden())
                 g.drawImage(lockImage, x + offset.x + MainFrame.UNIT / 2, y + offset.y + MainFrame.UNIT / 2, null);
         }
@@ -169,7 +177,11 @@ public class UnitRenderer {
 
     public static Render getRender (AbstractUnit unit) {
         if (renderers.containsKey(unit)) return renderers.get(unit);
-        
+        if (constructors.containsKey(unit.getClass())){
+            renderers.put(unit,entry.getValue().apply(unit));
+            return renderers.get(unit);
+        }
+
         for (Map.Entry<Class<? extends AbstractUnit>, Function<AbstractUnit,? extends Render>> entry : constructors.entrySet())
             if (entry.getKey().isInstance(unit)){
                 renderers.put(unit,entry.getValue().apply(unit));

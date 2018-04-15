@@ -72,6 +72,9 @@ public class BuildingInterface extends GameController.ControllerPanel {
         }
     }
 
+    /**
+     * Class used to sort the list of units that can be created
+     */
     static class Comparateur implements Comparator<Class<? extends AbstractUnit>>{
         public static final Comparateur instance = new Comparateur();
 
@@ -98,8 +101,6 @@ public class BuildingInterface extends GameController.ControllerPanel {
         building = (FactoryBuilding)controller.world.getBuilding(controller.cursor.position());
         Set<Class<? extends AbstractUnit>> units = building.getUnitList();
         for (Index i: actions.values())
-            if (units.contains(((IndexClass)i).c)) i.setActive(true);
-            else i.setActive(false);
+            i.setActive(units.contains(((IndexClass)i).c));
     }
-
 }

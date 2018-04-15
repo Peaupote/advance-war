@@ -74,8 +74,8 @@ public class TerrainPanel extends InterfaceUI {
 
         //image displayed : terrain or building
         Point img = new Point(x + 30, y + 20);
-        if (building == null) TerrainRenderer.render (g, img, cursor.position());
-        else                  BuildingRenderer.render(g, img, building);
+        if (building == null) TerrainRenderer.render (g, img, cursor.position()); // display the building
+        else                  BuildingRenderer.render(g, img, building);          // display the terrain
 
         g.setColor (FOREGROUNDCOLOR);
 
@@ -94,24 +94,31 @@ public class TerrainPanel extends InterfaceUI {
                 (unit.getPlayer() == world.getCurrentPlayer() ||
                  world.isVisibleOpponentUnit(cursor.getX(), cursor.getY()))) {
 
+            // unit's name
             g.drawString(unit.getName(), x + 15, y + 100);
+            // unit's owner
             g.drawString(unit.getPlayer().name, x + 15, y + 120);
 
+            // unit's life
             g.drawImage(lifeImage, x + 15, y + 130, null);
             g.drawString(unit.getLife() + "", x + 30, y + 140);
 
+            // unit's vision
             g.drawImage(visionImage, x + 60, y + 130, null);
             g.drawString(unit.getVision() + "", x + 75, y + 135);
 
+            // unit's move quantity
             g.drawImage(UnitRenderer.Render.getMoveImage(unit), x + 15, y + 153, null);
             g.drawString(unit.getMoveQuantity() + "/" + unit.getMaxMoveQuantity(), x + 38, y + 158);
 
+            // unit's weapon's ammo
             PrimaryWeapon p = unit.getPrimaryWeapon();
             if (p != null){
                 g.drawImage(ammoImage, x + 60, y + 153, null);
                 g.drawString(p.getAmmunition() + "/" + p.maximumAmmo, x + 75, y + 158);
             }
 
+            // unit's fuel
             Unit.Fuel fuel = unit.getFuel();
             g.drawImage(fuelImage, x + 15, y + 170, null);
             g.drawString(fuel.getQuantity() + "/" + fuel.maximumQuantity, x + 35, y + 185);
@@ -122,13 +129,15 @@ public class TerrainPanel extends InterfaceUI {
             g.drawString(building.getName(), x + 15, y + 100);
             if (building instanceof OwnableBuilding) {
                 Player p = ((OwnableBuilding)building).getOwner();
+                // building's owner
                 g.drawString(p == null ? "Neutre" : p.name, x + 15, y + 120); // owner
 
                 g.drawImage(buildingImage, x + 15, y + 130, null);
+                // building's life
                 g.drawString(((OwnableBuilding)building).getLife() + "", x + 45, y + 145);
             }
 
-        } else {
+        } else { // there is nothing particular on the tile
             g.drawString ("No Unit", x + 15, y + 100);
             g.drawString ("No Building", x + 15, y + 120);
         }

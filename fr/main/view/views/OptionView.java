@@ -39,7 +39,7 @@ public class OptionView extends View {
     public OptionView(OptionController controller){
         super(controller);
 
-
+        // for each control, create a panel to display control's name & associated keys
         GameController.Controls[] controls = GameController.Controls.values();
         panels = new ControllPanel[controls.length];
         this.setLayout(new GridLayout(controls.length + 1,1));
@@ -52,10 +52,12 @@ public class OptionView extends View {
         JPanel p = new JPanel();
         JButton c;
 
+        // Quit button
         c = new JButton("Quit");
         c.addActionListener(controller.quit);
         p.add(c);
 
+        // Cancel button (to go back to saved configuration)
         c = new JButton("Cancel");
         c.addActionListener(e -> {
             for (ControllPanel co : panels){
@@ -64,6 +66,7 @@ public class OptionView extends View {
         });
         p.add(c);
 
+        // Save button (to save the current configuration)
         c = new JButton("Save");
         c.addActionListener(e -> {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(GameController.Controls.parameters))) {
@@ -83,6 +86,7 @@ public class OptionView extends View {
         });
         p.add(c);
 
+        // Default button (to go back to default settings)
         c = new JButton("Default");
         c.addActionListener(e -> {
             GameController.Controls.defaultValues();
@@ -94,6 +98,9 @@ public class OptionView extends View {
         add(p);
     }
 
+    /**
+     * Class used to get a key pressed, used to add a control
+     */
     class KeyDialog extends JDialog {
         /**
          * Add KeyDialog UID
@@ -115,6 +122,9 @@ public class OptionView extends View {
         }
     }
 
+    /**
+     * A control panel is a panel associated to a control in which there is the name of the control, an "add" button and the list of existing keys associated to the control
+     */
     class ControllPanel extends JPanel{
         /**
          * Add Unit UID

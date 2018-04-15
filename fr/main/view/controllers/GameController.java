@@ -437,6 +437,9 @@ public class GameController extends Controller {
         dayPanel.setVisible(true);
     }
 
+    /**
+     * Represents the controls : a control is an action; differents keys can be associated to a control
+     */
     public static enum Controls {
 
         MOVE_LEFT("MOVE_LEFT", KeyEvent.VK_LEFT, KeyEvent.VK_Q),
@@ -446,6 +449,7 @@ public class GameController extends Controller {
         ENTER("ENTER", KeyEvent.VK_ENTER),
         ESCAPE("ESCAPE", KeyEvent.VK_ESCAPE),
         SHORTEN_PATH("SHORTEN_PATH", KeyEvent.VK_A),
+        NEXT_UNIT("NEXT_UNIT", KeyEvent.VK_),
         RANGE("RANGE", KeyEvent.VK_E);
 
         public static final File parameters = new File("./parameters");
@@ -467,6 +471,9 @@ public class GameController extends Controller {
             return name;
         }
 
+        /**
+         * @return the keys (as integers) associated to the action
+         */
         public LinkedList<Integer> keys(){
             LinkedList<Integer> list = new LinkedList<Integer>();
             for (Map.Entry<Integer, Controls> e : commands.entrySet())
@@ -479,6 +486,9 @@ public class GameController extends Controller {
             commands.putIfAbsent(i, this);
         }
 
+        /**
+         * Reads the "parameter" file to update the controls ; set default values if the file is incorrect
+         */
         public static void updateAll(){
             boolean b = true;
             if (parameters.exists() && parameters.isFile() && parameters.canRead() && parameters.canWrite()){
@@ -504,6 +514,9 @@ public class GameController extends Controller {
             }
         }
 
+        /**
+         * Sets the controls to their default value
+         */
         public static void defaultValues(){
             commands.clear();
             for (Controls c : Controls.values())
@@ -742,7 +755,7 @@ public class GameController extends Controller {
 
     @Override
     public void mouseWheelMoved (MouseWheelEvent e){
-        if (mode == Mode.MENU) { // update index and valid menu action for focusedActionPanel
+        if (mode == Mode.MENU) { // change index in focusedActionPanel
             Runnable action = e.getWheelRotation() < 0 ? focusedActionPanel::goUp : focusedActionPanel::goDown;
 
             for (int i = 0; i < Math.abs(e.getWheelRotation()); i++)
@@ -844,6 +857,10 @@ public class GameController extends Controller {
         numbers[9]  = d.getImage(118, 37, 7, 12);
     }
 
+    /**
+     * @param damage the amount of damages inflicted
+     * @param location is the position in pixels to display the damages
+     */
     private void displayDamages(Graphics g, int damage, Point location){
         int x = (location.x - camera.getX()) * MainFrame.UNIT,
         y = (location.y - camera.getY()) * MainFrame.UNIT - (location.y != 0 ? MainFrame.UNIT / 2 : 0);
@@ -853,6 +870,9 @@ public class GameController extends Controller {
         g.drawImage(numbers[damage % 10],        x + 16, y + 10, gameViewController);
     }
 
+    /**
+     * Display damages inflicted by the unit to the target and the counter attack
+     */
     public void displayDamages(Graphics g){
         if (displayDamages){
             displayDamages(g, damage1, point1);
@@ -860,10 +880,25 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * True if and only if possible damages are displayed (in attack mode, when hovering an opponent unit) 
+     */
     private boolean displayDamages;
+    /**
+     * Positions of the unit and the target
+     */
     private Point point1 = new Point(-1,-1), point2 = new Point(-1, -1);
+    /**
+     * Damages inflicted to the unit and to the target
+     */
     private int damage1, damage2;
 
+    /**
+     * @param missile the missile launcher used
+     * @param x the horizontal position of the target
+     * @param y the vertical position of the target
+     * Lauch a missile at the specified position
+     */
     private void fireMissile(MissileLauncher missile, int x, int y){
         mode = Mode.IDLE;
         world.fireMissile(missile, x, y);

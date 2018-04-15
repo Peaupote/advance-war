@@ -114,6 +114,10 @@ public interface AbstractUnit extends Serializable {
         renderVision(fog, true);
     }
 
+    /**
+     * @param map is the boolean map
+     * Sets to true all tiles that can be attacked within one day (move + attack)
+     */
     default void renderTargets(boolean[][] map){
         MoveZone m = getMoveMap();
         Node[][] n = m.map;
@@ -205,6 +209,10 @@ public interface AbstractUnit extends Serializable {
         // the object MoveZone is used to return both the offset and the Node[][] map
     }
 
+    /**
+     * @param point the target tile
+     * @return a list of Direction which is a path to go to the target tile (it is the shortest path)
+     */
     default LinkedList<Direction> findPath(Point point){
         Universe u = Universe.get();
         int posX   = getX(), posY = getY(),

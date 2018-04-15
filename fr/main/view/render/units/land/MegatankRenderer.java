@@ -14,7 +14,7 @@ public class MegatankRenderer extends UnitRenderer.Render {
     super (unit);
 
     LinkedList<ScaleRect> areas = new LinkedList<>();
-    areas.add(new ScaleRect (135, 1, 64, 63, 0.5));
+    areas.add(new ScaleRect (16, 0, 16, 16, 2));
     AnimationState idle = new AnimationState(new SpriteList(getDir() + "missing.png", areas), 20);
 
     anim.put("idleRIGHT", idle);

@@ -114,6 +114,35 @@ public interface AbstractUnit extends Serializable {
         renderVision(fog, true);
     }
 
+    default void renderTargets(boolean[][] map){
+        MoveZone m = getMoveMap();
+        Node[][] n = m.map;
+        int x = getX(), y = getY(), oX = m.offset.x, oY = m.offset.y, moveQuantity = getMaxMoveQuantity();
+        
+        for (int i = 0; i < n.length; i++)
+            for (int j = 0; j < n[i].length; j++){
+                if (n[i][j].canStop && n[i][j].lowestCost < moveQuantity)
+                    renderTarget(map, oX + j, oY + i);
+            }
+    }
+
+    /**
+     * @param map is a representation of the map
+     * @param x is the horizontal position from which we shoot
+     * @param y is the vertical position from which we shoot
+     * set all tiles of the map that can be attacked (with the main or secondary weapon) from the position (x,y) to true, whatever the unit on it
+     */
+    default void renderTarget (boolean[][] map, int x, int y) {
+        if (getPrimaryWeapon() != null)
+            getPrimaryWeapon().renderTarget(map, this, x, y);
+        if (getSecondaryWeapon() != null)
+            getSecondaryWeapon().renderTarget(map, this, x, y);
+    }
+
+    default void renderTarget (boolean[][] map){
+        renderTarget(map, getX(), getY());
+    }
+
     /**
      * @return a move zone which represents the part of the map on which the unit can go
      */
@@ -236,18 +265,6 @@ public interface AbstractUnit extends Serializable {
             d.opposed().move(point);
         }
         return path;
-    }
-
-    /**
-     * @param map is a representation of the map
-     * @param x is the horizontal position from which we shoot
-     * @param y is the vertical position from which we shoot
-     * set all tiles of the map that can be attacked (with the main or secondary weapon) from the position (x,y) to true, whatever the unit on it
-     */
-    void renderTarget (boolean[][] map, int x, int y);
-
-    default void renderTarget(boolean[][] map){
-        renderTarget(map,getX(),getY());
     }
 
     /**

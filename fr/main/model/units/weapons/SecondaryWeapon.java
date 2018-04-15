@@ -31,13 +31,12 @@ public class SecondaryWeapon extends Weapon{
     }
 
     @Override
-    public void renderTarget(boolean[][] map, AbstractUnit u){
-        int x = u.getX(), y = u.getY();
+    public void renderTarget(boolean[][] map, AbstractUnit u, int x, int y){
         if (u.getMoveQuantity() != 0)
             for (Direction d : Direction.cardinalDirections())
                 if (y + d.x >= 0 && y + d.x < map.length && x + d.y >= 0 && x + d.y < map.length)
                     // if the point is valid, we can attack
-                    map[y+d.x][x+d.y]=true;
+                    map[y + d.x][x + d.y] = true;
     }
 
     @Override

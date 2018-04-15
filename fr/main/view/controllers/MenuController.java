@@ -19,40 +19,43 @@ public class MenuController extends Controller {
                                 exit,
                                 host,
                                 join,
+                                option,
                                 load;
 
     private boolean listen;
-	  private MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
+    private MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
 
     public class Music implements ActionListener {
      
-      private final JButton sound;
+        private final JButton sound;
 
-      public Music (JButton enableMusic) {
-        enableMusic.addActionListener(this);
-        sound = enableMusic;
-      }
-
-      public void actionPerformed (ActionEvent e) {
-        if(listen) {
-          sound.setIcon(new ImageIcon("./assets/button/music03.png"));
-          bm.start(true);
-        } else {
-          sound.setIcon(new ImageIcon("./assets/button/music02.png"));
-          bm.stop();
+        public Music (JButton enableMusic) {
+            enableMusic.addActionListener(this);
+            sound = enableMusic;
         }
-        listen = !listen;
-      }
+
+        public void actionPerformed (ActionEvent e) {
+            if(listen) {
+                sound.setIcon(new ImageIcon("./assets/button/music03.png"));
+                bm.start(true);
+            } else {
+                sound.setIcon(new ImageIcon("./assets/button/music02.png"));
+                bm.stop();
+            }
+            listen = !listen;
+        }
     }
 
     public MenuController () {
         super();
 
-        play = e -> MainFrame.setScene(new CreateController());
+        play   = e -> MainFrame.setScene(new CreateController());
 
-        exit = e -> System.exit(0);
+        option = e -> MainFrame.setScene(new OptionController());
 
-        load = e -> {
+        exit   = e -> System.exit(0);
+
+        load   = e -> {
             JFileChooser jfc = new JFileChooser(Universe.mapPath);
             jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             jfc.addChoosableFileFilter(new FileNameExtensionFilter("Only .map files are accepted", "map"));
@@ -63,7 +66,7 @@ public class MenuController extends Controller {
             }
         };
 
-        host = e -> {
+        host   = e -> {
             try {
                 Server server = new Server(8080);
                 new Thread(server::listen).start();
@@ -77,7 +80,7 @@ public class MenuController extends Controller {
                 ex.printStackTrace();
             }
         };
-        join = e -> MainFrame.setScene(new ConnectionController());
+        join   = e -> MainFrame.setScene(new ConnectionController());
     }
 
     public View makeView () {

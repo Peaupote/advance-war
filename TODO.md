@@ -33,7 +33,8 @@ TODO
 - [x] Display death/destruction animation
 - [x] Display building's life
 - [x] Change the size of the frame
-- [ ] Display ammunitions
+- [x] Possibility to change controls
+- [x] Display ammunitions
 - [ ] Improve design of the panels (in game)
 - [ ] Victory panel
 

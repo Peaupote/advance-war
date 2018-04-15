@@ -49,7 +49,7 @@ public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUni
     }
 
     public boolean canCharge(AbstractUnit u){
-        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u instanceof WalkingUnit;
+        return !isFull() && u.getPlayer() == getPlayer() && !units.contains(u) && u.moveCost(getX(), getY()) != null && u instanceof WalkingUnit;
     }
 
     public boolean charge(AbstractUnit u){
@@ -62,7 +62,7 @@ public class BlackBoat extends Unit implements NavalUnit,HealerUnit,TransportUni
     }
 
     public boolean canRemove(AbstractUnit u, int x, int y){
-        return units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.canStop(x, y);
+        return units.contains(u) && Math.abs(x - getX()) + Math.abs(y - getY()) == 1 && u.moveCost(getX(), getY()) != null && u.canStop(x, y);
     }
 
     public boolean remove(AbstractUnit u, int x, int y){

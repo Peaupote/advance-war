@@ -16,7 +16,7 @@ public class BattleshipRenderer extends UnitRenderer.Render {
     LinkedList<ScaleRect> areas = new LinkedList<>();
     areas.add(new ScaleRect (119, 4, 16, 15, 2));
     areas.add(new ScaleRect (139, 4, 16, 15, 2));
-    AnimationState idle = new AnimationState(new SpriteList(getDir() + "sea.png", areas), 20);
+    AnimationState idle = new AnimationState(new SpriteList(getDir() + "sea.png", areas), 30);
 
     anim.put("idleRIGHT", idle);
     anim.setState("idleRIGHT");

@@ -44,9 +44,15 @@ public abstract class Weapon implements java.io.Serializable {
     /**
      * @param map is the map represented by booleans
      * @param u is the unit using this weapon
+     * @param x the horizontal position from which fire
+     * @param y the vertical position from which fire
      * Set the tiles that can be fired on (if used by the unit) to true
      */
-    public abstract void renderTarget(boolean[][] map, AbstractUnit u);
+    public abstract void renderTarget(boolean[][] map, AbstractUnit u, int x, int y);
+
+    public void renderTarget(boolean[][] map, AbstractUnit u){
+        renderTarget(map, u, u.getX(), u.getY());
+    }
 
     public String toString(){
         return name;

@@ -21,7 +21,7 @@ public class MissileLauncher extends Building {
     private boolean fired;
 
     public MissileLauncher(Point p) {
-        super(p, 2, "Missile Launcher");
+        super(p, 2, "Missile");
         this.fired = false;
     }
 
@@ -48,12 +48,12 @@ public class MissileLauncher extends Building {
             unit.dies();
         unit = u.getUnit(x, y);
         if (unit != null) // center of the target
-            unit.removeLife(30);
+            unit.removeLife(40);
         for (int i = 1; i < 4; i++) // cardinal directions from the target
             for (Direction d : Direction.cardinalDirections()){
                 unit = u.getUnit(x + i * d.x, y + i * d.y);
                 if (unit != null)
-                    unit.removeLife(30);
+                    unit.removeLife(40);
             }
 
         int[][] t = {
@@ -64,7 +64,7 @@ public class MissileLauncher extends Building {
                 for (int[] tab : t){
                     unit = u.getUnit(x + j * tab[0], y + (i - j) * tab[1]);
                     if (unit != null)
-                        unit.removeLife(30);
+                        unit.removeLife(40);
                 }
     }
 }

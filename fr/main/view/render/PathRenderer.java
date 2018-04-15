@@ -10,6 +10,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.Position;
 import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.render.sprites.Sprite;
 
 /**
  * Arrow renderer for path
@@ -23,38 +24,30 @@ public class PathRenderer extends Path {
 	private Position.Camera camera;
     private UniverseRenderer world;
     public boolean visible;
-    private Image[] images;
+    private static Image[] images;
 
-    /**
-     * All images path
-     * TODO: change for sprites
-     */
-    private static String[] filepaths = {
-            "./assets/arrows/arrow-bottom.png",
-            "./assets/arrows/arrow-left.png",
-            "./assets/arrows/arrow-right.png",
-            "./assets/arrows/arrow-top.png",
-            "./assets/arrows/left-bottom.png",
-            "./assets/arrows/left-top.png",
-            "./assets/arrows/left-right.png",
-            "./assets/arrows/right-bottom.png",
-            "./assets/arrows/right-top.png",
-            "./assets/arrows/top-bottom.png"
-    };
+    static{
+        Sprite d = Sprite.get("./assets/ingame/things.png");
+
+        images = new Image[]{
+            d.getImage       (12, 32, 16, 16, 2),        // arrow bottom
+            d.getImage       (88, 94, 16, 16, 2),        // arrow left
+            d.getReverseImage(88, 94, 16, 16, 2, false), // arrow right
+            d.getImage       (85, 76, 16, 16, 2),        // arrow top
+            d.getImage       (45, 15, 16, 16, 2),        // left bottom
+            d.getImage       (28, 32, 16, 16, 2),        // left top
+            d.getImage       (62, 33, 16, 16, 2),        // left right
+            d.getImage       (28, 15, 16, 16, 2),        // right bottom
+            d.getImage       (45, 32, 16, 16, 2),        // right top
+            d.getImage       (12, 15, 16, 16, 2)         // top bottom
+        };
+    }
 
     public PathRenderer (Position.Camera camera) {
         super();
         this.camera = camera;
         this.world = (UniverseRenderer)Universe.get();
         visible = false;
-
-        images = new Image[filepaths.length];
-        try {
-            for (int i = 0; i < filepaths.length; i++)
-                images[i] = ImageIO.read(new File(filepaths[i]));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
     }
 
     public void draw (Graphics g, int offsetX, int offsetY) {

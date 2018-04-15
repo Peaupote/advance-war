@@ -10,12 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
   - Terrain corner
   - Can save and load a game 
-  - IA attack
   - Can play with mouse. Except in MENU mode
   - Network Hub
   - Begin sound effects 
-  - In-game nimations
+  - In-game animations
   - Makefile build
+  - Controls change possibility
+  - Option panel
 ### Changed
   - Resizable frame
 ### Fixed

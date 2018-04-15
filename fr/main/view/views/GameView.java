@@ -40,7 +40,7 @@ public class GameView extends View {
       controller.world.draw(g, x, y, offsetX, offsetY);
       
       // render cursor
-      if (controller.getMode() != GameController.Mode.MOVE)
+      if (controller.getMode() != GameController.Mode.MOVE && controller.getMode() != GameController.Mode.RANGE)
         controller.unitCursor.draw(g);
       else controller.cursor.draw(g);
 

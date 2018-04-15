@@ -17,10 +17,10 @@ import fr.main.model.units.weapons.Weapon;
 public abstract class Unit implements AbstractUnit {
 
     /**
-	 * Add Unit UID
-	 */
-	private static final long serialVersionUID = 5902107581192600020L;
-	/**
+     * Add Unit UID
+     */
+    private static final long serialVersionUID = 5902107581192600020L;
+    /**
      * Life in percentage
      */
     protected Point location;
@@ -36,10 +36,10 @@ public abstract class Unit implements AbstractUnit {
 
     public class Fuel implements java.io.Serializable{
         /**
-		 * 
-		 */
-		private static final long serialVersionUID = 5637502351862309798L;
-		public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
+         * 
+         */
+        private static final long serialVersionUID = 5637502351862309798L;
+        public final String name; // l'infanterie n'a pas de 'carburant' mais des 'rations' (c'est un détail mais bon)
         public final int maximumQuantity;
         private int quantity;
         public final boolean diesIfNoFuel;
@@ -92,7 +92,6 @@ public abstract class Unit implements AbstractUnit {
         life = 0;
         Universe.get().setUnit(getX(), getY(), null);
         player.remove(this);
-        player = null;
     }
 
     @Override
@@ -329,14 +328,6 @@ public abstract class Unit implements AbstractUnit {
     @Override
     public SecondaryWeapon getSecondaryWeapon(){
         return secondaryWeapon;
-    }
-
-    @Override
-    public void renderTarget (boolean[][] map, int x, int y) {
-        if (primaryWeapon != null)
-            primaryWeapon.renderTarget(map, this);
-        if (secondaryWeapon != null)
-            secondaryWeapon.renderTarget(map, this);
     }
 
     @Override

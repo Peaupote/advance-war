@@ -82,7 +82,7 @@ public class TerrainRenderer {
 					nameNorm += s.loc.getPath() + s.x + s.y;
 					nameSnow += s.loc.getPath() + s.x + s.y;
 
-					System.out.println(nameNorm);
+//					System.out.println(nameNorm);
 				} catch (NullPointerException e) {
 					System.out.println(e.toString());
 					break;

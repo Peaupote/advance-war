@@ -54,11 +54,11 @@ public class PrimaryWeapon extends Weapon{
     }
 
     @Override
-    public void renderTarget(boolean[][] map, AbstractUnit u){
+    public void renderTarget(boolean[][] map, AbstractUnit u, int x, int y){
         int[][] t = {
             {1,1},{1,-1},{-1,-1},{-1,1}
         };
-        int x = u.getX(), y = u.getY(), maxRange = getMaximumRange(u);
+        int maxRange = getMaximumRange(u);
         if (canAttackAfterMove ? u.getMoveQuantity() != 0 : u.getMoveQuantity() == u.getMaxMoveQuantity())
             for (int i=getMinimumRange(u);i<=maxRange;i++)
                 for (int j=0;j<=i;j++)

@@ -38,7 +38,8 @@ public class UniverseRenderer extends Universe {
                         moveColor   = new Color (0, 255, 0, 50),
                         targetColor = new Color (255, 0, 0, 100),
                         loadColor   = new Color (0, 0, 255, 50),
-                        healColor   = new Color (0, 255, 0, 50);
+                        healColor   = new Color (0, 255, 0, 50),
+                        rangeColor  = new Color (255, 0, 0, 80);
 
     private static final Font font = new Font("Helvetica", Font.PLAIN, 14);
 
@@ -88,6 +89,7 @@ public class UniverseRenderer extends Universe {
             for (int j = 0; j < map.board[i].length; j++)
                 coords[i][j] = new Point(0, 0);
 
+        
         targets        = new boolean[map.board.length][map.board[0].length];
         lowerRight     = new Point(map.board.length, map.board[0].length);
         flashs         = new LinkedList<FlashMessage>();
@@ -170,11 +172,15 @@ public class UniverseRenderer extends Universe {
     public void next(){
         Weather w = getWeather();
         super.next();
-        if (w != getWeather() && controller != null) controller.makeView().getWeatherController().update(w);
+        if (controller != null){
+            if (w != getWeather()) controller.makeView().getWeatherController().update(w);
+            controller.onOpen();
+        }
     }
 
     @Override
     public void playerLoose(Player p){
+      if (!players.hasNext())
         MainFrame.setScene(new StatController(getDay(), map.players));
     }
 
@@ -185,7 +191,7 @@ public class UniverseRenderer extends Universe {
             int moveQuantity = unit.getMoveQuantity();
             Node[][] n = m.map;
             upperLeft = m.offset;
-            lowerRight = new Point(upperLeft.x + n[0].length, upperLeft.y + n.length);
+            lowerRight.move(upperLeft.x + n[0].length, upperLeft.y + n.length);
             for (int j = upperLeft.y; j < lowerRight.y; j++)
                 for (int i = upperLeft.x; i < lowerRight.x; i ++)
                     targets[j][i] = n[j - upperLeft.y][i - upperLeft.x].lowestCost <= moveQuantity;
@@ -212,6 +218,11 @@ public class UniverseRenderer extends Universe {
             upperLeft.move(Math.max(0, unit.getX() - 1), Math.max(0, unit.getY() - 1));
             lowerRight.move(Math.min(getMapWidth(), unit.getX() + 2), Math.min(getMapHeight(), unit.getY() + 2));
             tColor = controller.getMode() == GameController.Mode.HEAL ? healColor : loadColor;
+        } else if (controller.getMode() == GameController.Mode.RANGE){
+            tColor = rangeColor;
+            unit.renderTargets(targets);
+            upperLeft.move(0,0);
+            lowerRight.move(targets.length, targets[0].length);
         }
     }
 

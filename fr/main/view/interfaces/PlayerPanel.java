@@ -14,7 +14,7 @@ import fr.main.view.render.commanders.CommanderRenderer;
  */
 public class PlayerPanel extends InterfaceUI {
 
-  private static final Color BACKGROUNDCOLOR = new Color(0,0,0,230);
+  private static final Color BACKGROUNDCOLOR = new Color(255,146,0,190);
   private static final Color FOREGROUNDCOLOR = Color.white;
   private static final int WIDTH = 150, HEIGHT = 81, MARGIN = 10;
 

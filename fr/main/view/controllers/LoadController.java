@@ -6,7 +6,7 @@ import fr.main.view.MainFrame;
 
 /**
  * Loading screen
- * TODO: load stuffs
+ * TODO: load stuffs.
  */
 public class LoadController extends Controller {
 

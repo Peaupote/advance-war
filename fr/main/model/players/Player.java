@@ -1,27 +1,31 @@
 package fr.main.model.players;
 
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.lang.Iterable;
 import java.util.Iterator;
 import java.awt.Color;
 
+import fr.main.model.State;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.commanders.Commander;
 
 /**
- * Class representing a player (a human player for the basic class and AI with an inherited class)
+ * Class representing a player
+ * (a human player for the basic class
+ * and AI with an inherited class).
  */
 public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     /**
-	 * Add Player UID
+	 * Add Player UID.
 	 */
 	private static final long serialVersionUID = -2022049310756570442L;
 
 	/**
-     * The colors of the players
+     * The colors of the players.
      */
     public static final Color[] colors = new Color[]{
         Color.red,
@@ -31,38 +35,42 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     };
 
     /**
-     * The number of players
+     * The number of players.
      */
     public static int increment_id = 0;
 
     public final String name;
     /**
-     * The number of the player
+     * The number of the player.
      */
     public final int id;
     public final Color color;
 
     protected Commander commander;
     protected int funds;
+
     /**
-     * true if and only if the player has lost
+     * true if and only if the player has lost.
      */
     protected boolean hasLost;
 
     /**
-     * The set of units owned by the player
+     * The set of units owned by the player.
      */
     protected HashSet<AbstractUnit> units;
     /**
-     * The set of buildings owned by the player
+     * The set of buildings owned by the player.
      */
     protected HashSet<OwnableBuilding> buildings;
+    
+    private ArrayList<State> stats;
 
     public Player (String name) {
         this.name = name;
         id        = ++increment_id;
-        units     = new HashSet<AbstractUnit>();
-        buildings = new HashSet<OwnableBuilding>();
+        units     = new HashSet<>();
+        buildings = new HashSet<>();
+        stats     = new ArrayList<>();
         color     = colors[(id - 1) % colors.length];
         commander = null;
         funds     = 0;
@@ -70,7 +78,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * what happens when the player looses
+     * what happens when the player looses.
      */
     public void loose(){
         Universe u = Universe.get();
@@ -196,7 +204,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * what happens when the turn begins
+     * what happens when the turn begins.
      */
     public synchronized void turnBegins(){
         commander.turnBegins();
@@ -207,11 +215,16 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     }
 
     /**
-     * what happens when the turn ends
+     * what happens when the turn ends.
      */
     public synchronized void turnEnds(){
         for (AbstractUnit u : unitList())
             u.turnEnds();
+        stats.add(new State(unitList().size(), buildingList().size()));
+    }
+
+    public State[] getStats() {
+      return stats.toArray(new State[stats.size()]);
     }
 
     /**

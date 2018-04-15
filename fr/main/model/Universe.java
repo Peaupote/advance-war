@@ -34,20 +34,22 @@ import fr.main.model.units.naval.Lander;
 
 
 /**
- * Represents the universe of a game (board, ...)
+ * Represents the universe of a game (board, ...).
  */
 public class Universe {
 
     /**
-     * The current instance of the universe
+     * The current instance of the universe.
      */
     private static Universe instance;
+
     /**
-     * The path to the directory where maps are saved
+     * The path to the directory where maps are saved.
      */
     public static final String mapPath="maps/";
+
     /**
-     * boolean set to true if and only if the game can be saved
+     * boolean set to true if and only if the game can be saved.
      */
     public static boolean save=false;
 
@@ -60,12 +62,12 @@ public class Universe {
     }
 
     /**
-     * Represents a board (terrains, buildings, units, players)
+     * Represents a board (terrains, buildings, units, players).
      */
     protected static class Board implements Serializable {
 
         /**
-         * Add Board UID
+         * Add Board UID.
          */
         private static final long serialVersionUID = -8731719580943357396L;
         public AbstractTerrain[][] board;
@@ -75,8 +77,9 @@ public class Universe {
         private final boolean fog;
         protected Weather weather;
         protected Player current;
+
         /**
-         * the number of the day
+         * the number of the day.
          */
         protected int day;
 

@@ -11,7 +11,7 @@ import java.awt.event.MouseWheelEvent;
 import fr.main.view.views.View;
 
 /**
- * Super controller class
+ * Super controller class.
  */
 public abstract class Controller
     extends KeyAdapter implements MouseMotionListener, MouseListener, MouseWheelListener {

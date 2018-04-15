@@ -8,8 +8,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.views.CreateView;
 
 /**
- * Controller to choose each commanders for each players
- *
+ * Controller to choose each commanders for each players.
  */
 public class CreateController extends Controller {
 

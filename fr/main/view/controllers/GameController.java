@@ -219,8 +219,7 @@ public class GameController extends Controller {
             y = 10;
 
             new Index("Finish turn", () -> {
-                    world.next();
-                    dayPanel.setVisible(true);
+                world.next();
             });
 
             new Index("Wait", () -> {});
@@ -736,7 +735,18 @@ public class GameController extends Controller {
                 else if (mode == Mode.LOAD)             validLoad();
                 else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
                 else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
+                else if (mode == Mode.MENU)             focusedActionPanel.perform();
             }
+        }
+    }
+
+    @Override
+    public void mouseWheelMoved (MouseWheelEvent e){
+        if (mode == Mode.MENU) { // update index and valid menu action for focusedActionPanel
+            Runnable action = e.getWheelRotation() < 0 ? focusedActionPanel::goUp : focusedActionPanel::goDown;
+
+            for (int i = 0; i < Math.abs(e.getWheelRotation()); i++)
+                action.run();
         }
     }
 

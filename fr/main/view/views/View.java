@@ -18,6 +18,7 @@ public class View extends JPanel {
         addKeyListener(controller);
         addMouseMotionListener(controller);
         addMouseListener(controller);
+        addMouseWheelListener(controller);
     }
 
 }

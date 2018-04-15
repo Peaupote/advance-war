@@ -89,6 +89,7 @@ public class UniverseRenderer extends Universe {
             for (int j = 0; j < map.board[i].length; j++)
                 coords[i][j] = new Point(0, 0);
 
+        
         targets        = new boolean[map.board.length][map.board[0].length];
         lowerRight     = new Point(map.board.length, map.board[0].length);
         flashs         = new LinkedList<FlashMessage>();
@@ -171,7 +172,10 @@ public class UniverseRenderer extends Universe {
     public void next(){
         Weather w = getWeather();
         super.next();
-        if (w != getWeather() && controller != null) controller.makeView().getWeatherController().update(w);
+        if (controller != null){
+            if (w != getWeather()) controller.makeView().getWeatherController().update(w);
+            controller.onOpen();
+        }
     }
 
     @Override

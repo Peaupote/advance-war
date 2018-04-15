@@ -11,7 +11,7 @@ import fr.main.network.*;
 import fr.main.view.sound.MusicEngine;
 
 /**
- * Main Menu
+ * Main Menu.
  */
 public class MenuController extends Controller {
     

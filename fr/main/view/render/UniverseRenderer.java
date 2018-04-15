@@ -29,7 +29,7 @@ import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.controllers.MenuController;
+import fr.main.view.controllers.StatController;
 
 public class UniverseRenderer extends Universe {
 
@@ -175,7 +175,7 @@ public class UniverseRenderer extends Universe {
 
     @Override
     public void playerLoose(Player p){
-        MainFrame.setScene(new MenuController());
+        MainFrame.setScene(new StatController(getDay(), map.players));
     }
 
     public void updateTarget (AbstractUnit unit) {

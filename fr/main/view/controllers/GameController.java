@@ -440,15 +440,15 @@ public class GameController extends Controller {
      */
     public static enum Controls {
 
-        MOVE_LEFT("MOVE_LEFT", KeyEvent.VK_LEFT, KeyEvent.VK_Q),
-        MOVE_TOP("MOVE_TOP", KeyEvent.VK_UP, KeyEvent.VK_Z),
-        MOVE_RIGHT("MOVE_RIGHT", KeyEvent.VK_RIGHT, KeyEvent.VK_D),
-        MOVE_BOTTOM("MOVE_BOTTOM", KeyEvent.VK_DOWN, KeyEvent.VK_S),
-        ENTER("ENTER", KeyEvent.VK_ENTER),
-        ESCAPE("ESCAPE", KeyEvent.VK_ESCAPE),
-        SHORTEN_PATH("SHORTEN_PATH", KeyEvent.VK_A),
-        NEXT_UNIT("NEXT_UNIT", KeyEvent.VK_),
-        RANGE("RANGE", KeyEvent.VK_E);
+        MOVE_LEFT    ("MOVE_LEFT",    KeyEvent.VK_LEFT,  KeyEvent.VK_Q),
+        MOVE_TOP     ("MOVE_TOP",     KeyEvent.VK_UP,    KeyEvent.VK_Z),
+        MOVE_RIGHT   ("MOVE_RIGHT",   KeyEvent.VK_RIGHT, KeyEvent.VK_D),
+        MOVE_BOTTOM  ("MOVE_BOTTOM",  KeyEvent.VK_DOWN,  KeyEvent.VK_S),
+        ENTER        ("ENTER",        KeyEvent.VK_ENTER),
+        ESCAPE       ("ESCAPE",       KeyEvent.VK_ESCAPE),
+        NEXT_UNIT    ("NEXT_UNIT",    KeyEvent.VK_N),
+        SHORTEN_PATH ("SHORTEN_PATH", KeyEvent.VK_A),
+        RANGE        ("RANGE",        KeyEvent.VK_E);
 
         public static final File parameters = new File("./parameters");
         private static final HashMap<Integer, Controls> commands = new HashMap<Integer, Controls>();
@@ -663,9 +663,19 @@ public class GameController extends Controller {
         path.visible = false;
     }
 
+    /**
+     * Display the range in which an unit can shoot in one turn (move + attack)
+     */
     public void validRange(){
         mode = Mode.RANGE;
         world.updateTarget(targetUnit);
+    }
+
+    /**
+     * Moves the camera and cursor to the next enabled unit
+     */
+    public void findNextUnit(){
+        //TODO
     }
 
     /**
@@ -702,6 +712,7 @@ public class GameController extends Controller {
                            world.getUnit(cursor.getX(), cursor.getY()) != null) {
                     validRange();
                 }
+                else if (key == Controls.NEXT_UNIT && mode == Mode.MOVE) findNextUnit();
             } else if (mode == Mode.MENU) { // update index and valid menu action for focusedActionPanel
                     if      (key == Controls.MOVE_TOP)    focusedActionPanel.goUp();
                     else if (key == Controls.MOVE_BOTTOM) focusedActionPanel.goDown();

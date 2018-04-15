@@ -178,7 +178,7 @@ public class UnitRenderer {
     public static Render getRender (AbstractUnit unit) {
         if (renderers.containsKey(unit)) return renderers.get(unit);
         if (constructors.containsKey(unit.getClass())){
-            renderers.put(unit,entry.getValue().apply(unit));
+            renderers.put(unit, constructors.get(unit.getClass()).apply(unit));
             return renderers.get(unit);
         }
 

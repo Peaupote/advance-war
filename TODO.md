@@ -3,7 +3,13 @@ TODO
 
 - [ ] Improve design of the panels (in game)
 - [ ] Victory panel
+- [ ] Improve the design of the option panel
+- [ ] Allow an access to the option panel ingame
 - [ ] Map selection screen
+- [ ] Sound volume... (add to option panel ?)
+- [ ] Correct the missile animation (see the issue)
+- [ ] Implement the 'findNextUnit' method in GameController
+- [ ] Add a return to menu button in game creation panel
 
 
 TODO of Peaupote
@@ -33,7 +39,8 @@ TODO of pgimalac
             - [ ] Switch from one state to another
         - [ ] Objective manager to tell units to do something (units don't act separatly)
     - [ ] Global AI
-        - [x] Power activation
+        - [x] Power activation when possible
+        - [ ] Smarter power activation
         - [ ] Finds objectives and affect unit manager on it
 
 

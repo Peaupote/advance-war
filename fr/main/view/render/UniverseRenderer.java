@@ -167,7 +167,7 @@ public class UniverseRenderer extends Universe {
         Iterator<DeathAnimation> iterator2 = deathAnimation.iterator();
         while (iterator2.hasNext()){
             DeathAnimation d = iterator2.next();
-            g.drawImage(d.getImage(), d.x * MainFrame.UNIT, d.y * MainFrame.UNIT, null);
+            g.drawImage(d.getImage(), (d.x - controller.camera.getX()) * MainFrame.UNIT, (d.y - controller.camera.getY()) * MainFrame.UNIT, null);
             d.time --;
             if (d.time <= 0) iterator2.remove();
         }
@@ -407,7 +407,7 @@ public class UniverseRenderer extends Universe {
             if (x >= controller.camera.width * MainFrame.UNIT || x < 0){
                     y = arrival.getHeight(controller.makeView());
                     goingUp = false;
-                    x = endX;
+                    x = this.endX;
             }
 
 

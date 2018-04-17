@@ -18,6 +18,7 @@ public class MenuView extends View {
     private JLabel label;
     private JButton play,
                     load,
+                    edit,
                     host,
                     join,
                     exit,
@@ -35,6 +36,7 @@ public class MenuView extends View {
             
             play   = new MenuButton("PLAY","./assets/button/b02.png", 350, 150);
             load   = new MenuButton("LOAD","./assets/button/b02.png", 350, 290);
+            edit   = new MenuButton("MAP EDITOR","./assets/button/b02.png", 350, 430);
             host   = new MenuButton("HOST","./assets/button/b02.png", 350, 430);
             join   = new MenuButton("JOIN","./assets/button/b02.png", 350, 570);
             
@@ -52,8 +54,9 @@ public class MenuView extends View {
         
         label.add(play);
         label.add(load);
-        label.add(host);
-        label.add(join);
+        label.add(edit);
+        //label.add(host);
+        //label.add(join);
         label.add(play);
         label.add(exit);
         label.add(option);
@@ -63,6 +66,7 @@ public class MenuView extends View {
 
         play.addActionListener(controller.play);
         load.addActionListener(controller.load);
+        edit.addActionListener(controller.edit);
         exit.addActionListener(controller.exit);
         host.addActionListener(controller.host);
         join.addActionListener(controller.join);

@@ -39,6 +39,11 @@ public class MapRenderer extends Universe {
     public MapRenderer (Universe.Board b) {
       super(b);
       coords = new Point[map.board.length][map.board[0].length];
+      for (int i = 0; i < map.board.length; i++)
+          for (int j = 0; j < map.board[i].length; j++)
+              coords[i][j] = new Point(0, 0);
+
+      TerrainRenderer.setLocations();
     }
 
     public MapRenderer (AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings){

@@ -74,16 +74,11 @@ public class UniverseRenderer extends MapRenderer {
 
         this.controller = controller;
         controller.makeView().getWeatherController().update(Weather.FOGGY);
-        for (int i = 0; i < map.board.length; i++)
-            for (int j = 0; j < map.board[i].length; j++)
-                coords[i][j] = new Point(0, 0);
-
         
         targets        = new boolean[map.board.length][map.board[0].length];
         lowerRight     = new Point(map.board.length, map.board[0].length);
         flashs         = new LinkedList<FlashMessage>();
         deathAnimation = new LinkedList<DeathAnimation>();
-        TerrainRenderer.setLocations();
     }
 
     public UniverseRenderer (AbstractUnit[][] units, AbstractTerrain[][] map, Player[] ps, AbstractBuilding[][] buildings, GameController controller){

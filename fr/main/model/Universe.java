@@ -64,7 +64,7 @@ public class Universe {
     /**
      * Represents a board (terrains, buildings, units, players).
      */
-    protected static class Board implements Serializable {
+    public static class Board implements Serializable {
 
         /**
          * Add Board UID.
@@ -130,54 +130,57 @@ public class Universe {
 
         instance = this;
         fogwar   = new boolean[map.board.length][map.board[0].length];
-        players  = new PlayerIt(map.players).cycle();
-        if (map.current == null){
-            next();
-        }
-        else{
-            do{}
-            while(map.current != players.next());
-        }
+
+        // TODO: make something cleaner
+        if (map.players != null) {
+          players  = new PlayerIt(map.players).cycle();
+          if (map.current == null){
+              next();
+          } else{
+              do{}
+              while(map.current != players.next());
+          }
 
 
-        /*
-            Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
-        */
+          /*
+           * Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
+           */
 
-        new Dock(map.players[0], new Point(6,10));
-        new Airport(map.players[1], new Point(6,9));
-        new Airport(map.players[0], new Point(7,9));
-        new Barrack(null, new Point(9,5));
-        new Barrack(map.players[1], new Point(14,5));
-        new Headquarter(map.players[0], new Point(12,5));
-        new Headquarter(map.players[1], new Point(13,5));
-        if (map.players.length > 2)
-            new Headquarter(map.players[2], new Point(12,6));
-        if (map.players.length > 3)
-            new Headquarter(map.players[3], new Point(13,6));
-        new City(null, new Point(20,5));
-        new MissileLauncher(new Point(11,5));
+          new Dock(map.players[0], new Point(6,10));
+          new Airport(map.players[1], new Point(6,9));
+          new Airport(map.players[0], new Point(7,9));
+          new Barrack(null, new Point(9,5));
+          new Barrack(map.players[1], new Point(14,5));
+          new Headquarter(map.players[0], new Point(12,5));
+          new Headquarter(map.players[1], new Point(13,5));
+          if (map.players.length > 2)
+              new Headquarter(map.players[2], new Point(12,6));
+          if (map.players.length > 3)
+              new Headquarter(map.players[3], new Point(13,6));
+          new City(null, new Point(20,5));
+          new MissileLauncher(new Point(11,5));
 
-        new Infantry(map.players[0], new Point(12,5));
-        new Infantry(map.players[1], new Point(13,5));
-        if (map.players.length > 2)
-            new Infantry(map.players[2], new Point(12,6));
-        if (map.players.length > 3)
-            new Infantry(map.players[3], new Point(13,6));
+          new Infantry(map.players[0], new Point(12,5));
+          new Infantry(map.players[1], new Point(13,5));
+          if (map.players.length > 2)
+              new Infantry(map.players[2], new Point(12,6));
+          if (map.players.length > 3)
+              new Infantry(map.players[3], new Point(13,6));
 
-        new Lander(map.players[0], new Point(0,0));
-        new Lander(map.players[1], new Point(1,1));
-        new Lander(map.players[0], new Point(3,17));
-        new Infantry(map.players[0], new Point(10,5));
-        new Infantry(map.players[1], new Point(10,6));
-        new Fighter(map.players[0], new Point(10,10));
+          new Lander(map.players[0], new Point(0,0));
+          new Lander(map.players[1], new Point(1,1));
+          new Lander(map.players[0], new Point(3,17));
+          new Infantry(map.players[0], new Point(10,5));
+          new Infantry(map.players[1], new Point(10,6));
+          new Fighter(map.players[0], new Point(10,10));
 
-        map.players[0].addFunds(100000);
-        map.players[1].addFunds(100000);
-        if (map.players.length >= 3)
-            map.players[2].addFunds(100000);
-        if (map.players.length == 4)
-            map.players[3].addFunds(100000);
+          map.players[0].addFunds(100000);
+          map.players[1].addFunds(100000);
+          if (map.players.length >= 3)
+              map.players[2].addFunds(100000);
+          if (map.players.length == 4)
+              map.players[3].addFunds(100000);
+        } else players = null;
 
         if (getBuilding(6,10) != null)
             ((Dock)getBuilding(6,10)).create(Battleship.class);

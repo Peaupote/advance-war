@@ -199,8 +199,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @return a set containing the units owned by the player
      */
-    public HashSet<AbstractUnit> unitList(){
-        return new HashSet<AbstractUnit>(units);
+    public ArrayList<AbstractUnit> unitList(){
+        return new ArrayList<AbstractUnit>(units);
     }
 
     /**

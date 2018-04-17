@@ -7,7 +7,6 @@ TODO
 - [ ] Allow an access to the option panel ingame
 - [ ] Map selection screen
 - [ ] Sound volume... (add to option panel ?)
-- [ ] Implement the 'findNextUnit' method in GameController
 - [ ] Add a return to menu button in game creation panel
 
 

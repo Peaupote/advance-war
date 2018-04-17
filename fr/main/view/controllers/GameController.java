@@ -675,7 +675,30 @@ public class GameController extends Controller {
      * Moves the camera and cursor to the next enabled unit
      */
     public void findNextUnit(){
-        //TODO
+        AbstractUnit unit = targetUnit;
+        ArrayList<AbstractUnit> units = world.getCurrentPlayer().unitList();
+
+        int n = (units.indexOf(unit) + units.size()) % units.size(),
+            // indexOf returns -1 if the object is not in the list, here we want to have the last element in this case
+            i = (n + 1) % units.size();
+            // the first element we check
+        unit = null;
+        do {
+            if (units.get(i).isEnabled()){
+                unit = units.get(i);
+                break;
+            }
+            i = (i + 1) % units.size();
+        } while (i != n);
+
+        if (unit == null && units.get(n).isEnabled())
+            unit = units.get(n);
+
+        if (unit != null){
+            camera.setLocation(unit.getX(), unit.getY());
+            cursor.setLocation(unit.getX(), unit.getY());
+            unitCursor.setLocation(unit.getX(), unit.getY());
+        }
     }
 
     /**

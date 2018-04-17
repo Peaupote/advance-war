@@ -1,20 +1,9 @@
 package fr.main.view.render;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.LinkedList;
+import java.awt.*;
+import java.util.*;
 
-import fr.main.model.Direction;
-import fr.main.model.MoveZone;
-import fr.main.model.Node;
-import fr.main.model.Universe;
-import fr.main.model.Weather;
+import fr.main.model.*;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.MissileLauncher;
 import fr.main.model.players.Player;
@@ -31,7 +20,7 @@ import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.controllers.StatController;
 
-public class UniverseRenderer extends Universe {
+public class UniverseRenderer extends MapRenderer {
 
     public final GameController controller;
     private final Color fogColor    = new Color (0,0,0,100),
@@ -41,9 +30,7 @@ public class UniverseRenderer extends Universe {
                         healColor   = new Color (0, 255, 0, 50),
                         rangeColor  = new Color (255, 0, 0, 80);
 
-    private static final Font font = new Font("Helvetica", Font.PLAIN, 14);
 
-    private final Point[][] coords;
     private final boolean[][] targets;
     private Point upperLeft = new Point(0,0), lowerRight;
     private Color tColor;
@@ -87,7 +74,6 @@ public class UniverseRenderer extends Universe {
 
         this.controller = controller;
         controller.makeView().getWeatherController().update(Weather.FOGGY);
-        coords = new Point[map.board.length][map.board[0].length];
         for (int i = 0; i < map.board.length; i++)
             for (int j = 0; j < map.board[i].length; j++)
                 coords[i][j] = new Point(0, 0);
@@ -116,42 +102,26 @@ public class UniverseRenderer extends Universe {
         return targets[y][x];
     }
 
-    public void draw (Graphics g, int x, int y, int offsetX, int offsetY) {
-        g.setFont(font);
-        int w = map.board.length,
-                h = map.board[0].length,
-                firstX = x - (offsetX < 0 ? 1 : 0),
-                firstY = y - (offsetY < 0 ? 1 : 0),
-                lastX  = x + w + (offsetX > 0 ? 1 : 0),
-                lastY  = y + h + (offsetY > 0 ? 1 : 0);
+    public Frame draw (Graphics g, int x, int y, int offsetX, int offsetY) {
+        Frame frame = super.draw(g, x, y, offsetX, offsetY);
 
-        // draw terrains and buildings
-        for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
-            for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
-                coords[i][j].x = (j - x) * MainFrame.UNIT - offsetX;
-                coords[i][j].y = (i - y) * MainFrame.UNIT - offsetY;
-
-                TerrainRenderer.render(g, coords[i][j], new Point(j, i));
-                if (map.buildings[i][j] != null) BuildingRenderer.render(g, coords[i][j], map.buildings[i][j]);
-
+        // draw the units
+        frame.forEach((i, j) -> {
                 if (targets[i][j]) {
                     g.setColor(tColor);
                     g.fillRect(coords[i][j].x, coords[i][j].y, MainFrame.UNIT, MainFrame.UNIT);
                 }
-            }
 
-        // draw the units
-        for (int i = firstY; i < Math.min(lastY, map.board.length); i++)
-            for (int j = firstX; j < Math.min(lastX, map.board[i].length); j++) {
                 if (!fogwar[i][j]) {
                     g.setColor(fogColor);
                     g.fillRect(coords[i][j].x, coords[i][j].y, MainFrame.UNIT, MainFrame.UNIT);
                 }
 
                 if (map.units[i][j] != null)
-                    if (map.units[i][j].getPlayer() == getCurrentPlayer() || isVisibleOpponentUnit(j, i))
+                    if (map.units[i][j].getPlayer() == getCurrentPlayer() ||
+                        isVisibleOpponentUnit(j, i))
                         UnitRenderer.render(g, coords[i][j], map.units[i][j]);
-            }
+            });
 
         // draw the flash messages
         Iterator<FlashMessage> iterator = flashs.iterator();
@@ -175,6 +145,8 @@ public class UniverseRenderer extends Universe {
         // draw the missile animation
         if (missileAnimation != null)
             missileAnimation.draw(g);
+
+        return frame;
     }
 
     /**

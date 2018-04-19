@@ -148,6 +148,14 @@ public abstract class Position {
     return position.y;
   }
 
+  public final int getRealX () {
+    return real.x;
+  }
+
+  public final int getRealY () {
+    return real.y;
+  }
+
   public final Point position () {
     return position.getLocation();
   }
@@ -215,5 +223,6 @@ public abstract class Position {
   public void setLocation (Point pt) {
     setLocation (pt.x, pt.y);
   }
+
 }
 

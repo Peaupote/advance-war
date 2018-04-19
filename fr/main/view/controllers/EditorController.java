@@ -60,15 +60,14 @@ public class EditorController extends Controller {
   }
 
   private Point ref;
-  private static final int sensisibility = 4;
 
   public void mouseDragged (MouseEvent e) {
     Point vec = e.getPoint();
-    vec.x = (vec.x - ref.x) / sensisibility;
-    vec.y = (vec.y - ref.y) / sensisibility;
+    vec.x = (vec.x - ref.x);
+    vec.y = (vec.y - ref.y);
 
-    camera.setLocation(camera.getX() * MainFrame.UNIT + vec.x,
-                       camera.getY() * MainFrame.UNIT + vec.y);
+    camera.setLocation(camera.getRealX() +  + vec.x,
+                       camera.getRealY() + vec.y);
   }
 
   public void mousePressed (MouseEvent e) {

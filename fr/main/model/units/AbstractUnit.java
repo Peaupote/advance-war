@@ -22,6 +22,7 @@ import java.io.Serializable;
 /**
  * Interface used to represent an unit
  */
+@SuppressWarnings("serial")
 public interface AbstractUnit extends Serializable {
     String fuelName="Carburant";
 

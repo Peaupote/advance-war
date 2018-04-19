@@ -20,11 +20,6 @@ public abstract class Position {
   public static class Cursor extends Position {
 
     /**
-     * Dimension of the universe.
-     */
-    protected final Dimension size;
-
-    /**
      * Camera showing the game.
      */
     private final Camera camera;
@@ -41,9 +36,8 @@ public abstract class Position {
     private Image cursor;
 
     public Cursor (Camera camera, Dimension size) {
-      super(0, 0);
+      super(size);
 
-      this.size   = size;
       this.camera = camera;
 
       cursor = cursorBasic;
@@ -73,21 +67,6 @@ public abstract class Position {
       draw (g, Color.black);
     }
 
-    public void setLocation (int x, int y) {
-      if (x >= 0 && x < size.width && y >= 0 && y < size.height) {
-        position.x = x;
-        position.y = y;
-        target.x = x;
-        target.y = y;
-
-        real.x = x * MainFrame.UNIT;
-        real.y = y * MainFrame.UNIT;
-      }
-    }
-
-    public void setLocation (Point pt) {
-      setLocation (pt.x, pt.y);
-    }
 
     public void setCursor(boolean normal){
       cursor = normal ? cursorBasic : cursorAttack;
@@ -105,14 +84,15 @@ public abstract class Position {
      */
     public int width, height;
 
-    /**
-     * Dimension of the universe.
-     */
-    private final Dimension size;
-
     public Camera (Dimension size) {
-      super();
-      this.size = size;
+      super(size);
+    }
+
+    @Override
+    protected boolean canSetLocation (int x, int y) {
+      return x >= 0 && y >= 0 &&
+             x + width * MainFrame.UNIT < size.width * MainFrame.UNIT &&
+             y + height * MainFrame.UNIT < size.height * MainFrame.UNIT;
     }
 
     @Override
@@ -139,19 +119,25 @@ public abstract class Position {
   protected Point position, real, target;
 
   /**
+   * Dimension of the universe.
+   */
+  protected final Dimension size;
+
+  /**
    * Moving direction.
    */
   protected Direction direction;
 
-  public Position (int x, int y) {
+  public Position (int x, int y, Dimension size) {
     this.direction = Direction.NONE;
     this.position = new Point(x, y);
     this.target = new Point(x,y);
     this.real = new Point(x * MainFrame.UNIT, y * MainFrame.UNIT);
+    this.size = size;
   }
 
-  public Position () {
-    this(0,0);
+  public Position (Dimension size) {
+    this(0, 0, size);
   }
 
   public final int getX () {
@@ -208,5 +194,26 @@ public abstract class Position {
    * @return true if real location has reach target location
    */
   protected boolean hasReachLocation () { return true; }
+
+  public void setLocation (int x, int y) {
+    if (canSetLocation(x, y)) {
+      real.x = x;
+      real.y = y;
+
+      position.x = x / MainFrame.UNIT;
+      position.y = y / MainFrame.UNIT;
+      target.x = position.x;
+      target.y = position.y;
+    }
+  }
+
+  protected boolean canSetLocation (int x, int y) {
+    return x >= 0 && x < size.width * MainFrame.UNIT &&
+           y >= 0 && y < size.height * MainFrame.UNIT;
+  }
+
+  public void setLocation (Point pt) {
+    setLocation (pt.x, pt.y);
+  }
 }
 

@@ -12,7 +12,10 @@ public class EditorView extends View {
   private class Map extends JPanel {
     
     public void paintComponent (Graphics g) {
-      controller.world.draw(g, 0, 0, 0, 0);
+      controller.world.draw(g, controller.camera.getX(), 
+          controller.camera.getY(), 
+          controller.camera.getOffsetX(),
+          controller.camera.getOffsetY());
     }
 
   }
@@ -25,9 +28,9 @@ public class EditorView extends View {
       setLayout(new GridLayout(7, 1));
       add(new JLabel("Add tools here"));
 
-      width  = new JSlider(JSlider.HORIZONTAL, 1, 500, 50);
-      height = new JSlider(JSlider.HORIZONTAL, 1, 500, 50);
-      seed   = new JSlider(JSlider.HORIZONTAL, 1, 500, 50);
+      width  = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
+      height = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
+      seed   = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
 
       add(new JLabel("Width:"));
       add(width);
@@ -55,7 +58,13 @@ public class EditorView extends View {
     add(tools, BorderLayout.EAST);
 
     controller.new Adaptater(tools.width, tools.height, tools.seed);
-    
+    map.addMouseMotionListener(controller);
+    map.addMouseListener(controller);
+  }
+
+  public void paintComponent (Graphics g) {
+    super.paintComponent(g);
+    map.paintComponent(g);
   }
 
 }

@@ -1,16 +1,18 @@
 package fr.main.view.render;
 
-import java.awt.*;
-import java.io.*;
-import javax.imageio.ImageIO;
-import fr.main.model.units.Path;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+
 import fr.main.model.Direction;
 import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.Path;
 import fr.main.view.MainFrame;
 import fr.main.view.Position;
-import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.sprites.Sprite;
+import fr.main.view.render.units.UnitRenderer;
 
 /**
  * Arrow renderer for path

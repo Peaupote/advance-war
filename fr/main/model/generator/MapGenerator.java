@@ -1,12 +1,21 @@
 package fr.main.model.generator;
 
-import fr.main.model.TerrainEnum;
-import fr.main.model.terrains.Terrain;
+import static fr.main.model.TerrainEnum.beach;
+import static fr.main.model.TerrainEnum.bridge;
+import static fr.main.model.TerrainEnum.getTerrainEnum;
+import static fr.main.model.TerrainEnum.hill;
+import static fr.main.model.TerrainEnum.lowland;
+import static fr.main.model.TerrainEnum.mountain;
+import static fr.main.model.TerrainEnum.none;
+import static fr.main.model.TerrainEnum.reef;
+import static fr.main.model.TerrainEnum.river;
+import static fr.main.model.TerrainEnum.sea;
+import static fr.main.model.TerrainEnum.wood;
 
 import java.util.Arrays;
 import java.util.Random;
 
-import static fr.main.model.TerrainEnum.*;
+import fr.main.model.TerrainEnum;
 
 public class MapGenerator {
     private long seed;

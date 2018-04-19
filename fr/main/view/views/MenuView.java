@@ -40,7 +40,7 @@ public class MenuView extends View {
             
             exit   = new MenuButton("EXIT","./assets/button/b03.png", 830, 0, 20);
             option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0, 20);
-            sound  = new MenuButton("", "./assets/button/music02.png", 40, 600);
+            sound  = new MenuButton("", "./assets/button/music03.png", 40, 600);
             
         } catch (IOException e) {
             System.err.println(e);
@@ -67,6 +67,7 @@ public class MenuView extends View {
         host.addActionListener(controller.host);
         join.addActionListener(controller.join);
         option.addActionListener(controller.option);
+        controller.bm.start(true);
         controller.new Music(sound);
     }
 

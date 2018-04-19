@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.*;
 
 public enum Sdfx {
-
   EXPLOSION("song016.wav"),
   NEW_DAY("song218.wav", "song208.wav", "song207.wav", "song204.wav"),
   SELECT("song124.wav");

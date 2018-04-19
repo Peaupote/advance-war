@@ -1,26 +1,49 @@
 package fr.main.view.controllers;
 
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.SwingUtilities;
-import java.util.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+
+import fr.main.model.Direction;
+import fr.main.model.Universe;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.FactoryBuilding;
+import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.players.Player;
-import fr.main.model.*;
-import fr.main.model.units.*;
-import fr.main.model.units.naval.NavalUnit;
-import fr.main.model.buildings.*;
-
-import fr.main.view.*;
-import fr.main.view.views.GameView;
-import fr.main.view.interfaces.*;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.CaptureBuilding;
+import fr.main.model.units.HealerUnit;
+import fr.main.model.units.HideableUnit;
+import fr.main.model.units.SupplyUnit;
+import fr.main.model.units.TransportUnit;
+import fr.main.view.MainFrame;
+import fr.main.view.Position;
+import fr.main.view.interfaces.ActionPanel;
+import fr.main.view.interfaces.BuildingInterface;
+import fr.main.view.interfaces.DayPanel;
+import fr.main.view.interfaces.InterfaceUI;
+import fr.main.view.interfaces.Minimap;
+import fr.main.view.interfaces.PlayerPanel;
+import fr.main.view.interfaces.TerrainPanel;
 import fr.main.view.render.PathRenderer;
 import fr.main.view.render.UniverseRenderer;
-import fr.main.view.render.units.UnitRenderer;
 import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
-import fr.main.view.sound.Sdfx;
+import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.views.GameView;
 
 /**
  * Game Controller.
@@ -211,6 +234,7 @@ public class GameController extends Controller {
         }
     }
 
+    // add the selectiong item in the up-right panel
     private class MainActionPanel extends ControllerPanel {
 
         public MainActionPanel () {
@@ -241,7 +265,8 @@ public class GameController extends Controller {
 
     private class TransportUnitPanel extends ControllerPanel {
 
-        private TransportUnit transportUnit;
+        @SuppressWarnings("unused")
+		private TransportUnit transportUnit;
         public AbstractUnit selected = null;
 
         public TransportUnitPanel (){
@@ -511,7 +536,6 @@ public class GameController extends Controller {
                 defaultValues();
             }
         }
-
         /**
          * Sets the controls to their default value
          */
@@ -569,7 +593,8 @@ public class GameController extends Controller {
                             (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                             (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                             UniverseRenderer.FlashMessage.Type.ALERT);
-                Sdfx.EXPLOSION.play();
+                //Sdfx.EXPLOSION.play();
+                targetUnit.getMusicEngine("attack").start(false);
             } else {
                 targetUnit.setMoveQuantity(0);
                 if (targetUnit.getPrimaryWeapon() != null) targetUnit.getPrimaryWeapon().shoot();
@@ -595,7 +620,8 @@ public class GameController extends Controller {
             else buildingPanel.setVisible (true);
         } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                  targetUnit.isEnabled()) {
-            Sdfx.SELECT.play();
+            //Sdfx.SELECT.play(); //for the targetUnit playing selectSound
+        	targetUnit.getMusicEngine("selected").start(false);
             mode = Mode.UNIT;
             world.updateTarget(targetUnit);
             path.rebase(targetUnit);

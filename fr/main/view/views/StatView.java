@@ -1,15 +1,27 @@
 package fr.main.view.views;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import fr.main.view.controllers.StatController;
 import fr.main.view.render.sprites.Sprite;
 
 public class StatView extends View {
 
-    private StatController controller;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6937955615729305313L;
+	@SuppressWarnings("unused")
+	private StatController controller;
     private static int[] defeats = null;
 
     private static final Image[] defeatsImages;
@@ -36,7 +48,11 @@ public class StatView extends View {
 
     private class StatPanel extends JPanel {
 
-        public int[][] data;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5935271408277307661L;
+		public int[][] data;
         Color[] colors = new Color[]{
             Color.red,
             Color.blue,

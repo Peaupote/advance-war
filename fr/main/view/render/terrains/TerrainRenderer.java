@@ -90,6 +90,7 @@ public class TerrainRenderer {
 			}
 
 			Sprite normSprite = new Sprite(nameNorm, baseNormal);
+			@SuppressWarnings("unused")
 			Sprite snowSprite = new Sprite(nameSnow, baseSnow);
 
 			if(normSprite.getSprite() == null) System.out.println("Error in TerrainRenderer constructor : Sprite null");
@@ -149,6 +150,7 @@ public class TerrainRenderer {
 	}
 
 	public static void render(Graphics g, Point coords, Point t) {
+		@SuppressWarnings("unused")
 		AbstractTerrain terrain = Universe.get().getTerrain(t.x, t.y);
 		getRender(tLocations[t.y][t.x]).draw(g, coords.x, coords.y);
 	}

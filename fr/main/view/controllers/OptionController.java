@@ -1,11 +1,10 @@
 package fr.main.view.controllers;
 
-import fr.main.model.Universe;
+import java.awt.event.ActionListener;
+
+import fr.main.view.MainFrame;
 import fr.main.view.views.OptionView;
 import fr.main.view.views.View;
-import fr.main.view.MainFrame;
-
-import java.awt.event.ActionListener;
 
 /**
  * Option panel

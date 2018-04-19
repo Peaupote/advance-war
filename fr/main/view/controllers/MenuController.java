@@ -23,7 +23,7 @@ public class MenuController extends Controller {
                                 load;
 
     private boolean listen;
-    private MusicEngine bm = new MusicEngine("./assets/sound/bc.wav");
+    public MusicEngine bm = new MusicEngine("./assets/sound/BeyondTheGame.wav");
 
     public class Music implements ActionListener {
      
@@ -35,14 +35,14 @@ public class MenuController extends Controller {
         }
 
         public void actionPerformed (ActionEvent e) {
-            if(listen) {
+        	listen = !listen;
+            if(!listen) {
                 sound.setIcon(new ImageIcon("./assets/button/music03.png"));
-                bm.start(true);
+                bm.continues();
             } else {
                 sound.setIcon(new ImageIcon("./assets/button/music02.png"));
                 bm.stop();
             }
-            listen = !listen;
         }
     }
 

@@ -48,7 +48,6 @@ public class MusicEngine {
           
     }  
     
-    @SuppressWarnings("deprecation")
     protected void finalize() throws Throwable{  
         super.finalize();
         sourceDataLine.drain();
@@ -56,7 +55,10 @@ public class MusicEngine {
         audioStream.close();
     }  
        
-    private void playMusic(boolean loop)throws InterruptedException {  
+    //the parameter loop controls if playback or not
+    //if true, it will play the music until close, 
+    //if false, just one time   
+    private void playMusic(boolean loop) throws InterruptedException {  
         try { 
           if(loop) while(true) playMusic();  
           else {

@@ -34,6 +34,8 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
     public Lander(Player player, int x, int y){
         this(player, new Point(x,y));
     }
+    
+    
 
     public int getCapacity(){
         return 2;

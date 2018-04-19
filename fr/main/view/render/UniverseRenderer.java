@@ -5,10 +5,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.util.Iterator;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import fr.main.model.Direction;
 import fr.main.model.MoveZone;
@@ -25,11 +25,11 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.naval.NavalUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.controllers.GameController;
+import fr.main.view.controllers.StatController;
 import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.controllers.StatController;
 
 public class UniverseRenderer extends Universe {
 
@@ -212,6 +212,7 @@ public class UniverseRenderer extends Universe {
                 for (int i = upperLeft.x; i < lowerRight.x; i ++)
                     targets[j][i] = n[j - upperLeft.y][i - upperLeft.x].lowestCost <= moveQuantity;
             tColor = unit.getPlayer() == getCurrentPlayer() ? moveColor : targetColor;
+            
         } else if (controller.getMode() == GameController.Mode.ATTACK) {
             unit.renderTarget(targets);
             upperLeft.move(0,0);

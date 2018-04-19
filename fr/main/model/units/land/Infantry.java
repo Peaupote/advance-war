@@ -11,6 +11,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.Unit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.weapons.SecondaryWeapon;
+import fr.main.view.sound.MusicEngine;
 import fr.main.model.units.CaptureBuilding;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
@@ -48,12 +49,19 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
         SECONDARYWEAPON_DAMAGES.put(APC.class,14);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,7);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,30);
-
+        
         SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
 	public Infantry(Player p, int x, int y){
 		this(p,new Point(x,y));
+		initialSound();
+	}
+	
+	public void initialSound() {
+		this.selected = new MusicEngine("./assets/sound/song069.wav");
+		this.attack = new MusicEngine("./assets/sound/song025.wav");
+		this.died = new MusicEngine(null);
 	}
 
 	public Infantry(Player player, Point point){

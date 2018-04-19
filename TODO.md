@@ -2,12 +2,12 @@ TODO
 ====
 
 - [ ] Improve design of the panels (in game)
-- [ ] Victory panel
 - [ ] Improve the design of the option panel
 - [ ] Allow an access to the option panel ingame
 - [ ] Map selection screen
 - [ ] Sound volume... (add to option panel ?)
-- [ ] Add a return to menu button in game creation panel
+- [ ] Add a "return to menu" button in game creation panel
+- [ ] Add a commander's power panel (to inform a power was activated)
 
 
 TODO of Peaupote

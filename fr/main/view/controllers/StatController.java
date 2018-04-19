@@ -9,32 +9,35 @@ import fr.main.view.views.StatView;
 
 public class StatController extends Controller {
 
-  public final int[][] units, buildings;
+    public final int[][] units, buildings, funds;
 
-  public final ActionListener menu;
+    public final ActionListener menu;
 
-  public StatController (int numberOfTurns, Player[] ps) {
-    units     = new int[ps.length][numberOfTurns];
-    buildings = new int[ps.length][numberOfTurns];
+    public StatController (int numberOfTurns, Player[] ps) {
+        units     = new int[ps.length][numberOfTurns];
+        buildings = new int[ps.length][numberOfTurns];
+        funds     = new int[ps.length][numberOfTurns];
 
-    for (int i = 0; i < ps.length; i++) {
-      State[] stats = ps[i].getStats();
-      for (int j = 0; j < stats.length; j++) {
-        units[i][j]     = stats[j].numberOfUnit;
-        buildings[i][j] = stats[j].numberOfBuilding;
-      }
+        for (int i = 0; i < ps.length; i++) {
+            State[] stats = ps[i].getStats();
+            for (int j = 0; j < stats.length; j++) {
+                units[i][j]     = stats[j].numberOfUnit;
+                buildings[i][j] = stats[j].numberOfBuilding;
+                funds[i][j]     = stats[j].numberOfFunds;
+            }
 
-      for (int j = stats.length; j < numberOfTurns; j++) {
-        units[i][j]     = stats[stats.length - 1].numberOfUnit;
-        buildings[i][j] = stats[stats.length - 1].numberOfBuilding;
-      }
+            for (int j = stats.length; j < numberOfTurns; j++) {
+                units[i][j]     = 0;
+                buildings[i][j] = 0;
+                funds[i][j]     = 0;
+            }
+        }
+
+        menu = e -> MainFrame.setScene(new MenuController());
     }
 
-    menu = e -> MainFrame.setScene(new MenuController());
-  }
-
-  public StatView makeView () {
-    return new StatView(this);
-  }
+    public StatView makeView () {
+        return new StatView(this);
+    }
 
 }

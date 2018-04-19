@@ -13,10 +13,14 @@ public class OptionController extends Controller {
 
 	public ActionListener quit;
 
-    public OptionController(){
+    public OptionController(Controller controller){
         super();
 
-        quit = e -> MainFrame.setScene(new MenuController());
+        quit = e -> MainFrame.setScene(controller);
+    }
+
+    public OptionController(){
+    	this(new MenuController());
     }
 
     public View makeView(){

@@ -51,7 +51,7 @@ public class MenuController extends Controller {
 
         play   = e -> MainFrame.setScene(new CreateController());
 
-        option = e -> MainFrame.setScene(new OptionController());
+        option = e -> MainFrame.setScene(new OptionController(this));
 
         exit   = e -> System.exit(0);
 

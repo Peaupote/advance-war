@@ -15,11 +15,11 @@ import fr.main.view.controllers.StatController;
 import fr.main.view.render.sprites.Sprite;
 
 public class StatView extends View {
-
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -6937955615729305313L;
+     * Add StatView UID
+     */
+    private static final long serialVersionUID = 1698451922051210697L;
+
 	@SuppressWarnings("unused")
 	private StatController controller;
     private static int[] defeats = null;
@@ -47,11 +47,11 @@ public class StatView extends View {
     }
 
     private class StatPanel extends JPanel {
-
         /**
-		 * 
-		 */
-		private static final long serialVersionUID = 5935271408277307661L;
+         * Add StatController UID
+         */
+        private static final long serialVersionUID = -3263855093192862585L;
+
 		public int[][] data;
         Color[] colors = new Color[]{
             Color.red,

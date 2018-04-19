@@ -1,6 +1,10 @@
 package fr.main.model;
 
 public class State implements java.io.Serializable{
+    /**
+     * Add StatController UID
+     */
+    private static final long serialVersionUID = 1900732638524129192L;
 
     /**
 	 * Add state UID

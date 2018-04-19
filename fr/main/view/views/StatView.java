@@ -5,10 +5,34 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import fr.main.view.controllers.StatController;
+import fr.main.view.render.sprites.Sprite;
 
 public class StatView extends View {
 
     private StatController controller;
+    private static int[] defeats = null;
+
+    private static final Image[] defeatsImages;
+
+    static{
+        Sprite sp = Sprite.get("./assets/ingame/things.png");
+
+        defeatsImages = new Image[]{
+            sp.getImage(92,  1, 12, 14, 2),
+            sp.getImage(92, 32, 12, 14, 2),
+            sp.getImage(63, 15, 12, 14, 2),
+            sp.getImage(79, 32, 12, 14, 2)
+        };
+    }
+
+    public static void resetDefeats(int n){
+        defeats = new int[n];
+        for (int i = 0; i < n; i++) defeats[i] = -1;
+    }
+
+    public static void addDefeat(int i, int turn){
+        defeats[i] = turn;
+    }
 
     private class StatPanel extends JPanel {
 
@@ -72,6 +96,17 @@ public class StatView extends View {
                     g.drawLine(h - 10, v, h, v);
                     g.drawString(i + "", h + 3, v + 10);
                 }
+
+            // display player's death
+            for (int i = 0; i < data.length; i++)
+                if (StatView.defeats[i] != -1){
+                    int n = StatView.defeats[i];
+                    g.drawImage(StatView.defeatsImages[i],
+                        (n - 1) * gap,
+                        Math.max(0, Math.min( this.getHeight() - 2 - StatView.defeatsImages[i].getHeight(StatView.this),
+                        (max - data[i][n - 1]) * this.getHeight() / max - StatView.defeatsImages[i].getHeight(StatView.this) / 2)), 
+                        StatView.this);
+                }
         }
 
         public void paintGraph(Graphics g, int[][] data, int gap){
@@ -90,6 +125,17 @@ public class StatView extends View {
                     y[y.length - 1 - j] = coords[i][j] * this.getHeight() / coords[coords.length - 1][j];
                 g.fillPolygon(x, y, x.length);
             }
+
+            // display player's death
+            for (int i = 0; i < data.length; i++)
+                if (StatView.defeats[i] != -1){
+                    int n = StatView.defeats[i];
+                    g.drawImage(StatView.defeatsImages[i],
+                        (2 * n - 1) * gap / 2, 
+                        Math.max(0, Math.min( this.getHeight() - 2 - StatView.defeatsImages[i].getHeight(StatView.this),
+                        (coords[i][n] + coords[i + 1][n]) * this.getHeight() / (2 * coords[coords.length - 1][n]) - StatView.defeatsImages[i].getHeight(StatView.this) / 2)), 
+                        StatView.this);
+                }
 
             g.setColor(Color.black);
             int h = gap * (data[0].length - 1);

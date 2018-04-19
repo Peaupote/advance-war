@@ -18,6 +18,8 @@ public class StatController extends Controller {
         buildings = new int[ps.length][numberOfTurns];
         funds     = new int[ps.length][numberOfTurns];
 
+        StatView.resetDefeats(ps.length);
+
         for (int i = 0; i < ps.length; i++) {
             State[] stats = ps[i].getStats();
             for (int j = 0; j < stats.length; j++) {
@@ -25,6 +27,8 @@ public class StatController extends Controller {
                 buildings[i][j] = stats[j].numberOfBuilding;
                 funds[i][j]     = stats[j].numberOfFunds;
             }
+
+            if (stats.length != numberOfTurns) StatView.addDefeat(i, stats.length);
 
             for (int j = stats.length; j < numberOfTurns; j++) {
                 units[i][j]     = 0;

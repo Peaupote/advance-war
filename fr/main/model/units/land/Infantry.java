@@ -60,12 +60,13 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
 	
 	public void initialSound() {
 		this.selected = new MusicEngine("./assets/sound/song069.wav");
-		this.attack = new MusicEngine("./assets/sound/song025.wav");
-		this.died = new MusicEngine(null);
+		this.attack = new MusicEngine("./assets/sound/ak47plus.wav");
+		//this.died = new MusicEngine(null);
 	}
 
 	public Infantry(Player player, Point point){
 		super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.INFANTRY,3,2,null,SECONDARYWEAPON,NAME,PRICE);
+		initialSound();
 	}
 
     public boolean canCapture(AbstractBuilding b){

@@ -43,11 +43,12 @@ public class Fighter extends Unit implements PlaneUnit{
     public void initialSound() {
 		this.selected = new MusicEngine("./assets/sound/song021.wav");
 		this.attack = new MusicEngine("./assets/sound/song037.wav");
-		this.died = new MusicEngine(null);
+		//this.died = new MusicEngine(null);
 	}
 
     public Fighter(Player player, Point point){
         super(player,point,fuelName,99,true,MoveType.AIRY,9,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),null,NAME,PRICE);
+        initialSound();
     }
 
     public int getFuelTurnCost(){

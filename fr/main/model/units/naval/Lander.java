@@ -12,6 +12,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.TransportUnit;
 import fr.main.model.units.land.LandUnit;
+import fr.main.view.sound.MusicEngine;
 
 /**
  * Represents a lander (a transport boat)
@@ -29,13 +30,18 @@ public class Lander extends Unit implements NavalUnit, TransportUnit {
 
     public Lander(Player player, Point point){
         super(player, point, fuelName, 99, true, MoveType.LANDER, 6, 2, null, null, NAME, PRICE);
+        initialSound();
     }
 
     public Lander(Player player, int x, int y){
         this(player, new Point(x,y));
     }
     
-    
+    public void initialSound() {
+		this.selected = new MusicEngine("./assets/sound/song056.wav");
+		this.attack = new MusicEngine("./assets/sound/song054.wav");
+		//this.died = new MusicEngine(null);
+	}
 
     public int getCapacity(){
         return 2;

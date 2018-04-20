@@ -62,9 +62,4 @@ public class EditorView extends View {
     map.addMouseListener(controller);
   }
 
-  public void paintComponent (Graphics g) {
-    super.paintComponent(g);
-    map.paintComponent(g);
-  }
-
 }

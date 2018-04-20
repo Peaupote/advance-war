@@ -59,25 +59,6 @@ public class EditorController extends Controller {
     camera = new Position.Camera(world.getDimension());
   }
 
-  private Point ref;
-
-  public void mouseDragged (MouseEvent e) {
-    Point vec = e.getPoint();
-    vec.x = (vec.x - ref.x);
-    vec.y = (vec.y - ref.y);
-
-    camera.setLocation(camera.getRealX() +  + vec.x,
-                       camera.getRealY() + vec.y);
-  }
-
-  public void mousePressed (MouseEvent e) {
-    ref = e.getPoint();
-  }
-
-  public void mouseReleased (MouseEvent e) {
-    ref = null;
-  }
-
   public EditorView makeView () {
     return new EditorView(this);
   }

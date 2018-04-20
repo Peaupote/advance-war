@@ -60,7 +60,25 @@ public abstract class Position {
     public void draw (Graphics g, Color color) {
       int offset = (int)(5 * Math.cos(MainFrame.getTimer() / 5)),
                s = MainFrame.UNIT + offset;
-      g.drawImage (cursor, 2 + real.x - camera.real.x - offset / 2 + 1, 2 + real.y - camera.real.y - offset / 2 + 1, s, s, null);
+      g.drawImage (cursor, 2 + real.x - camera.real.x - offset / 2 + 1,
+                           2 + real.y - camera.real.y - offset / 2 + 1, s, s, null);
+    }
+
+    public void setLocation (int x, int y) {
+      if (x >= 0 && y >= 0 &&
+          x < size.width && y < size.width) {
+        position.x = x;
+        position.y = y;
+        target.x = position.x;
+        target.y = position.y;
+
+        real.x = x * MainFrame.UNIT;
+        real.y = y * MainFrame.UNIT;
+      }
+    }
+
+    public void setLocation (Point pt) {
+      setLocation (pt.x, pt.y);
     }
 
     public void draw (Graphics g) {
@@ -86,13 +104,6 @@ public abstract class Position {
 
     public Camera (Dimension size) {
       super(size);
-    }
-
-    @Override
-    protected boolean canSetLocation (int x, int y) {
-      return x >= 0 && y >= 0 &&
-             x + width * MainFrame.UNIT < size.width * MainFrame.UNIT &&
-             y + height * MainFrame.UNIT < size.height * MainFrame.UNIT;
     }
 
     @Override
@@ -202,27 +213,6 @@ public abstract class Position {
    * @return true if real location has reach target location
    */
   protected boolean hasReachLocation () { return true; }
-
-  public void setLocation (int x, int y) {
-    if (canSetLocation(x, y)) {
-      real.x = x;
-      real.y = y;
-
-      position.x = x / MainFrame.UNIT;
-      position.y = y / MainFrame.UNIT;
-      target.x = position.x;
-      target.y = position.y;
-    }
-  }
-
-  protected boolean canSetLocation (int x, int y) {
-    return x >= 0 && x < size.width * MainFrame.UNIT &&
-           y >= 0 && y < size.height * MainFrame.UNIT;
-  }
-
-  public void setLocation (Point pt) {
-    setLocation (pt.x, pt.y);
-  }
 
 }
 

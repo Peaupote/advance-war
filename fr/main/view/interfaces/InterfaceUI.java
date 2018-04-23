@@ -1,9 +1,7 @@
 package fr.main.view.interfaces;
 
-import java.util.LinkedList;
-import java.util.Iterator;
-import java.lang.Iterable;
 import java.awt.Graphics;
+import java.util.LinkedList;
 
 /**
  * User interface panels.

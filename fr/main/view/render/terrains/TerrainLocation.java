@@ -371,7 +371,9 @@ public interface TerrainLocation extends Serializable{
 	}
 
 	public class GenericTerrainLocation implements TerrainLocation {
+		@SuppressWarnings("unused")
 		private String path;
+		@SuppressWarnings("unused")
 		private String name;
 		private LinkedList<Sticker> stickers;
 		private final TerrainLocation base;
@@ -456,10 +458,12 @@ public interface TerrainLocation extends Serializable{
 			this.y = y;
 		}
 
+		@SuppressWarnings("unused")
 		private boolean is(Sticker s) {
 			return s.loc == this.loc && s.y == this.y && s.x == this.x;
 		}
 
+		@SuppressWarnings("unused")
 		private boolean is(TerrainLocation loc, int x, int y) {
 			return loc == this.loc && y == this.y && x == this.x;
 		}

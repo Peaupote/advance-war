@@ -11,6 +11,7 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.land.*;
 import fr.main.model.units.weapons.PrimaryWeapon;
+import fr.main.view.sound.MusicEngine;
 
 /**
  * Represents a battleship (a boat with a huge range)
@@ -52,11 +53,19 @@ public class Battleship extends Unit implements NavalUnit {
 
     public Battleship(Player player, Point point){
         super(player, point, fuelName, 99, true, MoveType.NAVAL, 5, 2, new PrimaryWeapon(PRIMARYWEAPON_NAME,9,2,6,PRIMARYWEAPON_DAMAGES,false), null, NAME, PRICE);
+        initialSound();
     }
 
     public Battleship(Player player, int x, int y){
         this(player, new Point(x,y));
+        initialSound();
     }
+    
+    public void initialSound() {
+		this.selected = new MusicEngine("./assets/sound/song056.wav");
+		this.attack = new MusicEngine("./assets/sound/song054.wav");
+		//this.died = new MusicEngine(null);
+	}
 
     public boolean canAttackAfterMove(){
         return false;

@@ -2,19 +2,17 @@ TODO
 ====
 
 - [ ] Improve design of the panels (in game)
-- [ ] Victory panel
 - [ ] Improve the design of the option panel
-- [ ] Allow an access to the option panel ingame
 - [ ] Map selection screen
 - [ ] Sound volume... (add to option panel ?)
-- [ ] Implement the 'findNextUnit' method in GameController
-- [ ] Add a return to menu button in game creation panel
+- [ ] Add a "return to menu" button in game creation panel
+- [ ] Add a commander's power panel (to inform a power was activated)
 
 
 TODO of Peaupote
 ====
 
-- [ ] Allow online multiplayer gaming
+- [ ] Create the map editor
 
 
 TODO of Na1an
@@ -23,7 +21,7 @@ TODO of Na1an
 - [ ] Create the sound manager (dynamic sound depending on what is visible for example)
 
 
-TODO of pgimalac
+TODO of pgimalac & Peaupote
 ====
 
 - [ ] Create an AI
@@ -46,7 +44,6 @@ TODO of pgimalac
 TODO of firgaty
 ====
 
-- [x] Apply the color filter on the units images (blue, green, yellow)
 - [ ] Orientation of the terrains in function of what terrains are around
     - [x] Lowland
     - [ ] Sea
@@ -59,4 +56,3 @@ TODO of firgaty
     - [x] River
     - [x] Reef
 - [ ] Create buildings in the map generator
-- [ ] Create the map editor

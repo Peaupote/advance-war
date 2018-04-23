@@ -1,17 +1,16 @@
 package fr.main.view.interfaces;
 
-import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Graphics;
 
-import fr.main.model.terrains.naval.*;
-import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.buildings.*;
 import fr.main.model.Universe;
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.OwnableBuilding;
+import fr.main.model.terrains.AbstractTerrain;
+import fr.main.model.terrains.land.LandTerrain;
+import fr.main.model.terrains.naval.NavalTerrain;
+import fr.main.model.units.AbstractUnit;
 import fr.main.view.Position;
-import fr.main.view.MainFrame;
 
 /**
  * In-game minimap user interface
@@ -32,7 +31,8 @@ public class Minimap extends InterfaceUI {
   }
 
   public void draw (Graphics g) {
-    int x = camera.getX(),
+    @SuppressWarnings("unused")
+	int x = camera.getX(),
         y = camera.getY(),
         w = world.getDimension().width,
         h = world.getDimension().height,

@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
   - Ammo, vision & a few images in terrain panel
+  - Add a control to go onto the next enabled unit
+  - Game's stats
+  - Ingame option panel
 ### Changed
   - Use mouse wheel to move in menus
-  - Possibility to change controls
 ### Fixed
 
 ## [0.0.9] - 2018-04-12

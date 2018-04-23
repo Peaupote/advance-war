@@ -14,11 +14,11 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.naval.NavalUnit;
 import fr.main.view.MainFrame;
 import fr.main.view.controllers.GameController;
+import fr.main.view.controllers.StatController;
 import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.controllers.StatController;
 
 public class UniverseRenderer extends MapRenderer {
 
@@ -179,6 +179,7 @@ public class UniverseRenderer extends MapRenderer {
                 for (int i = upperLeft.x; i < lowerRight.x; i ++)
                     targets[j][i] = n[j - upperLeft.y][i - upperLeft.x].lowestCost <= moveQuantity;
             tColor = unit.getPlayer() == getCurrentPlayer() ? moveColor : targetColor;
+            
         } else if (controller.getMode() == GameController.Mode.ATTACK) {
             unit.renderTarget(targets);
             upperLeft.move(0,0);

@@ -10,7 +10,7 @@ import fr.main.view.controllers.Controller;
 public class View extends JPanel {
 
     /**
-	 * 
+	 * Add View UID
 	 */
 	private static final long serialVersionUID = -3106932721264035758L;
 

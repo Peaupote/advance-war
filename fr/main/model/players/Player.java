@@ -199,8 +199,8 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @return a set containing the units owned by the player
      */
-    public HashSet<AbstractUnit> unitList(){
-        return new HashSet<AbstractUnit>(units);
+    public ArrayList<AbstractUnit> unitList(){
+        return new ArrayList<AbstractUnit>(units);
     }
 
     /**
@@ -212,6 +212,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
             funds += b.getIncome();
         for (AbstractUnit u : unitList())
             u.turnBegins();
+        stats.add(new State(units.size(), buildings.size(), funds));
     }
 
     /**
@@ -220,7 +221,6 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     public synchronized void turnEnds(){
         for (AbstractUnit u : unitList())
             u.turnEnds();
-        stats.add(new State(unitList().size(), buildingList().size()));
     }
 
     public State[] getStats() {

@@ -16,6 +16,8 @@ public class EditorView extends View {
           controller.camera.getY(), 
           controller.camera.getOffsetX(),
           controller.camera.getOffsetY());
+
+      controller.cursor.draw(g);
     }
 
   }

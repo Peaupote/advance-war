@@ -57,7 +57,7 @@ public abstract class Position {
              (real.y == target.y * MainFrame.UNIT);
     }
 
-    public void draw (Graphics g, Color color) {
+    public void draw (Graphics g) {
       int offset = (int)(5 * Math.cos(MainFrame.getTimer() / 5)),
                s = MainFrame.UNIT + offset;
       g.drawImage (cursor, 2 + real.x - camera.real.x - offset / 2 + 1,
@@ -81,9 +81,9 @@ public abstract class Position {
       setLocation (pt.x, pt.y);
     }
 
-    public void draw (Graphics g) {
-      draw (g, Color.black);
-    }
+    //public void draw (Graphics g) {
+      //draw (g, Color.black);
+    //}
 
 
     public void setCursor(boolean normal){

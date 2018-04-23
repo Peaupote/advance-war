@@ -20,6 +20,7 @@ public class EditorController extends Controller {
 
   public MapRenderer world;
   public Position.Camera camera;
+  public Position.Cursor cursor;
 
   public EditorController () {
     generate(50, 50, 2);
@@ -57,6 +58,7 @@ public class EditorController extends Controller {
 
     world  = new MapRenderer(new Universe.Board(units, null, map, buildings, null, null, 0));
     camera = new Position.Camera(world.getDimension());
+    cursor = new Position.Cursor(camera, world.getDimension());
   }
 
   public EditorView makeView () {

@@ -1,9 +1,16 @@
 package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
+import fr.main.model.buildings.Building;
+import fr.main.model.buildings.GenericBuilding;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
 
+
+import java.awt.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 import static fr.main.model.TerrainEnum.*;
@@ -11,32 +18,44 @@ import static fr.main.model.TerrainEnum.*;
 public class MapGenerator {
     private long seed;
     private Random rand;
+    private Player[] players;
+    private TerrainEnum[][] lastMap;
+    private Building[][] lastBuildingLayout;
+    private Player[] lastPlayers;
+
+    // TODO put all mapGen parameters
+
+	private int seaProportion, landProportion, mountainProportion, woodProportion,
+			smoothness, power, seaBandSize,
+			mapHeight, mapWidth;
 
 	/**
-	 * Generates a MapGenerator of seed 1.
+	 * Generates a MapGenerator of seed 1 and for 2 players.
 	 */
 	public MapGenerator() {
-    	this(1);
+    	this(1, 2);
 	}
 
 	/**
 	 * Generates a MapGenerator with a LONG seed.
 	 * @param seed
 	 */
-    public MapGenerator(long seed) {
-        this.seed = seed;
-        this.rand = new Random(seed);
+    public MapGenerator(long seed, int playerNb) {
+    	setSeed(seed);
+    	this.rand = new Random(seed);
+        setPlayers(playerNb);
     }
 
 	/**
 	 * Generates a map generator with an INTEGER seed.
 	 * @param seed
 	 */
-	public MapGenerator(int seed) {
-        this((long) seed);
+	public MapGenerator(int seed, int playerNb) {
+        this((long) seed, playerNb);
     }
 
     public void setSeed(long seed) {
+		if(seed < 0) seed = -seed;
         this.seed = seed;
         rand = new Random(seed);
         System.out.println("Seed set to : " + seed);
@@ -51,28 +70,124 @@ public class MapGenerator {
         System.out.println("Rand reset to : " + seed);
     }
 
-	/**
-	 * Creates a random map of size x*y.
-	 * @param x vertical size.
-	 * @param y horizontal size.
-	 * @return
-	 */
-	public TerrainEnum[][] randMap(int x, int y) {
-        int power = 4; // power * 10 = size% of cells that will serve as reference;
-        int smoothness = 2;
+	public void setPlayers(int playerNb) {
+		if(playerNb < 2) playerNb = 2;
+		if(playerNb > 4) playerNb = 4;
+		players = new Player[playerNb];
+		for(int i = 1; i <= playerNb; i ++)
+			players[i - 1] = new Player("p" + i);
+	}
 
-        return randMap(x, y, power, smoothness);
-    }
+	public Player[] getPlayers() {
+		return players;
+	}
+
+	public Player[] getLastPlayers() {
+		return lastPlayers;
+	}
+
+	public TerrainEnum[][] getLastMap() {
+		return lastMap;
+	}
+
+	public void setSmoothness(int s) {
+		this.smoothness = makeInBound(0, 10, s);
+	}
+
+	public int getPower() {
+		return power;
+	}
+
+	public Building[][] getLastBuildingLayout() {
+		return lastBuildingLayout;
+	}
+
+	public int getLandProportion() {
+		return landProportion;
+	}
+
+	public int getSeaProportion() {
+		return seaProportion;
+	}
+
+	public int getSmoothness() {
+		return smoothness;
+	}
+
+	public long getSeed() {
+		return seed;
+	}
+
+	public Random getRand() {
+		return rand;
+	}
+
+	public int getSeaBandSize() {
+		return seaBandSize;
+	}
+
+	public int getMapHeight() {
+		return mapHeight;
+	}
+
+	public int getMapWidth() {
+		return mapWidth;
+	}
+
+	public int getMountainProportion() {
+		return mountainProportion;
+	}
+
+	public int getWoodProportion() {
+		return woodProportion;
+	}
+
+	public void setSeaBandSize(int seaBandSize) {
+		if(seaBandSize < 0) seaBandSize = 0;
+		else if (seaBandSize > mapHeight / 2) seaBandSize = mapHeight / 2 + 1;
+		else if (seaBandSize > mapWidth / 2) seaBandSize = mapWidth / 2 + 1;
+		this.seaBandSize = seaBandSize;
+	}
+
+	public void setMapHeight(int mapHeight) {
+		if(mapHeight < 10) mapHeight = 10;
+		this.mapHeight = mapHeight;
+	}
+
+	public void setMapWidth(int mapWidth) {
+		if(mapWidth < 10) mapWidth = 10;
+		this.mapWidth = mapWidth;
+	}
+
+	public void setPower(int p) {
+		this.power = makeInBound(0, 5, p);
+	}
+
+	public void setLandProportion(int landProportion) {
+		this.landProportion = makeInBound(0, 100 - (seaProportion - (seaProportion > 20 ? 20 : 0)), landProportion);
+	}
+
+	public void setSeaProportion(int seaProportion) {
+		this.seaProportion = makeInBound(0, 100 - (landProportion - (landProportion > 20 ? 20 : 0)), seaProportion);
+	}
+
+	private int makeInBound(int min, int max, int i) {
+		if(i < min) i = min;
+		else if (i > max) i = max;
+		return i;
+	}
+
+	public TerrainEnum[][] randMap() {
+		return randMap(mapHeight, mapWidth);
+	}
 
 	/**
 	 * Creates a random map.
 	 * @param x vertical size.
 	 * @param y horizontal size.
-	 * @param power defines the number of reference points for the Voronoi algorithm.
-	 * @param smoothness number of iteration of the smoothness automaton.
 	 * @return
 	 */
-    public TerrainEnum[][] randMap(int x, int y, int power, int smoothness) {
+    public TerrainEnum[][] randMap(int x, int y) {
         System.out.println("Map size : " + x + "x" + y);
         if(x < 0) x = 1;
         if(y < 0) y = 1;
@@ -83,11 +198,16 @@ public class MapGenerator {
         resetSeed();
         int size = x * y;
         int referenceNb = size / 10 * power;
+
         TerrainEnum[][] map = new TerrainEnum[x][y];
         for(TerrainEnum[] line : map) Arrays.fill(line, none);
 
+		Building[][] buildings = new Building[x][y];
+		for(int i = 0; i < x; i ++)
+			for(int j = 0; j < y; j ++)
+				buildings[i][j] = new GenericBuilding(i, j);
 
-        System.out.println("Reference : " + referenceNb);
+		System.out.println("Reference : " + referenceNb);
 
         int[] terrainPortion = new int[2];
         terrainPortion[0] = 20; // Lowland
@@ -100,6 +220,12 @@ public class MapGenerator {
 
         int randX, randY, count = 0;
         int[][] referencePoints = new int[referenceNb][3];
+
+        /*
+        	Places the HQs
+         */
+
+
 
         /*
         	Places the reference points for the Voronoi algorithm.
@@ -127,15 +253,206 @@ public class MapGenerator {
             }
         }
 
-        map = refineMap(map,smoothness);
-        map = surroundBySea(map, 4);
+        /*
+        	Cleaning the buldings table.
+         */
+
+        for(Building[] line : buildings)
+        	for(Building b: line)
+        		if(b instanceof GenericBuilding) b = null;
+
+        map = refineMap(map, smoothness);
+        map = surroundBySea(map, seaBandSize);
         map = placeBeach(map);
         map = placeRivers(map);
         map = placeMountainsHills(map);
         map = placeWood(map);
 
+        lastBuildingLayout = buildings;
+        lastMap = map;
+        lastPlayers = players;
+
         return map;
     }
+
+    private Building[][] placeHeadQuarters(Building[][] layout) {
+    	int x = layout.length,
+				y = layout[0].length;
+    	int randNb = (rand.nextInt() % (3));
+    	int realX = x - seaBandSize - 1 - randNb,
+				realY = y - seaBandSize - 1 - randNb;
+		boolean useWidth = x < y;
+
+		Building[] rect = getRectangle(layout, seaBandSize + 1 + randNb);
+
+		LinkedList<Integer> hqs = new LinkedList<>();
+
+		switch (players.length) {
+			case 2 :
+				hqs.add(useWidth ? rand.nextInt() % realY : rand.nextInt() % realX + realY - 1);
+				hqs.add((hqs.get(0) + realX + realY - 1) % rect.length);
+				break;
+			case 3 :
+				if(useWidth)
+					if(rand.nextInt() % 2 == 0) {
+						hqs.add(realY / 2);
+						hqs.add(realY + realX - 1);
+						hqs.add(realX + 2 * realY - 2);
+					} else {
+						hqs.add(0);
+						hqs.add(realY);
+						hqs.add(realY / 2 + realY + realX - 1);
+					}
+				else
+					if(rand.nextInt() % 2 == 0) {
+						hqs.add(realX / 2);
+						hqs.add(realX + realY - 1);
+						hqs.add(realY + 2 * realX - 2);
+					} else {
+						hqs.add(0);
+						hqs.add(realX);
+						hqs.add(realX / 2 + realX + realY - 1);
+					}
+				break;
+			case 4 :
+				LinkedList<Integer> l = new LinkedList<>();
+				l.add(0); l.add(realY); l.add(realY + realX - 1); l.add(realY * + realX - 2);
+				for(int i = 0; i < 4; i --)
+					hqs.add(l.get(rand.nextInt() % i));
+				break;
+			default:
+				System.out.println("Problem here");
+				System.exit(20);
+		}
+
+		for (int i = 0; i < hqs.size(); i ++)
+			layout[rect[hqs.get(i)].getX()][rect[hqs.get(i)].getY()] = new Headquarter(players[i], new Point(rect[hqs.get(i)].getX(), rect[hqs.get(i)].getY()));
+
+		return layout;
+	}
+
+	private Building[] getRectangle(Building[][] layout, int distanceFromSide) {
+		int lw = layout[0].length;
+		int lh = layout.length;
+
+    	int w = 2 * (lw - 2 * distanceFromSide);
+    	int h = 2 * (lh - 2 * distanceFromSide - 2);
+
+    	if(h < 0 || w < 0) {
+    		System.out.println("height or width not valid.");
+    		return new Building[0];
+		}
+
+		Building[] rectangle = new Building[w + h];
+    	int counter = 0;
+
+    	for(int j = distanceFromSide; j < lw - distanceFromSide; j ++) {
+			rectangle[counter] = layout[distanceFromSide][j];
+			counter++;
+		}
+		for(int i = distanceFromSide + 1; i < lh - distanceFromSide - 1; i ++) {
+    		rectangle[counter] = layout[i][lw - distanceFromSide - 1];
+    		counter ++;
+		}
+		for(int i = lw - distanceFromSide - 1; i >= distanceFromSide; i --) {
+    		rectangle[counter] = layout[i][lh - distanceFromSide - 1];
+    		counter ++;
+		}
+		for(int j = lh - distanceFromSide - 2; j > distanceFromSide + 1; j --) {
+    		rectangle[counter] = layout[lw - distanceFromSide - 1][j];
+    		counter ++;
+		}
+
+		return rectangle;
+	}
+
+	private Building[] getCircle(Building[][] layout, int x0, int y0, int radius) {
+		int x = radius-1;
+		int y = 0;
+		int dx = 1;
+		int dy = 1;
+		int err = dx - (radius << 1);
+
+		int size = 0;
+
+		// Calculating the final size of the array returned.
+		while (x >= y) {
+			size += 8;
+
+			if (err <= 0) {
+				y++;
+				err += dy;
+				dy += 2;
+			}
+
+			if (err > 0) {
+				x--;
+				dx += 2;
+				err += dx - (radius << 1);
+			}
+		}
+
+		// Now we get all the coordinates on the circle.
+		Building[] BList = new Building[size];
+		int[][] IList = new int[size][2];
+
+		x = radius-1;
+		y = 0;
+		dx = 1;
+		dy = 1;
+		err = dx - (radius << 1);
+
+		int count = 0;
+
+		while (x >= y) {
+			IList[count][0] = x0 + x;
+			IList[count][1] = y0 + y;
+			count ++;
+
+			if (err <= 0) {
+				y++;
+				err += dy;
+				dy += 2;
+			}
+
+			if (err > 0) {
+				x--;
+				dx += 2;
+				err += dx - (radius << 1);
+			}
+		}
+
+		// Mirror first Octant.
+		for(int i = count - 1; i >= 0; i --) {
+			IList[count][0] = IList[i][1];
+			IList[count][1] = IList[i][0];
+			count ++;
+		}
+
+		// Mirror first Quarter.
+		for(int i = count - 1; i >= 0; i --) {
+			IList[count][0] = -IList[i][0];
+			IList[count][1] = IList[i][1];
+			count ++;
+		}
+
+		// Mirror first Half.
+		for(int i = count - 1; i >= 0; i --) {
+			IList[count][0] = IList[i][0];
+			IList[count][0] = -IList[i][1];
+			count ++;
+		}
+
+		// Getting the list of Buildings.
+		int h = layout.length;
+		int w = layout[0].length;
+
+		for(int i = 0; i < size; i ++)
+			if (isInRect(IList[i][0], IList[i][1], h, w))
+				BList[i] = layout[IList[i][0]][IList[i][1]];
+
+		return BList;
+	}
 
 	/**
 	 * @param x1
@@ -238,7 +555,7 @@ public class MapGenerator {
                             map[i][j] = bridge;
                         else if(rand.nextInt( 10) < 8) map[i][j] = beach;
                         break;
-                    case 3: if(rand.nextInt( 10) < 6) map[i][j] = beach; break;
+                    case 3: if(rand.nextInt(10) < 6) map[i][j] = beach; break;
                     case 4: map[i][j] = reef; break;
                 }
             }
@@ -259,6 +576,7 @@ public class MapGenerator {
     }
 
     private TerrainEnum[][] placeMountainsHills(TerrainEnum[][] map) {
+    	// TODO affine
         int mountains = 0;
         for(int i = 0; i < map.length; i ++)
             for(int j = 0; j < map[0].length; j ++) {
@@ -521,4 +839,12 @@ public class MapGenerator {
 
         return map;
     }
+
+    public static boolean isInRect(int x, int y, int x0, int y0, int height, int width) {
+    	return x >= x0 && y >= y0 && x < x0 + height && y < y0 + width;
+	}
+
+	public static boolean isInRect(int x, int y, int height, int width) {
+    	return isInRect(x, y, 0, 0, height, width);
+	}
 }

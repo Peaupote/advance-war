@@ -144,33 +144,33 @@ public class Universe {
             Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
         */
 
-        if (map.buildings[10][6] == null){
-            new Dock(map.players[0], new Point(6,10));
-            new Airport(map.players[1], new Point(6,9));
-            new Airport(map.players[0], new Point(7,9));
-            new Barrack(null, new Point(9,5));
-            new Barrack(map.players[1], new Point(14,5));
-            new Headquarter(map.players[0], new Point(12,5));
-            new Headquarter(map.players[1], new Point(13,5));
+        if (map.buildings[7][5] == null){
+            map.buildings[7][5] = new Dock(map.players[0], new Point(5,7));
+            map.buildings[7][4] = new Airport(map.players[1], new Point(4,7));
+            map.buildings[7][3] = new Airport(map.players[0], new Point(3,7));
+            map.buildings[7][2] = new Barrack(null, new Point(2,7));
+            map.buildings[6][2] = new Barrack(map.players[1], new Point(2,6));
+            map.buildings[5][2] = new Headquarter(map.players[0], new Point(2,5));
+            map.buildings[5][3] = new Headquarter(map.players[1], new Point(3,5));
             if (map.players.length > 2)
-                new Headquarter(map.players[2], new Point(12,6));
+                map.buildings[4][2] = new Headquarter(map.players[2], new Point(2,4));
             if (map.players.length > 3)
-                new Headquarter(map.players[3], new Point(13,6));
-            new City(null, new Point(20,5));
-            new MissileLauncher(new Point(11,5));
+                map.buildings[4][3] = new Headquarter(map.players[3], new Point(3,4));
+            map.buildings[2][5] = new City(null, new Point(5,2));
+            map.buildings[2][6] = new MissileLauncher(new Point(6,2));
 
-            new Infantry(map.players[0], new Point(12,5));
-            new Infantry(map.players[1], new Point(13,5));
+            new Infantry(map.players[0], new Point(2,5));
+            new Infantry(map.players[1], new Point(3,5));
             if (map.players.length > 2)
-                new Infantry(map.players[2], new Point(12,6));
+                new Infantry(map.players[2], new Point(2,4));
             if (map.players.length > 3)
-                new Infantry(map.players[3], new Point(13,6));
+                new Infantry(map.players[3], new Point(3,4));
 
             new Lander(map.players[0], new Point(0,0));
             new Lander(map.players[1], new Point(1,1));
             new Lander(map.players[0], new Point(3,17));
             new Infantry(map.players[0], new Point(10,5));
-            new Infantry(map.players[1], new Point(10,6));
+            new Infantry(map.players[1], new Point(7,3));
             new Fighter(map.players[0], new Point(10,10));
 
             map.players[0].addFunds(100000);
@@ -180,12 +180,12 @@ public class Universe {
             if (map.players.length == 4)
                 map.players[3].addFunds(100000);
 
-            if (getBuilding(6,10) != null)
-                ((Dock)getBuilding(6,10)).create(Battleship.class);
-            if (getBuilding(7,9) != null)
-                ((Airport)getBuilding(7,9)).create(Stealth.class);
-            if (getBuilding(6,9) != null)
-                ((Airport)getBuilding(6,9)).create(Fighter.class);
+            if (getBuilding(5,7) != null)
+                ((Dock)getBuilding(5,7)).create(Battleship.class);
+            if (getBuilding(4,7) != null)
+                ((Airport)getBuilding(4,7)).create(Stealth.class);
+            if (getBuilding(3,7) != null)
+                ((Airport)getBuilding(3,7)).create(Fighter.class);
         }
     }
 

@@ -9,15 +9,19 @@ public class EditorView extends View {
 
   private EditorController controller;
 
-  private class Map extends JPanel {
-    
+  boolean isListening = false;
+
+  public class Map extends JPanel {
+
     public void paintComponent (Graphics g) {
       controller.world.draw(g, controller.camera.getX(), 
           controller.camera.getY(), 
           controller.camera.getOffsetX(),
           controller.camera.getOffsetY());
 
-      controller.cursor.draw(g);
+      g.setColor(Color.black);
+      for (int i = 0; i < 4; i++)
+        g.fillPolygon(controller.arrows[i][0], controller.arrows[i][1], 3);
     }
 
   }
@@ -45,7 +49,7 @@ public class EditorView extends View {
     }
   }
 
-  private Map map;
+  public final Map map;
   private Tools tools;
 
   public EditorView (EditorController controller) {

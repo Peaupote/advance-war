@@ -10,7 +10,6 @@ import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.MoveType;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
-import fr.main.view.sound.MusicEngine;
 import fr.main.model.units.air.BCopter;
 import fr.main.model.units.air.TCopter;
 import fr.main.model.units.naval.*;
@@ -73,17 +72,9 @@ public class Tank extends Unit implements TankUnit{
 
     public Tank(Player p, int x, int y){
         this(p,new Point(x,y));
-        initialSound();
     }
     
-    public void initialSound() {
-		this.selected = new MusicEngine("./assets/sound/song056.wav");
-		this.attack = new MusicEngine("./assets/sound/song054.wav");
-		//this.died = new MusicEngine(null);
-	}
-
     public Tank(Player player, Point point){
         super(player,point,fuelName,70,false,MoveType.TREAD,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
-        initialSound();
     }
 }

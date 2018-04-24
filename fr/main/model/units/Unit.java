@@ -10,7 +10,6 @@ import fr.main.model.units.air.AirUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.model.units.weapons.SecondaryWeapon;
 import fr.main.model.units.weapons.Weapon;
-import fr.main.view.sound.MusicEngine;
 
 /**
  * Represents an unit on the board
@@ -34,7 +33,6 @@ public abstract class Unit implements AbstractUnit {
     public final String name;
     public final PrimaryWeapon primaryWeapon;
     public final SecondaryWeapon secondaryWeapon;
-    public MusicEngine selected,attack,died;
 
     public class Fuel implements java.io.Serializable{
         /**
@@ -86,30 +84,7 @@ public abstract class Unit implements AbstractUnit {
         this.secondaryWeapon = secondaryWeapon;
         this.name            = name;
         this.cost            = cost;
-        this.died = new MusicEngine("./assets/sound/screaming.wav");
-		this.selected = new MusicEngine("./assets/sound/song069.wav");
-		this.attack = new MusicEngine("./assets/sound/song025.wav");
         Universe.get().updateVision();
-    }
-
-    // setting these differents sounds
-    public void setMusicEngine(MusicEngine selected,MusicEngine attack,MusicEngine died) {
-    	this.selected = selected;
-    	this.attack = attack;
-    	this.died = died;
-    }
-    
-    //in default, return the sound select effect
-    //the parameter 'str' is for the different case of sound you wanted
-    public MusicEngine getMusicEngine(String str){
-    	switch (str) {
-		case "attack":
-			return this.attack;
-		case "died":
-			return this.died;
-		default:
-			return this.selected;
-		}
     }
     
     @Override

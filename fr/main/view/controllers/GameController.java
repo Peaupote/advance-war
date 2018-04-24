@@ -586,6 +586,7 @@ public class GameController extends Controller {
                 int aLife = targetUnit.getLife(),
                     tLife = target.getLife();
                 targetUnit.attack(target);
+                UnitRenderer.getRender(targetUnit).attackSound();
                 world.flash ("" + (targetUnit.getLife() - aLife),
                             (targetUnit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                             (targetUnit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
@@ -594,12 +595,6 @@ public class GameController extends Controller {
                             (target.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
                             (target.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
                             UniverseRenderer.FlashMessage.Type.ALERT);
-                targetUnit.getMusicEngine("attack").start(false);
-                if(target.getLife()==0) {
-                	target.getMusicEngine("died").start(false);
-                }else if(targetUnit.getLife()==0) {
-                	targetUnit.getMusicEngine("died").start(false);
-                }
             } else {
                 targetUnit.setMoveQuantity(0);
                 if (targetUnit.getPrimaryWeapon() != null) targetUnit.getPrimaryWeapon().shoot();
@@ -625,7 +620,7 @@ public class GameController extends Controller {
             else buildingPanel.setVisible (true);
         } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                  targetUnit.isEnabled()) {
-        	targetUnit.getMusicEngine("selected").start(false);
+        	UnitRenderer.getRender(targetUnit).selectedSound();
             mode = Mode.UNIT;
             world.updateTarget(targetUnit);
             path.rebase(targetUnit);

@@ -63,6 +63,7 @@ import fr.main.view.render.units.naval.CarrierRenderer;
 import fr.main.view.render.units.naval.CruiserRenderer;
 import fr.main.view.render.units.naval.LanderRenderer;
 import fr.main.view.render.units.naval.SubRenderer;
+import fr.main.view.sound.MusicEngine;
 
 public class UnitRenderer {
 
@@ -138,8 +139,9 @@ public class UnitRenderer {
         protected Point offset;
         protected String state;
         protected Direction orientation;
-        protected AbstractUnit unit;
+        protected final AbstractUnit unit;
         protected Animation anim;
+        protected MusicEngine death, selected, attack;
 
         public Render (AbstractUnit unit) {
             this.unit        = unit;
@@ -147,6 +149,21 @@ public class UnitRenderer {
             this.orientation = Direction.RIGHT;
             this.state       = "idleRIGHT";
             this.anim        = new Animation();
+            this.death        = new MusicEngine("./assets/sound/screaming.wav");
+            this.selected    = new MusicEngine("./assets/sound/song069.wav");
+            this.attack      = new MusicEngine("./assets/sound/song025.wav");
+        }
+
+        public final void deathSound (){
+            death.start(false);
+        }
+
+        public final void selectedSound (){
+            selected.start(false);
+        }
+
+        public final void attackSound (){
+            attack.start(false);
         }
 
         public boolean moveOffset (Direction d){

@@ -48,6 +48,7 @@ public class MusicEngine {
           
     }  
     
+    @SuppressWarnings("deprecation")
     protected void finalize() throws Throwable{  
         super.finalize();
         sourceDataLine.drain();

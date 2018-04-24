@@ -10,7 +10,6 @@ import fr.main.model.units.MoveType;
 import fr.main.model.units.HideableUnit;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.weapons.PrimaryWeapon;
-import fr.main.view.sound.MusicEngine;
 import fr.main.model.units.land.*;
 import fr.main.model.units.naval.*;
 
@@ -58,19 +57,11 @@ public class Stealth extends Unit implements PlaneUnit,HideableUnit{
 
 	public Stealth(Player p, int x, int y){
 		this(p,new Point(x,y));
-		initialSound();
-	}
-	
-    public void initialSound() {
-		this.selected = new MusicEngine("./assets/sound/song022.wav");
-		this.attack = new MusicEngine("./assets/sound/song057.wav");
-		//this.died = new MusicEngine(null);
 	}
 
 	public Stealth(Player player, Point point){
 		super(player,point,fuelName,60,true,MoveType.AIRY,6,4,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),null,NAME,PRICE);
 		hidden=false;
-		initialSound();
 	}
 
 	private boolean hidden;

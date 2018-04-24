@@ -322,6 +322,16 @@ public class Universe {
         return getTerrain(pt.x, pt.y);
     }
 
+    public final void setTerrain (AbstractTerrain t, int x, int y) {
+      if (isValidPosition(x, y)) {
+        map.board[y][x] = t;
+      }
+    }
+
+    public final void setTerrain (AbstractTerrain t, Point pt) {
+      setTerrain(t, pt.x, pt.y);
+    }
+
     /**
      * @return the building at the specified location
      */

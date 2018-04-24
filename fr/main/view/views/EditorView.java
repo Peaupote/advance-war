@@ -29,23 +29,52 @@ public class EditorView extends View {
   private class Tools extends JPanel {
 
     JSlider width, height, seed;
+    JButton[] lands;
     
     public Tools () {
-      setLayout(new GridLayout(7, 1));
-      add(new JLabel("Add tools here"));
+      setLayout(new GridLayout(1, 2));
+
+      JPanel tools = new JPanel();
+      tools.setLayout(new GridLayout(7, 1));
+      tools.add(new JLabel("Add tools here"));
 
       width  = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
       height = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
       seed   = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
 
-      add(new JLabel("Width:"));
-      add(width);
+      tools.add(new JLabel("Width:"));
+      tools.add(width);
 
-      add(new JLabel("Height:"));
-      add(height);
+      tools.add(new JLabel("Height:"));
+      tools.add(height);
 
-      add(new JLabel("Seed:"));
-      add(seed);
+      tools.add(new JLabel("Seed:"));
+      tools.add(seed);
+
+      JPanel terrains = new JPanel();
+      terrains.setLayout(new GridLayout(11, 1));
+      terrains.add(new JLabel("Change terrains"));
+
+      lands = new JButton[10];
+      lands[0] = new JButton("Beach");
+      lands[1] = new JButton("Bridge");
+      lands[2] = new JButton("Hill");
+      lands[3] = new JButton("Lowland");
+      lands[4] = new JButton("Mountain");
+      lands[5] = new JButton("River");
+      lands[6] = new JButton("Road");
+      lands[7] = new JButton("Wood");
+      lands[8] = new JButton("Reef");
+      lands[9] = new JButton("Sea");
+
+      for (int i = 0; i < lands.length; i++) {
+        terrains.add(lands[i]);
+      }
+
+      controller.new TerrainListener (lands);
+
+      add(terrains);
+      add(tools);
     }
   }
 

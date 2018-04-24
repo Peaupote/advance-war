@@ -10,6 +10,8 @@ import fr.main.model.generator.MapGenerator;
 import fr.main.model.Universe;
 import fr.main.model.Direction;
 import fr.main.model.terrains.AbstractTerrain;
+import fr.main.model.terrains.land.*;
+import fr.main.model.terrains.naval.*;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.view.MainFrame;
@@ -17,6 +19,7 @@ import fr.main.view.views.EditorView;
 import fr.main.view.render.MapRenderer;
 import fr.main.view.Position;
 import fr.main.view.MainFrame;
+import fr.main.view.render.terrains.TerrainRenderer;
 
 public class EditorController extends Controller {
 
@@ -47,6 +50,21 @@ public class EditorController extends Controller {
   
   public final Rectangle[] arrowButtons;
 
+  private Point mouse = new Point(0,0);
+  public int landing = -1;
+  
+  public static final int
+    BEACH    = 0,
+    BRIDGE   = 1,
+    HILL     = 2,
+    LOWLAND  = 3,
+    MOUNTAIN = 4,
+    RIVER    = 5,
+    ROAD     = 6,
+    WOOD     = 7,
+    REEF     = 8,
+    SEA      = 9;
+
   private boolean press = false;
   private Point pt;
 
@@ -74,6 +92,33 @@ public class EditorController extends Controller {
     public void stateChanged (ChangeEvent e) {
       generate(width.getValue(), height.getValue(), seed.getValue());
     }
+  }
+
+  public class TerrainListener implements ActionListener {
+
+    private JButton[] lands;
+
+    public TerrainListener (JButton[] lands) {
+      this.lands = lands;
+      for (int i = 0; i < lands.length; i++)
+        lands[i].addActionListener(this);
+    }
+
+    public void actionPerformed (ActionEvent e) {
+      for (int i = 0; i < lands.length; i++) {
+        if (lands[i] == e.getSource()) {
+          landing = i; 
+        }
+      }
+
+    }
+
+  }
+
+  @Override
+  public void mouseMoved (MouseEvent e) {
+    mouse.x = e.getX() / MainFrame.UNIT;
+    mouse.y = e.getY() / MainFrame.UNIT;
   }
 
   public void generate (int width, int height, int seed) {
@@ -130,6 +175,15 @@ public class EditorController extends Controller {
       else if (arrowButtons[3].contains(pt) &&
                camera.canMove(Direction.LEFT))
         camera.setDirection(Direction.LEFT);
+      else {
+        AbstractTerrain t = null;
+        switch (landing) {
+        case BEACH: t = Beach.get();
+        }
+
+        if (t != null) world.setTerrain(t, mouse);
+        TerrainRenderer.setLocations();
+      }
     }
 
     // TODO: clean

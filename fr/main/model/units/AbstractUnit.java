@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.LinkedList;
 
 import fr.main.model.units.weapons.*;
-import fr.main.view.sound.MusicEngine;
 import fr.main.model.Universe;
 import fr.main.model.MoveZone;
 import fr.main.model.Node;
@@ -459,11 +458,4 @@ public interface AbstractUnit extends Serializable {
     public static int damage(AbstractUnit attacker, boolean b, AbstractUnit defender){
         return damage(attacker, attacker.getLife(), b, defender);
     }
-    
-    // setting these differents sounds
-    public void setMusicEngine(MusicEngine selected,MusicEngine attack,MusicEngine died);
-    
-    //in default, return the sound select effect
-    //the parameter 'str' is for the different case of sound you wanted
-    public MusicEngine getMusicEngine(String str);
 }

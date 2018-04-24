@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import fr.main.view.controllers.EditorController;
+import fr.main.model.terrains.AbstractTerrain;
 
 public class EditorView extends View {
 
@@ -14,6 +15,7 @@ public class EditorView extends View {
   public class Map extends JPanel {
 
     public void paintComponent (Graphics g) {
+      // TODO: show how the land will be in the map
       controller.world.draw(g, controller.camera.getX(), 
           controller.camera.getY(), 
           controller.camera.getOffsetX(),
@@ -67,9 +69,8 @@ public class EditorView extends View {
       lands[8] = new JButton("Reef");
       lands[9] = new JButton("Sea");
 
-      for (int i = 0; i < lands.length; i++) {
+      for (int i = 0; i < lands.length; i++)
         terrains.add(lands[i]);
-      }
 
       controller.new TerrainListener (lands);
 

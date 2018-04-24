@@ -178,16 +178,16 @@ public class EditorController extends Controller {
       else {
         AbstractTerrain t = null;
         switch (landing) {
-        case BEACH: t = Beach.get();
-        case BRIDGE: t = Bridge.get();
-        case HILL: t = Hill.get();
-        case LOWLAND: t = Lowland.get();
-        case MOUNTAIN: t = Mountain.get();
-        case RIVER: t = River.get();
-        case ROAD: t = Road.get();
-        case WOOD: t = Wood.get();
-        case REEF: t = Reef.get();
-        case SEA: t = Sea.get();
+        case BEACH:     t = Beach.get();
+        case BRIDGE:    t = Bridge.get();
+        case HILL:      t = Hill.get();
+        case LOWLAND:   t = Lowland.get();
+        case MOUNTAIN:  t = Mountain.get();
+        case RIVER:     t = River.get();
+        case ROAD:      t = Road.get();
+        case WOOD:      t = Wood.get();
+        case REEF:      t = Reef.get();
+        case SEA:       t = Sea.get();
         }
 
         if (t != null) world.setTerrain(t, mouse);

@@ -79,10 +79,11 @@ public class Tank extends Unit implements TankUnit{
     public void initialSound() {
 		this.selected = new MusicEngine("./assets/sound/song056.wav");
 		this.attack = new MusicEngine("./assets/sound/song054.wav");
-		this.died = new MusicEngine(null);
+		//this.died = new MusicEngine(null);
 	}
 
     public Tank(Player player, Point point){
         super(player,point,fuelName,70,false,MoveType.TREAD,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
+        initialSound();
     }
 }

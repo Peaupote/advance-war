@@ -2,7 +2,6 @@ package fr.main.view.components;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

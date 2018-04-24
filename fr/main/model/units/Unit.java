@@ -86,9 +86,7 @@ public abstract class Unit implements AbstractUnit {
         this.secondaryWeapon = secondaryWeapon;
         this.name            = name;
         this.cost            = cost;
-        //this.selected = null;
-        //this.attack = null;
-        this.died = null;
+        this.died = new MusicEngine("./assets/sound/screaming.wav");
 		this.selected = new MusicEngine("./assets/sound/song069.wav");
 		this.attack = new MusicEngine("./assets/sound/song025.wav");
         Universe.get().updateVision();

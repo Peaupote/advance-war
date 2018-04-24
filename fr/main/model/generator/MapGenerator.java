@@ -44,6 +44,8 @@ public class MapGenerator {
     	setSeed(seed);
     	this.rand = new Random(seed);
         setPlayers(playerNb);
+        setSeaProportion(50);
+        setLandProportion(60);
     }
 
 	/**
@@ -150,17 +152,15 @@ public class MapGenerator {
 	}
 
 	public void setMapHeight(int mapHeight) {
-		if(mapHeight < 10) mapHeight = 10;
-		this.mapHeight = mapHeight;
+		this.mapHeight = makeInBound(10, 60, mapHeight);
 	}
 
 	public void setMapWidth(int mapWidth) {
-		if(mapWidth < 10) mapWidth = 10;
-		this.mapWidth = mapWidth;
+		this.mapWidth = makeInBound(10, 60, mapWidth);
 	}
 
 	public void setPower(int p) {
-		this.power = makeInBound(0, 5, p);
+		this.power = makeInBound(0, 10, p);
 	}
 
 	public void setLandProportion(int landProportion) {
@@ -188,6 +188,8 @@ public class MapGenerator {
 	 * @return
 	 */
     public TerrainEnum[][] randMap(int x, int y) {
+		setMapHeight(x);
+		setMapWidth(y);
         System.out.println("Map size : " + x + "x" + y);
         if(x < 0) x = 1;
         if(y < 0) y = 1;
@@ -225,7 +227,7 @@ public class MapGenerator {
         	Places the HQs
          */
 
-
+//		buildings = placeHeadQuarters(buildings);
 
         /*
         	Places the reference points for the Voronoi algorithm.
@@ -317,8 +319,12 @@ public class MapGenerator {
 			case 4 :
 				LinkedList<Integer> l = new LinkedList<>();
 				l.add(0); l.add(realY); l.add(realY + realX - 1); l.add(realY * + realX - 2);
-				for(int i = 0; i < 4; i --)
-					hqs.add(l.get(rand.nextInt() % i));
+				int pop = 0;
+				for(int i = 0; i < 4; i --) {
+					pop = rand.nextInt() % i;
+					hqs.add(l.get(pop));
+					hqs.remove(pop);
+				}
 				break;
 			default:
 				System.out.println("Problem here");
@@ -452,6 +458,18 @@ public class MapGenerator {
 				BList[i] = layout[IList[i][0]][IList[i][1]];
 
 		return BList;
+	}
+
+	private void setImmuableTerrain(Building[][] layout, TerrainEnum[][] map) {
+    	for(int i = 0; i < layout.length; i ++)
+    		for(int j = 0; j < layout[0].length; j ++) {
+
+			}
+	}
+
+	private TerrainEnum[][] resetImmuableTerrain(TerrainEnum[][] map) {
+    	for(TerrainEnum[] line : map) for(TerrainEnum t : line) if(t == mLowland) t = lowland;
+    	return map;
 	}
 
 	/**
@@ -637,6 +655,31 @@ public class MapGenerator {
         return map;
     }
 
+    private TerrainEnum[][] clean(TerrainEnum[][] map, int it) {
+    	resetImmuableTerrain(map);
+    	for(int i = 0; i < it; i ++)
+    		map = clean(map);
+    	return map;
+	}
+
+    private TerrainEnum[][] clean (TerrainEnum[][] map) {
+		for (int i = 0; i < map.length; i++)
+			for (int j = 0; j < map[0].length; j++) {
+				switch (map[i][j]) {
+					case beach:
+						TerrainEnum[] goodTerrains = {wood, lowland, mLowland, mountain, hill};
+						if (getAdjacentTerrainNb(map, i, j, sea) >= 3 && getAdjacentTerrainNb(map, i, j, goodTerrains) == 0)
+							map[i][j] = sea;
+						else if (getAdjacentTerrainNb(map, i, j, beach) <= 3)
+							map[i][j] = lowland;
+
+						// TODO : put every cleaning procedure here.
+				}
+			}
+
+		return map;
+	}
+
     private void validLowland2 (TerrainEnum[][] map, int[] adj, int x, int y) {
         if(adj[0] == adj[2]) return;
         @SuppressWarnings("unused")
@@ -804,6 +847,15 @@ public class MapGenerator {
       return count;
     }
 
+	private int getAdjacentTerrainNb(TerrainEnum[][] map, int x , int y, TerrainEnum[] types) {
+		int count = 0;
+
+		for(TerrainEnum t : types)
+			count += getAdjacentTerrainNb(map, x, y, t);
+
+		return count;
+	}
+
 	/**
 	 * Says if (x,y) is in map
 	 * @param map
@@ -846,5 +898,14 @@ public class MapGenerator {
 
 	public static boolean isInRect(int x, int y, int height, int width) {
     	return isInRect(x, y, 0, 0, height, width);
+	}
+
+	private void setCell(TerrainEnum[][] map, TerrainEnum t, int x, int y) {
+    	if(isInMap(map, x, y)) map[x][y] = t;
+	}
+
+	private TerrainEnum getCell(TerrainEnum[][] map, int x, int y) {
+    	if(isInMap(map, x, y)) return map[x][y];
+    	else return none;
 	}
 }

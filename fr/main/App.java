@@ -6,6 +6,7 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.generator.MapGenerator;
+import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.network.Client;
@@ -49,8 +50,12 @@ public class App {
    */
   public static void save () {
     int s = 50;
+
+    MapGenerator mGen = new MapGenerator(100, 4);
+    mGen.setSeaBandSize(4);
     AbstractTerrain[][] map = new AbstractTerrain[s][s];
-    TerrainEnum[][] eMap = new MapGenerator(2, 4).randMap(s, s);
+    TerrainEnum[][] eMap = mGen.randMap(s, s);
+    Player[] ps = mGen.getLastPlayers();
 
     for (int i = 0; i < eMap.length; i++)
       for (int j = 0; j < eMap[0].length; j++)
@@ -59,6 +64,6 @@ public class App {
     AbstractUnit[][] units = new AbstractUnit[s][s];
     AbstractBuilding[][] buildings = new AbstractBuilding[s][s];
 
-    Universe.save("maptest_2_players.map", units, map, null, buildings);
+    Universe.save("maptest.map", units, map, ps, buildings);
   }
 }

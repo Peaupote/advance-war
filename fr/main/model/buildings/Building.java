@@ -24,7 +24,7 @@ public abstract class Building implements AbstractBuilding{
         this.defense  = defense;
         this.location = p;
         this.name     = name;
-        Universe.get().setBuilding(p.x, p.y, this);
+//        Universe.get().setBuilding(p.x, p.y, this);
     }
 
     public int getX(){

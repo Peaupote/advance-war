@@ -93,7 +93,8 @@ public class TerrainRenderer {
 			@SuppressWarnings("unused")
 			Sprite snowSprite = new Sprite(nameSnow, baseSnow);
 
-			if(normSprite.getSprite() == null) System.out.println("Error in TerrainRenderer constructor : Sprite null");
+			if(normSprite.getSprite() == null)
+        System.out.println("Error in TerrainRenderer constructor : Sprite null");
 
 			AnimationState normal = new AnimationState(new SpriteList(Sprite.getSprite(nameNorm)), 20);
 			AnimationState snow = new AnimationState(new SpriteList(Sprite.getSprite(nameSnow)), 20);
@@ -143,7 +144,7 @@ public class TerrainRenderer {
 			renderers.put(location, new SeaRenderer((TerrainLocation.GenericTerrainLocation) location));
 		else {
 			System.err.println("ERROR in TerrainRenderer");
-			System.exit(10);
+//			System.exit(10);
 		}
 
 		return renderers.get(location);

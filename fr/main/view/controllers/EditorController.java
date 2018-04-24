@@ -16,6 +16,7 @@ import fr.main.view.MainFrame;
 import fr.main.view.views.EditorView;
 import fr.main.view.render.MapRenderer;
 import fr.main.view.Position;
+import fr.main.view.MainFrame;
 
 public class EditorController extends Controller {
 
@@ -120,19 +121,27 @@ public class EditorController extends Controller {
     if (!isListening && press) {
       if (arrowButtons[0].contains(pt))
         camera.setDirection(Direction.RIGHT);
-      else if (arrowButtons[1].contains(pt))
+      else if (arrowButtons[1].contains(pt) &&
+               camera.canMove(Direction.BOTTOM))
         camera.setDirection(Direction.BOTTOM);
-      else if (arrowButtons[2].contains(pt))
+      else if (arrowButtons[2].contains(pt) &&
+               camera.canMove(Direction.TOP))
         camera.setDirection(Direction.TOP);
-      else if (arrowButtons[3].contains(pt))
+      else if (arrowButtons[3].contains(pt) &&
+               camera.canMove(Direction.LEFT))
         camera.setDirection(Direction.LEFT);
     }
 
     // TODO: clean
     
     if (view != null) {
+      if (camera != null) {
+        camera.width = (view.map.getWidth() + 1) / MainFrame.UNIT;
+        camera.height = (view.map.getHeight() + 1) / MainFrame.UNIT;
+      }
+
       Rectangle rect = view.map.getBounds(null);
-      
+
       int m1 = ((int)rect.getWidth()) / 2 - b/2,
           m2 = ((int)rect.getWidth()) - h - 20,
           m3 = ((int)rect.getHeight()) / 2 - b/2,

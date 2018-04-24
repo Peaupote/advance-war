@@ -46,6 +46,9 @@ public class EditorController extends Controller {
   
   public final Rectangle[] arrowButtons;
 
+  private boolean press = false;
+  private Point pt;
+
   public EditorController () {
     arrowButtons = new Rectangle[4];
     for (int i = 0; i < 4; i++)
@@ -102,8 +105,19 @@ public class EditorController extends Controller {
   }
   
   public void mousePressed (MouseEvent e) {
-    if (!isListening) {
-      Point pt = new Point(e.getX(), e.getY());
+    pt = new Point(e.getX(), e.getY());
+    press = true;
+  }
+
+  public void mouseReleased (MouseEvent e) {
+    pt = null;
+    press = false;
+  }
+
+  public void update () {
+    isListening = camera.move();
+
+    if (!isListening && press) {
       if (arrowButtons[0].contains(pt))
         camera.setDirection(Direction.RIGHT);
       else if (arrowButtons[1].contains(pt))
@@ -113,10 +127,6 @@ public class EditorController extends Controller {
       else if (arrowButtons[3].contains(pt))
         camera.setDirection(Direction.LEFT);
     }
-  }
-
-  public void update () {
-    isListening = camera.move();
 
     // TODO: clean
     

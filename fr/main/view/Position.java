@@ -52,9 +52,9 @@ public abstract class Position {
         @Override
         public boolean canMove (Direction d) {
             return (d == Direction.LEFT   && position.x > 0) ||
-                         (d == Direction.RIGHT  && position.x < size.width - 1) ||
-                         (d == Direction.TOP    && position.y > 0) ||
-                         (d == Direction.BOTTOM && position.y < size.height - 1);
+                   (d == Direction.RIGHT  && position.x < size.width - 1) ||
+                   (d == Direction.TOP    && position.y > 0) ||
+                   (d == Direction.BOTTOM && position.y < size.height - 1);
         }
 
         @Override

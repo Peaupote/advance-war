@@ -37,7 +37,7 @@ public class Fighter extends Unit implements PlaneUnit{
     public Fighter(Player p, int x, int y){
         this(p,new Point(x,y));
     }
-
+    
     public Fighter(Player player, Point point){
         super(player,point,fuelName,99,true,MoveType.AIRY,9,2,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),null,NAME,PRICE);
     }

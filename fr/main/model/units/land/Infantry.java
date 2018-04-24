@@ -48,14 +48,14 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
         SECONDARYWEAPON_DAMAGES.put(APC.class,14);
         SECONDARYWEAPON_DAMAGES.put(BCopter.class,7);
         SECONDARYWEAPON_DAMAGES.put(TCopter.class,30);
-
+        
         SECONDARYWEAPON = new SecondaryWeapon(SECONDARYWEAPON_NAME,SECONDARYWEAPON_DAMAGES);
     }
 
 	public Infantry(Player p, int x, int y){
 		this(p,new Point(x,y));
 	}
-
+	
 	public Infantry(Player player, Point point){
 		super(player,point,WalkingUnit.FUEL_NAME,99,false,MoveType.INFANTRY,3,2,null,SECONDARYWEAPON,NAME,PRICE);
 	}

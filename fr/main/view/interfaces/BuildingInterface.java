@@ -31,7 +31,7 @@ public class BuildingInterface extends GameController.ControllerPanel {
      * Index for a single unit
      */
     class IndexClass extends Index {
-
+    	
         final Class<? extends AbstractUnit> c;
 
         public IndexClass (Class<? extends AbstractUnit> c)

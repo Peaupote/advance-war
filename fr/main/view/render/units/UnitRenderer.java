@@ -1,27 +1,69 @@
 package fr.main.view.render.units;
 
-import java.awt.*;
-import java.util.Map;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.Direction;
+import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HideableUnit;
-import fr.main.model.units.weapons.*;
-import fr.main.model.units.land.*;
-import fr.main.model.units.air.*;
-import fr.main.model.units.naval.*;
-import fr.main.model.units.MoveType;
-
+import fr.main.model.units.air.BCopter;
+import fr.main.model.units.air.Bomber;
+import fr.main.model.units.air.Fighter;
+import fr.main.model.units.air.Stealth;
+import fr.main.model.units.air.TCopter;
+import fr.main.model.units.land.APC;
+import fr.main.model.units.land.AntiAir;
+import fr.main.model.units.land.Artillery;
+import fr.main.model.units.land.Infantry;
+import fr.main.model.units.land.MTank;
+import fr.main.model.units.land.Mech;
+import fr.main.model.units.land.Megatank;
+import fr.main.model.units.land.Missiles;
+import fr.main.model.units.land.Neotank;
+import fr.main.model.units.land.Recon;
+import fr.main.model.units.land.Rockets;
+import fr.main.model.units.land.Tank;
+import fr.main.model.units.naval.Battleship;
+import fr.main.model.units.naval.BlackBoat;
+import fr.main.model.units.naval.Carrier;
+import fr.main.model.units.naval.Cruiser;
+import fr.main.model.units.naval.Lander;
+import fr.main.model.units.naval.Sub;
+import fr.main.model.units.weapons.PrimaryWeapon;
 import fr.main.view.MainFrame;
 import fr.main.view.interfaces.TerrainPanel;
 import fr.main.view.render.Renderer;
-import fr.main.view.render.units.air.*;
-import fr.main.view.render.units.land.*;
-import fr.main.view.render.units.naval.*;
-import fr.main.view.render.animations.*;
+import fr.main.view.render.animations.Animation;
 import fr.main.view.render.sprites.Sprite;
+import fr.main.view.render.units.air.BCopterRenderer;
+import fr.main.view.render.units.air.BomberRenderer;
+import fr.main.view.render.units.air.FighterRenderer;
+import fr.main.view.render.units.air.StealthRenderer;
+import fr.main.view.render.units.air.TCopterRenderer;
+import fr.main.view.render.units.land.APCRenderer;
+import fr.main.view.render.units.land.AntiAirRenderer;
+import fr.main.view.render.units.land.ArtilleryRenderer;
+import fr.main.view.render.units.land.InfantryRenderer;
+import fr.main.view.render.units.land.MTankRenderer;
+import fr.main.view.render.units.land.MechRenderer;
+import fr.main.view.render.units.land.MegatankRenderer;
+import fr.main.view.render.units.land.MissilesRenderer;
+import fr.main.view.render.units.land.NeotankRenderer;
+import fr.main.view.render.units.land.ReconRenderer;
+import fr.main.view.render.units.land.RocketsRenderer;
+import fr.main.view.render.units.land.TankRenderer;
+import fr.main.view.render.units.naval.BattleshipRenderer;
+import fr.main.view.render.units.naval.BlackBoatRenderer;
+import fr.main.view.render.units.naval.CarrierRenderer;
+import fr.main.view.render.units.naval.CruiserRenderer;
+import fr.main.view.render.units.naval.LanderRenderer;
+import fr.main.view.render.units.naval.SubRenderer;
+import fr.main.view.sound.MusicEngine;
 
 public class UnitRenderer {
 
@@ -97,8 +139,9 @@ public class UnitRenderer {
         protected Point offset;
         protected String state;
         protected Direction orientation;
-        protected AbstractUnit unit;
+        protected final AbstractUnit unit;
         protected Animation anim;
+        protected MusicEngine death, selected, attack;
 
         public Render (AbstractUnit unit) {
             this.unit        = unit;
@@ -106,6 +149,21 @@ public class UnitRenderer {
             this.orientation = Direction.RIGHT;
             this.state       = "idleRIGHT";
             this.anim        = new Animation();
+            this.death        = new MusicEngine("./assets/sound/screaming.wav");
+            this.selected    = new MusicEngine("./assets/sound/song069.wav");
+            this.attack      = new MusicEngine("./assets/sound/song025.wav");
+        }
+
+        public final void deathSound (){
+            death.start(false);
+        }
+
+        public final void selectedSound (){
+            selected.start(false);
+        }
+
+        public final void attackSound (){
+            attack.start(false);
         }
 
         public boolean moveOffset (Direction d){
@@ -195,7 +253,8 @@ public class UnitRenderer {
         remove(renderers.get(u));
     }
 
-    public static void remove(Render r){
+    @SuppressWarnings("unlikely-arg-type")
+	public static void remove(Render r){
         renderers.remove(r);
     }
 

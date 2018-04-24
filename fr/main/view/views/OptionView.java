@@ -1,28 +1,22 @@
 package fr.main.view.views;
 
-import java.io.IOException;
+import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import java.awt.event.KeyEvent;
-import java.awt.Dimension;
-import java.awt.event.KeyAdapter;
-import java.awt.GridLayout;
-import java.awt.Component;
-
-import fr.main.view.components.*;
-import fr.main.view.controllers.OptionController;
 import fr.main.view.MainFrame;
 import fr.main.view.controllers.GameController;
-import fr.main.view.controllers.MenuController;
+import fr.main.view.controllers.OptionController;
 
 
 /**

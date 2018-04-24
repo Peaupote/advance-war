@@ -2,7 +2,6 @@ package fr.main.view.components;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,11 +24,11 @@ public class MenuButton extends JButton{
 		setIcon(image);
 	}
 
-	public MenuButton(String path, int x, int y) throws IOException{
+	public MenuButton(String path, int x, int y){
 		this(new ImageIcon(path), x, y);
 	}
 	
-	public MenuButton(String nom, String path, int x, int y) throws IOException {
+	public MenuButton(String nom, String path, int x, int y) {
 		this(path,x,y);
 		
 		font = new Font("Courier", Font.BOLD+Font.ITALIC, 34);
@@ -40,14 +39,14 @@ public class MenuButton extends JButton{
 		setText(nom);
 	}
 	
-	public MenuButton(String nom, String path, int x, int y, int t) throws IOException {
+	public MenuButton(String nom, String path, int x, int y, int t) {
 		this(nom, path, x, y);
 
 		font = new Font("Courier", Font.BOLD+Font.ITALIC, t);
 		setFont(font);
 	}
 	
-	public MenuButton(String nom, String path, int x, int y, int t, Color color) throws IOException{
+	public MenuButton(String nom, String path, int x, int y, int t, Color color){
 		this(nom, path, x, y, t);
 
 		setForeground(color);

@@ -86,7 +86,7 @@ public abstract class Unit implements AbstractUnit {
         this.cost            = cost;
         Universe.get().updateVision();
     }
-
+    
     @Override
     public void dies(){
         life = 0;

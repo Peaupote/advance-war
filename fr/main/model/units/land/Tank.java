@@ -73,7 +73,7 @@ public class Tank extends Unit implements TankUnit{
     public Tank(Player p, int x, int y){
         this(p,new Point(x,y));
     }
-
+    
     public Tank(Player player, Point point){
         super(player,point,fuelName,70,false,MoveType.TREAD,6,3,new PrimaryWeapon(PRIMARYWEAPON_NAME,9,PRIMARYWEAPON_DAMAGES,true),SECONDARYWEAPON,NAME,PRICE);
     }

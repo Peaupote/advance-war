@@ -100,6 +100,7 @@ public class UnitActionChooser implements java.io.Serializable {
      * @return the state the unit should be in according to what is around it
      */
     public State findState(){
+        //TODO : real method
         return State.AIMLESS;
     }
 
@@ -153,39 +154,34 @@ public class UnitActionChooser implements java.io.Serializable {
          */
         private final LinkedList<Direction> path;
 
-        public Objective(Point target, int approx, Runnable todo, int timer, LinkedList<Direction> path){
+        public Objective(Point target, int approx, Runnable todo, LinkedList<Direction> path){
             this.target = target;
             this.approx = approx;
             this.todo   = todo;
-            this.setTimer(timer);
             this.path   = path;
+            this.setTimer(5);
         }
 
-        public Objective(Point target, Runnable todo, int timer, LinkedList<Direction> path){
-            this(target, 0, todo, timer, path);
+        public Objective(Point target, Runnable todo, LinkedList<Direction> path){
+            this(target, 0, todo, path);
         }
 
-        @SuppressWarnings("unused")
-		public Objective(Point target, Runnable todo, int timer){
-            this(target, todo, timer, UnitActionChooser.this.unit.findPath(target));
+		public Objective(Point target, Runnable todo){
+            this(target, todo, UnitActionChooser.this.unit.findPath(target));
         }
 
-		@SuppressWarnings("unused")
 		public Point getTarget() {
 			return target;
 		}
 
-		@SuppressWarnings("unused")
 		public int getApprox() {
 			return approx;
 		}
 
-		@SuppressWarnings("unused")
 		public Runnable getTodo() {
 			return todo;
 		}
 
-		@SuppressWarnings("unused")
 		public int getTimer() {
 			return timer;
 		}
@@ -194,13 +190,42 @@ public class UnitActionChooser implements java.io.Serializable {
 			this.timer = timer;
 		}
 
-		@SuppressWarnings("unused")
+        public void decreaseTimer(){
+            timer --;
+            if (timer <= 0){
+                path.clear();
+                path.addAll(UnitActionChooser.this.unit.findPath(target));
+                setTimer(5);
+            }
+        }
+
 		public LinkedList<Direction> getPath() {
 			return path;
 		}
+
+        public void apply(){
+            decreaseTimer();
+
+            PathRenderer p = new PathRenderer(((UniverseRenderer)Universe.get()).controller.camera);
+            while (UnitActionChooser.this.unit.isEnabled() && ! path.isEmpty() && p.add(path.getFirst())){
+                path.removeFirst();
+            }
+            if (! p.apply()){
+                path.clear();
+                path.addAll(UnitActionChooser.this.unit.findPath(target));
+            }
+
+            if (UnitActionChooser.this.unit.isEnabled() && 
+                    Math.abs(UnitActionChooser.this.unit.getX() - target.x) + Math.abs(UnitActionChooser.this.unit.getY() - target.y) <= approx){
+                UnitActionChooser.this.objective = null;
+                todo.run();
+                if (UnitActionChooser.this.objective == null && UnitActionChooser.this.state == State.OBJECTIVE)
+                    findState();
+            }
+
+        }
     } 
 
-    @SuppressWarnings("unused")
 	private Objective objective;
 
     /**
@@ -230,42 +255,45 @@ public class UnitActionChooser implements java.io.Serializable {
     public void go (){
 
 
-        action = () -> {};
+        action = () -> {
+
+        };
     }
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : make the unit flee its position,
+     * the unit will move for a few turn and in opposite directions of opponents
      */
     public void flee (){
         action = () -> {};
     }
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : take the unit to a building where it may heal
      */
     public void flee_heal (){
         action = () -> {};
     }
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : defend a position
      */
     public void defend (){
         action = () -> {};
     }
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : attack a position
      */
     public void attack (){
         action = () -> {};
     }
 
     /**
-     * Runnable doing what its name indicates
+     * Runnable doing what its name indicates : activates the objective
      */
     public void objective (){
-        action = () -> {};
+        action = objective::apply;
     }
 
 
@@ -309,7 +337,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param attacked is the unit to attack
      * @return how much points it earns to move to the point and then attack the unit
      */
-    @SuppressWarnings("unused")
 	private int attack         (Point move, AbstractUnit attacked) {
         int a = AbstractUnit.damage(unit,                                 unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
         int b = AbstractUnit.damage(attacked, attacked.getLife() - a, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
@@ -321,7 +348,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param healed is the unit to heal
      * @return how much points it earns to move to the point and then heal the unit
      */
-    @SuppressWarnings("unused")
 	private int heal           (Point move, AbstractUnit healed) {
         return move(move) + unit.getPlayer().getFunds() >= healed.getCost() / 10 && healed.getLife() <= 90 ? healed.getCost() / 1000 : 0;
     }
@@ -330,7 +356,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param move is the tile to which the unit will move
      * @return how much points it earns to move to the point and then supply
      */
-    @SuppressWarnings("unused")
 	private int supply         (Point move) {
         int n = 0;
         for (Direction d : Direction.cardinalDirections())
@@ -342,7 +367,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param captured is the building to capture
      * @return how much points it earns to move to the building and then capturing it
      */
-    @SuppressWarnings("unused")
 	private int capture        (AbstractBuilding captured) {
         return move(new Point(captured.getX(), captured.getY())) + 150;
     }
@@ -351,7 +375,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param move is the tile to which the unit will move
      * @return how much points it earns to move to the point and then hide or reveal (depends on if the unit is already hidden or not)
      */
-    @SuppressWarnings("unused")
 	private int hide           (Point move){
         return move(move);
     }
@@ -360,7 +383,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param transport is the transport to go in
      * @return how much points it earns to go in the transport
      */
-    @SuppressWarnings("unused")
 	private int goInTransport  (TransportUnit transport) {
         return 0;
     }
@@ -371,7 +393,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @param dir is the direction in which the unit should be removed
      * @return how much points it earns to move to the point and then remove the unit on the tile specified by the direction
      */
-    @SuppressWarnings("unused")
 	private int goOutTransport (Point move, AbstractUnit toRemove, Direction dir){
         return move(move) + 0;
     }

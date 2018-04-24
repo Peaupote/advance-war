@@ -3,7 +3,7 @@ TODO
 
 - [ ] Improve design of the panels (in game)
 - [ ] Improve the design of the option panel
-- [ ] Map selection screen
+- [ ] Map selection screen (choose seed for example)
 - [ ] Sound volume... (add to option panel ?)
 - [ ] Add a "return to menu" button in game creation panel
 - [ ] Add a commander's power panel (to inform a power was activated)

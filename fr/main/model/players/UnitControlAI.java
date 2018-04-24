@@ -29,11 +29,6 @@ public class UnitControlAI implements ArtificialIntelligence {
 		units.remove(u);
 	}
 
-	@SuppressWarnings("unused")
-	private UnitActionChooser get(AbstractUnit u){
-		return units.get(u);
-	}
-
 	public void run(){
         // we have to use a copy of the list to avoid concurrent modification exception if an unit dies for example
         ArrayList<UnitActionChooser> unitList = new ArrayList<UnitActionChooser>(units.values());
@@ -42,7 +37,7 @@ public class UnitControlAI implements ArtificialIntelligence {
         checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null && !u.getPrimaryWeapon().isContactWeapon());
 
         // then contact units play
-        checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null ||  u.getSecondaryWeapon() != null);
+        checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null || u.getSecondaryWeapon() != null);
 
         // eventually other units play
         checkUnits(unitList.iterator(), u -> u.isEnabled());

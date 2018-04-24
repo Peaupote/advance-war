@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * The economic AI chooses which units are to be created and where
+ */
 public class EconomicAI implements ArtificialIntelligence {
 
     /**

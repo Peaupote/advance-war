@@ -7,6 +7,7 @@ import java.awt.*;
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.generator.MapGenerator;
+import fr.main.model.players.Player;
 import fr.main.model.Universe;
 import fr.main.model.Direction;
 import fr.main.model.terrains.AbstractTerrain;
@@ -122,15 +123,18 @@ public class EditorController extends Controller {
   }
 
   public void generate (int width, int height, int seed) {
-    AbstractTerrain[][] map = new AbstractTerrain[width][height];
-    TerrainEnum[][] eMap = new MapGenerator(seed).randMap(width, height);
+    MapGenerator mGen = new MapGenerator(100, 4);
+    mGen.setSeaBandSize(4);
+    AbstractTerrain[][] map        = new AbstractTerrain[height][width];
+    TerrainEnum[][] eMap           = mGen.randMap(width, height);
+    Player[] ps                    = mGen.getLastPlayers();
 
     for (int i = 0; i < eMap.length; i++)
       for (int j = 0; j < eMap[0].length; j++)
-		  map[i][j] = eMap[i][j].terrain;
+      map[i][j] = eMap[i][j].terrain;
 
-    AbstractUnit[][] units = new AbstractUnit[width][height];
-    AbstractBuilding[][] buildings = new AbstractBuilding[width][height];
+    AbstractUnit[][] units         = new AbstractUnit[height][width];
+    AbstractBuilding[][] buildings = new AbstractBuilding[height][width];
 
     // save previous coordinates so
     // the camera doesn't move while generating new world
@@ -178,16 +182,16 @@ public class EditorController extends Controller {
       else {
         AbstractTerrain t = null;
         switch (landing) {
-        case BEACH:     t = Beach.get();
-        case BRIDGE:    t = Bridge.get();
-        case HILL:      t = Hill.get();
-        case LOWLAND:   t = Lowland.get();
-        case MOUNTAIN:  t = Mountain.get();
-        case RIVER:     t = River.get();
-        case ROAD:      t = Road.get();
-        case WOOD:      t = Wood.get();
-        case REEF:      t = Reef.get();
-        case SEA:       t = Sea.get();
+        case BEACH:     t              = Beach.get();
+        case BRIDGE:    t              = Bridge.get();
+        case HILL:      t              = Hill.get();
+        case LOWLAND:   t              = Lowland.get();
+        case MOUNTAIN:  t              = Mountain.get();
+        case RIVER:     t              = River.get();
+        case ROAD:      t              = Road.get();
+        case WOOD:      t              = Wood.get();
+        case REEF:      t              = Reef.get();
+        case SEA:       t              = Sea.get();
         }
 
         if (t != null) world.setTerrain(t, mouse);

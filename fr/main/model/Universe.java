@@ -14,13 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import fr.main.model.PlayerIt.Cycle;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.Airport;
-import fr.main.model.buildings.Barrack;
-import fr.main.model.buildings.City;
-import fr.main.model.buildings.Dock;
-import fr.main.model.buildings.Headquarter;
-import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
@@ -403,6 +397,24 @@ public class Universe {
 
         return false;
     }
+
+    public void setBuildings(AbstractBuilding[] bs) {
+		for (AbstractBuilding b : bs) {
+			if (b instanceof GenericBuilding) continue;
+			if (isValidPosition(b.getX(), b.getY()))
+				map.buildings[b.getY()][b.getX()] = b;
+			else
+				System.err.println(b.toString() + " not initialized in Universe.");
+		}
+	}
+
+	public void setBuildings(AbstractBuilding[][] bss) {
+    	for(int i = 0; i < bss.length; i ++)
+    		for(int j = 0; j < bss[0].length; j ++)
+    			if(!(bss[i][j] instanceof GenericBuilding))
+    				if(!setBuilding(i, j, bss[i][j]))
+    					System.err.println(bss[i][j].toString() + " not initialized in Universe.");
+	}
 
     @Override
     public String toString () {

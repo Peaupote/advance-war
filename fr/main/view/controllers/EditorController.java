@@ -33,7 +33,7 @@ public class EditorController extends Controller {
                      h = b/3;
 
   public static final int[][][] refs = new int[][][]{
-  { // right    
+  { // right
     {0, 0, h},
     {0, b, b/2}
   }, { // bottom
@@ -48,12 +48,12 @@ public class EditorController extends Controller {
   }};
 
   public final int[][][] arrows = new int[4][2][3];
-  
+
   public final Rectangle[] arrowButtons;
 
   private Point mouse = new Point(0,0);
   public int landing = -1;
-  
+
   public static final int
     BEACH    = 0,
     BRIDGE   = 1,
@@ -108,7 +108,7 @@ public class EditorController extends Controller {
     public void actionPerformed (ActionEvent e) {
       for (int i = 0; i < lands.length; i++) {
         if (lands[i] == e.getSource()) {
-          landing = i; 
+          landing = i;
         }
       }
 
@@ -138,7 +138,7 @@ public class EditorController extends Controller {
 
     // save previous coordinates so
     // the camera doesn't move while generating new world
-    
+
     int x = 0, y = 0;
     if (camera != null) {
         x = camera.getX();
@@ -153,7 +153,7 @@ public class EditorController extends Controller {
     view = new EditorView(this);
     return view;
   }
-  
+
   public void mousePressed (MouseEvent e) {
     pt = new Point(e.getX(), e.getY());
     press = true;
@@ -182,16 +182,16 @@ public class EditorController extends Controller {
       else {
         AbstractTerrain t = null;
         switch (landing) {
-        case BEACH:     t              = Beach.get();
-        case BRIDGE:    t              = Bridge.get();
-        case HILL:      t              = Hill.get();
-        case LOWLAND:   t              = Lowland.get();
-        case MOUNTAIN:  t              = Mountain.get();
-        case RIVER:     t              = River.get();
-        case ROAD:      t              = Road.get();
-        case WOOD:      t              = Wood.get();
-        case REEF:      t              = Reef.get();
-        case SEA:       t              = Sea.get();
+        case BEACH:     t              = Beach.get(); break;
+        case BRIDGE:    t              = Bridge.get(); break;
+        case HILL:      t              = Hill.get(); break;
+        case LOWLAND:   t              = Lowland.get(); break;
+        case MOUNTAIN:  t              = Mountain.get(); break;
+        case RIVER:     t              = River.get(); break;
+        case ROAD:      t              = Road.get(); break;
+        case WOOD:      t              = Wood.get(); break;
+        case REEF:      t              = Reef.get(); break;
+        case SEA:       t              = Sea.get(); break;
         }
 
         if (t != null) world.setTerrain(t, mouse);
@@ -200,7 +200,7 @@ public class EditorController extends Controller {
     }
 
     // TODO: clean
-    
+
     if (view != null) {
       if (camera != null) {
         camera.width = (view.map.getWidth() + 1) / MainFrame.UNIT;
@@ -229,7 +229,7 @@ public class EditorController extends Controller {
       }
 
     }
-    
+
   }
 
 }

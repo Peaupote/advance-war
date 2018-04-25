@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 import fr.main.model.TerrainEnum;
 import fr.main.model.generator.MapGenerator;
@@ -28,6 +30,7 @@ public class EditorController extends Controller {
   public Position.Camera camera;
   private boolean isListening = false;
   private EditorView view;
+  public final ActionListener save, open;
 
   public static int b = 60,
                      h = b/3;
@@ -74,6 +77,18 @@ public class EditorController extends Controller {
     for (int i = 0; i < 4; i++)
       arrowButtons[i] = new Rectangle(0,0,0,0);
     generate(50, 50, 2);
+
+    save = e -> world.save(JOptionPane.showInputDialog("Map's name:"));
+    open = e -> {
+      JFileChooser jfc = new JFileChooser(Universe.mapPath);
+      jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      jfc.addChoosableFileFilter(new FileNameExtensionFilter("Only .map files are accepted", "map"));
+      if (jfc.showOpenDialog(MainFrame.instance) == JFileChooser.APPROVE_OPTION){
+        try{
+          world = new MapRenderer(jfc.getSelectedFile().getName());
+        }catch(Exception exc){}
+      }
+    };
   }
 
   public class Adaptater implements ChangeListener {
@@ -126,7 +141,7 @@ public class EditorController extends Controller {
     MapGenerator mGen = new MapGenerator(100, 4);
     mGen.setSeaBandSize(4);
     AbstractTerrain[][] map        = new AbstractTerrain[height][width];
-    TerrainEnum[][] eMap           = mGen.randMap(width, height);
+    TerrainEnum[][] eMap           = mGen.randMap(height, width);
     Player[] ps                    = mGen.getLastPlayers();
 
     for (int i = 0; i < eMap.length; i++)
@@ -194,7 +209,9 @@ public class EditorController extends Controller {
         case SEA:       t              = Sea.get(); break;
         }
 
-        if (t != null) world.setTerrain(t, mouse);
+        if (t != null)
+          world.setTerrain(t, new Point((int)(camera.getX() + mouse.getX()),
+                                        (int)(camera.getY() + mouse.getY())));
         TerrainRenderer.setLocations();
       }
     }

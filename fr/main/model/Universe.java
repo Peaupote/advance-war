@@ -472,6 +472,10 @@ public class Universe {
         }
     }
 
+    public void save(String mapName){
+        Universe.save(mapName + ".map", map);
+    }
+
     /**
      * Saves the game with a default name with the format year-month-day-hour-minute-second
      */

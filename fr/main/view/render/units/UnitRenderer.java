@@ -155,15 +155,15 @@ public class UnitRenderer {
         }
 
         public final void deathSound (){
-            death.start(false);
+            death.playOneTime();
         }
 
         public final void selectedSound (){
-            selected.start(false);
+            selected.playOneTime();
         }
 
         public final void attackSound (){
-            attack.start(false);
+            attack.playOneTime();
         }
 
         public boolean moveOffset (Direction d){

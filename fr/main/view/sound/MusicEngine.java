@@ -11,9 +11,11 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import sun.reflect.generics.tree.VoidDescriptor;
+
 public class MusicEngine {
 	private String musicPath; 
-    private volatile boolean run = true;   
+    public volatile boolean run = true;   
     private Thread mainThread;   
       
     private AudioInputStream audioStream;  
@@ -59,7 +61,7 @@ public class MusicEngine {
     //the parameter loop controls if playback or not
     //if true, it will play the music until close, 
     //if false, just one time   
-    private void playMusic(boolean loop) throws InterruptedException {  
+    public void playMusic(boolean loop) throws InterruptedException {  
         try { 
           if(loop) while(true) playMusic();  
           else {
@@ -115,9 +117,28 @@ public class MusicEngine {
              notifyAll();  
         }  
     }  
+    
+    public void playOneTime() {
+    	mainThread = null;
+        mainThread = new Thread(new Runnable(){  
+            public void run(){  
+                playMusic();  
+                while(!run) {
+                	mainThread.interrupt();
+                	try {
+						mainThread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                }
+            }  
+        });  
+        mainThread.start();
+    	
+    }
  
     //start with creat a new thread
-    public void start(boolean loop){  
+    public void start(boolean loop){
         mainThread = new Thread(new Runnable(){  
             public void run(){  
                 try {  

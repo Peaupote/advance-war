@@ -30,7 +30,6 @@ import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.terrains.TerrainRenderer;
 import fr.main.view.render.units.UnitRenderer;
-import fr.main.view.sound.MusicEngine;
 
 public class UniverseRenderer extends Universe {
 

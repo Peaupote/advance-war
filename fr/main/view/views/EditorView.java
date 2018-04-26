@@ -32,13 +32,13 @@ public class EditorView extends View {
 
     JSlider width, height, seed;
     JButton[] lands;
-    JButton save, open;
+    JButton save, open, menu;
     
     public Tools () {
       setLayout(new GridLayout(1, 2));
 
       JPanel tools = new JPanel();
-      tools.setLayout(new GridLayout(9, 1));
+      tools.setLayout(new GridLayout(10, 1));
       tools.add(new JLabel("Add tools here"));
 
       width  = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
@@ -47,6 +47,7 @@ public class EditorView extends View {
 
       save = new JButton("Save");
       open = new JButton("Open");
+      menu = new JButton("Back to menu");
 
       tools.add(new JLabel("Width:"));
       tools.add(width);
@@ -59,6 +60,7 @@ public class EditorView extends View {
 
       tools.add(save);
       tools.add(open);
+      tools.add(menu);
 
       JPanel terrains = new JPanel();
       terrains.setLayout(new GridLayout(11, 1));
@@ -106,6 +108,7 @@ public class EditorView extends View {
 
     tools.save.addActionListener(controller.save);
     tools.open.addActionListener(controller.open);
+    tools.menu.addActionListener(controller.menu);
   }
 
 }

@@ -30,7 +30,7 @@ public class EditorController extends Controller {
   public Position.Camera camera;
   private boolean isListening = false;
   private EditorView view;
-  public final ActionListener save, open;
+  public final ActionListener save, open, menu;
 
   public static int b = 60,
                      h = b/3;
@@ -89,6 +89,8 @@ public class EditorController extends Controller {
         }catch(Exception exc){}
       }
     };
+
+    menu = e -> MainFrame.setScene(new MenuController());
   }
 
   public class Adaptater implements ChangeListener {
@@ -138,7 +140,7 @@ public class EditorController extends Controller {
   }
 
   public void generate (int width, int height, int seed) {
-    MapGenerator mGen = new MapGenerator(100, 4);
+    MapGenerator mGen = new MapGenerator(seed, 4);
     mGen.setSeaBandSize(4);
     AbstractTerrain[][] map        = new AbstractTerrain[height][width];
     TerrainEnum[][] eMap           = mGen.randMap(height, width);

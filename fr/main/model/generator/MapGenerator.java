@@ -228,7 +228,7 @@ public class MapGenerator {
         	Places the HQs
          */
 
-//		buildings = placeHeadQuarters(buildings);
+		buildings = placeHeadQuarters(buildings);
 
         /*
         	Places the reference points for the Voronoi algorithm.
@@ -374,7 +374,7 @@ public class MapGenerator {
 		return rectangle;
 	}
 
-	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
+	private int[][] getCircle(int heigh, int width, int x0, int y0, int radius) {
 		int x = radius-1;
 		int y = 0;
 		int dx = 1;
@@ -401,7 +401,6 @@ public class MapGenerator {
 		}
 
 		// Now we get all the coordinates on the circle.
-		AbstractBuilding[] BList = new AbstractBuilding[size];
 		int[][] IList = new int[size][2];
 
 		x = radius-1;
@@ -451,26 +450,51 @@ public class MapGenerator {
 			count ++;
 		}
 
-		// Getting the list of Buildings.
-		int h = layout.length;
-		int w = layout[0].length;
-
-		for(int i = 0; i < size; i ++)
-			if (isInRect(IList[i][0], IList[i][1], h, w))
-				BList[i] = layout[IList[i][0]][IList[i][1]];
-
-		return BList;
+		return IList;
 	}
 
-	private void setImmuableTerrain(AbstractBuilding[][] layout, TerrainEnum[][] map) {
+	private AbstractBuilding[] coordinatesToAbstractBuilding(int[][] coors, AbstractBuilding[][] layout) {
+		AbstractBuilding[] out = new AbstractBuilding[coors.length];
+
+    	for(int i = 0; i < coors.length; i ++)
+    		if(isInLayout(layout, coors[i][0], coors[i][1]))
+    			out[i] = layout[coors[i][0]][coors[i][1]];
+    		else throw new NullPointerException();
+
+    	return out;
+	}
+
+	private TerrainEnum[][] setImmuableTerrain(AbstractBuilding[][] layout, TerrainEnum[][] map) {
     	for(int i = 0; i < layout.length; i ++)
     		for(int j = 0; j < layout[0].length; j ++) {
+				if(layout[i][j] instanceof Headquarter)
+					fillSquareFromCenter(map, i, j, mLowland);
+				else if(!(layout[i][j] instanceof GenericBuilding))
+					setCell(map, mLowland, i, j);
 
+				// TODO : Add other cases if necessary.
 			}
+		return map;
 	}
 
+	private TerrainEnum[][] fillSquareFromCenter(TerrainEnum[][] map, int x, int y, TerrainEnum filler, int distanceFromCenter) {
+    	if(isInMap(map, x, y) && distanceFromCenter > 0)
+    		for(int i = x - distanceFromCenter; i <= x + distanceFromCenter; i ++)
+    			for(int j = y - distanceFromCenter; j <= x + distanceFromCenter; j ++)
+    				setCell(map, filler, i, j);
+    	return map;
+	}
+
+	private TerrainEnum[][] fillSquareFromCenter(TerrainEnum[][] map, int x, int y, TerrainEnum filler) {
+    	return fillSquareFromCenter(map, x, y, filler, 1);
+	}
+
+
 	private TerrainEnum[][] resetImmuableTerrain(TerrainEnum[][] map) {
-    	for(TerrainEnum[] line : map) for(TerrainEnum t : line) if(t == mLowland) t = lowland;
+    	for(TerrainEnum[] line : map)
+    		for(TerrainEnum t : line)
+    			if(t == mLowland)
+    				t = lowland;
     	return map;
 	}
 
@@ -885,6 +909,7 @@ public class MapGenerator {
 
     @SuppressWarnings("unused")
 	private TerrainEnum[][] placeRoads(TerrainEnum[][] map, int nb) {
+    	// TODO : placeRoads algorithm.
         while(nb > 0)
             for(int i = 0; i < map.length; i ++)
                 for (int j = 0; j < map[0].length; j++) {
@@ -909,5 +934,9 @@ public class MapGenerator {
 	private TerrainEnum getCell(TerrainEnum[][] map, int x, int y) {
     	if(isInMap(map, x, y)) return map[x][y];
     	else return none;
+	}
+
+	private static boolean isInLayout(AbstractBuilding[][] layout, int x, int y) {
+    	return layout != null && isInRect(x, y, layout.length, layout[0].length);
 	}
 }

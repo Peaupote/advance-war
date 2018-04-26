@@ -14,13 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import fr.main.model.PlayerIt.Cycle;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.Airport;
-import fr.main.model.buildings.Barrack;
-import fr.main.model.buildings.City;
-import fr.main.model.buildings.Dock;
-import fr.main.model.buildings.Headquarter;
-import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
@@ -63,7 +57,7 @@ public class Universe {
     /**
      * Represents a board (terrains, buildings, units, players).
      */
-    protected static class Board implements Serializable {
+    public static class Board implements Serializable {
 
         /**
          * Add Board UID.
@@ -129,64 +123,64 @@ public class Universe {
 
         instance = this;
         fogwar   = new boolean[map.board.length][map.board[0].length];
-        players  = new PlayerIt(map.players).cycle();
-        if (map.current == null){
-            next();
-        }
-        else{
-            do{}
-            while(map.current != players.next());
-            updateVision();
-        }
+
+        // TODO: make something cleaner
+        if (map.players != null) {
+          players  = new PlayerIt(map.players).cycle();
+          if (map.current == null){
+              next();
+          } else{
+              do{}
+              while(map.current != players.next());
+          }
 
 
-        /*
-            Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
-        */
+          /*
+           * Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
+           */
 
-        if (map.buildings[10][6] == null){
-            new Dock(map.players[0], new Point(6,10));
-            new Airport(map.players[1], new Point(6,9));
-            new Airport(map.players[0], new Point(7,9));
-            new Barrack(null, new Point(9,5));
-            new Barrack(map.players[1], new Point(14,5));
-            new Headquarter(map.players[0], new Point(12,5));
-            new Headquarter(map.players[1], new Point(13,5));
-            if (map.players.length > 2)
-                new Headquarter(map.players[2], new Point(12,6));
-            if (map.players.length > 3)
-                new Headquarter(map.players[3], new Point(13,6));
-            new City(null, new Point(20,5));
-            new MissileLauncher(new Point(11,5));
+          new Dock(map.players[0], new Point(6,10));
+          new Airport(map.players[1], new Point(6,9));
+          new Airport(map.players[0], new Point(7,9));
+          new Barrack(null, new Point(9,5));
+          new Barrack(map.players[1], new Point(14,5));
+          new Headquarter(map.players[0], new Point(12,5));
+          new Headquarter(map.players[1], new Point(13,5));
+          if (map.players.length > 2)
+              new Headquarter(map.players[2], new Point(12,6));
+          if (map.players.length > 3)
+              new Headquarter(map.players[3], new Point(13,6));
+          new City(null, new Point(20,5));
+          new MissileLauncher(new Point(11,5));
 
-            new Infantry(map.players[0], new Point(12,5));
-            new Infantry(map.players[1], new Point(13,5));
-            if (map.players.length > 2)
-                new Infantry(map.players[2], new Point(12,6));
-            if (map.players.length > 3)
-                new Infantry(map.players[3], new Point(13,6));
+          new Infantry(map.players[0], new Point(12,5));
+          new Infantry(map.players[1], new Point(13,5));
+          if (map.players.length > 2)
+              new Infantry(map.players[2], new Point(12,6));
+          if (map.players.length > 3)
+              new Infantry(map.players[3], new Point(13,6));
 
-            new Lander(map.players[0], new Point(0,0));
-            new Lander(map.players[1], new Point(1,1));
-            new Lander(map.players[0], new Point(3,17));
-            new Infantry(map.players[0], new Point(10,5));
-            new Infantry(map.players[1], new Point(10,6));
-            new Fighter(map.players[0], new Point(10,10));
+          new Lander(map.players[0], new Point(0,0));
+          new Lander(map.players[1], new Point(1,1));
+          new Lander(map.players[0], new Point(3,17));
+          new Infantry(map.players[0], new Point(10,5));
+          new Infantry(map.players[1], new Point(10,6));
+          new Fighter(map.players[0], new Point(10,10));
 
-            map.players[0].addFunds(100000);
-            map.players[1].addFunds(100000);
-            if (map.players.length >= 3)
-                map.players[2].addFunds(100000);
-            if (map.players.length == 4)
-                map.players[3].addFunds(100000);
+          map.players[0].addFunds(100000);
+          map.players[1].addFunds(100000);
+          if (map.players.length >= 3)
+              map.players[2].addFunds(100000);
+          if (map.players.length == 4)
+              map.players[3].addFunds(100000);
+        } else players = null;
 
-            if (getBuilding(6,10) != null)
-                ((Dock)getBuilding(6,10)).create(Battleship.class);
-            if (getBuilding(7,9) != null)
-                ((Airport)getBuilding(7,9)).create(Stealth.class);
-            if (getBuilding(6,9) != null)
-                ((Airport)getBuilding(6,9)).create(Fighter.class);
-        }
+        if (getBuilding(6,10) != null)
+            ((Dock)getBuilding(6,10)).create(Battleship.class);
+        if (getBuilding(7,9) != null)
+            ((Airport)getBuilding(7,9)).create(Stealth.class);
+        if (getBuilding(6,9) != null)
+            ((Airport)getBuilding(6,9)).create(Fighter.class);
     }
 
     public static Board restaure(String mapName){
@@ -322,6 +316,16 @@ public class Universe {
         return getTerrain(pt.x, pt.y);
     }
 
+    public final void setTerrain (AbstractTerrain t, int x, int y) {
+      if (isValidPosition(x, y)) {
+        map.board[y][x] = t;
+      }
+    }
+
+    public final void setTerrain (AbstractTerrain t, Point pt) {
+      setTerrain(t, pt.x, pt.y);
+    }
+
     /**
      * @return the building at the specified location
      */
@@ -394,6 +398,24 @@ public class Universe {
         return false;
     }
 
+    public void setBuildings(AbstractBuilding[] bs) {
+		for (AbstractBuilding b : bs) {
+			if (b instanceof GenericBuilding) continue;
+			if (isValidPosition(b.getX(), b.getY()))
+				map.buildings[b.getY()][b.getX()] = b;
+			else
+				System.err.println(b.toString() + " not initialized in Universe.");
+		}
+	}
+
+	public void setBuildings(AbstractBuilding[][] bss) {
+    	for(int i = 0; i < bss.length; i ++)
+    		for(int j = 0; j < bss[0].length; j ++)
+    			if(!(bss[i][j] instanceof GenericBuilding))
+    				if(!setBuilding(i, j, bss[i][j]))
+    					System.err.println(bss[i][j].toString() + " not initialized in Universe.");
+	}
+
     @Override
     public String toString () {
         String ret = "";
@@ -460,6 +482,10 @@ public class Universe {
         } catch (IOException i) {
              i.printStackTrace();
         }
+    }
+
+    public void save(String mapName){
+        Universe.save(mapName + ".map", map);
     }
 
     /**

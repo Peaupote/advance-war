@@ -93,7 +93,8 @@ public class TerrainRenderer {
 			@SuppressWarnings("unused")
 			Sprite snowSprite = new Sprite(nameSnow, baseSnow);
 
-			if(normSprite.getSprite() == null) System.out.println("Error in TerrainRenderer constructor : Sprite null");
+//			if(normSprite.getSprite() == null)
+//        		System.out.println("Error in TerrainRenderer constructor : Sprite null");
 
 			AnimationState normal = new AnimationState(new SpriteList(Sprite.getSprite(nameNorm)), 20);
 			AnimationState snow = new AnimationState(new SpriteList(Sprite.getSprite(nameSnow)), 20);
@@ -118,7 +119,6 @@ public class TerrainRenderer {
 		if (renderers.containsKey(location))
 			return renderers.get(location);
 
-		// TODO: nice stuff with reflection
 		if (location instanceof TerrainLocation.HillLocation)
 			renderers.put(location, new HillRenderer((TerrainLocation.HillLocation) location));
 		else if (location instanceof TerrainLocation.LowlandLocation)
@@ -143,7 +143,7 @@ public class TerrainRenderer {
 			renderers.put(location, new SeaRenderer((TerrainLocation.GenericTerrainLocation) location));
 		else {
 			System.err.println("ERROR in TerrainRenderer");
-			System.exit(10);
+//			System.exit(10);
 		}
 
 		return renderers.get(location);
@@ -249,13 +249,15 @@ public class TerrainRenderer {
 
 				if (tEnum[i][j] == sea || tEnum[i][j] == reef) {
 					surroundings = MapGenerator.getSurroundingTerrain(tEnum, i, j);
-					genLoc = addSeaSticker((TerrainLocation.SeaLocation) tLocations[i][j], surroundings);
+
+					// TODO : add reef sticker
+					genLoc = addSeaSticker(tLocations[i][j], surroundings);
 					if(genLoc.listLength() > 0) tLocations[i][j] = genLoc;
 				}
 			}
 	}
 
-	private static TerrainLocation.GenericTerrainLocation addSeaSticker(TerrainLocation.SeaLocation base, TerrainEnum[] surroundings) {
+	private static TerrainLocation.GenericTerrainLocation addSeaSticker(TerrainLocation base, TerrainEnum[] surroundings) {
 		final TerrainEnum[] not = {sea, beach, reef, none};
 		boolean used[] = {false, false, false, false};
 		TerrainLocation.GenericTerrainLocation loc = new TerrainLocation.GenericTerrainLocation(base);
@@ -411,16 +413,16 @@ public class TerrainRenderer {
 			case 1:
 				if (isAny(cross[0], naval))
 					if(cross[2] == TerrainEnum.sea) return TerrainLocation.RiverLocation.VERTICAL;
-					else return TerrainLocation.RiverLocation.TOP_END;
+					else return TerrainLocation.RiverLocation.BOTTOM_END;
 				if (isAny(cross[1], naval))
 					if(cross[3] == TerrainEnum.sea) return TerrainLocation.RiverLocation.HORIZONTAL;
-					else return TerrainLocation.RiverLocation.RIGHT_END;
+					else return TerrainLocation.RiverLocation.LEFT_END;
 				if (isAny(cross[2], naval))
 					if(cross[0] == TerrainEnum.sea) return TerrainLocation.RiverLocation.VERTICAL;
-					else return TerrainLocation.RiverLocation.BOTTOM_END;
+					else return TerrainLocation.RiverLocation.TOP_END;
 				if (isAny(cross[3], naval))
 					if(cross[1] == TerrainEnum.sea) return TerrainLocation.RiverLocation.HORIZONTAL;
-					else return TerrainLocation.RiverLocation.LEFT_END;
+					else return TerrainLocation.RiverLocation.RIGHT_END;
 		    break;
 			case 0:
 				if(MapGenerator.isSandwiched(tEnum, x, y, ground)) return TerrainLocation.RiverLocation.HORIZONTAL;

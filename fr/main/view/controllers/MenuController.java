@@ -17,6 +17,7 @@ public class MenuController extends Controller {
     
     public final ActionListener play,
                                 exit,
+                                edit,
                                 host,
                                 join,
                                 option,
@@ -51,7 +52,8 @@ public class MenuController extends Controller {
 
         play   = e -> MainFrame.setScene(new CreateController());
 
-        option = e -> MainFrame.setScene(new OptionController(this));
+        option = e -> MainFrame.setScene(new OptionController());
+        edit   = e -> MainFrame.setScene(new EditorController());
 
         exit   = e -> System.exit(0);
 

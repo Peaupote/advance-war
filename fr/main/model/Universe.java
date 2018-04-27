@@ -14,13 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import fr.main.model.PlayerIt.Cycle;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.Airport;
-import fr.main.model.buildings.Barrack;
-import fr.main.model.buildings.City;
-import fr.main.model.buildings.Dock;
-import fr.main.model.buildings.Headquarter;
-import fr.main.model.buildings.MissileLauncher;
+import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
@@ -63,7 +57,7 @@ public class Universe {
     /**
      * Represents a board (terrains, buildings, units, players).
      */
-    protected static class Board implements Serializable {
+    public static class Board implements Serializable {
 
         /**
          * Add Board UID.
@@ -129,22 +123,20 @@ public class Universe {
 
         instance = this;
         fogwar   = new boolean[map.board.length][map.board[0].length];
-        players  = new PlayerIt(map.players).cycle();
-        if (map.current == null){
-            next();
-        }
-        else{
-            do{}
-            while(map.current != players.next());
-            updateVision();
-        }
 
+        // TODO: make something cleaner
+        if (map.players != null){
+            players  = new PlayerIt(map.players).cycle();
+            if (map.current == null) next();
+            else 
+                while(map.current != players.next()){}            
+        }else players = null;
 
         /*
             Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
         */
 
-        if (map.buildings[7][5] == null){
+        if (map.players != null && map.buildings[7][5] == null){
             map.buildings[7][5] = new Dock(map.players[0], new Point(5,7));
             map.buildings[7][4] = new Airport(map.players[1], new Point(4,7));
             map.buildings[7][3] = new Airport(map.players[0], new Point(3,7));
@@ -159,12 +151,19 @@ public class Universe {
             map.buildings[2][5] = new City(null, new Point(5,2));
             map.buildings[2][6] = new MissileLauncher(new Point(6,2));
 
+            map.players[0].addFunds(100000);
+            map.players[1].addFunds(100000);
+
             new Infantry(map.players[0], new Point(2,5));
             new Infantry(map.players[1], new Point(3,5));
-            if (map.players.length > 2)
+            if (map.players.length >= 3){
+                map.players[2].addFunds(100000);
                 new Infantry(map.players[2], new Point(2,4));
-            if (map.players.length > 3)
+            }
+            if (map.players.length == 4){
+                map.players[3].addFunds(100000);
                 new Infantry(map.players[3], new Point(3,4));
+            }
 
             new Lander(map.players[0], new Point(0,0));
             new Lander(map.players[1], new Point(1,1));
@@ -172,13 +171,6 @@ public class Universe {
             new Infantry(map.players[0], new Point(10,5));
             new Infantry(map.players[1], new Point(7,3));
             new Fighter(map.players[0], new Point(10,10));
-
-            map.players[0].addFunds(100000);
-            map.players[1].addFunds(100000);
-            if (map.players.length >= 3)
-                map.players[2].addFunds(100000);
-            if (map.players.length == 4)
-                map.players[3].addFunds(100000);
 
             if (getBuilding(5,7) != null)
                 ((Dock)getBuilding(5,7)).create(Battleship.class);
@@ -322,6 +314,16 @@ public class Universe {
         return getTerrain(pt.x, pt.y);
     }
 
+    public final void setTerrain (AbstractTerrain t, int x, int y) {
+      if (isValidPosition(x, y)) {
+        map.board[y][x] = t;
+      }
+    }
+
+    public final void setTerrain (AbstractTerrain t, Point pt) {
+      setTerrain(t, pt.x, pt.y);
+    }
+
     /**
      * @return the building at the specified location
      */
@@ -394,6 +396,24 @@ public class Universe {
         return false;
     }
 
+    public void setBuildings(AbstractBuilding[] bs) {
+		for (AbstractBuilding b : bs) {
+			if (b instanceof GenericBuilding) continue;
+			if (isValidPosition(b.getX(), b.getY()))
+				map.buildings[b.getY()][b.getX()] = b;
+			else
+				System.err.println(b.toString() + " not initialized in Universe.");
+		}
+	}
+
+	public void setBuildings(AbstractBuilding[][] bss) {
+    	for(int i = 0; i < bss.length; i ++)
+    		for(int j = 0; j < bss[0].length; j ++)
+    			if(!(bss[i][j] instanceof GenericBuilding))
+    				if(!setBuilding(i, j, bss[i][j]))
+    					System.err.println(bss[i][j].toString() + " not initialized in Universe.");
+	}
+
     @Override
     public String toString () {
         String ret = "";
@@ -460,6 +480,10 @@ public class Universe {
         } catch (IOException i) {
              i.printStackTrace();
         }
+    }
+
+    public void save(String mapName){
+        Universe.save(mapName + ".map", map);
     }
 
     /**

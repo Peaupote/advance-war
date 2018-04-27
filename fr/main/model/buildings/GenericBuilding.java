@@ -2,7 +2,7 @@ package fr.main.model.buildings;
 
 import java.awt.*;
 
-public class GenericBuilding extends Building implements AbstractBuilding{
+public class GenericBuilding extends Building implements AbstractBuilding {
 
 	private static final long serialVersionUID = 2599496054309710000L;
 

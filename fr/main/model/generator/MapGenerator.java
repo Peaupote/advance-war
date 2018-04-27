@@ -1,6 +1,7 @@
 package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.Building;
 import fr.main.model.buildings.GenericBuilding;
 import fr.main.model.buildings.Headquarter;
@@ -20,7 +21,7 @@ public class MapGenerator {
     private Random rand;
     private Player[] players;
     private TerrainEnum[][] lastMap;
-    private Building[][] lastBuildingLayout;
+    private AbstractBuilding[][] lastBuildingLayout;
     private Player[] lastPlayers;
 
     // TODO put all mapGen parameters
@@ -100,7 +101,7 @@ public class MapGenerator {
 		return power;
 	}
 
-	public Building[][] getLastBuildingLayout() {
+	public AbstractBuilding[][] getLastBuildingLayout() {
 		return lastBuildingLayout;
 	}
 
@@ -204,7 +205,7 @@ public class MapGenerator {
         TerrainEnum[][] map = new TerrainEnum[x][y];
         for(TerrainEnum[] line : map) Arrays.fill(line, none);
 
-		Building[][] buildings = new Building[x][y];
+		AbstractBuilding[][] buildings = new AbstractBuilding[x][y];
 		for(int i = 0; i < x; i ++)
 			for(int j = 0; j < y; j ++)
 				buildings[i][j] = new GenericBuilding(i, j);
@@ -259,8 +260,8 @@ public class MapGenerator {
         	Cleaning the buldings table.
          */
 
-        for(Building[] line : buildings)
-        	for(Building b: line)
+        for(AbstractBuilding[] line : buildings)
+        	for(AbstractBuilding b: line)
         		if(b instanceof GenericBuilding) b = null;
 
         map = refineMap(map, smoothness);
@@ -269,6 +270,7 @@ public class MapGenerator {
         map = placeRivers(map);
         map = placeMountainsHills(map);
         map = placeWood(map);
+        map = clean(map);
 
         lastBuildingLayout = buildings;
         lastMap = map;
@@ -277,7 +279,7 @@ public class MapGenerator {
         return map;
     }
 
-    private Building[][] placeHeadQuarters(Building[][] layout) {
+    private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
     	int x = layout.length,
 				y = layout[0].length;
     	int randNb = (rand.nextInt() % (3));
@@ -285,7 +287,7 @@ public class MapGenerator {
 				realY = y - seaBandSize - 1 - randNb;
 		boolean useWidth = x < y;
 
-		Building[] rect = getRectangle(layout, seaBandSize + 1 + randNb);
+		AbstractBuilding[] rect = getRectangle(layout, seaBandSize + 1 + randNb);
 
 		LinkedList<Integer> hqs = new LinkedList<>();
 
@@ -337,7 +339,7 @@ public class MapGenerator {
 		return layout;
 	}
 
-	private Building[] getRectangle(Building[][] layout, int distanceFromSide) {
+	private AbstractBuilding[] getRectangle(AbstractBuilding[][] layout, int distanceFromSide) {
 		int lw = layout[0].length;
 		int lh = layout.length;
 
@@ -346,10 +348,10 @@ public class MapGenerator {
 
     	if(h < 0 || w < 0) {
     		System.out.println("height or width not valid.");
-    		return new Building[0];
+    		return new AbstractBuilding[0];
 		}
 
-		Building[] rectangle = new Building[w + h];
+		AbstractBuilding[] rectangle = new AbstractBuilding[w + h];
     	int counter = 0;
 
     	for(int j = distanceFromSide; j < lw - distanceFromSide; j ++) {
@@ -372,7 +374,7 @@ public class MapGenerator {
 		return rectangle;
 	}
 
-	private Building[] getCircle(Building[][] layout, int x0, int y0, int radius) {
+	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
 		int x = radius-1;
 		int y = 0;
 		int dx = 1;
@@ -399,7 +401,7 @@ public class MapGenerator {
 		}
 
 		// Now we get all the coordinates on the circle.
-		Building[] BList = new Building[size];
+		AbstractBuilding[] BList = new AbstractBuilding[size];
 		int[][] IList = new int[size][2];
 
 		x = radius-1;
@@ -460,7 +462,7 @@ public class MapGenerator {
 		return BList;
 	}
 
-	private void setImmuableTerrain(Building[][] layout, TerrainEnum[][] map) {
+	private void setImmuableTerrain(AbstractBuilding[][] layout, TerrainEnum[][] map) {
     	for(int i = 0; i < layout.length; i ++)
     		for(int j = 0; j < layout[0].length; j ++) {
 

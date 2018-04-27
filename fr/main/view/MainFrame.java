@@ -14,19 +14,15 @@ import fr.main.view.views.View;
 /**
  * Frame for the application.
  */
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame {
-
-    /**
-     * Add MainFrame UID
-     */
-    private static final long serialVersionUID = 9055437267173802003L;
 
     /**
      * Dimension of the window.
      */
     public static final int WIDTH = 960,
-                                                    HEIGHT = 704,
-                                                    UNIT = 32;
+                            HEIGHT = 704,
+                            UNIT = 32;
 
     /**
      * Time spend since the controller has been

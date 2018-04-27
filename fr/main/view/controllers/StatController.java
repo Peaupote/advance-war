@@ -8,10 +8,6 @@ import fr.main.model.State;
 import fr.main.view.views.StatView;
 
 public class StatController extends Controller {
-    /**
-     * Add StatController UID
-     */
-    private static final long serialVersionUID = 3672310220088243185L;
 
     public final int[][] units, buildings, funds;
 

@@ -5,37 +5,34 @@ import java.io.*;
 import java.awt.*;
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class PlayerButton extends JButton {
 
-  /**
-	 * Add PlayerButton UID
-	 */
-	private static final long serialVersionUID = 2027924046883153186L;
-private static Image BACKGROUND;
+    private static Image BACKGROUND;
 
-  static {
-    try {
-      BACKGROUND = ImageIO.read(new File("./assets/button/border01.png"));
-    } catch (IOException e) {
-      e.printStackTrace();
+    static {
+        try {
+            BACKGROUND = ImageIO.read(new File("./assets/button/border01.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-  }
 
-  public PlayerButton () {
-    super("");
+    public PlayerButton () {
+        super("");
 
-		setContentAreaFilled(false);
-		setOpaque(false);
-    setBounds(0, 0, 50, 50);
-		setFocusPainted(false); 
-		setBorder(null);
+        setContentAreaFilled(false);
+        setOpaque(false);
+        setBounds(0, 0, 50, 50);
+        setFocusPainted(false); 
+        setBorder(null);
 
-  }
+    }
 
-  public void paintComponent (Graphics g) {
-    super.paintComponent(g);
+    public void paintComponent (Graphics g) {
+        super.paintComponent(g);
 
-    g.drawImage(BACKGROUND, 0, 0, getWidth(), getHeight(), null);
-  }
+        g.drawImage(BACKGROUND, 0, 0, getWidth(), getHeight(), null);
+    }
 
 }

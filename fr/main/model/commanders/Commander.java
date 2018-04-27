@@ -13,7 +13,7 @@ import fr.main.model.units.weapons.PrimaryWeapon;
 public abstract class Commander implements Serializable {
 
     /**
-	 * Add commander UID
+	 * Add Commander UID
 	 */
 	private static final long serialVersionUID = 5437070831420752334L;
 
@@ -34,7 +34,7 @@ public abstract class Commander implements Serializable {
      */
     public class PowerBar implements Serializable {
         /**
-		 *
+		 * Add PowerBar UID
 		 */
 		private static final long serialVersionUID = -1112411098868108680L;
 		public final int maxValue;
@@ -61,7 +61,7 @@ public abstract class Commander implements Serializable {
      */
     protected static class Power implements Serializable {
         /**
-		 *
+		 * Add Power UID
 		 */
 		private static final long serialVersionUID = 6830482137600479680L;
 

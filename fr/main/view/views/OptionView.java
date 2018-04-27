@@ -22,11 +22,8 @@ import fr.main.view.controllers.OptionController;
 /**
  * Rendering main menu
  */
+@SuppressWarnings("serial")
 public class OptionView extends View {
-    /**
-     * Add OptionView UID
-     */
-    private static final long serialVersionUID = 5275297581165400242L;
 
     private final ControllPanel[] panels;
 
@@ -95,11 +92,8 @@ public class OptionView extends View {
     /**
      * Class used to get a key pressed, used to add a control
      */
+    @SuppressWarnings("serial")
     class KeyDialog extends JDialog {
-        /**
-         * Add KeyDialog UID
-         */
-        private static final long serialVersionUID = 5465407553192600784L;
 
         public KeyDialog(final Consumer<KeyEvent> r){
             super(MainFrame.instance, "Enter a key");
@@ -119,11 +113,8 @@ public class OptionView extends View {
     /**
      * A control panel is a panel associated to a control in which there is the name of the control, an "add" button and the list of existing keys associated to the control
      */
+    @SuppressWarnings("serial")
     class ControllPanel extends JPanel{
-        /**
-         * Add Unit UID
-         */
-        private static final long serialVersionUID = -5901234581123466220L;
 
         public final GameController.Controls control;
         private final LinkedList<Integer> commands;
@@ -167,11 +158,8 @@ public class OptionView extends View {
             return commands;
         }
 
+        @SuppressWarnings("serial")
         class CustomButton extends JButton {
-            /**
-             * Add Unit UID
-             */
-            private static final long serialVersionUID = 1835667581197532450L;
 
             public CustomButton(int i){
                 super(KeyEvent.getKeyText(i));

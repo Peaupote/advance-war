@@ -1,10 +1,7 @@
 package fr.main.model.generator;
 
 import fr.main.model.TerrainEnum;
-import fr.main.model.buildings.AbstractBuilding;
-import fr.main.model.buildings.Building;
-import fr.main.model.buildings.GenericBuilding;
-import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
 
@@ -21,8 +18,15 @@ public class MapGenerator {
     private Random rand;
     private Player[] players;
     private TerrainEnum[][] lastMap;
+    private TerrainEnum[][] currentMap;
     private AbstractBuilding[][] lastBuildingLayout;
+    private AbstractBuilding[][] currentBuildingLayout;
     private Player[] lastPlayers;
+
+    private int[][] lastHQCoordinates;
+    private int[][] currentHQCoordinates;
+
+    private boolean starterBarrack, starterAirport;
 
     // TODO put all mapGen parameters
 
@@ -47,6 +51,8 @@ public class MapGenerator {
         setPlayers(playerNb);
         setSeaProportion(50);
         setLandProportion(60);
+        this.starterAirport = false;
+        this.starterBarrack = true;
     }
 
 	/**
@@ -145,6 +151,48 @@ public class MapGenerator {
 		return woodProportion;
 	}
 
+	public int[][] getCurrentHQCoordinates() {
+		if(currentHQCoordinates == null)
+			setCurrentHQCoordinates(currentBuildingLayout);
+		return currentHQCoordinates;
+	}
+
+	public int[][] getLastHQCoordinates() {
+		return lastHQCoordinates;
+	}
+
+	public boolean isStarterAirport() {
+		return starterAirport;
+	}
+
+	public boolean isStarterBarrack() {
+		return starterBarrack;
+	}
+
+	public AbstractBuilding[][] getCurrentBuildingLayout() {
+		return currentBuildingLayout;
+	}
+
+	public TerrainEnum[][] getCurrentMap() {
+		return currentMap;
+	}
+
+	public void setMountainProportion(int mountainProportion) {
+		this.mountainProportion = mountainProportion; // TODO
+	}
+
+	public void setWoodProportion(int woodProportion) {
+		this.woodProportion = woodProportion; // TODO
+	}
+
+	public void setStarterAirport(boolean starterAirport) {
+		this.starterAirport = starterAirport;
+	}
+
+	public void setStarterBarrack(boolean starterBarrack) {
+		this.starterBarrack = starterBarrack;
+	}
+
 	public void setSeaBandSize(int seaBandSize) {
 		if(seaBandSize < 0) seaBandSize = 0;
 		else if (seaBandSize > mapHeight / 2) seaBandSize = mapHeight / 2 + 1;
@@ -170,6 +218,26 @@ public class MapGenerator {
 
 	public void setSeaProportion(int seaProportion) {
 		this.seaProportion = makeInBound(0, 100 - (landProportion - (landProportion > 20 ? 20 : 0)), seaProportion);
+	}
+
+	private void setCurrentHQCoordinates(AbstractBuilding[][] layout) {
+		LinkedList<Headquarter> hqs = new LinkedList<>();
+
+		for(int i = 0; i < layout.length; i ++)
+			for(int j = 0; j < layout[0].length; j ++)
+				if(layout[i][j] instanceof Headquarter)
+					hqs.add((Headquarter) layout[i][j]);
+
+		currentHQCoordinates = new int[hqs.size()][2];
+
+		for(int i = 0; i < hqs.size(); i ++) {
+			currentHQCoordinates[i][0] = hqs.get(i).getX();
+			currentHQCoordinates[i][1] = hqs.get(i).getY();
+		}
+	}
+
+	public void resetCurrentHQCorrdinates() {
+		currentHQCoordinates = null;
 	}
 
 	private int makeInBound(int min, int max, int i) {
@@ -202,13 +270,13 @@ public class MapGenerator {
         int size = x * y;
         int referenceNb = size / 10 * power;
 
-        TerrainEnum[][] map = new TerrainEnum[x][y];
-        for(TerrainEnum[] line : map) Arrays.fill(line, none);
+        currentMap = new TerrainEnum[x][y];
+        for(TerrainEnum[] line : currentMap) Arrays.fill(line, none);
 
-		AbstractBuilding[][] buildings = new AbstractBuilding[x][y];
+		currentBuildingLayout = new AbstractBuilding[x][y];
 		for(int i = 0; i < x; i ++)
 			for(int j = 0; j < y; j ++)
-				buildings[i][j] = new GenericBuilding(i, j);
+				currentBuildingLayout[i][j] = new GenericBuilding(i, j);
 
 		System.out.println("Reference : " + referenceNb);
 
@@ -228,7 +296,7 @@ public class MapGenerator {
         	Places the HQs
          */
 
-		buildings = placeHeadQuarters(buildings);
+		placeHeadQuarters(currentBuildingLayout);
 
         /*
         	Places the reference points for the Voronoi algorithm.
@@ -238,8 +306,8 @@ public class MapGenerator {
             for(int j = 0; j < terrainLeft[i]; j ++) {
                 randX = rand.nextInt(x);
                 randY = rand.nextInt(y);
-                if (map[randX][randY] == none) {
-                    map[randX][randY] = getTerrainEnum(i);
+                if (currentMap[randX][randY] == none) {
+                    currentMap[randX][randY] = getTerrainEnum(i);
                     referencePoints[count][0] = randX;
                     referencePoints[count][1] = randY;
                     referencePoints[count][2] = i;
@@ -250,8 +318,8 @@ public class MapGenerator {
 
         for(int i = 0; i < x; i ++) {
             for(int j = 0; j < y; j++) {
-                if(map[i][j] == none) {
-                    map[i][j] = getTerrainEnum(referencePoints[closestPoint(i, j, referencePoints)][2]);
+                if(currentMap[i][j] == none) {
+                    currentMap[i][j] = getTerrainEnum(referencePoints[closestPoint(i, j, referencePoints)][2]);
                 }
             }
         }
@@ -260,24 +328,62 @@ public class MapGenerator {
         	Cleaning the buldings table.
          */
 
-        for(AbstractBuilding[] line : buildings)
+        for(AbstractBuilding[] line : currentBuildingLayout)
         	for(AbstractBuilding b: line)
         		if(b instanceof GenericBuilding) b = null;
 
-        map = refineMap(map, smoothness);
-        map = surroundBySea(map, seaBandSize);
-        map = placeBeach(map);
-        map = placeRivers(map);
-        map = placeMountainsHills(map);
-        map = placeWood(map);
-        map = clean(map);
+        refineMap(currentMap, smoothness);
+        surroundBySea(currentMap, seaBandSize);
+        placeBeach(currentMap);
+        placeRivers(currentMap);
+        placeMountainsHills(currentMap);
+        placeWood(currentMap);
+        clean(currentMap);
 
-        lastBuildingLayout = buildings;
-        lastMap = map;
+        lastBuildingLayout = currentBuildingLayout;
+        currentBuildingLayout = null;
+        lastMap = currentMap;
+        currentMap = null;
         lastPlayers = players;
 
-        return map;
+        return lastMap;
     }
+
+    private AbstractBuilding[][] placeStarterBuildings(AbstractBuilding[][] layout) {
+		int[][] hqs = getCurrentHQCoordinates();
+
+		if(hqs == null)  {
+			System.err.println("Current HQ coordinates not set");
+			return layout;
+		}
+
+		AbstractBuilding[] sqr;
+		int randNb;
+
+		for(int[] coor : hqs) {
+			sqr = getSquare(layout, coor[0], coor[1]);
+			if(starterBarrack) {
+				randNb = rand.nextInt() % sqr.length;
+				sqr[randNb] = new Barrack(
+						((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+						new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
+			}
+			if(starterAirport)
+				while(true) {
+					randNb = rand.nextInt() % sqr.length;
+					if(!(sqr[randNb] instanceof GenericBuilding)) {
+						sqr[randNb] = new Airport(
+								((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+								new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
+						break;
+					}
+				}
+		}
+
+		// TODO : test placeStarterBuilings and maybe add more ?
+
+		return layout;
+	}
 
     private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
     	int x = layout.length,
@@ -287,7 +393,7 @@ public class MapGenerator {
 				realY = y - seaBandSize - 1 - randNb;
 		boolean useWidth = x < y;
 
-		AbstractBuilding[] rect = getRectangle(layout, seaBandSize + 1 + randNb);
+		AbstractBuilding[] rect = getRectangleFromSide(layout, seaBandSize + 1 + randNb);
 
 		LinkedList<Integer> hqs = new LinkedList<>();
 
@@ -333,13 +439,17 @@ public class MapGenerator {
 				System.exit(20);
 		}
 
-		for (int i = 0; i < hqs.size(); i ++)
-			layout[rect[hqs.get(i)].getX()][rect[hqs.get(i)].getY()] = new Headquarter(players[i], new Point(rect[hqs.get(i)].getX(), rect[hqs.get(i)].getY()));
+		currentHQCoordinates = new int[hqs.size()][2];
 
+		for (int i = 0; i < hqs.size(); i ++) {
+			layout[rect[hqs.get(i)].getX()][rect[hqs.get(i)].getY()] = new Headquarter(players[i], new Point(rect[hqs.get(i)].getX(), rect[hqs.get(i)].getY()));
+			currentHQCoordinates[i][0] = rect[hqs.get(i)].getX();
+			currentHQCoordinates[i][1] = rect[hqs.get(i)].getY();
+		}
 		return layout;
 	}
 
-	private AbstractBuilding[] getRectangle(AbstractBuilding[][] layout, int distanceFromSide) {
+	private AbstractBuilding[] getRectangleFromSide(AbstractBuilding[][] layout, int distanceFromSide) {
 		int lw = layout[0].length;
 		int lh = layout.length;
 
@@ -372,6 +482,66 @@ public class MapGenerator {
 		}
 
 		return rectangle;
+	}
+
+	private AbstractBuilding[] getSquare(AbstractBuilding[][] layout, int x0, int y0) {
+		return getSquare(layout, x0, y0, 1);
+	}
+
+	private AbstractBuilding[] getSquare(AbstractBuilding[][] layout, int x0, int y0, int dist) {
+    	return getRectangle(layout, x0, y0, dist, dist);
+	}
+
+	private AbstractBuilding[] getRectangle(AbstractBuilding[][] layout, int x0, int y0, int distH, int distW) {
+    	if(layout == null) return new AbstractBuilding[0];
+    	return coordinatesToAbstractBuilding(getRectangle(layout.length, layout[0].length, x0, y0, distH, distW), layout);
+	}
+
+	private int[][] getSquare(int height, int width, int x0, int y0, int dist) {
+    	return getRectangle(height, width, x0, y0, dist, dist);
+	}
+
+	/**
+	 * @param height of map/layout.
+	 * @param width of map/layout.
+	 * @param x0 of center of rectangle.
+	 * @param y0 of center of rectangle.
+	 * @param distH distance form (x0,y0) Horizontaly .
+	 * @param distW	distance form (x0,y0) Verticaly.
+	 * @return an array of coordinates from the side of a rectangle.
+	 */
+	private int[][] getRectangle(int height, int width, int x0, int y0, int distH, int distW) {
+    	// Caculate the size of the array
+		int size = 0;
+
+		int 	top = x0 - distH,
+				bottom = x0 + distH,
+				left = y0 - width,
+				right = y0 + width;
+
+		for(int i = top; i <= bottom; i++)
+			for(int j = left; j <= right; j++)
+				if((i == top || i == bottom || j == left || j == right) && isInRect(i, j , height, width))
+					size ++;
+
+		int[][] array = new int[size][2];
+		if(array.length == 0) return array;
+
+		int count = 0;
+		for(int i = top; i <= bottom; i++)
+			for(int j = left; j <= right; j++)
+				if((i == top || i == bottom || j == left || j == right) && isInRect(i, j , height, width)) {
+					array[count][0] = i;
+					array[count][1] = j;
+					count ++;
+				}
+
+		return array;
+	}
+
+	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
+		if(layout == null) return new AbstractBuilding[0];
+		return coordinatesToAbstractBuilding(getCircle(layout.length, layout[0].length, x0, y0, radius), layout);
 	}
 
 	private int[][] getCircle(int heigh, int width, int x0, int y0, int radius) {

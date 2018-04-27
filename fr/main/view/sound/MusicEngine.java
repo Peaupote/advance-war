@@ -11,8 +11,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import sun.reflect.generics.tree.VoidDescriptor;
-
 public class MusicEngine {
 	private String musicPath; 
     public volatile boolean run = true;   
@@ -61,15 +59,17 @@ public class MusicEngine {
     //the parameter loop controls if playback or not
     //if true, it will play the music until close, 
     //if false, just one time   
-    public void playMusic(boolean loop) throws InterruptedException {  
+    public void playMusic(boolean loop) {  
         try { 
-          if(loop) while(true) playMusic();  
-          else {
-            playMusic();
-            sourceDataLine.drain();
-            sourceDataLine.close();
-            audioStream.close();
-          }          
+            if(loop) 
+                while(true) 
+                    playMusic();
+            else {
+                playMusic();
+                sourceDataLine.drain();
+                sourceDataLine.close();
+                audioStream.close();
+            }          
         } catch(IOException ex) {
           ex.printStackTrace();  
         }
@@ -85,13 +85,13 @@ public class MusicEngine {
             int count;  
             byte tempBuff[] = new byte[1024];  
               
-                while((count = audioStream.read(tempBuff,0,tempBuff.length)) != -1){  
-                    synchronized(this){  
-                    while(!run)  
-                        wait();  
-                    }  
-                    sourceDataLine.write(tempBuff,0,count);  
-                              
+            while((count = audioStream.read(tempBuff,0,tempBuff.length)) != -1){  
+                synchronized(this){  
+                while(!run)  
+                    wait();  
+                }  
+                sourceDataLine.write(tempBuff,0,count);  
+                          
             }  
   
         }catch(UnsupportedAudioFileException ex){  
@@ -139,35 +139,18 @@ public class MusicEngine {
  
     //start with creat a new thread
     public void start(boolean loop){
-        mainThread = new Thread(new Runnable(){  
-            public void run(){  
-                try {  
-                    playMusic(loop);  
-                } catch (InterruptedException e) {  
-                    e.printStackTrace();  
-                }  
-            }  
-        });  
+        mainThread = new Thread(() -> playMusic(loop));  
         mainThread.start();  
     }  
     
     //stop music in the thread
     public void stop(){  
-        new Thread(new Runnable(){  
-            public void run(){  
-                stopMusic();  
-                  
-            }  
-        }).start();  
+        new Thread(this::stopMusic).start();  
     }  
  
     //continue the music
     public void continues(){  
-        new Thread(new Runnable(){  
-            public void run(){  
-                continueMusic();  
-            }  
-        }).start();  
+        new Thread(this::continueMusic).start();  
     }  
     
 }

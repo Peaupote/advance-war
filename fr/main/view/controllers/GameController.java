@@ -266,8 +266,6 @@ public class GameController extends Controller {
 
     private class TransportUnitPanel extends ControllerPanel {
 
-        @SuppressWarnings("unused")
-		private TransportUnit transportUnit;
         public AbstractUnit selected = null;
 
         public TransportUnitPanel (){
@@ -277,7 +275,6 @@ public class GameController extends Controller {
         }
 
         private void update (TransportUnit t){
-            transportUnit = t;
             actions.clear();
             setVisible(true);
 
@@ -609,9 +606,8 @@ public class GameController extends Controller {
 
     /**
      * Action when click on a tile while the user in MOVE mode.
-     * @throws InterruptedException 
      */
-    public void selectOnMove () throws InterruptedException {
+    public void selectOnMove () {
         if (targetUnit == null) {
             AbstractBuilding b = world.getBuilding (cursor.position());
             if (!world.isVisible(cursor.position()) || b == null
@@ -750,12 +746,7 @@ public class GameController extends Controller {
                     if (mode == Mode.UNIT)                  validUnitMove();
                     else if (mode == Mode.ATTACK)           validUnitTarget();
                     else if (mode == Mode.HEAL)             validHeal();
-                    else if (mode == Mode.MOVE)
-						try {
-							selectOnMove();
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
+                    else if (mode == Mode.MOVE)  			selectOnMove();
 					else if (mode == Mode.LOAD)             validLoad();
                     else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
                     else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
@@ -807,12 +798,7 @@ public class GameController extends Controller {
                 if      (mode == Mode.UNIT)             validUnitMove();
                 else if (mode == Mode.ATTACK)           validUnitTarget();
                 else if (mode == Mode.HEAL)             validHeal();
-                else if (mode == Mode.MOVE)
-					try {
-						selectOnMove();
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
+                else if (mode == Mode.MOVE) 			selectOnMove();
 				else if (mode == Mode.LOAD)             validLoad();
                 else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
                 else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();

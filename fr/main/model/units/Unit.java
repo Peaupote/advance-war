@@ -220,9 +220,7 @@ public abstract class Unit implements AbstractUnit {
                         fog[yy][xx]=true;
                 }
             // then we check the other tiles, from the closest to the farthest
-            int[][] t = {
-                {1,1},{1,-1},{-1,-1},{-1,1}
-            };
+            int[][] t = Direction.getNonCardinalDirections();
             for (int i = 2 ; i <= visionT ; i++)
                 for (int j = 1 ; j < i ; j ++)
                     for (int[] tab : t){
@@ -356,8 +354,8 @@ public abstract class Unit implements AbstractUnit {
 
     @Override
     public boolean canAttack(AbstractUnit u){
-        return  (primaryWeapon   == null ? false : primaryWeapon.canAttack(this,u)) ||
-                (secondaryWeapon == null ? false : secondaryWeapon.canAttack(this,u));
+        return  (primaryWeapon   == null ? false : primaryWeapon.canAttack(this, u)) ||
+                (secondaryWeapon == null ? false : secondaryWeapon.canAttack(this, u));
     }
 
     @Override

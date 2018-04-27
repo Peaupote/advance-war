@@ -41,7 +41,7 @@ public class SecondaryWeapon extends Weapon{
 
     @Override
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
-        return shooter.isEnabled() && canShoot(target) && isInRange(shooter, target);
+        return target != null && shooter.getPlayer() == target.getPlayer() && shooter.isEnabled() && canShoot(target) && isInRange(shooter, target);
     }
 
 }

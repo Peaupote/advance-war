@@ -40,11 +40,11 @@ public class UnitControlAI implements ArtificialIntelligence {
         checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null || u.getSecondaryWeapon() != null);
 
         // eventually other units play
-        checkUnits(unitList.iterator(), u -> u.isEnabled());
+        checkUnits(unitList.iterator(), u -> true);
 
         // if one unit still has move points, we give it a try to do something
         // because the situation may have changed since the first calculus of the thing to do
-        checkUnits(unitList.iterator(), u -> u.isEnabled());
+        checkUnits(unitList.iterator(), u -> true);
 	}
 
     /**
@@ -55,10 +55,9 @@ public class UnitControlAI implements ArtificialIntelligence {
     private void checkUnits(Iterator<UnitActionChooser> iterator, Predicate<AbstractUnit> test){
         while (iterator.hasNext()){
             UnitActionChooser actionChooser = iterator.next();
-            if (test.test(actionChooser.unit)){
+            if (actionChooser.unit.isEnabled() && test.test(actionChooser.unit))
                 actionChooser.findAction().run();
-                if (!actionChooser.unit.isEnabled()) iterator.remove();
-            }
+            if (!actionChooser.unit.isEnabled()) iterator.remove();
         }
     }
 

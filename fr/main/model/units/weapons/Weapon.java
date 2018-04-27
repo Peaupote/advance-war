@@ -64,7 +64,7 @@ public abstract class Weapon implements java.io.Serializable {
     public boolean canShoot(AbstractUnit u){
         if (u != null)
             for (Class<? extends AbstractUnit> c : damages.keySet())
-                if (c!=null && c.isInstance(u))
+                if (c != null && c.isInstance(u))
                     return true;
         return false;
     }

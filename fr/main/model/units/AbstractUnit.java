@@ -121,8 +121,8 @@ public interface AbstractUnit extends Serializable {
     default void renderTargets(boolean[][] map){
         MoveZone m = getMoveMap();
         Node[][] n = m.map;
-        @SuppressWarnings("unused")
-		int x = getX(), y = getY(), oX = m.offset.x, oY = m.offset.y, moveQuantity = getMaxMoveQuantity();
+
+		int oX = m.offset.x, oY = m.offset.y, moveQuantity = getMaxMoveQuantity();
         
         for (int i = 0; i < n.length; i++)
             for (int j = 0; j < n[i].length; j++){

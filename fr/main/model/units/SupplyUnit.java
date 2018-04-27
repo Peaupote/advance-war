@@ -33,10 +33,11 @@ public interface SupplyUnit extends AbstractUnit {
         Universe universe=Universe.get();
         for (Direction d : Direction.cardinalDirections()){
             AbstractUnit u = universe.getUnit(getX()+d.x,getY()+d.y);
-            if (canSupply(u))
+            if (canSupply(u)){
                 u.getFuel().replenish();
-            if (u.getPrimaryWeapon() != null)
-                u.getPrimaryWeapon().replenish();
+                if (u.getPrimaryWeapon() != null)
+                    u.getPrimaryWeapon().replenish();
+            }
         }
         this.setMoveQuantity(0);
     }

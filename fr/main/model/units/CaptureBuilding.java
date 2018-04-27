@@ -14,9 +14,9 @@ public interface CaptureBuilding extends AbstractUnit{
      * @return true if and only if the building was captured
      */
     public default boolean capture(AbstractBuilding b){
-        if (canCapture(b)){
+        if (canCapture(b) && b.getX() == getX() && b.getY() == getY()){
         	setMoveQuantity(0);
-            return ((OwnableBuilding)b).removeLife(getPlayer(),getLife());
+            return ((OwnableBuilding)b).removeLife(getPlayer(), getLife());
         }
         return false;
     }

@@ -17,6 +17,12 @@ public class Path extends LinkedList<Direction> {
 	 */
 	private static final long serialVersionUID = -3190430267430534047L;
 
+    protected static Path instance = new Path();
+
+    public static Path getPath(){
+        return instance;
+    }
+
 	/**
      * The unit that is moving
      */

@@ -3,6 +3,7 @@ package fr.main.model.units.weapons;
 import java.util.Map;
 
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.Direction;
 
 /**
  * Primary weapons are weapons with limited ammunitions. They may be range weapons. 
@@ -49,21 +50,19 @@ public class PrimaryWeapon extends Weapon{
 
     @Override
     public boolean isInRange(AbstractUnit unit, AbstractUnit target){
-        int i=Math.abs(unit.getX()-target.getX())+Math.abs(unit.getY()-target.getY());
+        int i = Math.abs(unit.getX()-target.getX())+Math.abs(unit.getY()-target.getY());
         return i <= getMaximumRange(unit) && i >= getMinimumRange(unit);
     }
 
     @Override
     public void renderTarget(boolean[][] map, AbstractUnit u, int x, int y){
-        int[][] t = {
-            {1,1},{1,-1},{-1,-1},{-1,1}
-        };
+        int[][] t = Direction.getNonCardinalDirections();
         int maxRange = getMaximumRange(u);
-        if (canAttackAfterMove ? u.getMoveQuantity() != 0 : u.getMoveQuantity() == u.getMaxMoveQuantity())
-            for (int i=getMinimumRange(u);i<=maxRange;i++)
-                for (int j=0;j<=i;j++)
+        if (canAttackAfterMove ? u.getMoveQuantity() != 0 : u.getMoveQuantity() == u.getMaxMoveQuantity() && u.getX() == x && u.getY() == y)
+            for (int i = getMinimumRange(u); i <= maxRange; i ++)
+                for (int j = 0; j <= i; j ++)
                     for (int[] d : t){
-                        int xx = x+d[0]*(i-j), yy = y+d[1]*j;
+                        int xx = x + d[0] * (i - j), yy = y + d[1] * j;
                         if (yy >= 0 && yy < map.length && xx >= 0 && xx < map[0].length)
                             map[yy][xx]=true;
                     }
@@ -71,7 +70,7 @@ public class PrimaryWeapon extends Weapon{
 
     @Override
     public boolean canAttack(AbstractUnit shooter, AbstractUnit target){
-        return ammo > 0 && (canAttackAfterMove?shooter.isEnabled():shooter.getMoveQuantity()==shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter,target);
+        return target != null && shooter.getPlayer() != target.getPlayer() && ammo > 0 && (canAttackAfterMove ? shooter.isEnabled() : shooter.getMoveQuantity() == shooter.getMaxMoveQuantity()) && canShoot(target) && isInRange(shooter,target);
     }
 
     /**

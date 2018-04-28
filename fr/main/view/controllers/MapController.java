@@ -40,8 +40,8 @@ public class MapController extends Controller {
       super(parent, title, modal);
       gen = new MapGenerator(10, ps.length);
 
-      width   = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
-      height  = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
+      width   = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
+      height  = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
       seed    = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
       land    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
       sea     = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);

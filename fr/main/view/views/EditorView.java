@@ -32,7 +32,7 @@ public class EditorView extends View {
     @SuppressWarnings("serial")
     private class Tools extends JPanel {
 
-        JSlider width, height, seed;
+        JSlider width, height, seed, land, sea, moutain, wood;
         JButton[] lands;
         JButton save, open, menu;
         
@@ -40,12 +40,16 @@ public class EditorView extends View {
             setLayout(new GridLayout(1, 2));
 
             JPanel tools = new JPanel();
-            tools.setLayout(new GridLayout(10, 1));
+            tools.setLayout(new GridLayout(18, 1));
             tools.add(new JLabel("Add tools here"));
 
             width  = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
             height = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
             seed   = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
+            land    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+            sea     = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+            moutain = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+            wood    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
 
             save = new JButton("Save");
             open = new JButton("Open");
@@ -59,6 +63,22 @@ public class EditorView extends View {
 
             tools.add(new JLabel("Seed:"));
             tools.add(seed);
+
+
+            tools.add(new JLabel("Land proportion:"));
+            tools.add(land);
+
+
+            tools.add(new JLabel("Sea proportion:"));
+            tools.add(sea);
+
+
+            tools.add(new JLabel("Mountain proportion:"));
+            tools.add(moutain);
+
+
+            tools.add(new JLabel("Wood proportion:"));
+            tools.add(wood);
 
             tools.add(save);
             tools.add(open);
@@ -104,7 +124,7 @@ public class EditorView extends View {
         add(map, BorderLayout.CENTER);
         add(tools, BorderLayout.EAST);
 
-        controller.new Adaptater(tools.width, tools.height, tools.seed);
+        controller.new Adaptater(tools.width, tools.height, tools.seed, tools.land, tools.sea, tools.moutain, tools.wood);
         map.addMouseMotionListener(controller);
         map.addMouseListener(controller);
 

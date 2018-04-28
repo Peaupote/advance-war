@@ -5,6 +5,7 @@ import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
 import sun.awt.image.ImageWatched;
+import sun.java2d.loops.GeneralRenderer;
 
 
 import java.awt.*;
@@ -344,6 +345,10 @@ public class MapGenerator {
             }
         }
 
+
+        if(starterDock) currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
+		// TODO place Docks before making the map.
+
         /*
         	Cleaning the buldings arrays.
          */
@@ -391,7 +396,6 @@ public class MapGenerator {
 
 		for(int[] coor : hqs) {
 			sqrCoor = getSquare(layout.length, layout[0].length, coor[0], coor[1]);
-			printCoorArray(sqrCoor);
 			if(sqrCoor.length == 0) {
 				System.out.println("No valid cell for stater building.");
 				continue;
@@ -416,7 +420,7 @@ public class MapGenerator {
 			if(starterBarrack && starterBarrack && sqrCoor.length < 2) {
 				System.out.println("No place for starter Airport");
 			}
-			if (starterAirport)
+			if (starterAirport) {
 				while (true) {
 					randNb = rand.nextInt(sqrCoor.length);
 					if (sqrCoor[randNb] == null) {
@@ -432,13 +436,29 @@ public class MapGenerator {
 									new Point(sqrCoor[randNb][0], sqrCoor[randNb][1]));
 					break;
 				}
-			if((starterBarrack || starterBarrack) && starterDock && sqrCoor.length < 2
-					|| starterBarrack && starterBarrack && starterDock && sqrCoor.length < 3) {
-				System.out.println("No place for starter Dock");
 			}
-			if (starterDock) {
-				// TODO find nearest sea tile.
-			}
+//			if (starterDock) {
+//				System.out.println("Placing Dock.");
+//
+//				// Find nearest sea tile.
+//				int[][] nearest = findNearestTerrainEnums(currentMap, coor[0], coor[1], sea);
+//				while(true) {
+//					System.out.println("Placing Dock. 2");
+//
+//					randNb = rand.nextInt(nearest.length);
+//					if (nearest[randNb] == null) {
+//						System.out.println("sqr[" + randNb + "] null.");
+//						continue;
+//					}
+//					if (!(layout[nearest[randNb][0]][nearest[randNb][1]] instanceof GenericBuilding))
+//						continue;
+//					layout[nearest[randNb][0]][nearest[randNb][1]] =
+//							new Dock(
+//									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+//									new Point(nearest[randNb][0], nearest[randNb][1]));
+//					break;
+//				}
+//			}
 
 		}
 
@@ -448,6 +468,45 @@ public class MapGenerator {
 		 */
 
 		return layout;
+	}
+
+	private AbstractBuilding[][] placeDocks(TerrainEnum[][] map, AbstractBuilding[][] layout) {
+		int[][] hqs = getCurrentHQCoordinates();
+		int randNb;
+		for(int[] coor : hqs) {
+			System.out.println("Placing Dock.");
+
+			// Find nearest sea tile.
+			int[][] nearest = findNearestTerrainEnums(map, coor[0], coor[1], sea);
+			printCoorArray(nearest);
+			while(true) {
+				System.out.println("Placing Dock. 2");
+
+				randNb = rand.nextInt(nearest.length);
+				if (nearest[randNb] == null) {
+					System.out.println("sqr[" + randNb + "] null.");
+					continue;
+				}
+				if (!(layout[nearest[randNb][0]][nearest[randNb][1]] instanceof GenericBuilding))
+					continue;
+				layout[nearest[randNb][0]][nearest[randNb][1]] =
+						new Dock(
+								((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+								new Point(nearest[randNb][0], nearest[randNb][1]));
+				break;
+			}
+		}
+
+		return layout;
+	}
+
+	private AbstractBuilding[][] placeHeadQuarters(int mapHeight, int mapWidth) {
+    	AbstractBuilding[][] layout = new AbstractBuilding[mapHeight][mapWidth];
+		for(int i = 0; i < mapHeight; i ++)
+			for(int j = 0; j < mapWidth; j ++)
+				layout[i][j] = new GenericBuilding(i, j);
+
+		return placeHeadQuarters(layout);
 	}
 
     private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
@@ -637,16 +696,7 @@ public class MapGenerator {
 				list.add(item);
 			}
 
-		int[][] out = new int[list.size()][2];
-		int count = 0;
-
-		for(int[] it : list) {
-			out[count][0] = list.get(count)[0];
-			out[count][1] = list.get(count)[1];
-			count ++;
-		}
-
-		return out;
+		return  coorArrayFromLinkedList(list);
 	}
 
 	private int[][] getDiamond (int height, int width, int x0, int y0, int distFromCenter) {
@@ -662,41 +712,40 @@ public class MapGenerator {
 
 		int[][] last = getDiamond(height, width, x0, y0, distFromCenter - 1);
 
+		printCoorArray(last);
+
 		LinkedList<int[]> coors = new LinkedList<>();
 		int[] item;
 
 		for(int i = 0; i < last.length; i ++) {
 			item = new int[2];
 			if (last[i][0] <= x0 && isInRect(last[i][0] - 1, last[i][1], height, width)) {
+				item = new int[2];
 				item[0] = last[i][0] - 1;
 				item[1] = last[i][1];
 				coors.add(item);
 			}
 			if (last[i][0] >= x0 && isInRect(last[i][0] + 1, last[i][1], height, width)) {
+				item = new int[2];
 				item[0] = last[i][0] + 1;
 				item[1] = last[i][1];
 				coors.add(item);
 			}
 			if (last[i][0] == x0 && last[i][1] >= y0 && isInRect(x0, last[i][1] + 1, height, width)) {
+				item = new int[2];
 				item[0] = x0;
 				item[1] = last[i][1] + 1;
 				coors.add(item);
 			}
 			if (last[i][0] == x0 && last[i][1] <= y0 && isInRect(x0, last[i][1] - 1, height, width)) {
+				item = new int[2];
 				item[0] = x0;
 				item[1] = last[i][1] - 1;
 				coors.add(item);
 			}
 		}
 
-		out = new int[coors.size()][2];
-
-		for(int i = 0; i < coors.size(); i ++) {
-			out[i][0] = coors.get(i)[0];
-			out[i][1] = coors.get(i)[1];
-		}
-
-		return out;
+		return coorArrayFromLinkedList(coors);
 	}
 
 	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
@@ -803,7 +852,13 @@ public class MapGenerator {
     	return out;
 	}
 
-	private int[][] findNearestTerrainEnum(TerrainEnum[][] map, int i, int j, TerrainEnum[] types) {
+	private int[][] findNearestTerrainEnums(TerrainEnum[][] map, int x, int y, TerrainEnum type) {
+		TerrainEnum[] types = {type};
+		return findNearestTerrainEnums(map, x, y, types);
+	}
+
+
+	private int[][] findNearestTerrainEnums(TerrainEnum[][] map, int x, int y, TerrainEnum[] types) {
 		int[][] dmnd;
 		int[][] out;
 		int size = 1;
@@ -811,7 +866,7 @@ public class MapGenerator {
 
 		label:
 		while (true) {
-			dmnd = getDiamond(map.length, map[0].length, i, j, size);
+			dmnd = getDiamond(map.length, map[0].length, x, y, size);
 			if(dmnd.length == 0)
 				return new int[0][0];
 			size++;
@@ -825,11 +880,48 @@ public class MapGenerator {
 			if(hasMatch(types, map[l[0]][l[1]]))
 				found.add(l);
 
-		out = new int[found.size()][2];
+		return coorArrayFromLinkedList(found);
+	}
 
-		for(int k = 0; k < found.size(); k ++) {
-			out[k][0] = found.get(k)[0];
-			out[k][1] = found.get(k)[1];
+	int[][] getCross(int height, int width, int x, int y) {
+		LinkedList<int[]> list = new LinkedList<>();
+		int[] item;
+
+		if(isInRect(x + 1, y, height, width)) {
+			item = new int[2];
+			item[0] = x + 1;
+			item[1] = y;
+			list.add(item);
+		}
+		if(isInRect(x - 1, y, height, width)) {
+			item = new int[2];
+			item[0] = x - 1;
+			item[1] = y;
+			list.add(item);
+		}
+		if(isInRect(x, y + 1, height, width)) {
+			item = new int[2];
+			item[0] = x;
+			item[1] = y + 1;
+			list.add(item);
+		}
+		if(isInRect(x, y - 1, height, width)) {
+			item = new int[2];
+			item[0] = x;
+			item[1] = y - 1;
+			list.add(item);
+		}
+
+		return coorArrayFromLinkedList(list);
+	}
+
+	private int[][] coorArrayFromLinkedList(LinkedList<int[]> list) {
+		int[][] out = new int[list.size()][2];
+
+		for(int i = 0; i < list.size(); i ++) {
+			out[i][0] = list.get(i)[0];
+			out[i][1] = list.get(i)[1];
+			System.out.println(i);
 		}
 
 		return out;
@@ -920,7 +1012,6 @@ public class MapGenerator {
         return mapBis;
     }
 
-    @SuppressWarnings("unused")
 	private TerrainEnum[][] refineMap(TerrainEnum[][] map) {
         return refineMap(map, 1);
     }

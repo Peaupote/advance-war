@@ -4,6 +4,7 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
+import sun.awt.image.ImageWatched;
 
 
 import java.awt.*;
@@ -648,6 +649,56 @@ public class MapGenerator {
 		return out;
 	}
 
+	private int[][] getDiamond (int height, int width, int x0, int y0, int distFromCenter) {
+		if(distFromCenter < 0) throw new IllegalArgumentException();
+		int[][] out;
+
+		if(distFromCenter == 0) {
+			out = new int[1][2];
+			out[0][0] = x0;
+			out[0][1] = y0;
+			return out;
+		}
+
+		int[][] last = getDiamond(height, width, x0, y0, distFromCenter - 1);
+
+		LinkedList<int[]> coors = new LinkedList<>();
+		int[] item;
+
+		for(int i = 0; i < last.length; i ++) {
+			item = new int[2];
+			if (last[i][0] <= x0 && isInRect(last[i][0] - 1, last[i][1], height, width)) {
+				item[0] = last[i][0] - 1;
+				item[1] = last[i][1];
+				coors.add(item);
+			}
+			if (last[i][0] >= x0 && isInRect(last[i][0] + 1, last[i][1], height, width)) {
+				item[0] = last[i][0] + 1;
+				item[1] = last[i][1];
+				coors.add(item);
+			}
+			if (last[i][0] == x0 && last[i][1] >= y0 && isInRect(x0, last[i][1] + 1, height, width)) {
+				item[0] = x0;
+				item[1] = last[i][1] + 1;
+				coors.add(item);
+			}
+			if (last[i][0] == x0 && last[i][1] <= y0 && isInRect(x0, last[i][1] - 1, height, width)) {
+				item[0] = x0;
+				item[1] = last[i][1] - 1;
+				coors.add(item);
+			}
+		}
+
+		out = new int[coors.size()][2];
+
+		for(int i = 0; i < coors.size(); i ++) {
+			out[i][0] = coors.get(i)[0];
+			out[i][1] = coors.get(i)[1];
+		}
+
+		return out;
+	}
+
 	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
 		if(layout == null) return new AbstractBuilding[0];
 		return coordinatesToAbstractBuilding(getCircle(layout.length, layout[0].length, x0, y0, radius), layout);
@@ -750,6 +801,38 @@ public class MapGenerator {
 //    		else throw new NullPointerException();
 
     	return out;
+	}
+
+	private int[][] findNearestTerrainEnum(TerrainEnum[][] map, int i, int j, TerrainEnum[] types) {
+		int[][] dmnd;
+		int[][] out;
+		int size = 1;
+		LinkedList<int[]> found = new LinkedList<>();
+
+		label:
+		while (true) {
+			dmnd = getDiamond(map.length, map[0].length, i, j, size);
+			if(dmnd.length == 0)
+				return new int[0][0];
+			size++;
+			for(int[] l : dmnd) {
+				if(hasMatch(types, map[l[0]][l[1]]))
+					break label;
+			}
+		}
+
+		for(int[] l : dmnd)
+			if(hasMatch(types, map[l[0]][l[1]]))
+				found.add(l);
+
+		out = new int[found.size()][2];
+
+		for(int k = 0; k < found.size(); k ++) {
+			out[k][0] = found.get(k)[0];
+			out[k][1] = found.get(k)[1];
+		}
+
+		return out;
 	}
 
 	private TerrainEnum[][] setImmuableTerrain(AbstractBuilding[][] layout, TerrainEnum[][] map) {

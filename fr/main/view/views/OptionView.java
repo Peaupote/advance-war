@@ -1,11 +1,9 @@
 package fr.main.view.views;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
@@ -13,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.imageio.ImageIO;
 
 import fr.main.view.MainFrame;
 import fr.main.view.controllers.GameController;
@@ -26,9 +25,17 @@ import fr.main.view.controllers.OptionController;
 public class OptionView extends View {
 
     private final ControllPanel[] panels;
+    private Image bkg;
 
     public OptionView(OptionController controller){
         super(controller);
+
+        bkg = null;
+        try {
+          bkg = ImageIO.read(new File("./assets/screens/aaa.jpg"));
+        } catch (IOException e) {
+          System.err.println(e);
+        }
 
         // for each control, create a panel to display control's name & associated keys
         GameController.Controls[] controls = GameController.Controls.values();
@@ -42,6 +49,8 @@ public class OptionView extends View {
 
         JPanel p = new JPanel();
         JButton c;
+
+        p.setOpaque(false);
 
         // Quit button
         c = new JButton("Quit");
@@ -87,6 +96,14 @@ public class OptionView extends View {
         p.add(c);
 
         add(p);
+    }
+
+    @Override
+    public void paintComponent (Graphics g) {
+      super.paintComponent(g);
+
+      if (bkg != null)
+        g.drawImage(bkg, 0, 0, MainFrame.width(), MainFrame.height(), null);
     }
 
     /**
@@ -136,6 +153,8 @@ public class OptionView extends View {
                     }
                 });
             });
+
+            setOpaque(false);
 
             reset();
         }

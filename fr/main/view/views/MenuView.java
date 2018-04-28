@@ -30,17 +30,17 @@ public class MenuView extends View {
         super(controller);
 
         bg     = new ImageIcon("./assets/screens/bd.png");
-		label  = new JLabel(bg);
-		
-		play   = new MenuButton("PLAY","./assets/button/b02.png", 350, 150);
-		load   = new MenuButton("LOAD","./assets/button/b02.png", 350, 290);
-		host   = new MenuButton("HOST","./assets/button/b02.png", 350, 430);
-		join   = new MenuButton("JOIN","./assets/button/b02.png", 350, 570);
+    		label  = new JLabel(bg);
+    		
+    		play   = new MenuButton("PLAY","./assets/button/b02.png", 350, 150);
+    		load   = new MenuButton("LOAD","./assets/button/b02.png", 350, 290);
+    		host   = new MenuButton("HOST","./assets/button/b02.png", 350, 430);
+    		join   = new MenuButton("JOIN","./assets/button/b02.png", 350, 570);
         edit   = new MenuButton("MAP EDITOR","./assets/button/b02.png", 350, 430);
-		
-		exit   = new MenuButton("EXIT","./assets/button/b03.png", 830, 0, 20);
-		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0, 20);
-		sound  = new MenuButton("", "./assets/button/music03.png", 40, 600);
+    		
+    		exit   = new MenuButton("EXIT","./assets/button/b03.png", 830, 0, 20);
+    		option = new MenuButton("OPTION","./assets/button/b03.png",-5, 0, 20);
+    		sound  = new MenuButton("", "./assets/button/music03.png", 40, 600);
 
 
         label.setBounds(0, 0, bg.getIconWidth(), bg.getIconHeight());

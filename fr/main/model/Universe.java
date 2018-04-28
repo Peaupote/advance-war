@@ -183,7 +183,7 @@ public class Universe {
 
     public static Board restaure(String mapName){
         if (save)
-            try (FileInputStream fileIn = new FileInputStream(mapPath+mapName);
+            try (FileInputStream fileIn = new FileInputStream(mapName);
                     ObjectInputStream in = new ObjectInputStream(fileIn)) {
                 return (Board) in.readObject();
             } catch (IOException e) {

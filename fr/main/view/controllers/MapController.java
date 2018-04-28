@@ -32,7 +32,7 @@ public class MapController extends Controller {
   public class RandomSettings extends JDialog {
 
     private MapGenerator gen;
-    private JSlider width, height, seed, land, sea, moutain, wood;
+    private JSlider width, height, seed, land, moutain, wood;
     private JButton ok;
     public boolean cancel = true;
 
@@ -44,7 +44,6 @@ public class MapController extends Controller {
       height  = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
       seed    = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
       land    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-      sea     = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
       moutain = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
       wood    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
 
@@ -52,7 +51,7 @@ public class MapController extends Controller {
 
       setSize(new Dimension(250, 500));
 
-      setLayout(new GridLayout(16, 1, 10, 10));
+      setLayout(new GridLayout(14, 1, 10, 10));
       add(new JLabel("Random settings"));
 
       add(new JLabel("Seed"));
@@ -64,11 +63,8 @@ public class MapController extends Controller {
       add(new JLabel("Height"));
       add(height);
 
-      add(new JLabel("Land proportion"));
+      add(new JLabel("Land/Sea proportion"));
       add(land);
-
-      add(new JLabel("Sea proportion"));
-      add(sea);
 
       add(new JLabel("Mountain proportion"));
       add(moutain);
@@ -84,12 +80,6 @@ public class MapController extends Controller {
 
       land.addChangeListener(e -> {
         gen.setLandProportion(land.getValue());
-        sea.setValue(gen.getSeaProportion());
-      });
-
-      sea.addChangeListener(e -> {
-        gen.setSeaProportion(sea.getValue());
-        land.setValue(gen.getLandProportion());
       });
 
       moutain.addChangeListener(e -> {
@@ -154,7 +144,9 @@ public class MapController extends Controller {
         Universe.save("random.map", units, map, ps, buildings);
         mapPath = "./maps/random.map";
       } else mapPath = listModel.get(index);
-      MainFrame.setScene(new LoadController(mapPath, ps));
+
+      // TODO: put back the load screen
+      MainFrame.setScene(new GameController(mapPath, ps));
     };
 }
 

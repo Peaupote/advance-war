@@ -76,7 +76,7 @@ public class EditorController extends Controller {
         arrowButtons = new Rectangle[4];
         for (int i = 0; i < 4; i++)
             arrowButtons[i] = new Rectangle(0,0,0,0);
-        generate(50, 50, 2, 50, 50, 10, 10);
+        generate(50, 50, 2, 50, 10, 10);
 
         save = e -> world.save(JOptionPane.showInputDialog("Map's name:"));
         open = e -> {
@@ -95,14 +95,13 @@ public class EditorController extends Controller {
 
     public class Adaptater implements ChangeListener {
 
-        final JSlider width, height, seed, land, sea, moutain, wood;
+        final JSlider width, height, seed, land, moutain, wood;
 
-        public Adaptater (JSlider width, JSlider height, JSlider seed, JSlider land, JSlider sea, JSlider moutain, JSlider wood) {
+        public Adaptater (JSlider width, JSlider height, JSlider seed, JSlider land, JSlider moutain, JSlider wood) {
             this.width  = width;
             this.height = height;
             this.seed   = seed;
             this.land   = land;
-            this.sea   = sea;
             this.moutain   = moutain;
             this.wood   = wood;
 
@@ -110,7 +109,6 @@ public class EditorController extends Controller {
             height.addChangeListener(this);
             seed.addChangeListener(this);
             land.addChangeListener(this);
-            sea.addChangeListener(this);
             moutain.addChangeListener(this);
             wood.addChangeListener(this);
         }
@@ -120,7 +118,6 @@ public class EditorController extends Controller {
                      height.getValue(),
                      seed.getValue(),
                      land.getValue(),
-                     sea.getValue(),
                      moutain.getValue(),
                      wood.getValue());
         }
@@ -150,18 +147,17 @@ public class EditorController extends Controller {
         mouse.y = e.getY() / MainFrame.UNIT;
     }
 
-    public void generate (int width, int height, int seed, int l, int s, int m, int w) {
+    public void generate (int width, int height, int seed, int l, int m, int w) {
         MapGenerator mGen = new MapGenerator(seed, 4);
         mGen.setMapWidth(width);
         mGen.setMapHeight(height);
         mGen.setLandProportion(l);
-        mGen.setSeaProportion(s);
         mGen.setMountainProportion(m);
         mGen.setWoodProportion(w);
         mGen.setSeaBandSize(4);
-        AbstractTerrain[][] map        = new AbstractTerrain[height][width];
-        TerrainEnum[][] eMap           = mGen.randMap(height, width);
-        Player[] ps                    = mGen.getLastPlayers();
+        AbstractTerrain[][] map = new AbstractTerrain[height][width];
+        TerrainEnum[][] eMap    = mGen.randMap(height, width);
+        Player[] ps             = mGen.getLastPlayers();
 
         for (int i = 0; i < eMap.length; i++)
             for (int j = 0; j < eMap[0].length; j++)

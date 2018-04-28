@@ -12,6 +12,10 @@ public enum Direction {
     BOTTOM(0,1),
     NONE(0,0);
 
+    public static int[][] getNonCardinalDirections(){
+        return new int[][]{ {1,1}, {1,-1}, {-1,-1}, {-1,1} };
+    }
+
     /**
      * value associated to the movement
      */

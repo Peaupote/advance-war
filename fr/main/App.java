@@ -19,27 +19,26 @@ import fr.main.view.controllers.GameController;
  */
 public class App {
 
-  public static void main (String[] args) throws Exception {
-    String s = args == null || args.length == 0 ? "undefined" : args[0];
-    switch (s) {
-      case "play"   : play(); break;
-      case "save"   : save(); break;
-      case "server" : new Server(8080); break;
-      case "client" : new Client("localhost", 8080); break;
-      case "debug"  :
-        if ((new File(Universe.mapPath + "debug.map")).exists()){
-          new MainFrame();
-          MainFrame.setScene(new GameController("debug.map"));
+    public static void main (String[] args) throws Exception {
+        String s = args == null || args.length == 0 ? "undefined" : args[0];
+        switch (s) {
+            case "play"   : play(); break;
+            case "save"   : save(); break;
+            case "server" : new Server(8080); break;
+            case "client" : new Client("localhost", 8080); break;
+            case "debug"  :
+                if ((new File(Universe.mapPath + "debug.map")).exists()){
+                    new MainFrame();
+                    MainFrame.setScene(new GameController("debug.map"));
+                }
+                else
+                    System.out.println("The debug map doesn't exists. Please name a save debug.map");
+                break;
+            default:
+                save();
+                play();
         }
-        else
-          System.out.println("The debug map doesn't exists. Please name a save debug.map");
-        break;
-      default:
-        save();
-        play();
-        break;
     }
-  }
 
   public static void play () throws Exception{
 	  new MainFrame();

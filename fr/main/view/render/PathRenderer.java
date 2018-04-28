@@ -43,6 +43,7 @@ public class PathRenderer extends Path {
             d.getImage       (45, 32, 16, 16, 2),        // right top
             d.getImage       (12, 15, 16, 16, 2)         // top bottom
         };
+
     }
 
     public PathRenderer (Position.Camera camera) {
@@ -50,6 +51,7 @@ public class PathRenderer extends Path {
         this.camera = camera;
         this.world = (UniverseRenderer)Universe.get();
         visible = false;
+        Path.instance = this;
     }
 
     public void draw (Graphics g, int offsetX, int offsetY) {
@@ -111,7 +113,7 @@ public class PathRenderer extends Path {
     }
 
     /**
-     * make the unit moves allong the path
+     * make the unit move allong the path
      */
     public boolean apply () {
         UnitRenderer.Render render = UnitRenderer.getRender(unit);

@@ -210,16 +210,13 @@ public class UniverseRenderer extends MapRenderer {
         }
     }
 
-    private static final int[][] directions = {
-        {1,1},{1,-1},{-1,-1},{-1,1}
-    };
-
     public boolean updateTarget(Point p){
         clearTarget();
         if (controller.getMode() == GameController.Mode.MISSILE_LAUNCHER){
+            int[][] t = Direction.getNonCardinalDirections();
             for (int i = 0 ; i <= 3 ; i++)
                 for (int j = 0 ; j <= i ; j ++)
-                    for (int[] tab : directions){
+                    for (int[] tab : t){
                         int xx = p.x + tab[0] * j, yy = p.y + tab[1] * (i - j);
                         if (isValidPosition(xx, yy))
                             targets[yy][xx] = true;

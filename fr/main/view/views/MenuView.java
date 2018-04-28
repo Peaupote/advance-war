@@ -10,12 +10,9 @@ import fr.main.view.controllers.MenuController;
 /**
  * Rendering main menu
  */
+@SuppressWarnings("serial")
 public class MenuView extends View {
 
-    /**
-     * Add MenuView UID
-     */
-    private static final long serialVersionUID = -2757623237690415972L;
     private ImageIcon bg;
     private JLabel label;
     private JButton play,

@@ -8,59 +8,56 @@ import fr.main.view.controllers.GameController;
 import fr.main.view.interfaces.InterfaceUI;
 import fr.main.view.render.weather.WeatherController;
 
+@SuppressWarnings("serial")
 public class GameView extends View {
 
-  /**
-	 *Add GameView UID 
-	 */
-	private static final long serialVersionUID = 8815300245977000650L;
-/**
-   * Rendering weather controller
-   */
-  private final WeatherController weather;
-  protected GameController controller;
+    /**
+    * Rendering weather controller
+    */
+    private final WeatherController weather;
+    protected GameController controller;
 
-  public GameView (GameController controller) {
-    super (controller);
-    this.controller = controller;
-    this.weather = new WeatherController();
+    public GameView (GameController controller) {
+        super (controller);
+        this.controller = controller;
+        this.weather = new WeatherController();
 
-    // remove mouse display
-    setCursor(getToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), null));
-  }
+        // remove mouse display
+        setCursor(getToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), null));
+    }
 
-  @Override
-  public void paintComponent (Graphics g) {
-      int x = controller.camera.getX(),
-          y = controller.camera.getY(),
-          offsetX = controller.camera.getOffsetX(),
-          offsetY = controller.camera.getOffsetY();
+    @Override
+    public void paintComponent (Graphics g) {
+        int x = controller.camera.getX(),
+            y = controller.camera.getY(),
+            offsetX = controller.camera.getOffsetX(),
+            offsetY = controller.camera.getOffsetY();
 
-      // render map
-      controller.world.draw(g, x, y, offsetX, offsetY);
-      
-      // render cursor
-      if (controller.getMode() != GameController.Mode.MOVE &&
-          controller.getMode() != GameController.Mode.RANGE)
-        controller.unitCursor.draw(g);
-      else controller.cursor.draw(g);
+        // render map
+        controller.world.draw(g, x, y, offsetX, offsetY);
 
-      // render path
-      if (controller.path.visible)
-        controller.path.draw(g, offsetX, offsetY);
+        // render cursor
+        if (controller.getMode() != GameController.Mode.MOVE &&
+                controller.getMode() != GameController.Mode.RANGE)
+            controller.unitCursor.draw(g);
+        else controller.cursor.draw(g);
 
-      // render damages
-      controller.displayDamages(g);
-      
-      // render weather
-      weather.render(g);
+        // render path
+        if (controller.path.visible)
+            controller.path.draw(g, offsetX, offsetY);
 
-      // render user interface
-      for (InterfaceUI comp: InterfaceUI.components())
-          comp.render(g);
-  }
+        // render damages
+        controller.displayDamages(g);
 
-  public WeatherController getWeatherController(){
-    return weather;
-  }
+        // render weather
+        weather.render(g);
+
+        // render user interface
+        for (InterfaceUI comp: InterfaceUI.components())
+            comp.render(g);
+    }
+
+    public WeatherController getWeatherController(){
+        return weather;
+    }
 }

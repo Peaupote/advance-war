@@ -56,9 +56,7 @@ public class MissileLauncher extends Building {
                     unit.removeLife(40);
             }
 
-        int[][] t = {
-            {1,1},{1,-1},{-1,-1},{-1,1}
-        };
+        int[][] t = Direction.getNonCardinalDirections();
         for (int i = 2 ; i < 4 ; i++) // other tiles
             for (int j = 1 ; j < i ; j ++)
                 for (int[] tab : t){

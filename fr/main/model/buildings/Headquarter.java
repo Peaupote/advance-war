@@ -2,6 +2,7 @@ package fr.main.model.buildings;
 
 import java.awt.Point;
 
+import fr.main.model.Universe;
 import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.land.LandUnit;
@@ -25,7 +26,7 @@ public class Headquarter extends OwnableBuilding implements RepairBuilding{
     }
 
     public boolean canRepair(AbstractUnit u){
-        return u.getPlayer()==getOwner() && (u instanceof LandUnit);
+        return u.getPlayer() == getOwner() && (u instanceof LandUnit);
     }
 
     public void setOwner(Player p){
@@ -35,6 +36,6 @@ public class Headquarter extends OwnableBuilding implements RepairBuilding{
                 b.setOwner(p);
             owner.loose();
         }
-        new City(p, new Point (getX(),getY()));
+        Universe.get().setBuilding(getX(), getY(), new City(p, new Point (getX(),getY())));
     }
 }

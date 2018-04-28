@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Ingame option panel
 ### Changed
   - Use mouse wheel to move in menus
+  - IA improvement
 ### Fixed
 
 ## [0.0.9] - 2018-04-12

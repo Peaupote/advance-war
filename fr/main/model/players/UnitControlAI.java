@@ -29,11 +29,6 @@ public class UnitControlAI implements ArtificialIntelligence {
 		units.remove(u);
 	}
 
-	@SuppressWarnings("unused")
-	private UnitActionChooser get(AbstractUnit u){
-		return units.get(u);
-	}
-
 	public void run(){
         // we have to use a copy of the list to avoid concurrent modification exception if an unit dies for example
         ArrayList<UnitActionChooser> unitList = new ArrayList<UnitActionChooser>(units.values());
@@ -42,14 +37,14 @@ public class UnitControlAI implements ArtificialIntelligence {
         checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null && !u.getPrimaryWeapon().isContactWeapon());
 
         // then contact units play
-        checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null ||  u.getSecondaryWeapon() != null);
+        checkUnits(unitList.iterator(), u -> u.getPrimaryWeapon() != null || u.getSecondaryWeapon() != null);
 
         // eventually other units play
-        checkUnits(unitList.iterator(), u -> u.isEnabled());
+        checkUnits(unitList.iterator(), u -> true);
 
         // if one unit still has move points, we give it a try to do something
         // because the situation may have changed since the first calculus of the thing to do
-        checkUnits(unitList.iterator(), u -> u.isEnabled());
+        checkUnits(unitList.iterator(), u -> true);
 	}
 
     /**
@@ -60,10 +55,9 @@ public class UnitControlAI implements ArtificialIntelligence {
     private void checkUnits(Iterator<UnitActionChooser> iterator, Predicate<AbstractUnit> test){
         while (iterator.hasNext()){
             UnitActionChooser actionChooser = iterator.next();
-            if (test.test(actionChooser.unit)){
+            if (actionChooser.unit.isEnabled() && test.test(actionChooser.unit))
                 actionChooser.findAction().run();
-                if (!actionChooser.unit.isEnabled()) iterator.remove();
-            }
+            if (!actionChooser.unit.isEnabled()) iterator.remove();
         }
     }
 

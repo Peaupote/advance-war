@@ -61,6 +61,6 @@ public class Infantry extends Unit implements WalkingUnit,CaptureBuilding{
 	}
 
     public boolean canCapture(AbstractBuilding b){
-        return isEnabled() && b instanceof OwnableBuilding && ((OwnableBuilding)b).getOwner()!=getPlayer();
+        return isEnabled() && b instanceof OwnableBuilding && ((OwnableBuilding)b).getOwner() != getPlayer();
     }
 }

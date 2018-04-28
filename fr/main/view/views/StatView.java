@@ -14,11 +14,8 @@ import javax.swing.JTabbedPane;
 import fr.main.view.controllers.StatController;
 import fr.main.view.render.sprites.Sprite;
 
+@SuppressWarnings("serial")
 public class StatView extends View {
-    /**
-     * Add StatView UID
-     */
-    private static final long serialVersionUID = 1698451922051210697L;
 
 	@SuppressWarnings("unused")
 	private StatController controller;
@@ -46,11 +43,8 @@ public class StatView extends View {
         defeats[i] = turn;
     }
 
+    @SuppressWarnings("serial")
     private class StatPanel extends JPanel {
-        /**
-         * Add StatController UID
-         */
-        private static final long serialVersionUID = -3263855093192862585L;
 
 		public int[][] data;
         Color[] colors = new Color[]{

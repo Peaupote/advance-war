@@ -33,23 +33,17 @@ import fr.main.view.render.sprites.Sprite;
 /**
  * View of commanders selection
  */
+@SuppressWarnings("serial")
 public class CreateView extends View {
 
-    /**
-	 * Add Create View UID
-	 */
-	private static final long serialVersionUID = -692072409517044931L;
 	protected CreateController controller;
 
     /**
      * Panels with all commanders
      */
+    @SuppressWarnings("serial")
     public class CommandersPanel extends JPanel {
 
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = 1555559396069340858L;
 		private final JButton[] btns;
         private final JButton   startGame;
         @SuppressWarnings("unused")
@@ -105,12 +99,8 @@ public class CreateView extends View {
     /**
      * Panel of all players
      */
+    @SuppressWarnings("serial")
     public class PlayersPanel extends JPanel {
-
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = -4035849789017813034L;
 
 		private final int width, height;
 

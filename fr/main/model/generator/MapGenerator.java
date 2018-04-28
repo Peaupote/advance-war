@@ -9,6 +9,7 @@ import sun.java2d.loops.GeneralRenderer;
 
 
 import java.awt.*;
+import java.awt.image.BandCombineOp;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
@@ -55,6 +56,7 @@ public class MapGenerator {
         setLandProportion(60);
         this.starterAirport = false;
         this.starterBarrack = true;
+        this.starterDock = false;
     }
 
 	/**
@@ -346,8 +348,8 @@ public class MapGenerator {
         }
 
 
-        if(starterDock) currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
-		// TODO place Docks before making the map.
+        currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
+		// TODO place Docks before making the map. or not.
 
         /*
         	Cleaning the buldings arrays.
@@ -437,29 +439,6 @@ public class MapGenerator {
 					break;
 				}
 			}
-//			if (starterDock) {
-//				System.out.println("Placing Dock.");
-//
-//				// Find nearest sea tile.
-//				int[][] nearest = findNearestTerrainEnums(currentMap, coor[0], coor[1], sea);
-//				while(true) {
-//					System.out.println("Placing Dock. 2");
-//
-//					randNb = rand.nextInt(nearest.length);
-//					if (nearest[randNb] == null) {
-//						System.out.println("sqr[" + randNb + "] null.");
-//						continue;
-//					}
-//					if (!(layout[nearest[randNb][0]][nearest[randNb][1]] instanceof GenericBuilding))
-//						continue;
-//					layout[nearest[randNb][0]][nearest[randNb][1]] =
-//							new Dock(
-//									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-//									new Point(nearest[randNb][0], nearest[randNb][1]));
-//					break;
-//				}
-//			}
-
 		}
 
 
@@ -478,7 +457,6 @@ public class MapGenerator {
 
 			// Find nearest sea tile.
 			int[][] nearest = findNearestTerrainEnums(map, coor[0], coor[1], sea);
-			printCoorArray(nearest);
 			while(true) {
 				System.out.println("Placing Dock. 2");
 
@@ -489,10 +467,16 @@ public class MapGenerator {
 				}
 				if (!(layout[nearest[randNb][0]][nearest[randNb][1]] instanceof GenericBuilding))
 					continue;
-				layout[nearest[randNb][0]][nearest[randNb][1]] =
+				if(starterDock)
+					layout[nearest[randNb][0]][nearest[randNb][1]] =
 						new Dock(
 								((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
 								new Point(nearest[randNb][0], nearest[randNb][1]));
+				else
+					layout[nearest[randNb][0]][nearest[randNb][1]] =
+							new Dock(
+									null,
+									new Point(nearest[randNb][0], nearest[randNb][1]));
 				break;
 			}
 		}
@@ -507,14 +491,14 @@ public class MapGenerator {
 				layout[i][j] = new GenericBuilding(i, j);
 
 		return placeHeadQuarters(layout);
-	}
+    }
 
     private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
     	int x = layout.length,
 				y = layout[0].length;
     	int randNb = rand.nextInt(3);
-    	int realX = x - seaBandSize - 1 - randNb,
-				realY = y - seaBandSize - 1 - randNb;
+    	int realX = x - 2 * seaBandSize - 1 - randNb,
+				realY = y - 2 * seaBandSize - 1 - randNb;
 		boolean useWidth = x < y;
 
 		System.out.println("realX : " + realX + "\nrealY :" + realY);
@@ -558,8 +542,9 @@ public class MapGenerator {
 				LinkedList<Integer> l = new LinkedList<>();
 				l.add(0);
 				l.add(realY);
-				l.add(realY + realX - 1);
-				l.add(realY * 2 + realX - 1);
+				l.add(realY + realX - 2 * seaBandSize);
+				l.add(realY + realX + realY - 3 * seaBandSize);
+//				l.add(realY * 2 + realX - 1);
 				int pop = 0;
 				for (int i = 3; i >= 0; i--) {
 					if(i > 0) pop = abs(rand.nextInt(i));
@@ -711,8 +696,6 @@ public class MapGenerator {
 		}
 
 		int[][] last = getDiamond(height, width, x0, y0, distFromCenter - 1);
-
-		printCoorArray(last);
 
 		LinkedList<int[]> coors = new LinkedList<>();
 		int[] item;
@@ -1177,6 +1160,9 @@ public class MapGenerator {
 						if(getAdjacentTerrainNb(map, i, j, sea) == 1)
 							map[i][j] = river;
 						break;
+					case river:
+						if(getAdjacentTerrainNb(map, i, j, sea) + getAdjacentTerrainNb(map, i, j, river) == 0)
+							map[i][j] = wood;
 						// TODO : put every cleaning procedure here.
 				}
 			}

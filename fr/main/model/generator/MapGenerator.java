@@ -26,7 +26,7 @@ public class MapGenerator {
     private int[][] lastHQCoordinates;
     private int[][] currentHQCoordinates;
 
-    private boolean starterBarrack, starterAirport;
+    private boolean starterBarrack, starterAirport, starterDock;
 
     // TODO put all mapGen parameters
 
@@ -185,12 +185,20 @@ public class MapGenerator {
 		this.woodProportion = woodProportion; // TODO
 	}
 
+	public boolean isStarterDock() {
+		return starterDock;
+	}
+
 	public void setStarterAirport(boolean starterAirport) {
 		this.starterAirport = starterAirport;
 	}
 
 	public void setStarterBarrack(boolean starterBarrack) {
 		this.starterBarrack = starterBarrack;
+	}
+
+	public void setStarterDock(boolean starterDock) {
+		this.starterDock = starterDock;
 	}
 
 	public void setSeaBandSize(int seaBandSize) {
@@ -336,7 +344,7 @@ public class MapGenerator {
         }
 
         /*
-        	Cleaning the buldings table.
+        	Cleaning the buldings arrays.
          */
 
         clean(currentBuildingLayout);
@@ -355,13 +363,6 @@ public class MapGenerator {
         lastMap = currentMap;
         currentMap = null;
         lastPlayers = players;
-
-//        for(AbstractBuilding[] bs : lastBuildingLayout)
-//        	for(AbstractBuilding b : bs)
-//        		if(b instanceof Headquarter)
-//        			System.out.println("Headquarters located - THEY EXIST !!!");
-
-        // TODO : See what's happening with the HQs. Why do they disappear ??
 
         return lastMap;
     }
@@ -385,31 +386,25 @@ public class MapGenerator {
 		}
 
 		int[][] sqrCoor;
-		AbstractBuilding[] sqr;
 		int randNb;
 
 		for(int[] coor : hqs) {
-			sqr = getSquare(layout, coor[0], coor[1]);
 			sqrCoor = getSquare(layout.length, layout[0].length, coor[0], coor[1]);
 			printCoorArray(sqrCoor);
+			if(sqrCoor.length == 0) {
+				System.out.println("No valid cell for stater building.");
+				continue;
+			}
 			if(starterBarrack) {
-				System.out.println("Length of square coor :" + sqrCoor.length);
-				// TODO : implement validators (NUll validation).
-				for (int i = 0; i < sqrCoor.length; i++) {
+				while(true) {
 					randNb = rand.nextInt(sqrCoor.length);
-					if (i == sqr.length - 1 && sqrCoor[randNb] == null) {
-						System.out.println("invalid HQ placement for barracks.");
-						continue;
-					} else if (sqrCoor[randNb] == null) {
+					if (sqrCoor[randNb] == null) {
 						System.out.println("sqr[" + randNb + "] null.");
 						continue;
 					}
-//
-//					sqr[randNb] = new Barrack(
-//							((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-//							new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
-//					System.out.println("Barrack set");
-//
+					if (!(layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] instanceof GenericBuilding))
+						continue;
+
 					layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] =
 							new Barrack(
 									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
@@ -417,17 +412,35 @@ public class MapGenerator {
 					break;
 				}
 			}
+			if(starterBarrack && starterBarrack && sqrCoor.length < 2) {
+				System.out.println("No place for starter Airport");
+			}
 			if (starterAirport)
 				while (true) {
-					randNb = rand.nextInt() % sqr.length;
-					if (!(sqr[randNb] instanceof GenericBuilding)) {
-						sqr[randNb] = new Airport(
-								((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-								new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
-						break;
+					randNb = rand.nextInt(sqrCoor.length);
+					if (sqrCoor[randNb] == null) {
+						System.out.println("sqr[" + randNb + "] null.");
+						continue;
 					}
+					if (!(layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] instanceof GenericBuilding))
+						continue;
+
+					layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] =
+							new Airport(
+									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+									new Point(sqrCoor[randNb][0], sqrCoor[randNb][1]));
+					break;
 				}
+			if((starterBarrack || starterBarrack) && starterDock && sqrCoor.length < 2
+					|| starterBarrack && starterBarrack && starterDock && sqrCoor.length < 3) {
+				System.out.println("No place for starter Dock");
 			}
+			if (starterDock) {
+				// TODO find nearest sea tile.
+			}
+
+		}
+
 
 		/*
 			TODO : test placeStarterBuilings and maybe add more ? EDIT: problem - function not placing the buildings.
@@ -1048,7 +1061,6 @@ public class MapGenerator {
     	return map;
 	}
 
-    @SuppressWarnings("unused")
 	private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
         for(int i = x - 1; i <= x + 1; i ++)
             for(int j = y - 1; j <= y + 1; j ++)
@@ -1057,7 +1069,6 @@ public class MapGenerator {
         return true;
     }
 
-    @SuppressWarnings("unused")
 	private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
         // Direction: true = horizontal; false = vertical.
         int beginning = 0, end = 0, count = 0;
@@ -1082,7 +1093,6 @@ public class MapGenerator {
         return count;
     }
 
-    @SuppressWarnings("unused")
 	public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
     	Arrays.fill(out, none);
@@ -1137,11 +1147,6 @@ public class MapGenerator {
             default: System.out.println("Wrong argument in terrainTypeNb : direction = " + direction);
         }
         return count;
-    }
-
-    @SuppressWarnings("unused")
-	private boolean isValidLowland(TerrainEnum[][] map, int x, int y) {
-        return getAdjacentTerrainNb(map, x, y, lowland) > 2;
     }
 
 	/**

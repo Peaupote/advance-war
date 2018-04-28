@@ -144,7 +144,9 @@ public class MapController extends Controller {
         Universe.save("random.map", units, map, ps, buildings);
         mapPath = "./maps/random.map";
       } else mapPath = listModel.get(index);
-      MainFrame.setScene(new LoadController(mapPath, ps));
+
+      // TODO: put back the load screen
+      MainFrame.setScene(new GameController(mapPath, ps));
     };
 }
 

@@ -1036,7 +1036,7 @@ public class MapGenerator {
 							&& getAdjacentTerrainNb(map, i, j, lowland)
 							+ getAdjacentTerrainNb(map, i, j, beach) < 3)
     					map[i][j] = river; //continue;
-					else if(getAdjacentTerrainNb(map, i, j, sea) <= 2 && isSandwiched(map, i, j , naval))
+					else if(getAdjacentTerrainNb(map, i, j, sea) + getAdjacentTerrainNb(map, i, j, river) <= 2 && isSandwiched(map, i, j , naval))
 						map[i][j] = river;
 					else if(getAdjacentTerrainNb(map, i, j, sea) == 0)
 						map[i][j] = river;

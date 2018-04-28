@@ -49,9 +49,11 @@ public class App {
    * Procedural generation of map in maps/maptest.map
    */
   public static void save () {
-    int s = 50;
+    int s = 30;
 
     MapGenerator mGen = new MapGenerator(100, 4);
+    mGen.setStarterBarrack(true);
+
     mGen.setSeaBandSize(4);
     AbstractTerrain[][] map = new AbstractTerrain[s][s];
     TerrainEnum[][] eMap = mGen.randMap(s, s);
@@ -62,7 +64,7 @@ public class App {
 		  map[i][j] = eMap[i][j].terrain;
 
     AbstractUnit[][] units = new AbstractUnit[s][s];
-    AbstractBuilding[][] buildings = new AbstractBuilding[s][s];
+    AbstractBuilding[][] buildings = mGen.getLastBuildingLayout();
 
     Universe.save("maptest.map", units, map, ps, buildings);
   }

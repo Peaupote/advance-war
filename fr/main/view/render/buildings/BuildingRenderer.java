@@ -53,6 +53,15 @@ public class BuildingRenderer{
     }
 
     public static void render(Graphics g, Point coords, AbstractBuilding building) {
+    	if(building == null) return;
+		if(coords == null) {
+			System.err.println("No coords");
+			return;
+		}
+		if (getRender(building) == null) {
+			System.err.println("No renderer");
+			return;
+		}
         getRender(building).draw (g, coords.x, coords.y);
     }
 

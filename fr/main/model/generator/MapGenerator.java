@@ -289,19 +289,30 @@ public class MapGenerator {
         for(int i = 0; i < terrainPortion.length; i ++)
             terrainLeft[i] = referenceNb * terrainPortion[i] / 100;
 
-        int randX, randY, count = 0;
-        int[][] referencePoints = new int[referenceNb][3];
-
         /*
         	Places the HQs
          */
 
-		placeHeadQuarters(currentBuildingLayout);
+		currentBuildingLayout = placeHeadQuarters(currentBuildingLayout);
+		currentBuildingLayout = placeStarterBuildings(currentBuildingLayout);
+
+		setImmuableTerrain(currentBuildingLayout, currentMap);
 
         /*
         	Places the reference points for the Voronoi algorithm.
          */
-        for(int i = 0; i < terrainPortion.length; i ++) {
+		int[][] hqs = getCurrentHQCoordinates();
+
+		int randX, randY, count = hqs.length;
+		int[][] referencePoints = new int[referenceNb + hqs.length][3];
+
+		for(int i = 0; i < hqs.length; i ++) {
+			referencePoints[i][0] = hqs[i][0];
+			referencePoints[i][1] = hqs[i][1];
+			referencePoints[i][2] = 0;
+		}
+
+		for(int i = 0; i < terrainPortion.length; i ++) {
             System.out.println("Terrain : " + i + "\nNb : " + terrainLeft[i]);
             for(int j = 0; j < terrainLeft[i]; j ++) {
                 randX = rand.nextInt(x);
@@ -328,26 +339,42 @@ public class MapGenerator {
         	Cleaning the buldings table.
          */
 
-        for(AbstractBuilding[] line : currentBuildingLayout)
-        	for(AbstractBuilding b: line)
-        		if(b instanceof GenericBuilding) b = null;
+        clean(currentBuildingLayout);
 
         refineMap(currentMap, smoothness);
-        surroundBySea(currentMap, seaBandSize);
+        currentMap = surroundBySea(currentMap, seaBandSize);
         placeBeach(currentMap);
-        placeRivers(currentMap);
+        currentMap = placeRivers(currentMap);
         placeMountainsHills(currentMap);
         placeWood(currentMap);
         clean(currentMap);
 
-        lastBuildingLayout = currentBuildingLayout;
+
+		lastBuildingLayout = currentBuildingLayout;
         currentBuildingLayout = null;
         lastMap = currentMap;
         currentMap = null;
         lastPlayers = players;
 
+//        for(AbstractBuilding[] bs : lastBuildingLayout)
+//        	for(AbstractBuilding b : bs)
+//        		if(b instanceof Headquarter)
+//        			System.out.println("Headquarters located - THEY EXIST !!!");
+
+        // TODO : See what's happening with the HQs. Why do they disappear ??
+
         return lastMap;
     }
+
+    private void printCoorArray(int[][] array) {
+    	String str = "";
+    	for(int[] l : array) {
+    		str = "(";
+    		for(int i : l)
+    			str += i + ",";
+			System.out.println(str + ")");
+		}
+	}
 
     private AbstractBuilding[][] placeStarterBuildings(AbstractBuilding[][] layout) {
 		int[][] hqs = getCurrentHQCoordinates();
@@ -357,30 +384,54 @@ public class MapGenerator {
 			return layout;
 		}
 
+		int[][] sqrCoor;
 		AbstractBuilding[] sqr;
 		int randNb;
 
 		for(int[] coor : hqs) {
 			sqr = getSquare(layout, coor[0], coor[1]);
+			sqrCoor = getSquare(layout.length, layout[0].length, coor[0], coor[1]);
+			printCoorArray(sqrCoor);
 			if(starterBarrack) {
-				randNb = rand.nextInt() % sqr.length;
-				sqr[randNb] = new Barrack(
-						((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-						new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
+				System.out.println("Length of square coor :" + sqrCoor.length);
+				// TODO : implement validators (NUll validation).
+				for (int i = 0; i < sqrCoor.length; i++) {
+					randNb = rand.nextInt(sqrCoor.length);
+					if (i == sqr.length - 1 && sqrCoor[randNb] == null) {
+						System.out.println("invalid HQ placement for barracks.");
+						continue;
+					} else if (sqrCoor[randNb] == null) {
+						System.out.println("sqr[" + randNb + "] null.");
+						continue;
+					}
+//
+//					sqr[randNb] = new Barrack(
+//							((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+//							new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
+//					System.out.println("Barrack set");
+//
+					layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] =
+							new Barrack(
+									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
+									new Point(sqrCoor[randNb][0], sqrCoor[randNb][1]));
+					break;
+				}
 			}
-			if(starterAirport)
-				while(true) {
+			if (starterAirport)
+				while (true) {
 					randNb = rand.nextInt() % sqr.length;
-					if(!(sqr[randNb] instanceof GenericBuilding)) {
+					if (!(sqr[randNb] instanceof GenericBuilding)) {
 						sqr[randNb] = new Airport(
 								((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
 								new Point(layout[coor[0]][coor[1]].getX(), layout[coor[0]][coor[1]].getY()));
 						break;
 					}
 				}
-		}
+			}
 
-		// TODO : test placeStarterBuilings and maybe add more ?
+		/*
+			TODO : test placeStarterBuilings and maybe add more ? EDIT: problem - function not placing the buildings.
+		 */
 
 		return layout;
 	}
@@ -388,19 +439,24 @@ public class MapGenerator {
     private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
     	int x = layout.length,
 				y = layout[0].length;
-    	int randNb = (rand.nextInt() % (3));
+    	int randNb = rand.nextInt(3);
     	int realX = x - seaBandSize - 1 - randNb,
 				realY = y - seaBandSize - 1 - randNb;
 		boolean useWidth = x < y;
+
+		System.out.println("realX : " + realX + "\nrealY :" + realY);
 
 		AbstractBuilding[] rect = getRectangleFromSide(layout, seaBandSize + 1 + randNb);
 
 		LinkedList<Integer> hqs = new LinkedList<>();
 
+		int size = 0;
+
 		switch (players.length) {
 			case 2 :
 				hqs.add(useWidth ? rand.nextInt() % realY : rand.nextInt() % realX + realY - 1);
 				hqs.add((hqs.get(0) + realX + realY - 1) % rect.length);
+				size = 2;
 				break;
 			case 3 :
 				if(useWidth)
@@ -423,17 +479,25 @@ public class MapGenerator {
 						hqs.add(realX);
 						hqs.add(realX / 2 + realX + realY - 1);
 					}
+				size = 3;
 				break;
-			case 4 :
+			case 4 : {
 				LinkedList<Integer> l = new LinkedList<>();
-				l.add(0); l.add(realY); l.add(realY + realX - 1); l.add(realY * + realX - 2);
+				l.add(0);
+				l.add(realY);
+				l.add(realY + realX - 1);
+				l.add(realY * 2 + realX - 1);
 				int pop = 0;
-				for(int i = 0; i < 4; i --) {
-					pop = rand.nextInt() % i;
+				for (int i = 3; i >= 0; i--) {
+					if(i > 0) pop = abs(rand.nextInt(i));
+					else pop = 0;
 					hqs.add(l.get(pop));
-					hqs.remove(pop);
+					if (l.size() <= pop) hqs.remove(hqs.size() - 1);
+					else l.remove(pop);
 				}
+				size = 4;
 				break;
+			}
 			default:
 				System.out.println("Problem here");
 				System.exit(20);
@@ -441,11 +505,15 @@ public class MapGenerator {
 
 		currentHQCoordinates = new int[hqs.size()][2];
 
+		System.out.println("Headquarters nearly placed.");
+
 		for (int i = 0; i < hqs.size(); i ++) {
 			layout[rect[hqs.get(i)].getX()][rect[hqs.get(i)].getY()] = new Headquarter(players[i], new Point(rect[hqs.get(i)].getX(), rect[hqs.get(i)].getY()));
 			currentHQCoordinates[i][0] = rect[hqs.get(i)].getX();
 			currentHQCoordinates[i][1] = rect[hqs.get(i)].getY();
 		}
+
+		System.out.println("HQs placed !");
 		return layout;
 	}
 
@@ -497,6 +565,10 @@ public class MapGenerator {
     	return coordinatesToAbstractBuilding(getRectangle(layout.length, layout[0].length, x0, y0, distH, distW), layout);
 	}
 
+	private int[][] getSquare(int height, int width, int x0, int y0) {
+    	return getSquare(height, width, x0, y0, 1);
+	}
+
 	private int[][] getSquare(int height, int width, int x0, int y0, int dist) {
     	return getRectangle(height, width, x0, y0, dist, dist);
 	}
@@ -511,32 +583,56 @@ public class MapGenerator {
 	 * @return an array of coordinates from the side of a rectangle.
 	 */
 	private int[][] getRectangle(int height, int width, int x0, int y0, int distH, int distW) {
-    	// Caculate the size of the array
-		int size = 0;
-
 		int 	top = x0 - distH,
 				bottom = x0 + distH,
-				left = y0 - width,
-				right = y0 + width;
+				left = y0 - distW,
+				right = y0 + distW;
 
-		for(int i = top; i <= bottom; i++)
-			for(int j = left; j <= right; j++)
-				if((i == top || i == bottom || j == left || j == right) && isInRect(i, j , height, width))
-					size ++;
+		LinkedList<int[]> list = new LinkedList<>();
+		int[] item;
 
-		int[][] array = new int[size][2];
-		if(array.length == 0) return array;
+		for(int i = left; i <= right; i ++)
+			if(isInRect(top, i, height, width)) {
+				item = new int[2];
+				item[0] = top;
+				item[1] = i;
+				list.add(item);
+			}
 
+		for(int i = top + 1; i <= bottom; i ++)
+			if(isInRect(i, right, height, width)) {
+				item = new int[2];
+				item[0] = i;
+				item[1] = right;
+				list.add(item);
+			}
+
+		for(int i = right - 1; i >= left; i --)
+			if(isInRect(bottom, i, height, width)) {
+				item = new int[2];
+				item[0] = bottom;
+				item[1] = i;
+				list.add(item);
+			}
+
+		for(int i = bottom - 1; i > top; i --)
+			if(isInRect(i, left, height, width)) {
+				item = new int[2];
+				item[0] = i;
+				item[1] = left;
+				list.add(item);
+			}
+
+		int[][] out = new int[list.size()][2];
 		int count = 0;
-		for(int i = top; i <= bottom; i++)
-			for(int j = left; j <= right; j++)
-				if((i == top || i == bottom || j == left || j == right) && isInRect(i, j , height, width)) {
-					array[count][0] = i;
-					array[count][1] = j;
-					count ++;
-				}
 
-		return array;
+		for(int[] it : list) {
+			out[count][0] = list.get(count)[0];
+			out[count][1] = list.get(count)[1];
+			count ++;
+		}
+
+		return out;
 	}
 
 	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
@@ -624,12 +720,21 @@ public class MapGenerator {
 	}
 
 	private AbstractBuilding[] coordinatesToAbstractBuilding(int[][] coors, AbstractBuilding[][] layout) {
-		AbstractBuilding[] out = new AbstractBuilding[coors.length];
+    	int count = 0;
 
-    	for(int i = 0; i < coors.length; i ++)
-    		if(isInLayout(layout, coors[i][0], coors[i][1]))
-    			out[i] = layout[coors[i][0]][coors[i][1]];
-    		else throw new NullPointerException();
+		for(int i = 0; i < coors.length; i ++)
+			if(isInLayout(layout, coors[i][0], coors[i][1]))
+				count ++;
+
+		AbstractBuilding[] out = new AbstractBuilding[count];
+
+		count = 0;
+		for(int i = 0; i < coors.length; i ++)
+    		if(isInLayout(layout, coors[i][0], coors[i][1])) {
+				out[count] = layout[coors[i][0]][coors[i][1]];
+				count++;
+			}
+//    		else throw new NullPointerException();
 
     	return out;
 	}
@@ -817,7 +922,7 @@ public class MapGenerator {
         return map;
     }
 
-    @SuppressWarnings("unused")
+//    @SuppressWarnings("unused")
 	private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
@@ -858,6 +963,18 @@ public class MapGenerator {
     	return map;
 	}
 
+	private AbstractBuilding[][] clean(AbstractBuilding[][] layout) {
+    	for(int i = 0; i < layout.length; i++)
+    		for(int j = 0; j < layout[0].length; j ++) {
+    			if(layout[i][j] instanceof GenericBuilding) {
+    				if(layout[i][j] instanceof Headquarter) System.out.println("PROBLEM.");
+					layout[i][j] = null;
+				}
+			}
+
+		return layout;
+	}
+
     private TerrainEnum[][] clean (TerrainEnum[][] map) {
 		for (int i = 0; i < map.length; i++)
 			for (int j = 0; j < map[0].length; j++) {
@@ -866,12 +983,18 @@ public class MapGenerator {
 						TerrainEnum[] goodTerrains = {wood, lowland, mLowland, mountain, hill};
 						if (getAdjacentTerrainNb(map, i, j, sea) >= 3 && getAdjacentTerrainNb(map, i, j, goodTerrains) == 0)
 							map[i][j] = sea;
-						else if (getAdjacentTerrainNb(map, i, j, beach) <= 3)
+						else if (getAdjacentTerrainNb(map, i, j, beach) < 3)
 							map[i][j] = lowland;
-
+						break;
+					case sea:
+						if(getAdjacentTerrainNb(map, i, j, sea) == 1)
+							map[i][j] = river;
+						break;
 						// TODO : put every cleaning procedure here.
 				}
 			}
+
+		map = placeRivers(map);
 
 		return map;
 	}
@@ -904,10 +1027,7 @@ public class MapGenerator {
     }
 
     private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
-    	/** To use BEFORE setting any land-type Terrain other than Lowland and Beach. ***/
-//    	int nSea, nLowland, nBridge, nBeach, nRiver;
-    	@SuppressWarnings("unused")
-		TerrainEnum[] land = {lowland, bridge}, naval = {sea, river};
+		TerrainEnum[] land = {lowland, bridge, mountain, hill, wood}, naval = {sea, river};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
@@ -916,11 +1036,10 @@ public class MapGenerator {
 							&& getAdjacentTerrainNb(map, i, j, lowland)
 							+ getAdjacentTerrainNb(map, i, j, beach) < 3)
     					map[i][j] = river; //continue;
-//    				nSea = getAdjacentTerrainNb(map, i , j, sea);
-//    				nLowland = getAdjacentTerrainNb(map, i, j, lowland);
-//					nBridge = getAdjacentTerrainNb(map, i, j, bridge);
-//					nRiver = getAdjacentTerrainNb(map, i, j , river);
-//					nBeach = getAdjacentTerrainNb(map, i, j, beach);
+					else if(getAdjacentTerrainNb(map, i, j, sea) <= 2 && isSandwiched(map, i, j , naval))
+						map[i][j] = river;
+					else if(getAdjacentTerrainNb(map, i, j, sea) == 0)
+						map[i][j] = river;
 				}
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++)
@@ -1072,7 +1191,7 @@ public class MapGenerator {
     private TerrainEnum[][] surroundBySea(TerrainEnum[][] map, int size) {
         for(int i = 0; i < map.length; i ++)
             for (int j = 0; j < map[0].length; j++)
-                if(i <= size || map.length - i <= size || j <= size || map[0].length - j <= size)
+                if(i <= size || map.length - i - 1 <= size || j <= size || map[0].length - j - 1 <= size)
                     map[i][j] = sea;
         return map;
     }
@@ -1108,5 +1227,9 @@ public class MapGenerator {
 
 	private static boolean isInLayout(AbstractBuilding[][] layout, int x, int y) {
     	return layout != null && isInRect(x, y, layout.length, layout[0].length);
+	}
+
+	public static int abs(int i) {
+    	return i >= 0 ? i : -i;
 	}
 }

@@ -71,7 +71,7 @@ public class MapRenderer extends Universe {
 
             TerrainRenderer.render(g, coords[i][j], new Point(j, i));
             if (map.buildings[i][j] != null)
-              BuildingRenderer.render(g, coords[i][j], map.buildings[i][j]);
+              	BuildingRenderer.render(g, coords[i][j], map.buildings[i][j]);
 
         });
 

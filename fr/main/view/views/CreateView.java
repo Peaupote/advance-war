@@ -72,7 +72,7 @@ public class CreateView extends View {
             btns[4] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/basic.png")  .getImage(0,0,140,160)), 800, 20);
             btns[5] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/ranged.png") .getImage(0,0,140,160)), 800, 200);
             
-            startGame = new MenuButton("START GAME","./assets/button/startGame.png", 350, 450);
+            startGame = new MenuButton("CHOOSE MAP","./assets/button/startGame.png", 350, 450);
 
             for (int i = 0; i < btns.length; i++) {
                 final int target = i;

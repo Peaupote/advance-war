@@ -438,10 +438,10 @@ public class MapGenerator {
 
     private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
     	int x = layout.length,
-				y = layout[0].length;
+			    y = layout[0].length;
     	int randNb = rand.nextInt(3);
     	int realX = x - seaBandSize - 1 - randNb,
-				realY = y - seaBandSize - 1 - randNb;
+			    realY = y - seaBandSize - 1 - randNb;
 		boolean useWidth = x < y;
 
 		System.out.println("realX : " + realX + "\nrealY :" + realY);

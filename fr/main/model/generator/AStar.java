@@ -22,20 +22,6 @@ public class AStar {
 	public AStar(int[][] weights, boolean[][] blocks){
 		this.weights = weights;
 		this.blocks = blocks;
-
-		Node.setWeights(weights);
-
-		gScore = new HashMap<>();
-		gScore.put(start, 0);
-		fScore = new HashMap<>();
-
-		frontier = new PriorityQueue<>();
-		frontier.add(start);
-
-		visited = new HashSet<>();
-		visited.add(start);
-
-		cameFrom = new HashMap<>();
 	}
 
 	private int heuristic(Node a, Node b) {
@@ -51,6 +37,18 @@ public class AStar {
 
 		start 	= 	nodeMap[x0][y0];
 		goal 	= 	nodeMap[x1][y1];
+
+		gScore = new HashMap<>();
+		gScore.put(start, 0);
+		fScore = new HashMap<>();
+
+		frontier = new PriorityQueue<>();
+		frontier.add(start);
+
+		visited = new HashSet<>();
+		visited.add(start);
+
+		cameFrom = new HashMap<>();
 
 		while (frontier.peek() != null) {
 			Node current = frontier.peek();
@@ -79,12 +77,36 @@ public class AStar {
 			}
 		}
 
+		LinkedList<Node> path =  reconstructPath(start, goal, cameFrom);
+		return coorsFromNodes(path);
+	}
 
+	private LinkedList<Node> reconstructPath (Node start, Node goal, HashMap<Node, Node> cameFrom) {
+			LinkedList<Node> path = new LinkedList<>();
+			Node current = goal;
+			while (current != start) {
+				path.addFirst(current);
+				current = cameFrom.get(current);
+			}
+			path.add(start); // optional
 
+			return path;
+	}
 
+	public int[][] coorsFromNodes(LinkedList<Node> nodes) {
+		int[][] coors = new int[nodes.size()][2];
+		int[] coor;
+		int i = 0;
 
-		// TODO : finish this path finding function using A* algorithm.
-		return null;
+		for(Node n : nodes) {
+			coor = new int[2];
+			coor[0] = n.x;
+			coor[1] = n.y;
+			coors[i] = coor;
+			i ++;
+		}
+
+		return coors;
 	}
 
 	public void setWeights(int[][] weights) {

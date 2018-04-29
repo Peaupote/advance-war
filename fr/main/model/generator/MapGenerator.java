@@ -971,6 +971,7 @@ public class MapGenerator {
 
         for(int i = 0; i < points.length; i ++) {
             dist = distance(x, y, points[i][0], points[i][1]);
+            if(dist == 0) continue;
             if(dist < closest) {
                 closest = dist;
                 closestPoint = i;
@@ -1125,35 +1126,6 @@ public class MapGenerator {
 
         return map;
     }
-
-    private int[][] placeRoadNodes(TerrainEnum[][] map, AbstractBuilding[][] layout) {
-    	AbstractBuilding b;
-    	int randNb;
-    	int[][] cross;
-		LinkedList<int[]> list = new LinkedList<>();
-
-    	for(int i = 0; i < map.length; i ++)
-    		for(int j = 0; j < map[0].length; j++) {
-    			b = layout[i][j];
-    			if(isNonGenericBuilding(b)) {
-    				if(b instanceof Headquarter || rand.nextInt(10) >= 2) {
-						cross = getCross(i, j);
-						for (int k = 0; k < 30; k ++) {
-							randNb = rand.nextInt(cross.length);
-							if(isNonGenericBuilding(layout[cross[randNb][0]][cross[randNb][1]])
-									|| map[cross[randNb][0]][cross[randNb][1]] == sea
-									|| map[cross[randNb][0]][cross[randNb][1]] == reef)
-								continue;
-							map[cross[k][0]][cross[k][1]] = road;
-							list.add(cross[randNb]);
-							break;
-						}
-					}
-				}
-			}
-
-		return coorArrayFromLinkedList(list);
-	}
 
 	public static boolean isNonGenericBuilding(AbstractBuilding b) {
     	return b != null && !(b instanceof GenericBuilding);
@@ -1397,17 +1369,59 @@ public class MapGenerator {
         return map;
     }
 
-    @SuppressWarnings("unused")
-	private TerrainEnum[][] placeRoads(TerrainEnum[][] map, int nb) {
-    	// TODO : placeRoads algorithm.
-        while(nb > 0)
-            for(int i = 0; i < map.length; i ++)
-                for (int j = 0; j < map[0].length; j++) {
+	private int[][] placeRoadNodes(TerrainEnum[][] map, AbstractBuilding[][] layout) {
+		AbstractBuilding b;
+		int randNb;
+		int[][] cross;
+		LinkedList<int[]> list = new LinkedList<>();
 
-                }
+		for(int i = 0; i < map.length; i ++)
+			for(int j = 0; j < map[0].length; j++) {
+				b = layout[i][j];
+				if(isNonGenericBuilding(b)) {
+					if(b instanceof Headquarter || rand.nextInt(10) >= 2) {
+						cross = getCross(i, j);
+						for (int k = 0; k < 30; k ++) {
+							randNb = rand.nextInt(cross.length);
+							if(isNonGenericBuilding(layout[cross[randNb][0]][cross[randNb][1]])
+									|| map[cross[randNb][0]][cross[randNb][1]] == sea
+									|| map[cross[randNb][0]][cross[randNb][1]] == reef)
+								continue;
+							map[cross[k][0]][cross[k][1]] = road;
+							list.add(cross[randNb]);
+							break;
+						}
+					}
+				}
+			}
+
+		return coorArrayFromLinkedList(list);
+	}
+
+	private TerrainEnum[][] placeRoads(TerrainEnum[][] map, AbstractBuilding[][] layout, int[][] roadNodes) {
+    	// TODO : placeRoads algorithm
+		int[][] weights = getWeights(map);
+		boolean[][] blocks = getBlocks(layout);
+
+		AStar aStar = new AStar(weights, blocks);
+
+		int[][] road;
+
+		for(int[] coor : roadNodes) {
+			int p = closestPoint(coor[0], coor[1], roadNodes);
+			placeRoads(map, aStar.shortestRoute(coor[0], coor[1], roadNodes[p][0], roadNodes[p][1]));
+		}
 
         return map;
     }
+
+    private TerrainEnum[][] placeRoads(TerrainEnum[][] map, int[][] roadPath) {
+    	for(int[] coor : roadPath) {
+    		map[coor[0]][coor[1]] = road;
+		}
+
+		return map;
+	}
 
     public static boolean isInRect(int x, int y, int x0, int y0, int height, int width) {
     	return x >= x0 && y >= y0 && x < x0 + height && y < y0 + width;

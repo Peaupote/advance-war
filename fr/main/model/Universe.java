@@ -40,7 +40,7 @@ public class Universe {
     /**
      * The path to the directory where maps are saved.
      */
-    public static final String mapPath = "maps/";
+    public static final String mapPath = "./maps/";
 
     /**
      * boolean set to true if and only if the game can be saved.
@@ -96,6 +96,12 @@ public class Universe {
             Board board = new Board(units, ps, this.board, buildings, weather, current, day);
 
             for (int i = 0; i < this.players.length; i++){
+                if (current == this.players[i]){
+                    if (i >= ps.length){
+                        board.current = null;
+                        day ++;
+                    }else board.current = ps[i];
+                }
                 Headquarter hq = null;
                 for (OwnableBuilding bu : this.players[i].buildingList())
                     if (bu instanceof Headquarter){
@@ -106,10 +112,11 @@ public class Universe {
                 Player tmp     = i >= 0 && i < ps.length ? ps[i] : null;
                 if (hq == null)
                     System.out.println("No HQ for " + tmp.name + "from " + players[i].name);
-                else if (tmp == null)
-                    hq.setOwner(tmp);
-                else
+                else{
                     hq.changeOwner(tmp);
+                    if (tmp == null)
+                        board.buildings[hq.getY()][hq.getX()] = new City(null, new Point (hq.getX(), hq.getY()));
+                } 
             }
 
             return board;
@@ -148,10 +155,11 @@ public class Universe {
         if (map.players != null){
             players  = new PlayerIt(map.players).cycle();
             if (map.current == null) next();
-            else
-                while(map.current != players.next()){}
+            else{
+                players.setCurrent(map.current);
+                updateVision();
+            } 
         }else players = null;
-
     }
 
     public static Board restaure(String mapName){

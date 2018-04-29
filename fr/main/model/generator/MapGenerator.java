@@ -1171,9 +1171,13 @@ public class MapGenerator {
 		return map;
 	}
 
+	private int[][] shortestRoute(TerrainEnum[][] map, int x0, int y0, int x1, int y1) {
+		// TODO : finish this pathfinding function usig A* algorithm.
+    	return null;
+	}
+
     private void validLowland2 (TerrainEnum[][] map, int[] adj, int x, int y) {
         if(adj[0] == adj[2]) return;
-        @SuppressWarnings("unused")
 		TerrainEnum[][] out = map.clone();
         if(adj[0] + adj[1] == 2 && map[x + 1][y + 1] == sea
                 || adj[1] + adj[2] == 2 && map[x - 1][y + 1] == sea

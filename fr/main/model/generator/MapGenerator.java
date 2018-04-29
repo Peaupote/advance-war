@@ -896,6 +896,10 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(list);
 	}
 
+	private int[][] getCross(int x, int y) {
+		return getCross(currentMap.length, currentMap[0].length, x, y);
+	}
+
 	public static int[][] coorArrayFromLinkedList(LinkedList<int[]> list) {
 		int[][] out = new int[list.size()][2];
 
@@ -1089,7 +1093,6 @@ public class MapGenerator {
         return map;
     }
 
-//    @SuppressWarnings("unused")
 	private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
         for(int i = 0; i < map.length; i ++) {
             for(int j = 0; j < map[0].length; j ++) {
@@ -1122,6 +1125,39 @@ public class MapGenerator {
 
         return map;
     }
+
+    private int[][] placeRoadNodes(TerrainEnum[][] map, AbstractBuilding[][] layout) {
+    	AbstractBuilding b;
+    	int randNb;
+    	int[][] cross;
+		LinkedList<int[]> list = new LinkedList<>();
+
+    	for(int i = 0; i < map.length; i ++)
+    		for(int j = 0; j < map[0].length; j++) {
+    			b = layout[i][j];
+    			if(isNonGenericBuilding(b)) {
+    				if(b instanceof Headquarter || rand.nextInt(10) >= 2) {
+						cross = getCross(i, j);
+						for (int k = 0; k < 30; k ++) {
+							randNb = rand.nextInt(cross.length);
+							if(isNonGenericBuilding(layout[cross[randNb][0]][cross[randNb][1]])
+									|| map[cross[randNb][0]][cross[randNb][1]] == sea
+									|| map[cross[randNb][0]][cross[randNb][1]] == reef)
+								continue;
+							map[cross[k][0]][cross[k][1]] = road;
+							list.add(cross[randNb]);
+							break;
+						}
+					}
+				}
+			}
+
+		return coorArrayFromLinkedList(list);
+	}
+
+	public static boolean isNonGenericBuilding(AbstractBuilding b) {
+    	return b != null && !(b instanceof GenericBuilding);
+	}
 
     private TerrainEnum[][] clean(TerrainEnum[][] map, int it) {
     	resetImmuableTerrain(map);

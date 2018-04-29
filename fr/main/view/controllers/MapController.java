@@ -81,8 +81,8 @@ public class MapController extends Controller {
 
             add(ok);
 
-            seed.addChangeListener(e -> gen.setSeed(seed.getValue()));
-            width.addChangeListener(e -> gen.setMapWidth(width.getValue()));
+            seed.addChangeListener(  e -> gen.setSeed(seed.getValue()));
+            width.addChangeListener( e -> gen.setMapWidth(width.getValue()));
             height.addChangeListener(e -> gen.setMapHeight(height.getValue()));
 
             land.addChangeListener(e -> {
@@ -117,12 +117,12 @@ public class MapController extends Controller {
         listModel = new DefaultListModel<>();
 
         try {
-            try (Stream<Path> paths = Files.walk(Paths.get("./maps"))) {
+            try (Stream<Path> paths = Files.walk(Paths.get(Universe.mapPath))) {
                 paths.filter(Files::isRegularFile)
-                .forEach(file -> listModel.addElement(file.toString()));
+                .forEach(file -> listModel.addElement(file.toString().substring(Universe.mapPath.length())));
             }
         } catch (IOException e) {
-            System.err.println("Dont find ./maps folder");
+            System.err.println("Can't find " + Universe.mapPath + " folder");
         }
 
         listModel.addElement("Custom Map");
@@ -141,7 +141,7 @@ public class MapController extends Controller {
 
                 mGen.randMap(height, width);
                 TerrainEnum[][] eMap           = mGen.getLastMap();
-                Player[] players              = mGen.getLastPlayers();
+                Player[] players               = mGen.getLastPlayers();
                 AbstractBuilding[][] buildings = mGen.getLastBuildingLayout();
                 AbstractTerrain[][] map        = new AbstractTerrain[height][width];
 
@@ -149,8 +149,8 @@ public class MapController extends Controller {
                         for (int j = 0; j < eMap[0].length; j++)
                                 map[i][j] = eMap[i][j].terrain;
 
-                Universe.save("custom.map", new AbstractUnit[height][width], map, players, buildings);
                 mapPath = "custom.map";
+                Universe.save(mapPath, new AbstractUnit[height][width], map, players, buildings);
             } else mapPath = listModel.get(index);
 
             MainFrame.setScene(new GameController(mapPath, ps));

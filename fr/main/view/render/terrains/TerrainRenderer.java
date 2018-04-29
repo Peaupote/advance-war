@@ -143,6 +143,7 @@ public class TerrainRenderer {
 			renderers.put(location, new SeaRenderer((TerrainLocation.GenericTerrainLocation) location));
 		else {
 			System.err.println("ERROR in TerrainRenderer");
+			return null;
 //			System.exit(10);
 		}
 
@@ -150,9 +151,9 @@ public class TerrainRenderer {
 	}
 
 	public static void render(Graphics g, Point coords, Point t) {
-		@SuppressWarnings("unused")
-		AbstractTerrain terrain = Universe.get().getTerrain(t.x, t.y);
-		getRender(tLocations[t.y][t.x]).draw(g, coords.x, coords.y);
+		Render r = getRender(tLocations[t.y][t.x]);
+		if (r != null)
+				r.draw(g, coords.x, coords.y);
 	}
 
 	private static BufferedImage joinBufferedImage(BufferedImage base, BufferedImage sticker, int x, int y) {

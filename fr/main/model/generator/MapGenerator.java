@@ -5,11 +5,9 @@ import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
 
-
 import java.awt.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import static fr.main.model.TerrainEnum.*;
 
@@ -204,8 +202,8 @@ public class MapGenerator {
 
 	public void setSeaBandSize(int seaBandSize) {
 		if(seaBandSize < 0) seaBandSize = 0;
-		else if (seaBandSize > mapHeight / 2) seaBandSize = mapHeight / 2 + 1;
-		else if (seaBandSize > mapWidth / 2) seaBandSize = mapWidth / 2 + 1;
+//		else if (seaBandSize > mapHeight / 2) seaBandSize = mapHeight / 2 + 1;
+//		else if (seaBandSize > mapWidth / 2) seaBandSize = mapWidth / 2 + 1;
 		this.seaBandSize = seaBandSize;
 	}
 
@@ -866,7 +864,7 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(found);
 	}
 
-	int[][] getCross(int height, int width, int x, int y) {
+	public static int[][] getCross(int height, int width, int x, int y) {
 		LinkedList<int[]> list = new LinkedList<>();
 		int[] item;
 
@@ -898,7 +896,7 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(list);
 	}
 
-	private int[][] coorArrayFromLinkedList(LinkedList<int[]> list) {
+	public static int[][] coorArrayFromLinkedList(LinkedList<int[]> list) {
 		int[][] out = new int[list.size()][2];
 
 		for(int i = 0; i < list.size(); i ++) {
@@ -1171,9 +1169,8 @@ public class MapGenerator {
 		return map;
 	}
 
-	private int[][] shortestRoute(TerrainEnum[][] map, int x0, int y0, int x1, int y1) {
-		// TODO : finish this pathfinding function usig A* algorithm.
-    	return null;
+	private boolean isSame(int[] a, int[] b) {
+    	return a[0] == b[0] && a[1] == b[1];
 	}
 
     private void validLowland2 (TerrainEnum[][] map, int[] adj, int x, int y) {
@@ -1203,7 +1200,7 @@ public class MapGenerator {
     }
 
     private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
-		TerrainEnum[] land = {lowland, bridge, mountain, hill, wood}, naval = {sea, river};
+		TerrainEnum[] land = {lowland, bridge, mountain, hill, wood}, naval = {none, sea, river};
 
     	for(int i = 0; i < map.length; i ++)
     		for(int j = 0; j < map[0].length; j ++)
@@ -1399,5 +1396,31 @@ public class MapGenerator {
 
 	public static int abs(int i) {
     	return i >= 0 ? i : -i;
+	}
+
+	private int[][] getWeights(TerrainEnum[][] map) {
+		int[][] weights = new int[map.length][map[0].length];
+
+		for(int i = 0; i < map.length; i ++)
+			for(int j = 0; j < map[0].length; j ++) {
+				if(map[i][j] == sea || map[i][j] == reef)
+					weights[i][j] = 8;
+				else if(map[i][j] == mountain)
+					weights[i][j] = 6;
+				else if(map[i][j] == road || map[i][j] == bridge)
+					weights[i][j] = 1;
+				else
+					weights[i][j] = 4;
+			}
+		return weights;
+	}
+
+	private boolean[][] getBlocks(AbstractBuilding[][] layout) {
+    	boolean[][] blocks = new boolean[layout.length][layout[0].length];
+    	for(int i = 0; i < layout.length; i ++)
+			for(int j = 0; j < layout[0].length; j ++)
+    			if(layout[i][j] != null && !(layout[i][j] instanceof GenericBuilding))
+					blocks[i][j] = true;
+    	return blocks;
 	}
 }

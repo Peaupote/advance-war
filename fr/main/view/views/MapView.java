@@ -9,6 +9,7 @@ import fr.main.view.components.MenuButton;
 import fr.main.view.controllers.MapController;
 import fr.main.view.MainFrame;
 
+@SuppressWarnings("serial")
 public class MapView extends View {
 
   // TODO: change for tree
@@ -28,7 +29,7 @@ public class MapView extends View {
     JPanel listPanel = new JPanel ();
     listPanel.setLayout(new BorderLayout());
     listPanel.add(new JLabel("Choose a map"), BorderLayout.NORTH);
-    list = new JList(controller.listModel);
+    list = new JList<String>(controller.listModel);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setLayoutOrientation(JList.VERTICAL);
     list.addListSelectionListener(controller.list);

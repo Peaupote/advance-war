@@ -3,6 +3,7 @@ package fr.main.model.players;
 import fr.main.model.Universe;
 import fr.main.model.buildings.*;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.land.Infantry;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class EconomicAI implements ArtificialIntelligence {
 	 * Add EconomicAI UID
 	 */
 	private static final long serialVersionUID = 8076973207707324406L;
-	public final AIPlayer player;
+	private AIPlayer player;
     private final HashSet<FactoryBuilding> factories = new HashSet<FactoryBuilding>();
 
     public EconomicAI (AIPlayer player){
@@ -26,11 +27,17 @@ public class EconomicAI implements ArtificialIntelligence {
     }
 
     public void add(OwnableBuilding b){
-        if (b instanceof Airport || b instanceof Dock || b instanceof Barrack) factories.add((FactoryBuilding)b);
+        if (b instanceof Airport || b instanceof Dock || b instanceof Barrack)
+            factories.add((FactoryBuilding)b);
     }
 
 	public void remove(OwnableBuilding b){
     	factories.remove(b);
+    }
+
+    public void loose(){
+        factories.clear();
+        player    = null;
     }
 
     /**
@@ -41,16 +48,28 @@ public class EconomicAI implements ArtificialIntelligence {
         Random rand = new Random();
 		Universe u = Universe.get();
 
+        // we get a list of factories that can create units
         ArrayList<FactoryBuilding> factoriesCopy = new ArrayList<FactoryBuilding>();
         for (FactoryBuilding b : factories)
         	if (u.getUnit(b.getX(), b.getY()) == null)
         		factoriesCopy.add(b);
 
-        for (int i = 0; i < 50 && factoriesCopy.size() > 0; i++){
+        // at the beginning of the game, the best to do is to create infantries to capture buildings
+        // but the ai isn't smart enough to guess what type of unit is the best to create (units are created randomly)
+        // and without checking anything
+        // so we cheat a little and create infantries at first
+        if (u.getDay() <= 5)
+            for (FactoryBuilding f : factories)
+                f.create(Infantry.class);
+
+        // we randomly select one and create a random unit in it
+        // 50 times
+        for (int i = 0; i < 50 && ! factoriesCopy.isEmpty(); i++){
             FactoryBuilding f = factoriesCopy.get(rand.nextInt(factoriesCopy.size()));
             if (f.create(get(f.getUnitList(), rand.nextInt(f.getUnitList().size()))))
                 factoriesCopy.remove(f);
         }
+
     }
 
     /**

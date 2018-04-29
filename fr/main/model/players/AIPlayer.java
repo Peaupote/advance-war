@@ -3,6 +3,9 @@ package fr.main.model.players;
 import fr.main.model.Universe;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.units.AbstractUnit;
+import fr.main.model.buildings.AbstractBuilding;
+
 import fr.main.view.interfaces.DayPanel;
 
 /**
@@ -30,7 +33,21 @@ public class AIPlayer extends Player implements ArtificialIntelligence {
         this.unitControlAI = new UnitControlAI(this);
     }
 
+    public void changeBuilding(AbstractBuilding old, AbstractBuilding gold){
+        unitControlAI.changeBuilding(old, gold);
+    }
+
+    @Override
+    public void loose(){
+        super.loose();
+
+        unitControlAI.loose();
+        economicAI.loose();
+    }
+
     public synchronized void turnBegins(){
+        if (Universe.get().getDay() == 1)
+            unitControlAI.findObjectives();
         super.turnBegins();
         new Thread(this::run).start();
     }

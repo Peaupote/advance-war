@@ -81,7 +81,6 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
      * what happens when the player looses.
      */
     public void loose(){
-        Universe u = Universe.get();
         for (AbstractUnit a : unitList())
             a.dies();
         units.clear();
@@ -89,7 +88,9 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
             b.setOwner(null);
         buildings.clear();
         hasLost = true;
-        u.playerLoose(this);
+
+        if (Universe.get() != null)
+            Universe.get().playerLoose(this);
     }
 
     /**

@@ -38,4 +38,16 @@ public class Headquarter extends OwnableBuilding implements RepairBuilding{
         }
         Universe.get().setBuilding(getX(), getY(), new City(p, new Point (getX(),getY())));
     }
+
+    public void changeOwner(Player p){
+        if (owner != null){
+            owner.removeBuilding(this);
+            for (OwnableBuilding b : owner.buildingList())
+                b.setOwner(p);
+            owner.loose();
+        }
+        owner = p;
+        if (p != null)
+            p.addBuilding(this);
+    }
 }

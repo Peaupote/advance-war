@@ -411,6 +411,7 @@ public class GameController extends Controller {
 
     // TODO: make clean stuff to avoid copy-past
     public GameController (String mapName){
+    	// TODO: add player here
         world      = new UniverseRenderer(mapName, this);
         size       = world.getDimension();
         camera     = new Position.Camera(size);
@@ -501,7 +502,7 @@ public class GameController extends Controller {
                 if (e.getValue() == this)
                     list.add(e.getKey());
             return list;
-        } 
+        }
 
         public void add(int i){
             commands.putIfAbsent(i, this);
@@ -752,7 +753,7 @@ public class GameController extends Controller {
                     else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
                 }
                 else if (key == Controls.SHORTEN_PATH && mode == Mode.UNIT) path.shorten();
-                else if (key == Controls.RANGE && mode == Mode.MOVE && 
+                else if (key == Controls.RANGE && mode == Mode.MOVE &&
                            world.isVisible(cursor.getX(), cursor.getY()) &&
                            world.getUnit(cursor.getX(), cursor.getY()) != null) {
                     validRange();
@@ -935,7 +936,7 @@ public class GameController extends Controller {
     }
 
     /**
-     * True if and only if possible damages are displayed (in attack mode, when hovering an opponent unit) 
+     * True if and only if possible damages are displayed (in attack mode, when hovering an opponent unit)
      */
     private boolean displayDamages;
     /**

@@ -4,12 +4,9 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.Terrain;
-import sun.awt.image.ImageWatched;
-import sun.java2d.loops.GeneralRenderer;
 
 
 import java.awt.*;
-import java.awt.image.BandCombineOp;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
@@ -347,10 +344,6 @@ public class MapGenerator {
             }
         }
 
-
-        currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
-		// TODO place Docks before making the map. or not.
-
         /*
         	Cleaning the buldings arrays.
          */
@@ -359,11 +352,17 @@ public class MapGenerator {
 
         refineMap(currentMap, smoothness);
         currentMap = surroundBySea(currentMap, seaBandSize);
+
+		currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
+		// TODO place Docks before making the map. or not.
+
         placeBeach(currentMap);
         currentMap = placeRivers(currentMap);
         placeMountainsHills(currentMap);
         placeWood(currentMap);
         clean(currentMap);
+
+
 
 
 		lastBuildingLayout = currentBuildingLayout;
@@ -465,7 +464,7 @@ public class MapGenerator {
 					System.out.println("sqr[" + randNb + "] null.");
 					continue;
 				}
-				if (!(layout[nearest[randNb][0]][nearest[randNb][1]] instanceof GenericBuilding))
+				if (!(layout[nearest[randNb][0]][nearest[randNb][1]] == null))
 					continue;
 				if(starterDock)
 					layout[nearest[randNb][0]][nearest[randNb][1]] =
@@ -497,14 +496,16 @@ public class MapGenerator {
     	int x = layout.length,
 				y = layout[0].length;
     	int randNb = rand.nextInt(3);
-    	int realX = x - 2 * seaBandSize - 1 - randNb,
-				realY = y - 2 * seaBandSize - 1 - randNb;
+    	int realX = x - 2 * seaBandSize - 4 - 2 * randNb,
+				realY = y - 2 * seaBandSize - 4 - 2 * randNb;
 		boolean useWidth = x < y;
 
 		System.out.println("realX : " + realX + "\nrealY :" + realY);
 
-		AbstractBuilding[] rect = getRectangleFromSide(layout, seaBandSize + 1 + randNb);
+//		AbstractBuilding[] rect = getRectangleFromSide(layout, seaBandSize + 1 + randNb);
 
+		AbstractBuilding[] rect = getRectangle(layout, x/2, y/2,
+				x/2 - seaBandSize - randNb - 2, y/2 - seaBandSize - randNb - 2);
 		LinkedList<Integer> hqs = new LinkedList<>();
 
 		int size = 0;
@@ -542,9 +543,8 @@ public class MapGenerator {
 				LinkedList<Integer> l = new LinkedList<>();
 				l.add(0);
 				l.add(realY);
-				l.add(realY + realX - 2 * seaBandSize);
-				l.add(realY + realX + realY - 3 * seaBandSize);
-//				l.add(realY * 2 + realX - 1);
+				l.add(realY + realX);
+				l.add(2 * realY + realX);
 				int pop = 0;
 				for (int i = 3; i >= 0; i--) {
 					if(i > 0) pop = abs(rand.nextInt(i));
@@ -606,7 +606,7 @@ public class MapGenerator {
     		rectangle[counter] = layout[lw - distanceFromSide - 1][j];
     		counter ++;
 		}
-
+		System.out.println("Size of rectFormSide :" + rectangle.length);
 		return rectangle;
 	}
 
@@ -904,7 +904,6 @@ public class MapGenerator {
 		for(int i = 0; i < list.size(); i ++) {
 			out[i][0] = list.get(i)[0];
 			out[i][1] = list.get(i)[1];
-			System.out.println(i);
 		}
 
 		return out;

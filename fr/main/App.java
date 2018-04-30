@@ -54,6 +54,11 @@ public class App {
     mGen.setStarterBarrack(true);
     mGen.setStarterAirport(true);
     mGen.setStarterDock(true);
+    mGen.setCityRingNb(2);
+    mGen.setBarracksNb(3);
+    mGen.setDocksNb(2);
+    mGen.setAirportNb(1);
+    mGen.setPlaceSilo(true);
 
     mGen.setSeaBandSize(4);
     AbstractTerrain[][] map = new AbstractTerrain[s][s];

@@ -34,5 +34,6 @@ public interface AbstractBuilding extends java.io.Serializable {
         return new Point(getX(), getY());
     }
 
+    void setLocation(Point p);
 }
 

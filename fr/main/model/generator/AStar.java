@@ -32,6 +32,14 @@ public class AStar {
 	}
 
 
+	/**
+	 * @param x0
+	 * @param y0
+	 * @param x1
+	 * @param y1
+	 * @return an array of coordinates to the tiles of the shortest route from (x0, y0)
+	 * to (x1, y1) using the aStar algorithm.
+	 */
 	public int[][] shortestRoute(int x0, int y0, int x1, int y1) {
 		this.nodeMap = new Node[weights.length][weights[0].length];
 
@@ -57,8 +65,6 @@ public class AStar {
 			Node current = frontier.peek();
 			frontier.remove(current);
 
-//			System.out.println("Node : (" + current.x + ":" + current.y + ")");
-
 			if(current.is(goal))
 				break;
 
@@ -66,16 +72,16 @@ public class AStar {
 				int newCost = gScore.get(current) + next.getWeight();
 				if(!gScore.containsKey(next)) {
 					gScore.put(next, newCost);
-//					int priority = heuristic(next, goal) + newCost;
-					next.setWeight(newCost);
+					int priority = heuristic(next, goal) + newCost;
+					next.setWeight(priority);
 					frontier.add(next);
 					cameFrom.put(next, current);
 
 				}
 				else if(gScore.get(next) > newCost){
 					gScore.replace(next, newCost);
-//					int priority = heuristic(next, goal) + newCost;
-					next.setWeight(newCost);
+					int priority = heuristic(next, goal) + newCost;
+					next.setWeight(priority);
 					frontier.add(next);
 					cameFrom.put(next, current);
 				}
@@ -86,6 +92,12 @@ public class AStar {
 		return coorsFromNodes(path);
 	}
 
+	/**
+	 * @param start
+	 * @param goal
+	 * @param cameFrom
+	 * @return extracts the path from the map of neighbours.
+	 */
 	private LinkedList<Node> reconstructPath (Node start, Node goal, HashMap<Node, Node> cameFrom) {
 			LinkedList<Node> path = new LinkedList<>();
 			Node current = goal;
@@ -98,6 +110,10 @@ public class AStar {
 			return path;
 	}
 
+	/**
+	 * @param nodes
+	 * @return an array of coordinates form a LinkedList of Nodes.
+	 */
 	public int[][] coorsFromNodes(LinkedList<Node> nodes) {
 		int[][] coors = new int[nodes.size()][2];
 		int[] coor;
@@ -131,25 +147,4 @@ public class AStar {
 	public boolean[][] getBlocks() {
 		return blocks;
 	}
-
-	//	public class Elem implements Comparator<Elem> {
-//		public final Node n;
-//		private int w;
-//
-//		public Elem(Node elem, int weight) {
-//			this.n = elem;
-//			this.w = weight;
-//		}
-//
-//		public int getW() {
-//			return w;
-//		}
-//
-//		@Override
-//		public int compare(Elem o1, Elem o2) {
-//			return Integer.compare(o1.getW(), o2.getW());
-//		}
-//	}
-
-
 }

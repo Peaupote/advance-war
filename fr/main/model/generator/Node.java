@@ -11,10 +11,8 @@ class Node implements Comparator<Node>, Comparable<Node> {
 	LinkedList<Node> neighbours;
 	private int weight;
 	private boolean isBlock;
-//		Node last;
 
 	public Node(int x, int y) {
-//			if(this.last == null) this.last = last;
 		this.x = x;
 		this.y = y;
 		if (weights == null)
@@ -25,10 +23,10 @@ class Node implements Comparator<Node>, Comparable<Node> {
 		isBlock = blocks != null && blocks[x][y];
 	}
 
-//		public Node(int x, int y) {
-//			this(x, y, null);
-//		}
-
+	/**
+	 * @param nodeMap
+	 * Sets it's neighbours.
+	 */
 	public void setNeighbours(Node[][] nodeMap) {
 		if(neighbours == null) neighbours = new LinkedList<>();
 		int[][] cross = MapGenerator.getCross(nodeMap.length, nodeMap[0].length, x, y);
@@ -46,6 +44,10 @@ class Node implements Comparator<Node>, Comparable<Node> {
 
 	}
 
+	/**
+	 * @param nodeMap
+	 * @return returns the list of neighbours.
+	 */
 	public LinkedList<Node> getNeighbours(Node[][] nodeMap) {
 		if(neighbours == null)
 			setNeighbours(nodeMap);

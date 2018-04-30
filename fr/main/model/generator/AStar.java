@@ -22,6 +22,9 @@ public class AStar {
 	public AStar(int[][] weights, boolean[][] blocks){
 		this.weights = weights;
 		this.blocks = blocks;
+
+		Node.setWeights(weights);
+		Node.setBlocks(blocks);
 	}
 
 	private int heuristic(Node a, Node b) {
@@ -50,12 +53,18 @@ public class AStar {
 
 		cameFrom = new HashMap<>();
 
-		while (frontier.peek() != null) {
+		while (frontier.size() != 0) {
 			Node current = frontier.peek();
 			frontier.remove(current);
 
+			System.out.println("Node : (" + current.x + ":" + current.y + ")");
+
 			if(current.is(goal))
 				break;
+
+//			LinkedList<Node> neigh = ;
+
+			System.out.println("Made it out !");
 
 			for (Node next : current.getNeighbours(nodeMap)) {
 				int newCost = gScore.get(current) + next.getWeight();
@@ -75,6 +84,8 @@ public class AStar {
 					cameFrom.put(next, current);
 				}
 			}
+
+			System.out.println("End run");
 		}
 
 		LinkedList<Node> path =  reconstructPath(start, goal, cameFrom);

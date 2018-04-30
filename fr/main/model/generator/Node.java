@@ -3,8 +3,9 @@ package fr.main.model.generator;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-class Node implements Comparator<Node> {
+class Node implements Comparator<Node>, Comparable<Node> {
 	public static int[][] weights;
+	public static boolean[][] blocks;
 	public final int x;
 	public final int y;
 	LinkedList<Node> neighbours;
@@ -27,12 +28,19 @@ class Node implements Comparator<Node> {
 //		}
 
 	public void setNeighbours(Node[][] nodeMap) {
+		if(neighbours == null) neighbours = new LinkedList<>();
 		int[][] cross = MapGenerator.getCross(nodeMap.length, nodeMap[0].length, x, y);
 		for(int i = 0; i < cross.length; i ++) {
+			System.out.println("Neighbours !");
+
 			if(nodeMap[cross[i][0]][cross[i][1]] == null) {
 				nodeMap[cross[i][0]][cross[i][1]] = new Node(cross[i][0], cross[i][1]);
 			}
-			neighbours.add(nodeMap[cross[i][0]][cross[i][1]]);
+
+			if(!blocks[cross[i][0]][cross[i][1]] || !nodeMap[cross[i][0]][cross[i][1]].isBlock())
+				neighbours.add(nodeMap[cross[i][0]][cross[i][1]]);
+			else
+				nodeMap[cross[i][0]][cross[i][1]].setBlock();
 		}
 
 
@@ -51,6 +59,11 @@ class Node implements Comparator<Node> {
 	@Override
 	public int compare(Node o1, Node o2) {
 		return Integer.compare(o1.weight, o2.weight);
+	}
+
+	@Override
+	public int compareTo(Node o) {
+		return compare(this, o);
 	}
 
 	public static void setWeights(int[][] w) {
@@ -77,4 +90,7 @@ class Node implements Comparator<Node> {
 		this.isBlock = false;
 	}
 
+	public static void setBlocks(boolean[][] blocks) {
+		Node.blocks = blocks;
+	}
 }

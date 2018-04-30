@@ -25,6 +25,13 @@ public class MapGenerator {
     private int[][] currentHQCoordinates;
 
     private boolean starterBarrack, starterAirport, starterDock;
+    private boolean placeSilo;
+    private int cityRingNb;
+    private int docksNb;
+    private int barracksNb;
+    private int airportNb;
+
+    private int buildingCount;
 
     // TODO put all mapGen parameters
 
@@ -52,6 +59,7 @@ public class MapGenerator {
         this.starterAirport = false;
         this.starterBarrack = true;
         this.starterDock = false;
+        buildingCount = 0;
     }
 
 	/**
@@ -227,30 +235,24 @@ public class MapGenerator {
 		this.seaProportion = makeInBound(0, 100 - (landProportion - (landProportion > 20 ? 20 : 0)), seaProportion);
 	}
 
-	private void setCurrentHQCoordinates(AbstractBuilding[][] layout) {
-		LinkedList<Headquarter> hqs = new LinkedList<>();
-
-		for(int i = 0; i < layout.length; i ++)
-			for(int j = 0; j < layout[0].length; j ++)
-				if(layout[i][j] instanceof Headquarter)
-					hqs.add((Headquarter) layout[i][j]);
-
-		currentHQCoordinates = new int[hqs.size()][2];
-
-		for(int i = 0; i < hqs.size(); i ++) {
-			currentHQCoordinates[i][0] = hqs.get(i).getX();
-			currentHQCoordinates[i][1] = hqs.get(i).getY();
-		}
+	public void setBarracksNb(int barracksNb) {
+		this.barracksNb = makeInBound(0, 12, barracksNb);
 	}
 
-	public void resetCurrentHQCorrdinates() {
-		currentHQCoordinates = null;
+	public void setAirportNb(int airportNb) {
+		this.airportNb = makeInBound(0, 6, airportNb);
 	}
 
-	private int makeInBound(int min, int max, int i) {
-		if(i < min) i = min;
-		else if (i > max) i = max;
-		return i;
+	public void setDocksNb(int docksNb) {
+		this.docksNb = makeInBound(0, 6, docksNb);
+	}
+
+	public void setCityRingNb(int cityRingNb) {
+		this.cityRingNb = makeInBound(0, 5, cityRingNb);
+	}
+
+	public void setPlaceSilo(boolean placeSilo) {
+		this.placeSilo = placeSilo;
 	}
 
 	public TerrainEnum[][] randMap() {
@@ -288,8 +290,8 @@ public class MapGenerator {
 		System.out.println("Reference : " + referenceNb);
 
         int[] terrainPortion = new int[2];
-        terrainPortion[0] = 20; // Lowland
-        terrainPortion[1] = 30; // Sea
+        terrainPortion[0] = 20; // Lowland 20
+        terrainPortion[1] = 30; // Sea 30
         // Somme <= 100
 
         int[] terrainLeft = new int[2];
@@ -302,8 +304,10 @@ public class MapGenerator {
 
 		currentBuildingLayout = placeHeadQuarters(currentBuildingLayout);
 		currentBuildingLayout = placeStarterBuildings(currentBuildingLayout);
+		currentBuildingLayout = placeBuildings(currentBuildingLayout, currentMap);
 
 		setImmuableTerrain(currentBuildingLayout, currentMap);
+		setBuildingCount(currentBuildingLayout);
 
         /*
         	Places the reference points for the Voronoi algorithm.
@@ -354,6 +358,9 @@ public class MapGenerator {
 		currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
 		// TODO place Docks before making the map. or not.
 
+		int[][] nodes = placeRoadNodes(currentMap, currentBuildingLayout);
+		placeRoads(currentMap, currentBuildingLayout, nodes);
+
         placeBeach(currentMap);
         currentMap = placeRivers(currentMap);
         placeMountainsHills(currentMap);
@@ -371,6 +378,32 @@ public class MapGenerator {
 
         return lastMap;
     }
+
+	private void setCurrentHQCoordinates(AbstractBuilding[][] layout) {
+		LinkedList<Headquarter> hqs = new LinkedList<>();
+
+		for(int i = 0; i < layout.length; i ++)
+			for(int j = 0; j < layout[0].length; j ++)
+				if(layout[i][j] instanceof Headquarter)
+					hqs.add((Headquarter) layout[i][j]);
+
+		currentHQCoordinates = new int[hqs.size()][2];
+
+		for(int i = 0; i < hqs.size(); i ++) {
+			currentHQCoordinates[i][0] = hqs.get(i).getX();
+			currentHQCoordinates[i][1] = hqs.get(i).getY();
+		}
+	}
+
+	public void resetCurrentHQCorrdinates() {
+		currentHQCoordinates = null;
+	}
+
+	private int makeInBound(int min, int max, int i) {
+		if(i < min) i = min;
+		else if (i > max) i = max;
+		return i;
+	}
 
     private void printCoorArray(int[][] array) {
     	String str = "";
@@ -450,20 +483,21 @@ public class MapGenerator {
 		int[][] hqs = getCurrentHQCoordinates();
 		int randNb;
 		for(int[] coor : hqs) {
-			System.out.println("Placing Dock.");
-
 			// Find nearest sea tile.
 			int[][] nearest = findNearestTerrainEnums(map, coor[0], coor[1], sea);
-			while(true) {
-				System.out.println("Placing Dock. 2");
-
+			for(int i = 0; i < 30; i ++) {
 				randNb = rand.nextInt(nearest.length);
 				if (nearest[randNb] == null) {
 					System.out.println("sqr[" + randNb + "] null.");
+					if(i == 29)
+						System.out.println("No valid docks");
 					continue;
 				}
-				if (!(layout[nearest[randNb][0]][nearest[randNb][1]] == null))
+				if (!(layout[nearest[randNb][0]][nearest[randNb][1]] == null)) {
+					if(i == 29)
+						System.out.println("No valid docks");
 					continue;
+				}
 				if(starterDock)
 					layout[nearest[randNb][0]][nearest[randNb][1]] =
 						new Dock(
@@ -729,12 +763,23 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(coors);
 	}
 
+	private int setBuildingCount(AbstractBuilding[][] layout) {
+		int i = 0;
+
+		for(AbstractBuilding[] bs : layout)
+			for(AbstractBuilding b : bs)
+				if(isNonGenericBuilding(b))
+					i ++;
+		return i;
+	}
+
 	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
 		if(layout == null) return new AbstractBuilding[0];
 		return coordinatesToAbstractBuilding(getCircle(layout.length, layout[0].length, x0, y0, radius), layout);
 	}
 
 	private int[][] getCircle(int heigh, int width, int x0, int y0, int radius) {
+		// TODO: remove if unecessary.
 		int x = radius-1;
 		int y = 0;
 		int dx = 1;
@@ -1066,6 +1111,111 @@ public class MapGenerator {
         return map;
     }
 
+    private AbstractBuilding[][] placeBuildings(AbstractBuilding[][] layout, TerrainEnum[][] map) {
+    	LinkedList<AbstractBuilding> bs;
+
+		System.out.println("Cities");
+		for(int i = 0; i < cityRingNb; i ++) {
+    		bs = new LinkedList<>();
+    		for(int j = 0; j < players.length; j ++)
+    			bs.add(new City(null, null));
+			layout = placeBuildingRing(layout, map, bs, rand.nextInt(layout.length - 2 * seaBandSize - 2));
+		}
+
+		System.out.println("Barracks");
+		int barracks = barracksNb;
+		while(barracks > 0) {
+			bs = new LinkedList<>();
+			for(int i = 0; i < 4 && barracks > 0; i ++) {
+				bs.add(new Barrack(null, null));
+				barracks --;
+			}
+			layout = placeBuildingRing(layout, map, bs, rand.nextInt(layout.length - 2 * seaBandSize - 2));
+		}
+
+		System.out.println("Docks");
+		int docks = docksNb;
+		while(docks > 0) {
+			bs = new LinkedList<>();
+			for(int i = 0; i < 4 && docks > 0; i ++) {
+				bs.add(new Dock(null, null));
+				docks --;
+			}
+			layout = placeBuildingRing(layout, map, bs, rand.nextInt(layout.length - 2 * seaBandSize - 2));
+		}
+
+		System.out.println("Airports");
+		int airports = airportNb;
+		while(airports > 0) {
+			bs = new LinkedList<>();
+			for(int i = 0; i < 4 && airports > 0; i ++) {
+				bs.add(new Airport(null, null));
+				airports --;
+			}
+			layout = placeBuildingRing(layout, map, bs, rand.nextInt(layout.length - 2 * seaBandSize - 2));
+		}
+
+		System.out.println("Silo");
+		if(placeSilo) {
+			layout[layout.length / 2][layout[0].length / 2] = new MissileLauncher(new Point(layout[0].length / 2, layout.length / 2));
+		}
+
+		return layout;
+	}
+
+    private AbstractBuilding[][] placeBuildingRing(AbstractBuilding[][] layout, TerrainEnum[][] map , LinkedList<AbstractBuilding> buildings, int distFromCenter) {
+    	if(buildings.size() == 0) {
+    		System.out.println("Building array size is 0");
+    		System.exit(500);
+    		return layout;
+		}
+
+    	int h = layout.length;
+    	int w = layout[0].length;
+    	boolean useH = h > w;
+    	float proportion = useH ? h / w : w / h;
+
+		if(distFromCenter > h/2 - 2 * seaBandSize - 2)
+			distFromCenter = h/2 - 2 * seaBandSize - 2;
+		if(distFromCenter > w/2 - 2 * seaBandSize - 2)
+			distFromCenter = w/2 - 2 * seaBandSize - 2;
+
+		int distH = (int)(useH ? (float) distFromCenter * proportion : distFromCenter);
+		int distW = (int)(useH ? distFromCenter : (float) distFromCenter * proportion);
+
+
+		int[][] rect = getRectangle(h, w,h/2,w/2, distH, distW);
+
+		float step = (float) rect.length / (float) buildings.size();
+
+		int n = rand.nextInt(rect.length);
+
+		for(AbstractBuilding b : buildings) {
+			if(isNonGenericBuilding(layout[rect[n][0]][rect[n][1]]))
+				n = (n + 1) % rect.length;
+
+			b.setLocation(new Point(rect[n][1], rect[n][0]));
+			layout[rect[n][0]][rect[n][1]] = b;
+
+			// If Dock, surround with water.
+			if(b instanceof Dock) {
+				int[][] cross = getCross(rect[n][1], rect[n][0]);
+				int randNb = rand.nextInt(cross.length);
+
+				for(int i = 0; i < cross.length; i ++)
+					if(i != randNb) {
+						map[cross[i][0]][cross[i][1]] = sea;
+					}
+			}
+
+			n = (int) ((float) n + step) % rect.length;
+		}
+
+		return layout;
+	}
+
+
+
     private TerrainEnum[][] placeMountainsHills(TerrainEnum[][] map) {
     	// TODO affine
         int mountains = 0;
@@ -1387,7 +1537,7 @@ public class MapGenerator {
 									|| map[cross[randNb][0]][cross[randNb][1]] == sea
 									|| map[cross[randNb][0]][cross[randNb][1]] == reef)
 								continue;
-							map[cross[k][0]][cross[k][1]] = road;
+							map[cross[randNb][0]][cross[randNb][1]] = road;
 							list.add(cross[randNb]);
 							break;
 						}
@@ -1409,7 +1559,9 @@ public class MapGenerator {
 
 		for(int[] coor : roadNodes) {
 			int p = closestPoint(coor[0], coor[1], roadNodes);
-			placeRoads(map, aStar.shortestRoute(coor[0], coor[1], roadNodes[p][0], roadNodes[p][1]));
+			road = aStar.shortestRoute(coor[0], coor[1], roadNodes[p][0], roadNodes[p][1]);
+			System.out.println("Road length : " + road.length);
+			map = placeRoads(map, road);
 		}
 
         return map;
@@ -1457,6 +1609,8 @@ public class MapGenerator {
 					weights[i][j] = 8;
 				else if(map[i][j] == mountain)
 					weights[i][j] = 6;
+				else if(map[i][j] == hill)
+					weights[i][j] = 5;
 				else if(map[i][j] == road || map[i][j] == bridge)
 					weights[i][j] = 1;
 				else

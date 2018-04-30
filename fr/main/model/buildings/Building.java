@@ -17,7 +17,7 @@ public abstract class Building implements AbstractBuilding{
 	 */
 	private static final long serialVersionUID = 5827740138370372452L;
 	protected final int defense;
-    protected final Point location;
+    protected Point location;
     public final String name;
 
     public Building (Point p, int defense, String name) {
@@ -34,6 +34,10 @@ public abstract class Building implements AbstractBuilding{
     public int getY(){
         return location.y;
     }
+
+	public void setLocation(Point l) {
+    	this.location = l;
+	}
 
     public String getName () {
         return name;

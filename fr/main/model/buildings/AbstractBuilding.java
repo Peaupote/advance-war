@@ -3,12 +3,14 @@ package fr.main.model.buildings;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.terrains.AbstractTerrain;
 
+import java.awt.*;
+
 /**
  * Interface representing a building
  *
  */
 public interface AbstractBuilding extends java.io.Serializable{
-  
+
   /**
    * @return the name of the building
    */
@@ -28,5 +30,6 @@ public interface AbstractBuilding extends java.io.Serializable{
   int getX();
   int getY();
 
+  void setLocation(Point p);
 }
 

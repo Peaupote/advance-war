@@ -448,10 +448,10 @@ public class TerrainRenderer {
 			case 4:
 				return TerrainLocation.RoadLocation.CENTER;
 			case 3:
-				if (cross[0] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_BOTTOM;
-				if (cross[1] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_LEFT;
-				if (cross[2] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_TOP;
-				if (cross[3] != TerrainEnum.road) return TerrainLocation.RoadLocation.T_RIGHT;
+				if (cross[0] != TerrainEnum.road && cross[0] != TerrainEnum.bridge) return TerrainLocation.RoadLocation.T_BOTTOM;
+				if (cross[1] != TerrainEnum.road && cross[1] != TerrainEnum.bridge) return TerrainLocation.RoadLocation.T_LEFT;
+				if (cross[2] != TerrainEnum.road && cross[2] != TerrainEnum.bridge) return TerrainLocation.RoadLocation.T_TOP;
+				if (cross[3] != TerrainEnum.road && cross[3] != TerrainEnum.bridge) return TerrainLocation.RoadLocation.T_RIGHT;
 		    break;
 			case 2:
 				for (int i = 0; i < 4; i++)

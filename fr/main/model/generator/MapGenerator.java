@@ -1329,8 +1329,15 @@ public class MapGenerator {
 								clean = true;
 
 						if(!clean) {
-							int randNb = rand.nextInt(sqr.length);
-							map[sqr[randNb][0]][sqr[randNb][1]] = lowland;
+							LinkedList<Integer> remove = new LinkedList<>();
+							for (int k = 0; k < sqr.length; k++) {
+								if (getAdjacentTerrainNb(map, sqr[k][0], sqr[k][1], road)
+										+ getAdjacentTerrainNb(map, sqr[k][0], sqr[k][1], bridge) < 3)
+								remove.add(k);
+							}
+							for (int k : remove) {
+								map[sqr[k][0]][sqr[k][1]] = lowland;
+							}
 						}
 						// TODO : put every cleaning procedure here.
 				}
@@ -1343,6 +1350,10 @@ public class MapGenerator {
 		return map;
 	}
 
+	private TerrainEnum[][] cleanRoads(TerrainEnum[][] map, int i, int j) {
+    	return null;
+	}
+
 
 	private int[][] getFilledSquare(int mapHeight, int mapWidth, int x0, int y0, int size) {
     	LinkedList<int[]> out = new LinkedList<>();
@@ -1352,16 +1363,16 @@ public class MapGenerator {
 
     	int[] coor;
 
-    	for(int i = x0; i < size; i++)
-    		for(int j = y0; j < size; j ++)
+    	for(int i = x0; i < size + x0; i++)
+    		for(int j = y0; j < size + y0; j ++)
     			if(isInRect(i, j, mapHeight, mapWidth)) {
     				coor = new int[2];
     				coor[0] = i;
-    				coor[j] = j;
+    				coor[1] = j;
     				out.add(coor);
 				}
 
-    	return coorArrayFromLinkedList(out);
+		return coorArrayFromLinkedList(out);
 	}
 
 	private boolean isSame(int[] a, int[] b) {

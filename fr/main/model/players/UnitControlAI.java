@@ -82,6 +82,7 @@ public class UnitControlAI implements ArtificialIntelligence {
             }
             for (int j = 1; j < i; j++)
                 for (int[] t : tab){
+                    bool = bool || u.isValidPosition(x + j * t[0], y + (i - j) * t[1]);
                     AbstractBuilding b = u.getBuilding(x + j * t[0], y + (i - j) * t[1]);
                     if (b != null && b instanceof OwnableBuilding)
                         objectives.add((OwnableBuilding) b);
@@ -113,6 +114,11 @@ public class UnitControlAI implements ArtificialIntelligence {
         // if one unit still has move points, we give it a try to do something
         // because the situation may have changed since the first calculus of the thing to do
         checkUnits(unitList.iterator(), u -> true);
+
+        if (Universe.get().getDay() % 10 == 0)
+            for (UnitActionChooser uac : units.values())
+                if (uac.getState() == UnitActionChooser.State.DEFEND || uac.getState() == UnitActionChooser.State.ATTACK || uac.getState() == UnitActionChooser.State.AIMLESS)
+                    uac.findState();
 	}
 
     /**

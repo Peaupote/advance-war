@@ -78,7 +78,7 @@ public class Barrack extends OwnableBuilding implements FactoryBuilding, RepairB
                 constructor.apply(getOwner(),new Point(getX(),getY())).setMoveQuantity(0);
                 return true;
             }
-        }catch(Exception e){}
+        }catch(Exception e){e.printStackTrace();}
         return false;
     }
 }

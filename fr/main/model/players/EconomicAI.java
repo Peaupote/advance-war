@@ -69,7 +69,6 @@ public class EconomicAI implements ArtificialIntelligence {
             if (f.create(get(f.getUnitList(), rand.nextInt(f.getUnitList().size()))))
                 factoriesCopy.remove(f);
         }
-
     }
 
     /**

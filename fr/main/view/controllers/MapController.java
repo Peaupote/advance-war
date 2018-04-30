@@ -61,8 +61,8 @@ public class MapController extends Controller {
 			gen.setBarracksNb(barrackNb.getValue());
 			airportNb = new JSlider(JSlider.HORIZONTAL, 0, 6, 2);
 			gen.setAirportNb(airportNb.getValue());
-			dockNb = new JSlider(JSlider.HORIZONTAL, 0, 6, 2);
-			gen.setDocksNb(dockNb.getValue());
+//			dockNb = new JSlider(JSlider.HORIZONTAL, 0, 6, 2);
+//			gen.setDocksNb(dockNb.getValue());
 
 			silo = new JCheckBox();
 			gen.setPlaceSilo(silo.isSelected());
@@ -102,8 +102,8 @@ public class MapController extends Controller {
             add(new JLabel("Available Airports"));
             add(airportNb);
 
-            add(new JLabel("Available Docks"));
-            add(dockNb);
+//            add(new JLabel("Available Docks"));
+//            add(dockNb);
 
             add(new JLabel("Add Missile Silo"));
             add(silo);

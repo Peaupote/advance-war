@@ -391,10 +391,18 @@ public class TerrainRenderer {
 			case 4:
 				return TerrainLocation.RiverLocation.CENTER;
 			case 3:
-				if (cross[0] != TerrainEnum.river && cross[0] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_BOTTOM;
-				if (cross[1] != TerrainEnum.river && cross[1] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_LEFT;
-				if (cross[2] != TerrainEnum.river && cross[2] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_TOP;
-				if (cross[3] != TerrainEnum.river && cross[3] != TerrainEnum.bridge) return TerrainLocation.RiverLocation.T_RIGHT;
+				if (cross[0] != TerrainEnum.river && cross[0] != TerrainEnum.bridge
+						&& cross[0] != TerrainEnum.sea && cross[0] != TerrainEnum.reef)
+					return TerrainLocation.RiverLocation.T_BOTTOM;
+				if (cross[1] != TerrainEnum.river && cross[1] != TerrainEnum.bridge
+						&& cross[1] != TerrainEnum.sea && cross[0] != TerrainEnum.reef)
+					return TerrainLocation.RiverLocation.T_LEFT;
+				if (cross[2] != TerrainEnum.river && cross[2] != TerrainEnum.bridge
+						&& cross[2] != TerrainEnum.sea && cross[0] != TerrainEnum.reef)
+					return TerrainLocation.RiverLocation.T_TOP;
+				if (cross[3] != TerrainEnum.river && cross[3] != TerrainEnum.bridge
+						&& cross[3] != TerrainEnum.sea && cross[0] != TerrainEnum.reef)
+					return TerrainLocation.RiverLocation.T_RIGHT;
 		    break;
 			case 2:
 				for (int i = 0; i < 4; i++)

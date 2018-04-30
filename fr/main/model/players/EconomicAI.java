@@ -23,7 +23,7 @@ public class EconomicAI implements ArtificialIntelligence {
     private final HashSet<FactoryBuilding> factories = new HashSet<FactoryBuilding>();
 
     public EconomicAI (AIPlayer player){
-    	this.player = player;
+    	this.setPlayer(player);
     }
 
     public void add(OwnableBuilding b){
@@ -31,13 +31,14 @@ public class EconomicAI implements ArtificialIntelligence {
             factories.add((FactoryBuilding)b);
     }
 
+	@SuppressWarnings("unlikely-arg-type")
 	public void remove(OwnableBuilding b){
     	factories.remove(b);
     }
 
     public void loose(){
         factories.clear();
-        player    = null;
+        setPlayer(null);
     }
 
     /**
@@ -83,4 +84,12 @@ public class EconomicAI implements ArtificialIntelligence {
             else n--;
         return null;
     }
+
+	public AIPlayer getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(AIPlayer player) {
+		this.player = player;
+	}
 }

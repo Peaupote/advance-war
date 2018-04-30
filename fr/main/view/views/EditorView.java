@@ -1,10 +1,16 @@
 package fr.main.view.views;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 
 import fr.main.view.controllers.EditorController;
-import fr.main.model.terrains.AbstractTerrain;
 
 @SuppressWarnings("serial")
 public class EditorView extends View {

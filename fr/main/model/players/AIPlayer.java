@@ -1,11 +1,9 @@
 package fr.main.model.players;
 
 import fr.main.model.Universe;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.units.AbstractUnit;
-import fr.main.model.buildings.AbstractBuilding;
-
 import fr.main.view.interfaces.DayPanel;
 
 /**

@@ -7,6 +7,7 @@ import fr.main.view.render.animations.AnimationState;
 import fr.main.view.render.sprites.ScaleRect;
 import fr.main.view.render.sprites.SpriteList;
 import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.sound.MusicEngine;
 
 public class ArtilleryRenderer extends UnitRenderer.Render {
 
@@ -20,6 +21,9 @@ public class ArtilleryRenderer extends UnitRenderer.Render {
 
     anim.put("idleRIGHT", idle);
     anim.setState("idleRIGHT");
+    
+    this.selected = new MusicEngine("./assets/sound/SoldierLaughe.wav");
+    this.attack = new MusicEngine("./assets/sound/CannonFire.wav");
   }
 
 }

@@ -1,28 +1,42 @@
 package fr.main.view.controllers;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.event.*;
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-
+import fr.main.model.Direction;
 import fr.main.model.TerrainEnum;
+import fr.main.model.Universe;
+import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.players.Player;
-import fr.main.model.Universe;
-import fr.main.model.Direction;
 import fr.main.model.terrains.AbstractTerrain;
-import fr.main.model.terrains.land.*;
-import fr.main.model.terrains.naval.*;
+import fr.main.model.terrains.land.Beach;
+import fr.main.model.terrains.land.Bridge;
+import fr.main.model.terrains.land.Hill;
+import fr.main.model.terrains.land.Lowland;
+import fr.main.model.terrains.land.Mountain;
+import fr.main.model.terrains.land.River;
+import fr.main.model.terrains.land.Road;
+import fr.main.model.terrains.land.Wood;
+import fr.main.model.terrains.naval.Reef;
+import fr.main.model.terrains.naval.Sea;
 import fr.main.model.units.AbstractUnit;
-import fr.main.model.buildings.AbstractBuilding;
 import fr.main.view.MainFrame;
-import fr.main.view.views.EditorView;
-import fr.main.view.render.MapRenderer;
 import fr.main.view.Position;
-import fr.main.view.MainFrame;
+import fr.main.view.render.MapRenderer;
 import fr.main.view.render.terrains.TerrainRenderer;
+import fr.main.view.views.EditorView;
 
 public class EditorController extends Controller {
 

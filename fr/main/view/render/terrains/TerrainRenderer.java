@@ -1,8 +1,24 @@
 package fr.main.view.render.terrains;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import static fr.main.model.TerrainEnum.beach;
+import static fr.main.model.TerrainEnum.bridge;
+import static fr.main.model.TerrainEnum.hill;
+import static fr.main.model.TerrainEnum.lowland;
+import static fr.main.model.TerrainEnum.mountain;
+import static fr.main.model.TerrainEnum.none;
+import static fr.main.model.TerrainEnum.reef;
+import static fr.main.model.TerrainEnum.river;
+import static fr.main.model.TerrainEnum.road;
+import static fr.main.model.TerrainEnum.sea;
+import static fr.main.model.TerrainEnum.wood;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -10,17 +26,22 @@ import fr.main.model.TerrainEnum;
 import fr.main.model.Universe;
 import fr.main.model.Weather;
 import fr.main.model.generator.MapGenerator;
-import fr.main.model.terrains.AbstractTerrain;
 import fr.main.view.render.Renderer;
 import fr.main.view.render.animations.Animation;
 import fr.main.view.render.animations.AnimationState;
 import fr.main.view.render.sprites.ScaleRect;
 import fr.main.view.render.sprites.Sprite;
 import fr.main.view.render.sprites.SpriteList;
-import fr.main.view.render.terrains.land.*;
-import fr.main.view.render.terrains.naval.*;
-
-import static fr.main.model.TerrainEnum.*;
+import fr.main.view.render.terrains.land.BeachRenderer;
+import fr.main.view.render.terrains.land.BridgeRenderer;
+import fr.main.view.render.terrains.land.HillRenderer;
+import fr.main.view.render.terrains.land.LowlandRenderer;
+import fr.main.view.render.terrains.land.MountainRenderer;
+import fr.main.view.render.terrains.land.RiverRenderer;
+import fr.main.view.render.terrains.land.RoadRenderer;
+import fr.main.view.render.terrains.land.WoodRenderer;
+import fr.main.view.render.terrains.naval.ReefRenderer;
+import fr.main.view.render.terrains.naval.SeaRenderer;
 
 /**
  *  Sets all Terrain locations and Renderer.

@@ -1,27 +1,33 @@
 package fr.main.view.controllers;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.plaf.SliderUI;
-import java.awt.event.*;
-import java.awt.*;
-import java.nio.*;
-import java.nio.file.*;
-import java.io.*;
-import java.util.stream.Stream;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
+import java.util.stream.Stream;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.event.ListSelectionListener;
 
 import fr.main.model.TerrainEnum;
-import fr.main.model.generator.MapGenerator;
-import fr.main.model.players.Player;
-import fr.main.view.views.MapView;
-import fr.main.view.MainFrame;
 import fr.main.model.Universe;
 import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.generator.MapGenerator;
 import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
+import fr.main.view.MainFrame;
+import fr.main.view.views.MapView;
 
 public class MapController extends Controller {
 
@@ -35,7 +41,8 @@ public class MapController extends Controller {
     public class RandomSettings extends JDialog {
 
         private MapGenerator gen;
-        private JSlider width, height, seed, land, moutain, wood, barrackNb, cityRingNb, airportNb, dockNb;
+        @SuppressWarnings("unused")
+		private JSlider width, height, seed, land, moutain, wood, barrackNb, cityRingNb, airportNb, dockNb;
         private JButton ok;
         private JCheckBox silo, startDocks, startBarracks, startAirport;
         public boolean cancel = true;

@@ -21,8 +21,8 @@ public class TankRenderer extends UnitRenderer.Render {
         anim.put("idleRIGHT", idle);
         anim.setState("idleRIGHT");
 
-        this.selected = new MusicEngine("./assets/sound/song056.wav");
-        this.attack = new MusicEngine("./assets/sound/song054.wav");
+        this.selected = new MusicEngine("./assets/sound/ShermanE8.wav");
+        this.attack = new MusicEngine("./assets/sound/TankShot.wav");
     }
 
 }

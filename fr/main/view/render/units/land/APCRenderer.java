@@ -7,6 +7,7 @@ import fr.main.view.render.animations.AnimationState;
 import fr.main.view.render.sprites.ScaleRect;
 import fr.main.view.render.sprites.SpriteList;
 import fr.main.view.render.units.UnitRenderer;
+import fr.main.view.sound.MusicEngine;
 
 public class APCRenderer extends UnitRenderer.Render {
 
@@ -20,6 +21,8 @@ public class APCRenderer extends UnitRenderer.Render {
 
     anim.put("idleRIGHT", idle);
     anim.setState("idleRIGHT");
+    
+    this.selected  = new MusicEngine("./assets/sound/ReconSelect.wav");
   }
 
 }

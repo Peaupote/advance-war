@@ -370,6 +370,10 @@ public interface TerrainLocation extends Serializable{
 	}
 
 	public class GenericTerrainLocation implements TerrainLocation {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6634774216280256727L;
 		@SuppressWarnings("unused")
 		private String path;
 		@SuppressWarnings("unused")

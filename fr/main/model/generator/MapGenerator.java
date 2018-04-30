@@ -1,14 +1,34 @@
 package fr.main.model.generator;
 
+import static fr.main.model.TerrainEnum.beach;
+import static fr.main.model.TerrainEnum.bridge;
+import static fr.main.model.TerrainEnum.getTerrainEnum;
+import static fr.main.model.TerrainEnum.hill;
+import static fr.main.model.TerrainEnum.lowland;
+import static fr.main.model.TerrainEnum.mLowland;
+import static fr.main.model.TerrainEnum.mountain;
+import static fr.main.model.TerrainEnum.none;
+import static fr.main.model.TerrainEnum.reef;
+import static fr.main.model.TerrainEnum.river;
+import static fr.main.model.TerrainEnum.road;
+import static fr.main.model.TerrainEnum.sea;
+import static fr.main.model.TerrainEnum.wood;
+
+import java.awt.Point;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Random;
+
 import fr.main.model.TerrainEnum;
-import fr.main.model.buildings.*;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.Airport;
+import fr.main.model.buildings.Barrack;
+import fr.main.model.buildings.City;
+import fr.main.model.buildings.Dock;
+import fr.main.model.buildings.GenericBuilding;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.MissileLauncher;
 import fr.main.model.players.Player;
-import fr.main.model.terrains.Terrain;
-
-import java.awt.*;
-import java.util.*;
-
-import static fr.main.model.TerrainEnum.*;
 
 public class MapGenerator {
     private long seed;

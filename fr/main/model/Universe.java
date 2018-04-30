@@ -14,17 +14,16 @@ import java.util.Arrays;
 import java.util.Date;
 
 import fr.main.model.PlayerIt.Cycle;
-import fr.main.model.buildings.*;
-import fr.main.model.players.Player;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.City;
+import fr.main.model.buildings.GenericBuilding;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.players.AIPlayer;
+import fr.main.model.players.Player;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HideableUnit;
-import fr.main.model.units.air.Fighter;
-import fr.main.model.units.air.Stealth;
-import fr.main.model.units.land.Infantry;
-import fr.main.model.units.naval.Battleship;
-import fr.main.model.units.naval.Lander;
 
 
 /**

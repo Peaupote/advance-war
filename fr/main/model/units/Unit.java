@@ -385,7 +385,7 @@ public abstract class Unit implements AbstractUnit {
         if (counter){
             // if there is a counter attack, we do it
             this.setMoveQuantity(0);
-            if (u.getLife()!=0)
+            if (u.getLife() != 0)
                 u.attack(this,false);
         }
     }

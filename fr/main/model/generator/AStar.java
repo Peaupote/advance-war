@@ -57,35 +57,29 @@ public class AStar {
 			Node current = frontier.peek();
 			frontier.remove(current);
 
-			System.out.println("Node : (" + current.x + ":" + current.y + ")");
+//			System.out.println("Node : (" + current.x + ":" + current.y + ")");
 
 			if(current.is(goal))
 				break;
-
-//			LinkedList<Node> neigh = ;
-
-			System.out.println("Made it out !");
 
 			for (Node next : current.getNeighbours(nodeMap)) {
 				int newCost = gScore.get(current) + next.getWeight();
 				if(!gScore.containsKey(next)) {
 					gScore.put(next, newCost);
-					int priority = heuristic(next, goal) + newCost;
-					next.setWeight(priority);
+//					int priority = heuristic(next, goal) + newCost;
+					next.setWeight(newCost);
 					frontier.add(next);
 					cameFrom.put(next, current);
 
 				}
 				else if(gScore.get(next) > newCost){
 					gScore.replace(next, newCost);
-					int priority = heuristic(next, goal) + newCost;
-					next.setWeight(priority);
+//					int priority = heuristic(next, goal) + newCost;
+					next.setWeight(newCost);
 					frontier.add(next);
 					cameFrom.put(next, current);
 				}
 			}
-
-			System.out.println("End run");
 		}
 
 		LinkedList<Node> path =  reconstructPath(start, goal, cameFrom);
@@ -122,6 +116,7 @@ public class AStar {
 
 	public void setWeights(int[][] weights) {
 		this.weights = weights;
+		Node.setWeights(weights);
 	}
 
 	public int[][] getWeights() {
@@ -130,6 +125,7 @@ public class AStar {
 
 	public void setBlocks(boolean[][] blocks) {
 		this.blocks = blocks;
+		Node.setBlocks(blocks);
 	}
 
 	public boolean[][] getBlocks() {

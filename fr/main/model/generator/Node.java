@@ -4,8 +4,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 
 class Node implements Comparator<Node>, Comparable<Node> {
-	public static int[][] weights;
-	public static boolean[][] blocks;
+	private static int[][] weights;
+	private static boolean[][] blocks;
 	public final int x;
 	public final int y;
 	LinkedList<Node> neighbours;
@@ -17,10 +17,12 @@ class Node implements Comparator<Node>, Comparable<Node> {
 //			if(this.last == null) this.last = last;
 		this.x = x;
 		this.y = y;
-		if(weights == null)
+		if (weights == null)
 			weight = 1;
 		else
 			this.weight = weights[x][y];
+
+		isBlock = blocks != null && blocks[x][y];
 	}
 
 //		public Node(int x, int y) {
@@ -31,13 +33,11 @@ class Node implements Comparator<Node>, Comparable<Node> {
 		if(neighbours == null) neighbours = new LinkedList<>();
 		int[][] cross = MapGenerator.getCross(nodeMap.length, nodeMap[0].length, x, y);
 		for(int i = 0; i < cross.length; i ++) {
-			System.out.println("Neighbours !");
-
 			if(nodeMap[cross[i][0]][cross[i][1]] == null) {
 				nodeMap[cross[i][0]][cross[i][1]] = new Node(cross[i][0], cross[i][1]);
 			}
 
-			if(!blocks[cross[i][0]][cross[i][1]] || !nodeMap[cross[i][0]][cross[i][1]].isBlock())
+			if(!blocks[cross[i][0]][cross[i][1]] && !nodeMap[cross[i][0]][cross[i][1]].isBlock())
 				neighbours.add(nodeMap[cross[i][0]][cross[i][1]]);
 			else
 				nodeMap[cross[i][0]][cross[i][1]].setBlock();

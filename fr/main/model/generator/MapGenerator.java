@@ -357,13 +357,15 @@ public class MapGenerator {
 		currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
 		// TODO place Docks before making the map. or not.
 
-		int[][] nodes = placeRoadNodes(currentMap, currentBuildingLayout);
-		placeRoads(currentMap, currentBuildingLayout, nodes);
-
         placeBeach(currentMap);
         currentMap = placeRivers(currentMap);
         placeMountainsHills(currentMap);
         placeWood(currentMap);
+
+		int[][] nodes = placeRoadNodes(currentMap, currentBuildingLayout);
+		placeRoads(currentMap, currentBuildingLayout, nodes);
+
+
         clean(currentMap);
 
 
@@ -464,7 +466,7 @@ public class MapGenerator {
 					layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] =
 							new Airport(
 									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-									new Point(sqrCoor[randNb][0], sqrCoor[randNb][1]));
+									new Point(sqrCoor[randNb][1], sqrCoor[randNb][0]));
 					break;
 				}
 			}
@@ -1304,7 +1306,7 @@ public class MapGenerator {
 			for (int j = 0; j < map[0].length; j++) {
 				switch (map[i][j]) {
 					case beach:
-						TerrainEnum[] goodTerrains = {wood, lowland, mLowland, mountain, hill};
+						TerrainEnum[] goodTerrains = {wood, lowland, mLowland, mountain, hill, road};
 						if (getAdjacentTerrainNb(map, i, j, sea) >= 3 && getAdjacentTerrainNb(map, i, j, goodTerrains) == 0)
 							map[i][j] = sea;
 						else if (getAdjacentTerrainNb(map, i, j, beach) < 3)
@@ -1317,13 +1319,49 @@ public class MapGenerator {
 					case river:
 						if(getAdjacentTerrainNb(map, i, j, sea) + getAdjacentTerrainNb(map, i, j, river) == 0)
 							map[i][j] = wood;
+						break;
+					case road:
+						int[][] sqr = getFilledSquare(map.length, map[0].length, i, j, 2);
+						boolean clean = sqr.length == 0 ? true : false;
+
+						for(int[] coor : sqr)
+							if(map[coor[0]][coor[1]] != road)
+								clean = true;
+
+						if(!clean) {
+							int randNb = rand.nextInt(sqr.length);
+							map[sqr[randNb][0]][sqr[randNb][1]] = lowland;
+						}
 						// TODO : put every cleaning procedure here.
 				}
+				if(isNonGenericBuilding(currentBuildingLayout[i][j]))
+					map[i][j] = lowland;
 			}
 
 		map = placeRivers(map);
 
 		return map;
+	}
+
+
+	private int[][] getFilledSquare(int mapHeight, int mapWidth, int x0, int y0, int size) {
+    	LinkedList<int[]> out = new LinkedList<>();
+
+    	if(!isInRect(x0, y0, mapHeight, mapWidth))
+    		return new int[0][0];
+
+    	int[] coor;
+
+    	for(int i = x0; i < size; i++)
+    		for(int j = y0; j < size; j ++)
+    			if(isInRect(i, j, mapHeight, mapWidth)) {
+    				coor = new int[2];
+    				coor[0] = i;
+    				coor[j] = j;
+    				out.add(coor);
+				}
+
+    	return coorArrayFromLinkedList(out);
 	}
 
 	private boolean isSame(int[] a, int[] b) {
@@ -1558,6 +1596,7 @@ public class MapGenerator {
 
 		for(int[] coor : roadNodes) {
 //			int p = closestPoint(coor[0], coor[1], roadNodes);
+			aStar.setWeights(getWeights(map));
 			randNb = rand.nextInt(roadNodes.length);
 			road = aStar.shortestRoute(coor[0], coor[1], roadNodes[randNb][0], roadNodes[randNb][1]);
 			System.out.println("Road length : " + road.length);
@@ -1606,15 +1645,17 @@ public class MapGenerator {
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++) {
 				if(map[i][j] == sea || map[i][j] == reef)
-					weights[i][j] = 20;
+					weights[i][j] = 50;
 				else if(map[i][j] == mountain)
-					weights[i][j] = 15;
+					weights[i][j] = 40;
 				else if(map[i][j] == hill)
-					weights[i][j] = 12;
+					weights[i][j] = 30;
+				else if(map[i][j] == wood || map[i][j] == beach)
+					weights[i][j] = 25;
 				else if(map[i][j] == road || map[i][j] == bridge)
-					weights[i][j] = 0;
+					weights[i][j] = 1;
 				else
-					weights[i][j] = 8;
+					weights[i][j] = 10;
 			}
 		return weights;
 	}

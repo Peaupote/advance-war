@@ -37,7 +37,7 @@ public class MapController extends Controller {
         private MapGenerator gen;
         private JSlider width, height, seed, land, moutain, wood, barrackNb, cityRingNb, airportNb, dockNb;
         private JButton ok;
-        private JCheckBox silo;
+        private JCheckBox silo, startDocks, startBarracks, startAirport;
         public boolean cancel = true;
 
         public RandomSettings (Frame parent, String title, boolean modal) {
@@ -67,12 +67,22 @@ public class MapController extends Controller {
 			silo = new JCheckBox();
 			gen.setPlaceSilo(silo.isSelected());
 
+			startAirport = new JCheckBox();
+			gen.setStarterDock(startAirport.isSelected());
+
+			startBarracks = new JCheckBox();
+			startBarracks.setSelected(true);
+			gen.setStarterBarrack(startBarracks.isSelected());
+
+			startDocks = new JCheckBox();
+			gen.setStarterDock(startDocks.isSelected());
+
 
             ok = new JButton("Done");
 
             setSize(new Dimension(250, 800));
 
-            setLayout(new GridLayout(24, 1, 10, 10));
+            setLayout(new GridLayout(30, 1, 10, 10));
             add(new JLabel("Random settings"));
 
             add(new JLabel("Seed"));
@@ -104,6 +114,15 @@ public class MapController extends Controller {
 
 //            add(new JLabel("Available Docks"));
 //            add(dockNb);
+
+			add(new JLabel("Start Barracks"));
+			add(startBarracks);
+
+			add(new JLabel("Start Airport"));
+			add(startAirport);
+
+			add(new JLabel("Start Docks"));
+			add(startDocks);
 
             add(new JLabel("Add Missile Silo"));
             add(silo);

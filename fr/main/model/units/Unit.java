@@ -72,7 +72,6 @@ public abstract class Unit implements AbstractUnit {
     public Unit (Player player, Point location, String fuelName, int maxFuel, boolean diesIfNoFuel, MoveType moveType, int moveQuantity, int vision, PrimaryWeapon primaryWeapon, SecondaryWeapon secondaryWeapon, String name, int cost) {
         this.life            = 100;
         this.player          = player;
-        if (player != null) player.add(this);
         this.location        = location;
         Universe.get().setUnit(location.x, location.y, this);
         this.fuel            = new Fuel(fuelName, maxFuel, diesIfNoFuel);
@@ -84,6 +83,7 @@ public abstract class Unit implements AbstractUnit {
         this.secondaryWeapon = secondaryWeapon;
         this.name            = name;
         this.cost            = cost;
+        if (player != null) player.add(this);
         Universe.get().updateVision();
     }
     
@@ -385,7 +385,7 @@ public abstract class Unit implements AbstractUnit {
         if (counter){
             // if there is a counter attack, we do it
             this.setMoveQuantity(0);
-            if (u.getLife()!=0)
+            if (u.getLife() != 0)
                 u.attack(this,false);
         }
     }

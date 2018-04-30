@@ -210,11 +210,16 @@ public interface AbstractUnit extends Serializable {
         // the object MoveZone is used to return both the offset and the Node[][] map
     }
 
+    default LinkedList<Direction> findPath(Point point){
+        return findPath(point, 2);
+    }
+
     /**
      * @param point the target tile
+     * @param approx the acceptable distance to the target point 
      * @return a list of Direction which is a path to go to the target tile (it is the shortest path)
      */
-    default LinkedList<Direction> findPath(Point point){
+    default LinkedList<Direction> findPath(Point point, int approx){
         Universe u = Universe.get();
         int posX   = getX(), posY = getY(),
             max    = Math.max(u.getMapWidth(), u.getMapHeight());
@@ -269,10 +274,22 @@ public interface AbstractUnit extends Serializable {
 
         LinkedList<Direction> path = new LinkedList<Direction>();
         Direction d;
-        while ((d = map[pt.y][pt.x].previous) != Direction.NONE){
-            path.addFirst(d);
-            d.opposed().move(point);
-        }
+        Point ptt = point.getLocation();
+
+        int[][] tab = Direction.getNonCardinalDirections();
+        for (int i = 0; i <= approx; i++)
+            for (int j = 0; j <= i; j++)
+                for (int[] t : tab){
+                    ptt.move(point.x + t[0] * j, point.y + t[1] * (i - j));   
+                    if (u.isValidPosition(ptt.x, ptt.y) && map[ptt.y][ptt.x].previous != Direction.NONE) {
+                        while ((d = map[ptt.y][ptt.x].previous) != Direction.NONE) {
+                            path.addFirst(d);
+                            d.opposed().move(ptt);
+                        }
+                        return path;                    
+                    }
+                }
+
         return path;
     }
 

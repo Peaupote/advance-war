@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 
-@SuppressWarnings("serial")
 public interface TerrainLocation extends Serializable{
 
 	public static String getDir () {

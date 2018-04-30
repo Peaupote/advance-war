@@ -2,6 +2,7 @@ package fr.main.view.controllers;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.plaf.SliderUI;
 import java.awt.event.*;
 import java.awt.*;
 import java.nio.*;
@@ -34,17 +35,18 @@ public class MapController extends Controller {
     public class RandomSettings extends JDialog {
 
         private MapGenerator gen;
-        private JSlider width, height, seed, land, moutain, wood;
+        private JSlider width, height, seed, land, moutain, wood, barrackNb, cityRingNb, airportNb, dockNb;
         private JButton ok;
+        private JCheckBox silo, startDocks, startBarracks, startAirport;
         public boolean cancel = true;
 
         public RandomSettings (Frame parent, String title, boolean modal) {
             super(parent, title, modal);
             gen = new MapGenerator(10, ps.length);
 
-            width   = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
+            width   = new JSlider(JSlider.HORIZONTAL, 20, 60, 30);
             gen.setMapWidth(width.getValue());
-            height  = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
+            height  = new JSlider(JSlider.HORIZONTAL, 20, 60, 30);
             gen.setMapHeight(height.getValue());
             seed    = new JSlider(JSlider.HORIZONTAL, Integer.MIN_VALUE, Integer.MAX_VALUE, (new Random()).nextInt());
             gen.setSeed(seed.getValue());
@@ -53,12 +55,34 @@ public class MapController extends Controller {
             moutain = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
             wood    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
             gen.setMountainProportion(moutain.getValue());
+			cityRingNb = new JSlider(JSlider.HORIZONTAL, 0, 6, 2);
+			gen.setCityRingNb(cityRingNb.getValue());
+			barrackNb = new JSlider(JSlider.HORIZONTAL, 0, 12, 2);
+			gen.setBarracksNb(barrackNb.getValue());
+			airportNb = new JSlider(JSlider.HORIZONTAL, 0, 6, 2);
+			gen.setAirportNb(airportNb.getValue());
+//			dockNb = new JSlider(JSlider.HORIZONTAL, 0, 6, 2);
+//			gen.setDocksNb(dockNb.getValue());
+
+			silo = new JCheckBox();
+			gen.setPlaceSilo(silo.isSelected());
+
+			startAirport = new JCheckBox();
+			gen.setStarterDock(startAirport.isSelected());
+
+			startBarracks = new JCheckBox();
+			startBarracks.setSelected(true);
+			gen.setStarterBarrack(startBarracks.isSelected());
+
+			startDocks = new JCheckBox();
+			gen.setStarterDock(startDocks.isSelected());
+
 
             ok = new JButton("Done");
 
-            setSize(new Dimension(250, 500));
+            setSize(new Dimension(250, 800));
 
-            setLayout(new GridLayout(14, 1, 10, 10));
+            setLayout(new GridLayout(30, 1, 10, 10));
             add(new JLabel("Random settings"));
 
             add(new JLabel("Seed"));
@@ -78,6 +102,30 @@ public class MapController extends Controller {
 
             add(new JLabel("Wood proportion"));
             add(wood);
+
+            add(new JLabel("Number of Cities to capture/Player"));
+            add(cityRingNb);
+
+            add(new JLabel("Available Barracks"));
+            add(barrackNb);
+
+            add(new JLabel("Available Airports"));
+            add(airportNb);
+
+//            add(new JLabel("Available Docks"));
+//            add(dockNb);
+
+			add(new JLabel("Start Barracks"));
+			add(startBarracks);
+
+			add(new JLabel("Start Airport"));
+			add(startAirport);
+
+			add(new JLabel("Start Docks"));
+			add(startDocks);
+
+            add(new JLabel("Add Missile Silo"));
+            add(silo);
 
             add(ok);
 

@@ -24,7 +24,7 @@ public class MenuController extends Controller {
                                 load;
 
     private boolean listen;
-    public MusicEngine bm = new MusicEngine("./assets/sound/BeyondTheGame.wav");
+    public MusicEngine bm = new MusicEngine("./assets/sound/main.wav");
 
     public class Music implements ActionListener {
      

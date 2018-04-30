@@ -11,6 +11,10 @@ import fr.main.model.MoveZone;
 import fr.main.model.Node;
 import fr.main.model.Universe;
 import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.OwnableBuilding;
+import fr.main.model.buildings.RepairBuilding;
+import fr.main.model.buildings.Headquarter;
+import fr.main.model.buildings.FactoryBuilding;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.CaptureBuilding;
 import fr.main.model.units.HealerUnit;
@@ -46,9 +50,8 @@ public class UnitActionChooser implements java.io.Serializable {
      * Represents the differents states of the FSM
      * Different actions are done depending on the state of the unit
      */
-    static enum State implements java.io.Serializable {
+    public static enum State implements java.io.Serializable {
         AIMLESS   (u -> u::aimless),   // goes by the map without clear objective
-        FLEE      (u -> u::flee),      // flee from an opponent
         REPLENISH (u -> u::replenish), // bring the unit on a tile it can replenish (get fuel, ammo & get healed)
         DEFEND    (u -> u::defend),    // defend a specific tile or building or unit
         ATTACK    (u -> u::attack),    // attack opponents
@@ -63,6 +66,92 @@ public class UnitActionChooser implements java.io.Serializable {
 
         public void apply (UnitActionChooser u){
             action.apply(u).run();
+        }
+
+        private int distance (Point beg, Point end){
+            return Math.abs(beg.x - end.x) + Math.abs(beg.y - end.y);
+        }
+
+        public int move (UnitActionChooser u, Point move){
+            switch(u.getState()){
+                case AIMLESS :
+                    return 0;
+                case REPLENISH :
+                    return - 10 * distance(move, u.getTarget());
+                case DEFEND :
+                    int distance = distance(move, u.getTarget());
+                    return distance <= 3 ? 10 : - 3 * (distance - 2);
+                case ATTACK :
+                    int dist = distance(move, u.getTarget());
+                    return dist == 0 ? -20 : (dist <= 3 ? 10 : - 3 * (dist - 2));
+                case OBJECTIVE :
+                    return u.objective.move(move);
+            }
+            return 0;
+        }
+
+        public int attack (UnitActionChooser u, Point move, AbstractUnit attacked){
+            switch(u.getState()){
+                case AIMLESS :
+                    return 0;
+                case REPLENISH :
+                    return -5;
+                case DEFEND :
+                    return 20;
+                case ATTACK :
+                    return 20;
+                case OBJECTIVE :
+                    return u.objective.attack(move, attacked);
+            }
+            return 0;
+        }
+
+        public int heal (UnitActionChooser u, Point move, AbstractUnit healed){
+            switch(u.getState()){
+                case AIMLESS :
+                    return 0;
+                case REPLENISH :
+                    return 20;
+                case DEFEND :
+                    return 20;
+                case ATTACK :
+                    return 20;
+                case OBJECTIVE :
+                    return u.objective.heal(move, healed);
+            }
+            return 0;
+        }
+
+        public int supply (UnitActionChooser u, Point move){
+            switch(u.getState()){
+                case AIMLESS :
+                    return 0;
+                case REPLENISH :
+                    return 20;
+                case DEFEND :
+                    return 20;
+                case ATTACK :
+                    return 20;
+                case OBJECTIVE :
+                    return u.objective.supply(move);
+            }
+            return 0;
+        }
+
+        public int capture (UnitActionChooser u, OwnableBuilding captured){
+            switch(u.getState()){
+                case AIMLESS :
+                    return 0;
+                case REPLENISH :
+                    return 0;
+                case DEFEND :
+                    return 0;
+                case ATTACK :
+                    return 500;
+                case OBJECTIVE :
+                    return u.objective.capture(captured);
+            }
+            return 0;
         }
     }
 
@@ -79,11 +168,12 @@ public class UnitActionChooser implements java.io.Serializable {
     public final boolean indirect, supply, heal, capture, hide, transport;
 
     public UnitActionChooser(AbstractUnit unit){
-        this.setObjective(null);
         this.unit      = unit;
         this.localMap  = null;
         this.offset    = null;
         this.action    = null;
+        this.target    = null;
+        this.objective = null;
 
         this.indirect  = unit.getPrimaryWeapon() != null && !unit.getPrimaryWeapon().isContactWeapon();
         this.supply    = unit instanceof SupplyUnit;
@@ -92,15 +182,56 @@ public class UnitActionChooser implements java.io.Serializable {
         this.hide      = unit instanceof HideableUnit;
         this.transport = unit instanceof TransportUnit;
 
-        this.state     = findState();
+        findState();
     }
 
     /**
-     * @return the state the unit should be in according to what is around it
+     * finds the state the unit should be in according to what is around it and what is on the map
      */
-    public State findState(){
-        //TODO : real method
-        return State.DEFEND;
+    public void findState(){
+        if (unit.getLife() < 30 || unit.getFuel().getQuantity() < 25 || (unit.getPrimaryWeapon() != null && unit.getPrimaryWeapon().getAmmunition() < 3)) {
+            for (OwnableBuilding b : unit.getPlayer().buildingList())
+                if (b instanceof RepairBuilding && ((RepairBuilding)b).canRepair(unit)){
+                    LinkedList<Direction> path = unit.findPath(b.getLocation(), 3);
+                    if (! path.isEmpty()){
+                        final Objective o = new Objective(b.getLocation(), 0, path);
+                        o.setAction(() -> {
+                            if (unit.position().equals(b.getLocation()))
+                                state = State.REPLENISH;
+                            else
+                                objective = o;
+                        });
+                        target = b.getLocation();
+                        objective = o;
+                        state = State.OBJECTIVE;
+                        return;
+                    }
+                }
+        }
+        for (OwnableBuilding b : ((AIPlayer)unit.getPlayer()).unitControlAI.getObjectives())
+            if (b.getOwner() != unit.getPlayer()){
+                LinkedList<Direction> path = unit.findPath(b.getLocation(), 3);
+                if (! path.isEmpty()){
+                    target = b.getLocation();
+                    objective = new Objective(b.getLocation(), 3, () -> state = State.ATTACK, path);
+                    state = State.OBJECTIVE;
+                    return;
+                }
+            }
+
+        OwnableBuilding b = (new ArrayList<OwnableBuilding>(unit.getPlayer().buildingList())).get((new Random()).nextInt(unit.getPlayer().buildingList().size()));
+        LinkedList<Direction> path = unit.findPath(b.getLocation(), 2);
+        if (path.isEmpty())
+            state = State.AIMLESS;
+        else{
+            target = b.getLocation();
+            objective = new Objective(b.getLocation(), 3, () -> state = State.DEFEND, path);
+            state = State.OBJECTIVE;
+        }
+    }
+
+    public State getState(){
+        return state;
     }
 
     /**
@@ -144,7 +275,7 @@ public class UnitActionChooser implements java.io.Serializable {
         /**
          * The action done once the objective is reached
          */
-        private final Runnable todo;
+        private Runnable todo;
         /**
          * The timer is used to check that an objective is reachable, once the timer is 0 then the objective is re-calculated
          */
@@ -153,6 +284,10 @@ public class UnitActionChooser implements java.io.Serializable {
          * The path to follow to go to the objective, can be checked sometimes to be sure it is still valid
          */
         private final LinkedList<Direction> path;
+
+        public Objective (Point target, int approx, LinkedList<Direction> path){
+            this(target, approx, null, path);
+        }
 
         public Objective(Point target, int approx, Runnable todo, LinkedList<Direction> path){
             this.target = target;
@@ -163,11 +298,11 @@ public class UnitActionChooser implements java.io.Serializable {
         }
 
         public Objective(Point target, Runnable todo, LinkedList<Direction> path){
-            this(target, 0, todo, path);
+            this(target, 2, todo, path);
         }
 
         public Objective(Point target, Runnable todo){
-            this(target, todo, UnitActionChooser.this.unit.findPath(target));
+            this(target, todo, UnitActionChooser.this.unit.findPath(target, 2));
         }
 
         public Point getTarget() {
@@ -178,8 +313,8 @@ public class UnitActionChooser implements java.io.Serializable {
             return approx;
         }
 
-        public Runnable getTodo() {
-            return todo;
+        public void run() {
+            todo.run();
         }
 
         public int getTimer() {
@@ -194,7 +329,7 @@ public class UnitActionChooser implements java.io.Serializable {
             timer --;
             if (timer <= 0){
                 path.clear();
-                path.addAll(UnitActionChooser.this.unit.findPath(target));
+                path.addAll(UnitActionChooser.this.unit.findPath(target, approx));
                 setTimer(5);
             }
         }
@@ -203,28 +338,36 @@ public class UnitActionChooser implements java.io.Serializable {
             return path;
         }
 
-        public void apply(){
-            decreaseTimer();
-
-            Path p = Path.getPath();
-            while (UnitActionChooser.this.unit.isEnabled() && ! path.isEmpty() && p.add(path.getFirst())){
-                path.removeFirst();
-            }
-            if (! p.apply()){
-                path.clear();
-                path.addAll(UnitActionChooser.this.unit.findPath(target));
-            }
-
-            if (UnitActionChooser.this.unit.isEnabled() && 
-                    Math.abs(UnitActionChooser.this.unit.getX() - target.x) + Math.abs(UnitActionChooser.this.unit.getY() - target.y) <= approx){
-                UnitActionChooser.this.setObjective(null);
-                todo.run();
-                if (UnitActionChooser.this.objective == null && UnitActionChooser.this.state == State.OBJECTIVE)
-                    findState();
-            }
-
+        public void setAction(Runnable r){
+            todo = r;
         }
-    } 
+
+        public int move(Point p){
+            Point pt = unit.position();
+            for (int i = 0; i < unit.getMoveQuantity(); i++){
+                if (path.size() >= i + 1)
+                    path.get(i).move(pt);
+            }
+
+            return - ( Math.abs(p.x - target.x) + Math.abs(p.y - target.y) ) * 10;
+        }
+
+        public int attack(Point p, AbstractUnit attacked){
+            return 10;
+        }
+
+        public int heal(Point p, AbstractUnit healed){
+            return 10;
+        }
+
+        public int supply(Point p){
+            return 10;
+        }
+
+        public int capture (OwnableBuilding b){
+            return 500;
+        }
+    }
 
     private Objective objective;
     /**
@@ -232,46 +375,53 @@ public class UnitActionChooser implements java.io.Serializable {
      */
     private Point target;
 
-    /**
-     * Runnable doing what its name indicates : random moves (and only moves for now), TODO : improve it
-     */
+    public Point getTarget(){
+        return target;
+    }
+
     public void aimless (){
-        ArrayList<Point> points = new ArrayList<Point>();
-        for (int i = 0; i < localMap.length; i++)
-            for (int j = 0; j < localMap[i].length; j++)
-                if (localMap[i][j].canStop)
-                    points.add(new Point(i ,j));
-        if (points.isEmpty()) action = () -> {};
-        final Point pt = points.get(rand.nextInt(points.size()));
-        pt.translate(offset.x, offset.y);
-
-        action = () -> {
-            Path path = Path.getPath();
-            path.rebase(unit);
-            path.add(pt);
-            path.apply();
-        };
+        action();
     }
 
     /**
-     * Runnable doing what its name indicates : make the unit flee its position,
-     * the unit will move for a few turn and in opposite directions of opponents
-     */
-    public void flee (){
-        action = () -> {};
-    }
-
-    /**
-     * Runnable doing what its name indicates : take the unit to a building where it may heal
+     * Runnable doing what its name indicates : take the unit to a building where it may replenish
      */
     public void replenish (){
-        action = () -> {};
+        action();
     }
 
     /**
      * Runnable doing what its name indicates : defend a position
      */
     public void defend (){
+        action();
+    }
+
+    /**
+     * Runnable doing what its name indicates : attack a position
+     */
+    public void attack (){
+        action();
+    }
+
+    /**
+     * Runnable doing what its name indicates : activates the objective
+     */
+    public void objective (){
+        objective.decreaseTimer();
+        if (unit.isEnabled() && Math.abs(unit.getX() - target.x) + Math.abs(unit.getY() - target.y) <= objective.getApprox())
+            action = () -> {
+                Objective oo = objective;
+                objective = null;
+                oo.run();
+                if (objective == null && state == State.OBJECTIVE)
+                    findState();
+            };
+        else
+            action();
+    }
+
+    private void action (){
         int actionPoint = - Integer.MIN_VALUE;
 
         UniverseRenderer world = (UniverseRenderer)Universe.get();
@@ -288,8 +438,7 @@ public class UnitActionChooser implements java.io.Serializable {
                         AbstractUnit u = world.getUnit(pt.x + d.x, pt.y + d.y);
 
                         if (unit.canAttack(u)) {
-                            // add points to attack because the mode is DEFENSE and so the attack of opponents is a good thing
-                            int tmp = attack(pt, u) + 15;
+                            int tmp = attack(pt, u);
                             if (tmp > actionPoint){
                                 actionPoint = tmp;
                                 action      = () -> {
@@ -366,7 +515,7 @@ public class UnitActionChooser implements java.io.Serializable {
 
                     if (capture && ((CaptureBuilding)unit).canCapture(world.getBuilding(pt))){
                         final AbstractBuilding building = world.getBuilding(pt);
-                        int tmp = capture(building);
+                        int tmp = capture((OwnableBuilding)building);
                         if (tmp > actionPoint){
                             actionPoint = tmp;
                             action      = () -> {
@@ -412,22 +561,6 @@ public class UnitActionChooser implements java.io.Serializable {
         }
     }
 
-    /**
-     * Runnable doing what its name indicates : attack a position
-     */
-    public void attack (){
-        action = () -> {};
-    }
-
-    /**
-     * Runnable doing what its name indicates : activates the objective
-     */
-    public void objective (){
-        action = objective::apply;
-    }
-
-
-
 
     /* all these methods return how much points it earns to do the corresponding action */
 
@@ -459,7 +592,7 @@ public class UnitActionChooser implements java.io.Serializable {
                 AbstractBuilding aB = u.getBuilding(unit.position());
                 if (aB != null) p += 20;
             }
-        return p;
+        return state.move(this, move) + p;
     }
 
     /**
@@ -470,7 +603,7 @@ public class UnitActionChooser implements java.io.Serializable {
     private int attack         (Point move, AbstractUnit attacked) {
         int a = AbstractUnit.damage(unit,                                 unit.getPrimaryWeapon() != null &&     unit.getPrimaryWeapon().canAttack(unit,attacked), attacked);
         int b = AbstractUnit.damage(attacked, attacked.getLife() - a, attacked.getPrimaryWeapon() != null && attacked.getPrimaryWeapon().canAttack(attacked,unit), unit);
-        return move(move) + (a >= b ? 1 : -1) * (a * attacked.getCost() / 100 - b * unit.getCost() / 100) + (a >= attacked.getLife() ? 10 : 0);
+        return state.attack(this, move, attacked) + move(move) + (a >= b ? 1 : -1) * (a * attacked.getCost() / 100 - b * unit.getCost() / 100) + (a >= attacked.getLife() ? 10 : 0);
     }
 
     /**
@@ -479,7 +612,7 @@ public class UnitActionChooser implements java.io.Serializable {
      * @return how much points it earns to move to the point and then heal the unit
      */
     private int heal           (Point move, AbstractUnit healed) {
-        return move(move) + unit.getPlayer().getFunds() >= healed.getCost() / 10 && healed.getLife() <= 90 ? healed.getCost() / 1000 : 0;
+        return state.heal(this, move, healed) + move(move) + unit.getPlayer().getFunds() >= healed.getCost() / 10 && healed.getLife() <= 90 ? healed.getCost() / 1000 : 0;
     }
 
     /**
@@ -490,15 +623,16 @@ public class UnitActionChooser implements java.io.Serializable {
         int n = 0;
         for (Direction d : Direction.cardinalDirections())
             if (((SupplyUnit)unit).canSupply(Universe.get().getUnit(move.x + d.x, move.y + d.y))) n += 5;
-        return move(move) + n;
+        return state.supply(this, move) + move(move) + n;
     }
 
     /**
      * @param captured is the building to capture
      * @return how much points it earns to move to the building and then capturing it
      */
-    private int capture        (AbstractBuilding captured) {
-        return move(new Point(captured.getX(), captured.getY())) + 400;
+    private int capture        (OwnableBuilding captured) {
+        return state.capture(this, captured) + move(new Point(captured.getX(), captured.getY())) +
+                    (captured instanceof Headquarter ? 1000 : (captured instanceof FactoryBuilding ? 500 : 250));
     }
 
     /**
@@ -506,7 +640,7 @@ public class UnitActionChooser implements java.io.Serializable {
      * @return how much points it earns to move to the point and then hide or reveal (depends on if the unit is already hidden or not)
      */
     private int hide           (Point move){
-        return move(move);
+        return 0;
     }
 
     /**
@@ -524,10 +658,6 @@ public class UnitActionChooser implements java.io.Serializable {
      * @return how much points it earns to move to the point and then remove the unit on the tile specified by the direction
      */
     private int goOutTransport (Point move, AbstractUnit toRemove, Direction dir){
-        return move(move) + 0;
-    }
-
-    public void setObjective(Objective objective) {
-        this.objective = objective;
+        return 0;
     }
 }

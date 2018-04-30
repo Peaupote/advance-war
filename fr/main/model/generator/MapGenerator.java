@@ -3,6 +3,7 @@ package fr.main.model.generator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
+import fr.main.model.terrains.Terrain;
 
 import java.awt.*;
 import java.util.*;
@@ -57,6 +58,8 @@ public class MapGenerator {
         this.starterAirport = false;
         this.starterBarrack = true;
         this.starterDock = false;
+		this.mountainProportion = 50;
+		this.woodProportion = 50;
         buildingCount = 0;
     }
 
@@ -73,6 +76,7 @@ public class MapGenerator {
         this.seed = seed;
         rand = new Random(seed);
         System.out.println("Seed set to : " + seed);
+        seaBandSize = 3;
 
     }
     public void setSeed(int seed) {
@@ -184,11 +188,15 @@ public class MapGenerator {
 	}
 
 	public void setMountainProportion(int mountainProportion) {
-		this.mountainProportion = mountainProportion; // TODO
+		this.mountainProportion = mountainProportion;
+		if(woodProportion + mountainProportion > 100)
+			this.mountainProportion = 100 - woodProportion;
 	}
 
 	public void setWoodProportion(int woodProportion) {
-		this.woodProportion = woodProportion; // TODO
+		if(mountainProportion + woodProportion > 100)
+			this.woodProportion = 100 - mountainProportion;
+		this.woodProportion = woodProportion;
 	}
 
 	public boolean isStarterDock() {
@@ -298,7 +306,8 @@ public class MapGenerator {
             terrainLeft[i] = referenceNb * terrainPortion[i] / 100;
 
         /*
-        	Places the HQs
+        	Places the HQs and other starter buildings, except docks.
+        	Also setting the immuable TerrainEnums.
          */
 
 		currentBuildingLayout = placeHeadQuarters(currentBuildingLayout);
@@ -354,8 +363,15 @@ public class MapGenerator {
         refineMap(currentMap, smoothness);
         currentMap = surroundBySea(currentMap, seaBandSize);
 
-		currentBuildingLayout = placeDocks(currentMap, currentBuildingLayout);
-		// TODO place Docks before making the map. or not.
+        /*
+        	Placing starter Docks.
+         */
+
+		currentBuildingLayout = placeStarterDocks(currentMap, currentBuildingLayout);
+
+		/*
+			Placing different tile types.
+		 */
 
         placeBeach(currentMap);
         currentMap = placeRivers(currentMap);
@@ -365,11 +381,15 @@ public class MapGenerator {
 		int[][] nodes = placeRoadNodes(currentMap, currentBuildingLayout);
 		placeRoads(currentMap, currentBuildingLayout, nodes);
 
+		/*
+			Cleaning the tile map.
+		 */
 
         clean(currentMap);
 
-
-
+		/*
+			Last operations,
+		 */
 
 		lastBuildingLayout = currentBuildingLayout;
         currentBuildingLayout = null;
@@ -380,6 +400,10 @@ public class MapGenerator {
         return lastMap;
     }
 
+	/**
+	 * @param layout
+	 * Sets the current HQs coordinates.
+	 */
 	private void setCurrentHQCoordinates(AbstractBuilding[][] layout) {
 		LinkedList<Headquarter> hqs = new LinkedList<>();
 
@@ -396,17 +420,30 @@ public class MapGenerator {
 		}
 	}
 
+	/**
+	 * Resets currentHQcoordinates to null.
+	 */
 	public void resetCurrentHQCorrdinates() {
 		currentHQCoordinates = null;
 	}
 
+	/**
+	 * @param min
+	 * @param max
+	 * @param i
+	 * @return i made in bound of [min, max].
+	 */
 	private int makeInBound(int min, int max, int i) {
 		if(i < min) i = min;
 		else if (i > max) i = max;
 		return i;
 	}
 
-    private void printCoorArray(int[][] array) {
+	/**
+	 * @param array
+	 * Prints in the terminal an array of coordinates.
+	 */
+	private void printCoorArray(int[][] array) {
     	String str = "";
     	for(int[] l : array) {
     		str = "(";
@@ -416,7 +453,11 @@ public class MapGenerator {
 		}
 	}
 
-    private AbstractBuilding[][] placeStarterBuildings(AbstractBuilding[][] layout) {
+	/**
+	 * @param layout
+	 * @return building layout with placed starter building except the docks (seperate function)
+	 */
+	private AbstractBuilding[][] placeStarterBuildings(AbstractBuilding[][] layout) {
 		int[][] hqs = getCurrentHQCoordinates();
 
 		if(hqs == null)  {
@@ -472,15 +513,17 @@ public class MapGenerator {
 			}
 		}
 
-
-		/*
-			TODO : test placeStarterBuilings and maybe add more ? EDIT: problem - function not placing the buildings.
-		 */
-
 		return layout;
 	}
 
-	private AbstractBuilding[][] placeDocks(TerrainEnum[][] map, AbstractBuilding[][] layout) {
+	/**
+	 * @param map
+	 * @param layout
+	 * @return building layout with placed starter Docks.
+	 */
+	private AbstractBuilding[][] placeStarterDocks(TerrainEnum[][] map, AbstractBuilding[][] layout) {
+		if(!starterDock) return layout;
+
 		int[][] hqs = getCurrentHQCoordinates();
 		int randNb;
 		for(int[] coor : hqs) {
@@ -516,6 +559,11 @@ public class MapGenerator {
 		return layout;
 	}
 
+	/**
+	 * @param mapHeight
+	 * @param mapWidth
+	 * @return building layout with placed HQs.
+	 */
 	private AbstractBuilding[][] placeHeadQuarters(int mapHeight, int mapWidth) {
     	AbstractBuilding[][] layout = new AbstractBuilding[mapHeight][mapWidth];
 		for(int i = 0; i < mapHeight; i ++)
@@ -525,7 +573,11 @@ public class MapGenerator {
 		return placeHeadQuarters(layout);
     }
 
-    private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
+	/**
+	 * @param layout
+	 * @return building layout with placed HQs.
+	 */
+	private AbstractBuilding[][] placeHeadQuarters(AbstractBuilding[][] layout) {
     	int x = layout.length,
 				y = layout[0].length;
     	int randNb = rand.nextInt(3);
@@ -608,6 +660,11 @@ public class MapGenerator {
 		return layout;
 	}
 
+	/**
+	 * @param layout
+	 * @param distanceFromSide
+	 * @return an array of Abstract building on the tiles distant of distanceFromSide for each side.
+	 */
 	private AbstractBuilding[] getRectangleFromSide(AbstractBuilding[][] layout, int distanceFromSide) {
 		int lw = layout[0].length;
 		int lh = layout.length;
@@ -643,23 +700,64 @@ public class MapGenerator {
 		return rectangle;
 	}
 
+	/**
+	 * @param layout
+	 * @param x0
+	 * @param y0
+	 * @return array of AbstractBuildings on the tiles on the side of a square of size
+	 * 3 and of center (x0, y0).
+	 */
 	private AbstractBuilding[] getSquare(AbstractBuilding[][] layout, int x0, int y0) {
 		return getSquare(layout, x0, y0, 1);
 	}
 
+	/**
+	 * @param layout
+	 * @param x0
+	 * @param y0
+	 * @param dist
+	 * @return array of AbstractBuildings on the tiles on the side of a square of size
+	 * dist * 2 + 1 and of center (x0, y0).
+	 */
 	private AbstractBuilding[] getSquare(AbstractBuilding[][] layout, int x0, int y0, int dist) {
     	return getRectangle(layout, x0, y0, dist, dist);
 	}
 
+	/**
+	 * @param layout
+	 * @param x0
+	 * @param y0
+	 * @param distH
+	 * @param distW
+	 * @return array of AbstractBuildings on the tiles on the side of a rectangle of size
+	 * (distH * 2 + 1)x(distW * 2 + 1) and of center (x0, y0).
+	 */
 	private AbstractBuilding[] getRectangle(AbstractBuilding[][] layout, int x0, int y0, int distH, int distW) {
     	if(layout == null) return new AbstractBuilding[0];
     	return coordinatesToAbstractBuilding(getRectangle(layout.length, layout[0].length, x0, y0, distH, distW), layout);
 	}
 
+	/**
+	 * @param height
+	 * @param width
+	 * @param x0
+	 * @param y0
+	 * @return coordinates of tiles on the sides of a square of center (x0, y0)
+	 * and of size 3.
+	 */
 	private int[][] getSquare(int height, int width, int x0, int y0) {
     	return getSquare(height, width, x0, y0, 1);
 	}
 
+	/**
+	 * @param height
+	 * @param width
+	 * @param x0
+	 * @param y0
+	 * @param dist
+	 * @return coordinates of tiles on the sides of a square of center (x0, y0)
+	 * and of size dist * 2 + 1.
+	 */
 	private int[][] getSquare(int height, int width, int x0, int y0, int dist) {
     	return getRectangle(height, width, x0, y0, dist, dist);
 	}
@@ -717,6 +815,15 @@ public class MapGenerator {
 		return  coorArrayFromLinkedList(list);
 	}
 
+	/**
+	 * @param height
+	 * @param width
+	 * @param x0
+	 * @param y0
+	 * @param distFromCenter
+	 * @return tiles on the sides of a diamond of center (x0, y0)
+	 * and diagonals of length distFromCenter * 2.
+	 */
 	private int[][] getDiamond (int height, int width, int x0, int y0, int distFromCenter) {
 		if(distFromCenter < 0) throw new IllegalArgumentException();
 		int[][] out;
@@ -764,6 +871,11 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(coors);
 	}
 
+	/**
+	 * Sets buildingCount variable.
+	 * @param layout
+	 * @return building count.
+	 */
 	private int setBuildingCount(AbstractBuilding[][] layout) {
 		int i = 0;
 
@@ -774,91 +886,11 @@ public class MapGenerator {
 		return i;
 	}
 
-	private AbstractBuilding[] getCircle(AbstractBuilding[][] layout, int x0, int y0, int radius) {
-		if(layout == null) return new AbstractBuilding[0];
-		return coordinatesToAbstractBuilding(getCircle(layout.length, layout[0].length, x0, y0, radius), layout);
-	}
-
-	private int[][] getCircle(int heigh, int width, int x0, int y0, int radius) {
-		// TODO: remove if unecessary.
-		int x = radius-1;
-		int y = 0;
-		int dx = 1;
-		int dy = 1;
-		int err = dx - (radius << 1);
-
-		int size = 0;
-
-		// Calculating the final size of the array returned.
-		while (x >= y) {
-			size += 8;
-
-			if (err <= 0) {
-				y++;
-				err += dy;
-				dy += 2;
-			}
-
-			if (err > 0) {
-				x--;
-				dx += 2;
-				err += dx - (radius << 1);
-			}
-		}
-
-		// Now we get all the coordinates on the circle.
-		int[][] IList = new int[size][2];
-
-		x = radius-1;
-		y = 0;
-		dx = 1;
-		dy = 1;
-		err = dx - (radius << 1);
-
-		int count = 0;
-
-		while (x >= y) {
-			IList[count][0] = x0 + x;
-			IList[count][1] = y0 + y;
-			count ++;
-
-			if (err <= 0) {
-				y++;
-				err += dy;
-				dy += 2;
-			}
-
-			if (err > 0) {
-				x--;
-				dx += 2;
-				err += dx - (radius << 1);
-			}
-		}
-
-		// Mirror first Octant.
-		for(int i = count - 1; i >= 0; i --) {
-			IList[count][0] = IList[i][1];
-			IList[count][1] = IList[i][0];
-			count ++;
-		}
-
-		// Mirror first Quarter.
-		for(int i = count - 1; i >= 0; i --) {
-			IList[count][0] = -IList[i][0];
-			IList[count][1] = IList[i][1];
-			count ++;
-		}
-
-		// Mirror first Half.
-		for(int i = count - 1; i >= 0; i --) {
-			IList[count][0] = IList[i][0];
-			IList[count][0] = -IList[i][1];
-			count ++;
-		}
-
-		return IList;
-	}
-
+	/**
+	 * @param coors
+	 * @param layout
+	 * @return an array of building from coordinates.
+	 */
 	private AbstractBuilding[] coordinatesToAbstractBuilding(int[][] coors, AbstractBuilding[][] layout) {
     	int count = 0;
 
@@ -879,12 +911,25 @@ public class MapGenerator {
     	return out;
 	}
 
+	/**
+	 * @param map
+	 * @param x
+	 * @param y
+	 * @param type
+	 * @return coordinates to the nearest TerrainEnums of type 'type'.
+	 */
 	private int[][] findNearestTerrainEnums(TerrainEnum[][] map, int x, int y, TerrainEnum type) {
 		TerrainEnum[] types = {type};
 		return findNearestTerrainEnums(map, x, y, types);
 	}
 
-
+	/**
+	 * @param map
+	 * @param x
+	 * @param y
+	 * @param types
+	 * @return coordinates to the nearest TerrainEnums of type from 'types'.
+	 */
 	private int[][] findNearestTerrainEnums(TerrainEnum[][] map, int x, int y, TerrainEnum[] types) {
 		int[][] dmnd;
 		int[][] out;
@@ -910,6 +955,13 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(found);
 	}
 
+	/**
+	 * @param height
+	 * @param width
+	 * @param x
+	 * @param y
+	 * @return the coordinates of the tiles adjacent (in a cross) to tile (x, y).
+	 */
 	public static int[][] getCross(int height, int width, int x, int y) {
 		LinkedList<int[]> list = new LinkedList<>();
 		int[] item;
@@ -946,6 +998,10 @@ public class MapGenerator {
 		return getCross(currentMap.length, currentMap[0].length, x, y);
 	}
 
+	/**
+	 * @param list
+	 * @return an array of coordinates from a LinkedList of coordinates.
+	 */
 	public static int[][] coorArrayFromLinkedList(LinkedList<int[]> list) {
 		int[][] out = new int[list.size()][2];
 
@@ -957,6 +1013,12 @@ public class MapGenerator {
 		return out;
 	}
 
+	/**
+	 * @param layout of buildings.
+	 * @param map of tiles.
+	 * @return map with setted mLocations that will remain unchanged until the end of
+	 * the generation of the map.
+	 */
 	private TerrainEnum[][] setImmuableTerrain(AbstractBuilding[][] layout, TerrainEnum[][] map) {
     	for(int i = 0; i < layout.length; i ++)
     		for(int j = 0; j < layout[0].length; j ++) {
@@ -983,6 +1045,10 @@ public class MapGenerator {
 	}
 
 
+	/**
+	 * @param map
+	 * @return map with all mLocation transformed to lowland tiles.
+	 */
 	private TerrainEnum[][] resetImmuableTerrain(TerrainEnum[][] map) {
     	for(TerrainEnum[] line : map)
     		for(TerrainEnum t : line)
@@ -1047,7 +1113,11 @@ public class MapGenerator {
         return refineMap(map, 1);
     }
 
-    private TerrainEnum[][] cellAutomaton(TerrainEnum[][] map) {
+	/**
+	 * @param map
+	 * @return map of tiles after being refined by this cellular automaton.
+	 */
+	private TerrainEnum[][] cellAutomaton(TerrainEnum[][] map) {
         TerrainEnum[][] mapBis = new TerrainEnum[map.length][map[0].length];
         int count;
 
@@ -1070,7 +1140,11 @@ public class MapGenerator {
         return mapBis;
     }
 
-    private TerrainEnum[][] placeBeach(TerrainEnum[][] map) {
+	/**
+	 * @param map
+	 * @return map of tiles with placed beach tiles.
+	 */
+	private TerrainEnum[][] placeBeach(TerrainEnum[][] map) {
         int count;
 
         for(int i = 0; i < map.length; i ++) {
@@ -1112,7 +1186,12 @@ public class MapGenerator {
         return map;
     }
 
-    private AbstractBuilding[][] placeBuildings(AbstractBuilding[][] layout, TerrainEnum[][] map) {
+	/**
+	 * @param layout of buildings.
+	 * @param map of tiles.
+	 * @return building layout with placed buildings.
+	 */
+	private AbstractBuilding[][] placeBuildings(AbstractBuilding[][] layout, TerrainEnum[][] map) {
     	LinkedList<AbstractBuilding> bs;
 
 		System.out.println("Cities");
@@ -1164,7 +1243,14 @@ public class MapGenerator {
 		return layout;
 	}
 
-    private AbstractBuilding[][] placeBuildingRing(AbstractBuilding[][] layout, TerrainEnum[][] map , LinkedList<AbstractBuilding> buildings, int distFromCenter) {
+	/**
+	 * @param layout of buildings.
+	 * @param map of tiles.
+	 * @param buildings to place.
+	 * @param distFromCenter of the sides of the rectangle.
+	 * @return layout with placed buildings on a rectangle.
+	 */
+	private AbstractBuilding[][] placeBuildingRing(AbstractBuilding[][] layout, TerrainEnum[][] map , LinkedList<AbstractBuilding> buildings, int distFromCenter) {
     	if(buildings.size() == 0) {
     		System.out.println("Building array size is 0");
     		System.exit(500);
@@ -1216,15 +1302,18 @@ public class MapGenerator {
 	}
 
 
-
+	/**
+	 * @param map
+	 * @return map with placed mountain and hill tiles.
+	 */
     private TerrainEnum[][] placeMountainsHills(TerrainEnum[][] map) {
-    	// TODO affine
+		if(mountainProportion == 0) return map;
         int mountains = 0;
         for(int i = 0; i < map.length; i ++)
             for(int j = 0; j < map[0].length; j ++) {
                 if(map[i][j] == lowland && getAdjacentTerrainNb(map, i, j, bridge) == 0) {
                     mountains = getAdjacentTerrainNb(map, i, j, mountain);
-                    if(mountains == 0 && rand.nextInt(15) < 1) map[i][j] = mountain;
+                    if(mountains == 0 && rand.nextInt(20 - (int)((float) mountainProportion / 5.55)) < 1) map[i][j] = mountain;
                     else if(mountains > 0 && rand.nextInt(15) < 4) map[i][j] = mountain;
                     else if(mountains == 0 && rand.nextInt(12) < 2) map[i][j] = hill;
                     else if((mountains > 0 || getAdjacentTerrainNb(map, i, j, hill) > 0)
@@ -1234,54 +1323,35 @@ public class MapGenerator {
         return map;
     }
 
-    private TerrainEnum[][] placeWood(TerrainEnum[][] map) {
+	/**
+	 * @param map
+	 * @return map with placed wood tiles.
+	 */
+	private TerrainEnum[][] placeWood(TerrainEnum[][] map) {
+    	if(woodProportion == 0) return map;
         for(int i = 0; i < map.length; i ++)
             for(int j = 0; j < map[0].length; j ++) {
                 if(map[i][j] == lowland || map[i][j] == hill)
                     if(getAdjacentTerrainNb(map, i, j, wood) == 0)
-                        map[i][j] = (rand.nextInt(12) < 2) ? wood : map[i][j];
-                    else map[i][j] = (rand.nextInt(10) < 2) ? wood: map[i][j];
+                        map[i][j] = (rand.nextInt(20 - (int)((float) woodProportion / 5.55)) < 2) ? wood : map[i][j];
+                    else map[i][j] = (rand.nextInt(10 - (int)((float) woodProportion / 11.1)) < 2) ? wood: map[i][j];
             }
         return map;
     }
 
-	private TerrainEnum[][] makeValidLowland (TerrainEnum[][] map) {
-        for(int i = 0; i < map.length; i ++) {
-            for(int j = 0; j < map[0].length; j ++) {
-                if(map[i][j] == sea) continue;
-                int right = terrainTypeNb(map, i, j, lowland, 0, 2),
-                        left = terrainTypeNb(map, i, j, lowland, 2, 2),
-                        down = terrainTypeNb(map, i, j, lowland, 1, 2),
-                        up = terrainTypeNb(map, i, j, lowland, 3, 2);
-                  if(left + right == 1 || up + down == 1) map[i][j] = sea;
-            }
-        }
-        int[] terrainNb = new int[4];
-        for(int i = 0; i < map.length; i ++) {
-            for(int j = 0; j < map[0].length; j ++) {
-                if(map[i][j] == sea) continue;
-                terrainNb[0] = terrainTypeNb(map, i, j, lowland, 0, 1);
-                terrainNb[1] = terrainTypeNb(map, i, j, lowland, 1, 1);
-                terrainNb[2]= terrainTypeNb(map, i, j, lowland, 2, 1);
-                terrainNb[3]= terrainTypeNb(map, i, j, lowland, 3, 1);
-
-                switch(terrainNb[0] + terrainNb[1] + terrainNb[2] + terrainNb[3]) {
-                    case 0 : map[i][j] = sea; break;
-                    case 1 : map[i][j] = sea; break;
-                    case 2 : validLowland2(map, terrainNb, i, j); break;
-                    case 3 : validLowland3(map, terrainNb, i, j); break;
-                }
-
-            }
-        }
-
-        return map;
-    }
-
+	/**
+	 * @param b
+	 * @return true if b is not null and not a GenericBuilding.
+	 */
 	public static boolean isNonGenericBuilding(AbstractBuilding b) {
     	return b != null && !(b instanceof GenericBuilding);
 	}
 
+	/**
+	 * @param map to clean.
+	 * @param it number of iterations.
+	 * @return cleaned map.
+	 */
     private TerrainEnum[][] clean(TerrainEnum[][] map, int it) {
     	resetImmuableTerrain(map);
     	for(int i = 0; i < it; i ++)
@@ -1289,6 +1359,10 @@ public class MapGenerator {
     	return map;
 	}
 
+	/**
+	 * @param layout to clean.
+	 * @return layout with last modifications left from the different gen algorithms.
+	 */
 	private AbstractBuilding[][] clean(AbstractBuilding[][] layout) {
     	for(int i = 0; i < layout.length; i++)
     		for(int j = 0; j < layout[0].length; j ++) {
@@ -1301,13 +1375,21 @@ public class MapGenerator {
 		return layout;
 	}
 
-    private TerrainEnum[][] clean (TerrainEnum[][] map) {
+	/**
+	 * @param map to clean.
+	 * @return map with last modifications left from the different gen algorithms.
+	 */
+	private TerrainEnum[][] clean (TerrainEnum[][] map) {
+		TerrainEnum[] naval = {reef, sea, river};
+		TerrainEnum[] land = {wood, lowland, mLowland, mountain, hill, road};
+
 		for (int i = 0; i < map.length; i++)
 			for (int j = 0; j < map[0].length; j++) {
 				switch (map[i][j]) {
+					case lowland:
+						map = cleanLowland(map, i, j);
 					case beach:
-						TerrainEnum[] goodTerrains = {wood, lowland, mLowland, mountain, hill, road};
-						if (getAdjacentTerrainNb(map, i, j, sea) >= 3 && getAdjacentTerrainNb(map, i, j, goodTerrains) == 0)
+						if (getAdjacentTerrainNb(map, i, j, sea) >= 3 && getAdjacentTerrainNb(map, i, j, land) == 0)
 							map[i][j] = sea;
 						else if (getAdjacentTerrainNb(map, i, j, beach) < 3)
 							map[i][j] = lowland;
@@ -1321,6 +1403,10 @@ public class MapGenerator {
 							map[i][j] = wood;
 						break;
 					case road:
+						if(isSandwiched(map, i, j, naval)
+								&& getAdjacentTerrainNb(map, i, j, naval) == 2)
+							map[i][j] = bridge;
+
 						int[][] sqr = getFilledSquare(map.length, map[0].length, i, j, 2);
 						boolean clean = sqr.length == 0 ? true : false;
 
@@ -1339,6 +1425,10 @@ public class MapGenerator {
 								map[sqr[k][0]][sqr[k][1]] = lowland;
 							}
 						}
+						break;
+					case bridge:
+						if(getAdjacentTerrainNb(map, i, j, naval) >= 3)
+							map[i][j] = sea;
 						// TODO : put every cleaning procedure here.
 				}
 				if(isNonGenericBuilding(currentBuildingLayout[i][j]))
@@ -1350,11 +1440,37 @@ public class MapGenerator {
 		return map;
 	}
 
-	private TerrainEnum[][] cleanRoads(TerrainEnum[][] map, int i, int j) {
-    	return null;
+	/**
+	 * @param map
+	 * @param x
+	 * @param y
+	 * @return Cleaned map from tile (x, y).
+	 */
+	private TerrainEnum[][] cleanLowland(TerrainEnum[][] map, int x, int y) {
+		TerrainEnum[] land = {mountain, lowland, mLowland, hill, wood, road};
+		if(isInMap(map, x + 2, y) && map[x + 2][y] == sea && isInMap(map, x + 1, y) && map[x + 1][y] == sea) {
+			if(isInMap(map, x, y + 1) && map[x][y + 1] == sea
+					&& isInMap(map, x + 2, y + 1) && hasMatch(land, map[x + 2][y + 1])
+					&& isInMap(map, x + 1, y + 1) && map[x + 1][y + 1] == sea)
+				map[x + 2][y + 1] = sea;
+			if(isInMap(map, x, y - 1) && map[x][y - 1] == sea
+					&& isInMap(map, x + 2, y - 1) && hasMatch(land, map[x + 2][y - 1])
+					&& isInMap(map, x + 1, y - 1) && map[x + 1][y - 1] == sea)
+				map[x + 2][y - 1] = sea;
+		}
+
+		return map;
 	}
 
 
+	/**
+	 * @param mapHeight
+	 * @param mapWidth
+	 * @param x0 of top left corner.
+	 * @param y0 of top left corner.
+	 * @param size or square side.
+	 * @return the coordinates of tiles from a square.
+	 */
 	private int[][] getFilledSquare(int mapHeight, int mapWidth, int x0, int y0, int size) {
     	LinkedList<int[]> out = new LinkedList<>();
 
@@ -1375,37 +1491,20 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(out);
 	}
 
+	/**
+	 * @param a
+	 * @param b
+	 * @return true if a is b
+	 */
 	private boolean isSame(int[] a, int[] b) {
     	return a[0] == b[0] && a[1] == b[1];
 	}
 
-    private void validLowland2 (TerrainEnum[][] map, int[] adj, int x, int y) {
-        if(adj[0] == adj[2]) return;
-		TerrainEnum[][] out = map.clone();
-        if(adj[0] + adj[1] == 2 && map[x + 1][y + 1] == sea
-                || adj[1] + adj[2] == 2 && map[x - 1][y + 1] == sea
-                || adj[2] + adj[3] == 2 && map[x - 1][y - 1] == sea
-                || adj[3] + adj[0] == 2 && map[x + 1][y - 1] == sea)
-            map[x][y] = sea;
-    }
-
-    private void validLowland3 (TerrainEnum[][] map, int[] adj, int x, int y) {
-        if(adj[0] == 0) {
-            if(isInMap(map,x - 1, y - 1)) map[x - 1][y - 1] = lowland;
-            if(isInMap(map,x - 1, y + 1)) map[x - 1][y + 1] = lowland;
-        } else if(adj[1] == 0) {
-            if(isInMap(map,x - 1, y - 1)) map[x - 1][y - 1] = lowland;
-            if(isInMap(map,x + 1, y - 1)) map[x + 1][y - 1] = lowland;
-        } else if(adj[2] == 0) {
-            if(isInMap(map,x + 1, y - 1)) map[x + 1][y - 1] = lowland;
-            if(isInMap(map,x + 1, y + 1)) map[x + 1][y + 1] = lowland;
-        } else if(adj[3] == 0) {
-            if(isInMap(map,x - 1, y + 1)) map[x - 1][y + 1] = lowland;
-            if(isInMap(map,x + 1, y + 1)) map[x + 1][y + 1] = lowland;
-        }
-    }
-
-    private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
+	/**
+	 * @param map
+	 * @return map with placed river tiles.
+	 */
+	private TerrainEnum[][] placeRivers (TerrainEnum[][] map) {
 		TerrainEnum[] land = {lowland, bridge, mountain, hill, wood}, naval = {none, sea, river};
 
     	for(int i = 0; i < map.length; i ++)
@@ -1427,38 +1526,13 @@ public class MapGenerator {
     	return map;
 	}
 
-	private boolean isSurrounded(TerrainEnum[][] map, TerrainEnum type, int x, int y) {
-        for(int i = x - 1; i <= x + 1; i ++)
-            for(int j = y - 1; j <= y + 1; j ++)
-                if(isInMap(map, i, j) && map[i][j] != type)
-                    return false;
-        return true;
-    }
 
-	private int getSurroundingTerrainNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, Boolean direction, int range) {
-        // Direction: true = horizontal; false = vertical.
-        int beginning = 0, end = 0, count = 0;
-
-        if(direction) {
-            if(x - range < 0) beginning = 0;
-            else beginning = x - range;
-            if(x + range >= map.length) end = map.length - 1;
-            else end = x + range;
-        } else {
-            if(y - range < 0) beginning = 0;
-            else beginning = y - range;
-            if(y + range >= map[0].length) end = map[0].length - 1;
-            else end = y + range;
-        }
-
-        for(int i = beginning; i <= end; i ++) {
-            if(direction && i == x || !direction && i == y) continue;
-            if(direction && map[i][y] == type || !direction && map[x][i] == type) count ++;
-        }
-
-        return count;
-    }
-
+	/**
+	 * @param map
+	 * @param x
+	 * @param y
+	 * @return tiles of a square of size 3 with (x, y) as center.
+	 */
 	public static TerrainEnum[] getSurroundingTerrain(TerrainEnum[][] map, int x, int y) {
     	TerrainEnum[] out = new TerrainEnum[8];
     	Arrays.fill(out, none);
@@ -1475,7 +1549,7 @@ public class MapGenerator {
 		return out;
 	}
 
-    public static boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
+	public static boolean isSandwiched(TerrainEnum map[][], int x, int y, TerrainEnum type) {
     	return isSandwiched(map, x, y, type, true) || isSandwiched(map, x, y, type, false);
 	}
 
@@ -1498,22 +1572,6 @@ public class MapGenerator {
 			if(t == type) return true;
 		return false;
 	}
-
-    private int terrainTypeNb(TerrainEnum[][] map, int x, int y, TerrainEnum type, int direction, int range) {
-        int count = 0;
-        switch (direction) {
-            case 0: for(int i = 1; i <= range && x + i < map.length; i ++) if(map[x + i][y] == type) count ++; else break;
-                break;
-            case 1: for(int i = 1; i <= range && y + i < map[0].length; i ++) if(map[x][y + i] == type) count ++; else break;
-                break;
-            case 2: for(int i = 1; i <= range && x - i >= 0; i ++) if(map [x - i][y] == type) count ++; else break;
-                break;
-            case 3: for(int i = 1; i <= range && y - i >= 0; i ++) if(map [x][y - i] == type) count ++; else break;
-                break;
-            default: System.out.println("Wrong argument in terrainTypeNb : direction = " + direction);
-        }
-        return count;
-    }
 
 	/**
 	 * @param map
@@ -1596,6 +1654,12 @@ public class MapGenerator {
 		return coorArrayFromLinkedList(list);
 	}
 
+	/**
+	 * @param map
+	 * @param layout
+	 * @param roadNodes
+	 * @return map with placed road tiles.
+	 */
 	private TerrainEnum[][] placeRoads(TerrainEnum[][] map, AbstractBuilding[][] layout, int[][] roadNodes) {
 		int[][] weights = getWeights(map);
 		boolean[][] blocks = getBlocks(layout);
@@ -1650,6 +1714,10 @@ public class MapGenerator {
     	return i >= 0 ? i : -i;
 	}
 
+	/**
+	 * @param map
+	 * @return an array of array of weights for the pathfinding algo for the roads placement.
+	 */
 	private int[][] getWeights(TerrainEnum[][] map) {
 		int[][] weights = new int[map.length][map[0].length];
 
@@ -1671,6 +1739,11 @@ public class MapGenerator {
 		return weights;
 	}
 
+	/**
+	 * @param layout
+	 * @return an array of array of boolean reprensenting if a can be a road or not
+	 * for the pathfinding algo for the roads placement.
+	 */
 	private boolean[][] getBlocks(AbstractBuilding[][] layout) {
     	boolean[][] blocks = new boolean[layout.length][layout[0].length];
     	for(int i = 0; i < layout.length; i ++)

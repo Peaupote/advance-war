@@ -42,9 +42,9 @@ public class MapController extends Controller {
             super(parent, title, modal);
             gen = new MapGenerator(10, ps.length);
 
-            width   = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
+            width   = new JSlider(JSlider.HORIZONTAL, 20, 60, 30);
             gen.setMapWidth(width.getValue());
-            height  = new JSlider(JSlider.HORIZONTAL, 100, 500, 100);
+            height  = new JSlider(JSlider.HORIZONTAL, 20, 60, 30);
             gen.setMapHeight(height.getValue());
             seed    = new JSlider(JSlider.HORIZONTAL, Integer.MIN_VALUE, Integer.MAX_VALUE, (new Random()).nextInt());
             gen.setSeed(seed.getValue());

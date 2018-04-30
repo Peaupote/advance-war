@@ -76,7 +76,7 @@ public class EditorController extends Controller {
         arrowButtons = new Rectangle[4];
         for (int i = 0; i < 4; i++)
             arrowButtons[i] = new Rectangle(0,0,0,0);
-        generate(50, 50, 2, 50, 10, 10);
+        generate(35, 35, 2, 50, 10, 10);
 
         save = e -> world.save(JOptionPane.showInputDialog("Map's name:"));
         open = e -> {

@@ -22,6 +22,9 @@ import fr.main.view.render.terrains.naval.*;
 
 import static fr.main.model.TerrainEnum.*;
 
+/**
+ *  Sets all Terrain locations and Renderer.
+ */
 public class TerrainRenderer {
 
 	private static HashMap<TerrainLocation, Render> renderers = new HashMap<>();
@@ -82,7 +85,6 @@ public class TerrainRenderer {
 					nameNorm += s.loc.getPath() + s.x + s.y;
 					nameSnow += s.loc.getPath() + s.x + s.y;
 
-//					System.out.println(nameNorm);
 				} catch (NullPointerException e) {
 					System.out.println(e.toString());
 					break;
@@ -90,12 +92,7 @@ public class TerrainRenderer {
 			}
 
 			Sprite normSprite = new Sprite(nameNorm, baseNormal);
-			@SuppressWarnings("unused")
 			Sprite snowSprite = new Sprite(nameSnow, baseSnow);
-
-//			if(normSprite.getSprite() == null)
-//        		System.out.println("Error in TerrainRenderer constructor : Sprite null");
-
 			AnimationState normal = new AnimationState(new SpriteList(Sprite.getSprite(nameNorm)), 20);
 			AnimationState snow = new AnimationState(new SpriteList(Sprite.getSprite(nameSnow)), 20);
 
@@ -142,7 +139,7 @@ public class TerrainRenderer {
 		else if (location instanceof TerrainLocation.GenericTerrainLocation)
 			renderers.put(location, new SeaRenderer((TerrainLocation.GenericTerrainLocation) location));
 		else {
-			System.err.println("ERROR in TerrainRenderer");
+//			System.err.println("ERROR in TerrainRenderer");
 			return null;
 //			System.exit(10);
 		}
@@ -481,7 +478,6 @@ public class TerrainRenderer {
 
 	private static TerrainEnum[] terrainCross(TerrainEnum[][] tEnum, int x, int y) {
 		TerrainEnum[] cross = new TerrainEnum[4];
-		@SuppressWarnings("unused")
 		int count = 0;
 
 		cross[0] = isInMap(x - 1, y) ? tEnum[x - 1][y] : TerrainEnum.none;

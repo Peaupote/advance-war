@@ -60,6 +60,16 @@ public class PlayerIt implements Iterable<Player> {
             }
             return false;
         }
+
+        public void setCurrent(Player current){
+            index = 0;
+            for (Player p : ps){
+                if (p == current) break;
+                index ++;
+            }
+
+            if (index == ps.length) System.out.println("error unknown player");
+        }
     }
 
     /**

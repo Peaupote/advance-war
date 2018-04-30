@@ -16,6 +16,7 @@ import java.util.Date;
 import fr.main.model.PlayerIt.Cycle;
 import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
+import fr.main.model.players.AIPlayer;
 import fr.main.model.terrains.AbstractTerrain;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.HideableUnit;
@@ -39,12 +40,12 @@ public class Universe {
     /**
      * The path to the directory where maps are saved.
      */
-    public static final String mapPath="maps/";
+    public static final String mapPath = "./maps/";
 
     /**
      * boolean set to true if and only if the game can be saved.
      */
-    public static boolean save=false;
+    public static boolean save = false;
 
 
     static{
@@ -92,7 +93,33 @@ public class Universe {
         }
 
         public Board setPlayers(Player[] ps){
-            return new Board(units, ps, board, buildings, weather, current, day);
+            Board board = new Board(units, ps, this.board, buildings, weather, current, day);
+
+            for (int i = 0; i < this.players.length; i++){
+                if (current == this.players[i]){
+                    if (i >= ps.length){
+                        board.current = null;
+                        day ++;
+                    }else board.current = ps[i];
+                }
+                Headquarter hq = null;
+                for (OwnableBuilding bu : this.players[i].buildingList())
+                    if (bu instanceof Headquarter){
+                        hq = (Headquarter)bu;
+                        break;
+                    }
+
+                Player tmp     = i >= 0 && i < ps.length ? ps[i] : null;
+                if (hq == null)
+                    System.out.println("No HQ for " + tmp.name + "from " + players[i].name);
+                else{
+                    hq.changeOwner(tmp);
+                    if (tmp == null)
+                        board.buildings[hq.getY()][hq.getX()] = new City(null, new Point (hq.getX(), hq.getY()));
+                } 
+            }
+
+            return board;
         }
     }
 
@@ -128,62 +155,16 @@ public class Universe {
         if (map.players != null){
             players  = new PlayerIt(map.players).cycle();
             if (map.current == null) next();
-            else
-                while(map.current != players.next()){}
+            else{
+                players.setCurrent(map.current);
+                updateVision();
+            } 
         }else players = null;
-
-        /*
-            Buildings and units created artificially, will be removed when the tests will be done and when the map generator will create buildings
-        */
-
-//        if (map.players != null && map.buildings[7][5] == null){
-//            map.buildings[7][5] = new Dock(map.players[0], new Point(5,7));
-//            map.buildings[7][4] = new Airport(map.players[1], new Point(4,7));
-//            map.buildings[7][3] = new Airport(map.players[0], new Point(3,7));
-//            map.buildings[7][2] = new Barrack(null, new Point(2,7));
-//            map.buildings[6][2] = new Barrack(map.players[1], new Point(2,6));
-//            map.buildings[5][2] = new Headquarter(map.players[0], new Point(2,5));
-//            map.buildings[5][3] = new Headquarter(map.players[1], new Point(3,5));
-//            if (map.players.length > 2)
-//                map.buildings[4][2] = new Headquarter(map.players[2], new Point(2,4));
-//            if (map.players.length > 3)
-//                map.buildings[4][3] = new Headquarter(map.players[3], new Point(3,4));
-//            map.buildings[2][5] = new City(null, new Point(5,2));
-//            map.buildings[2][6] = new MissileLauncher(new Point(6,2));
-
-//            map.players[0].addFunds(100000);
-//            map.players[1].addFunds(100000);
-//
-//            new Infantry(map.players[0], new Point(2,5));
-//            new Infantry(map.players[1], new Point(3,5));
-//            if (map.players.length >= 3){
-//                map.players[2].addFunds(100000);
-//                new Infantry(map.players[2], new Point(2,4));
-//            }
-//            if (map.players.length == 4){
-//                map.players[3].addFunds(100000);
-//                new Infantry(map.players[3], new Point(3,4));
-//            }
-//
-//            new Lander(map.players[0], new Point(0,0));
-//            new Lander(map.players[1], new Point(1,1));
-//            new Lander(map.players[0], new Point(3,17));
-//            new Infantry(map.players[0], new Point(10,5));
-//            new Infantry(map.players[1], new Point(7,3));
-//            new Fighter(map.players[0], new Point(10,10));
-//
-//            if (getBuilding(5,7) != null)
-//                ((Dock)getBuilding(5,7)).create(Battleship.class);
-//            if (getBuilding(4,7) != null)
-//                ((Airport)getBuilding(4,7)).create(Stealth.class);
-//            if (getBuilding(3,7) != null)
-//                ((Airport)getBuilding(3,7)).create(Fighter.class);
-//        }
     }
 
     public static Board restaure(String mapName){
         if (save)
-            try (FileInputStream fileIn = new FileInputStream(mapName);
+            try (FileInputStream fileIn = new FileInputStream(mapPath + mapName);
                     ObjectInputStream in = new ObjectInputStream(fileIn)) {
                 return (Board) in.readObject();
             } catch (IOException e) {
@@ -389,6 +370,14 @@ public class Universe {
      */
     public boolean setBuilding(int x, int y, AbstractBuilding b){
         if (isValidPosition(x, y)){
+
+            // the AI reads the whole map at the beginning to search for buildings that will be considered as objectives,
+            // if a building is changed, the AI is warned
+            if (map.buildings[y][x] != null)
+                for (Player p : map.players)
+                    if (p instanceof AIPlayer)
+                        ((AIPlayer)p).changeBuilding(map.buildings[y][x], b);
+
             map.buildings[y][x] = b;
             return true;
         }

@@ -20,13 +20,15 @@ import fr.main.model.units.TransportUnit;
 import fr.main.model.units.Path;
 import fr.main.model.units.weapons.PrimaryWeapon;
 
-import fr.main.view.render.buildings.BuildingRenderer;
 
 /*
     Import some classes of the view for the actions of the units 
  */
+import fr.main.view.MainFrame;
+import fr.main.view.render.buildings.BuildingRenderer;
 import fr.main.view.render.UniverseRenderer;
-
+import fr.main.view.Position;
+import fr.main.view.render.units.UnitRenderer;
 
 /**
  * Class used to find the action of an unit
@@ -272,7 +274,7 @@ public class UnitActionChooser implements java.io.Serializable {
     public void defend (){
         int actionPoint = - Integer.MIN_VALUE;
 
-        Universe world = Universe.get();
+        UniverseRenderer world = (UniverseRenderer)Universe.get();
         int[][] t = Direction.getNonCardinalDirections();
         int x = unit.getX(), y = unit.getY();
 
@@ -294,8 +296,21 @@ public class UnitActionChooser implements java.io.Serializable {
                                     Path p = Path.getPath();
                                     p.rebase(unit);
                                     p.add(pt.getLocation());
-                                    if (p.apply())
+                                    if (p.apply()){
+                                        Position.Camera camera = world.controller.camera;
+                                        int aLife = unit.getLife(),
+                                            tLife = u.getLife();
                                         unit.attack(u);
+                                        UnitRenderer.getRender(unit).attackSound();
+                                        world.flash ("" + (unit.getLife() - aLife),
+                                                    (unit.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                                                    (unit.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                                                    UniverseRenderer.FlashMessage.Type.ALERT);
+                                        world.flash ("" + (u.getLife() - tLife),
+                                                    (u.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                                                    (u.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                                                    UniverseRenderer.FlashMessage.Type.ALERT);
+                                    }
                                 };
                             }
                         }
@@ -308,8 +323,15 @@ public class UnitActionChooser implements java.io.Serializable {
                                     Path p = Path.getPath();
                                     p.rebase(unit);
                                     p.add(pt.getLocation());
-                                    if (p.apply())
+                                    if (p.apply()){
+                                        Position.Camera camera = world.controller.camera;
+                                        int life = u.getLife();
                                         ((HealerUnit)unit).heal(u);
+                                        world.flash("+" + (u.getLife() - life),
+                                                  (u.getX() - camera.getX() + 1) * MainFrame.UNIT + 5,
+                                                  (u.getY() - camera.getY()) * MainFrame.UNIT + 5, 1000);
+
+                                    }
                                 };
                             }
                         }
@@ -325,8 +347,19 @@ public class UnitActionChooser implements java.io.Serializable {
                                 Path p = Path.getPath();
                                 p.rebase(unit);
                                 p.add(pt.getLocation());
-                                if (p.apply())
+                                if (p.apply()){
+                                    Position.Camera camera = world.controller.camera;
                                     ((SupplyUnit)unit).supply();
+                                    for (Direction d : Direction.cardinalDirections()){
+                                        int xx = unit.getX() + d.x, yy = unit.getY() + d.y;
+                                        AbstractUnit unitBis = world.getUnit(xx, yy);
+                                        if (((SupplyUnit)unit).canSupply(unitBis))
+                                            world.flash("replenished",
+                                                (xx - camera.getX()) * MainFrame.UNIT + 5,
+                                                (yy - camera.getY()) * MainFrame.UNIT + 5, 1000,
+                                                UniverseRenderer.FlashMessage.Type.ALERT);
+                                    }
+                                }
                             };
                         }
                     }

@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
+import fr.main.model.Direction;
+import fr.main.model.Universe;
 import fr.main.model.units.AbstractUnit;
+import fr.main.model.buildings.AbstractBuilding;
+import fr.main.model.buildings.OwnableBuilding;
+import fr.main.model.buildings.Headquarter;
 
 public class UnitControlAI implements ArtificialIntelligence {
 
@@ -13,13 +18,76 @@ public class UnitControlAI implements ArtificialIntelligence {
 	 * Add UnitControlAI UID
 	 */
 	private static final long serialVersionUID = 7107098815082828456L;
-	public final AIPlayer player;
+	private AIPlayer player;
 	private final HashMap<AbstractUnit, UnitActionChooser> units;
+    private final ArrayList<OwnableBuilding> objectives;
 
 	public UnitControlAI(AIPlayer p){
-		this.player = p;
-		this.units  = new HashMap<AbstractUnit, UnitActionChooser>();
+		this.player     = p;
+		this.units      = new HashMap<AbstractUnit, UnitActionChooser>();
+        this.objectives = new ArrayList<OwnableBuilding>();
 	}
+
+    /**
+     * When a headQuarter is captured, it is changed in a city, so the objectives list has to be updated
+     * @param old the former building
+     * @param gold the new building
+     */
+    public void changeBuilding(AbstractBuilding old, AbstractBuilding gold){
+        if (gold instanceof OwnableBuilding){
+            int tmp = objectives.indexOf(old);
+            if (tmp != -1)
+                objectives.add(tmp, (OwnableBuilding)gold);            
+        }
+    }
+
+    public void loose(){
+        units.clear();
+        objectives.clear();
+        player = null;
+    }
+
+    /**
+     * Finds the player's headquarter and calls findObjectives
+     */
+    public void findObjectives(){
+        for (OwnableBuilding b : player.buildingList()){
+            if (b instanceof Headquarter){
+                findObjectives((Headquarter)b);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Finds all the buildings of the map from the closest of the headquarter to the farthest
+     * @param hq is the headquarter of the player
+     */
+    private void findObjectives(Headquarter hq){
+        this.objectives.clear();
+        objectives.add(hq);
+
+        Universe u = Universe.get();
+
+        int x = hq.getX(), y = hq.getY();
+        boolean bool = true;
+        int[][] tab = Direction.getNonCardinalDirections();
+        for (int i = 1; bool; i ++){
+            bool = false;
+            for (Direction d : Direction.cardinalDirections()){
+                bool = bool || u.isValidPosition(x + d.x * i, y + d.y * i);
+                AbstractBuilding b = u.getBuilding(x + d.x * i, y + d.y * i);
+                if (b != null && b instanceof OwnableBuilding)
+                    objectives.add((OwnableBuilding) b);
+            }
+            for (int j = 1; j < i; j++)
+                for (int[] t : tab){
+                    AbstractBuilding b = u.getBuilding(x + j * t[0], y + (i - j) * t[1]);
+                    if (b != null && b instanceof OwnableBuilding)
+                        objectives.add((OwnableBuilding) b);
+                }
+        }
+    }
 
 	public void add(AbstractUnit u){
 		units.put(u, new UnitActionChooser(u));
@@ -59,6 +127,10 @@ public class UnitControlAI implements ArtificialIntelligence {
                 actionChooser.findAction().run();
             if (!actionChooser.unit.isEnabled()) iterator.remove();
         }
+    }
+
+    public ArrayList<OwnableBuilding> getObjectives(){
+        return new ArrayList<OwnableBuilding>(objectives);
     }
 
 }

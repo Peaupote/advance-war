@@ -22,6 +22,7 @@ import fr.main.model.buildings.AbstractBuilding;
 import fr.main.model.buildings.FactoryBuilding;
 import fr.main.model.buildings.MissileLauncher;
 import fr.main.model.buildings.OwnableBuilding;
+import fr.main.model.buildings.Headquarter;
 import fr.main.model.players.Player;
 import fr.main.model.units.AbstractUnit;
 import fr.main.model.units.CaptureBuilding;
@@ -312,7 +313,7 @@ public class GameController extends Controller {
                 if (targetUnit.getX() == unitCursor.getX() &&
                     targetUnit.getY() == unitCursor.getY() &&
                     targetUnit.isEnabled()){
-                    AbstractBuilding b = Universe.get().getBuilding(targetUnit.getX(),targetUnit.getY());
+                    AbstractBuilding b = world.getBuilding(targetUnit.getX(),targetUnit.getY());
                     if (((CaptureBuilding)targetUnit).capture(b))
                         BuildingRenderer.getRender(b).updateState(null);
                 }
@@ -326,10 +327,9 @@ public class GameController extends Controller {
             new Index("Supply", () -> {
                 SupplyUnit su = ((SupplyUnit)targetUnit);
                 su.supply();
-                Universe u = Universe.get();
                 for (Direction d : Direction.cardinalDirections()){
                     int xx = targetUnit.getX() + d.x, yy = targetUnit.getY() + d.y;
-                    AbstractUnit unit = u.getUnit(xx, yy);
+                    AbstractUnit unit = world.getUnit(xx, yy);
                     if (su.canSupply(unit))
                         world.flash("replenished",
                             (xx - camera.getX()) * MainFrame.UNIT + 5,
@@ -376,7 +376,7 @@ public class GameController extends Controller {
             if (!targetUnit.isEnabled()) return;
 
             // enable options associated with the unit
-            AbstractBuilding building = Universe.get().getBuilding(unitCursor.getX(), unitCursor.getY());
+            AbstractBuilding building = world.getBuilding(unitCursor.getX(), unitCursor.getY());
             if (targetUnit.canAttack()) actions.get(2).setActive(true);
             if (targetUnit instanceof CaptureBuilding)
                 if (((CaptureBuilding)targetUnit).canCapture(building))
@@ -390,7 +390,7 @@ public class GameController extends Controller {
                 else actions.get(7).setActive(true);
 
             for (Direction d : Direction.cardinalDirections()){
-                AbstractUnit u = Universe.get().getUnit(targetUnit.getX() + d.x, targetUnit.getY() + d.y);
+                AbstractUnit u = world.getUnit(targetUnit.getX() + d.x, targetUnit.getY() + d.y);
                 if (u instanceof TransportUnit && ((TransportUnit)u).canCharge(targetUnit)) {
                     actions.get(9).setActive(true);
                     break;
@@ -409,10 +409,9 @@ public class GameController extends Controller {
         }
     }
 
-    // TODO: make clean stuff to avoid copy-past
-    public GameController (String mapName){
-    	// TODO: add player here
-        world      = new UniverseRenderer(mapName, this);
+
+    public GameController (Universe.Board board){
+        world      = new UniverseRenderer(board, this);
         size       = world.getDimension();
         camera     = new Position.Camera(size);
         cursor     = new Position.Cursor(camera, size);
@@ -433,26 +432,12 @@ public class GameController extends Controller {
         new Minimap (camera, new TerrainPanel (cursor, camera));
     }
 
+    public GameController (String mapName){
+        this(Universe.restaure(mapName));
+    }
+
     public GameController (String mapName, Player ps[]) {
-        world      = new UniverseRenderer(mapName, ps, this);
-        size       = world.getDimension();
-        camera     = new Position.Camera(size);
-        cursor     = new Position.Cursor(camera, size);
-        unitCursor = new Position.Cursor(camera, size);
-        InterfaceUI.clear();
-        MainFrame.setCamera(camera);
-
-        mouse              = new Point(1,1);
-        actionPanel        = new MainActionPanel();
-        dayPanel           = new DayPanel();
-        mode               = Mode.MOVE;
-        path               = new PathRenderer(camera);
-        unitActionPanel    = new UnitActionPanel();
-        transportUnitPanel = new TransportUnitPanel();
-        buildingPanel      = new BuildingInterface(this);
-
-        new PlayerPanel (cursor, camera);
-        new Minimap (camera, new TerrainPanel (cursor, camera));
+        this(Universe.restaure(mapName).setPlayers(ps));
     }
 
     public void onOpen () {
@@ -618,7 +603,7 @@ public class GameController extends Controller {
             else buildingPanel.setVisible (true);
         } else if (targetUnit.getPlayer() == world.getCurrentPlayer() &&
                  targetUnit.isEnabled()) {
-        	UnitRenderer.getRender(targetUnit).selectedSound();
+            UnitRenderer.getRender(targetUnit).selectedSound();
             mode = Mode.UNIT;
             world.updateTarget(targetUnit);
             path.rebase(targetUnit);
@@ -701,26 +686,41 @@ public class GameController extends Controller {
         AbstractUnit unit = targetUnit;
         ArrayList<AbstractUnit> units = world.getCurrentPlayer().unitList();
 
-        int n = (units.indexOf(unit) + units.size()) % units.size(),
-            // indexOf returns -1 if the object is not in the list, here we want to have the last element in this case
-            i = (n + 1) % units.size();
-            // the first element we check
-        unit = null;
-        do {
-            if (units.get(i).isEnabled()){
-                unit = units.get(i);
+        if (! units.isEmpty()){ 
+            int n = (units.indexOf(unit) + units.size()) % units.size(),
+                // indexOf returns -1 if the object is not in the list, here we want to have the last element in this case
+                i = (n + 1) % units.size();
+                // the first element we check
+            unit = null;
+            do {
+                if (units.get(i).isEnabled()){
+                    unit = units.get(i);
+                    break;
+                }
+                i = (i + 1) % units.size();
+            } while (i != n);
+
+            if (unit == null && units.get(n).isEnabled())
+                unit = units.get(n);
+
+            if (unit != null){
+                camera.setLocation(unit.getX(), unit.getY());
+                cursor.setLocation(unit.getX(), unit.getY());
+                unitCursor.setLocation(unit.getX(), unit.getY());
+                return;
+            }
+        }
+        // goes to the current player's hq
+        OwnableBuilding o = null;
+        for (OwnableBuilding b : world.getCurrentPlayer().buildingList())
+            if (b instanceof Headquarter){
+                o = b;
                 break;
             }
-            i = (i + 1) % units.size();
-        } while (i != n);
-
-        if (unit == null && units.get(n).isEnabled())
-            unit = units.get(n);
-
-        if (unit != null){
-            camera.setLocation(unit.getX(), unit.getY());
-            cursor.setLocation(unit.getX(), unit.getY());
-            unitCursor.setLocation(unit.getX(), unit.getY());
+        if (o != null){
+            camera.setLocation(o.getX(), o.getY());
+            cursor.setLocation(o.getX(), o.getY());
+            unitCursor.setLocation(o.getX(), o.getY());
         }
     }
 
@@ -747,8 +747,8 @@ public class GameController extends Controller {
                     if (mode == Mode.UNIT)                  validUnitMove();
                     else if (mode == Mode.ATTACK)           validUnitTarget();
                     else if (mode == Mode.HEAL)             validHeal();
-                    else if (mode == Mode.MOVE)  			selectOnMove();
-					else if (mode == Mode.LOAD)             validLoad();
+                    else if (mode == Mode.MOVE)             selectOnMove();
+                    else if (mode == Mode.LOAD)             validLoad();
                     else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
                     else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
                 }
@@ -799,8 +799,8 @@ public class GameController extends Controller {
                 if      (mode == Mode.UNIT)             validUnitMove();
                 else if (mode == Mode.ATTACK)           validUnitTarget();
                 else if (mode == Mode.HEAL)             validHeal();
-                else if (mode == Mode.MOVE) 			selectOnMove();
-				else if (mode == Mode.LOAD)             validLoad();
+                else if (mode == Mode.MOVE)             selectOnMove();
+                else if (mode == Mode.LOAD)             validLoad();
                 else if (mode == Mode.UNLOAD_LOCATE)    validUnloadLocate();
                 else if (mode == Mode.MISSILE_LAUNCHER) validMissileLauncher();
                 else if (mode == Mode.MENU)             focusedActionPanel.perform();

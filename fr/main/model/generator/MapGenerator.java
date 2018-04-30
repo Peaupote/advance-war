@@ -85,6 +85,7 @@ public class MapGenerator {
     }
 
 	public void setPlayers(int playerNb) {
+        Player.increment_id = 0;
 		if(playerNb < 2) playerNb = 2;
 		if(playerNb > 4) playerNb = 4;
 		players = new Player[playerNb];
@@ -443,7 +444,7 @@ public class MapGenerator {
 					layout[sqrCoor[randNb][0]][sqrCoor[randNb][1]] =
 							new Barrack(
 									((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-									new Point(sqrCoor[randNb][0], sqrCoor[randNb][1]));
+									new Point(sqrCoor[randNb][1], sqrCoor[randNb][0]));
 					break;
 				}
 			}
@@ -500,12 +501,12 @@ public class MapGenerator {
 					layout[nearest[randNb][0]][nearest[randNb][1]] =
 						new Dock(
 								((Headquarter) layout[coor[0]][coor[1]]).getOwner(),
-								new Point(nearest[randNb][0], nearest[randNb][1]));
+								new Point(nearest[randNb][1], nearest[randNb][0]));
 				else
 					layout[nearest[randNb][0]][nearest[randNb][1]] =
 							new Dock(
 									null,
-									new Point(nearest[randNb][0], nearest[randNb][1]));
+									new Point(nearest[randNb][1], nearest[randNb][0]));
 				break;
 			}
 		}
@@ -596,7 +597,7 @@ public class MapGenerator {
 		System.out.println("Headquarters nearly placed.");
 
 		for (int i = 0; i < hqs.size(); i ++) {
-			layout[rect[hqs.get(i)].getX()][rect[hqs.get(i)].getY()] = new Headquarter(players[i], new Point(rect[hqs.get(i)].getX(), rect[hqs.get(i)].getY()));
+			layout[rect[hqs.get(i)].getX()][rect[hqs.get(i)].getY()] = new Headquarter(players[i], new Point(rect[hqs.get(i)].getY(), rect[hqs.get(i)].getX()));
 			currentHQCoordinates[i][0] = rect[hqs.get(i)].getX();
 			currentHQCoordinates[i][1] = rect[hqs.get(i)].getY();
 		}

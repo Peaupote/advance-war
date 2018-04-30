@@ -73,7 +73,7 @@ public class UniverseRenderer extends MapRenderer {
         super(b);
 
         this.controller = controller;
-        controller.makeView().getWeatherController().update(Weather.FOGGY);
+        controller.makeView().getWeatherController().update(getWeather());
         
         targets        = new boolean[map.board.length][map.board[0].length];
         lowerRight     = new Point(map.board.length, map.board[0].length);
@@ -159,7 +159,7 @@ public class UniverseRenderer extends MapRenderer {
 
     @Override
     public void playerLoose(Player p){
-      if (!players.hasNext())
+      if (players != null && !players.hasNext())
         MainFrame.setScene(new StatController(getDay(), map.players));
     }
 

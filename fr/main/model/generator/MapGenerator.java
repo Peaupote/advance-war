@@ -3,10 +3,8 @@ package fr.main.model.generator;
 import fr.main.model.TerrainEnum;
 import fr.main.model.buildings.*;
 import fr.main.model.players.Player;
-import fr.main.model.terrains.Terrain;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static fr.main.model.TerrainEnum.*;
@@ -1549,17 +1547,18 @@ public class MapGenerator {
 	}
 
 	private TerrainEnum[][] placeRoads(TerrainEnum[][] map, AbstractBuilding[][] layout, int[][] roadNodes) {
-    	// TODO : placeRoads algorithm
 		int[][] weights = getWeights(map);
 		boolean[][] blocks = getBlocks(layout);
 
 		AStar aStar = new AStar(weights, blocks);
 
 		int[][] road;
+		int randNb;
 
 		for(int[] coor : roadNodes) {
-			int p = closestPoint(coor[0], coor[1], roadNodes);
-			road = aStar.shortestRoute(coor[0], coor[1], roadNodes[p][0], roadNodes[p][1]);
+//			int p = closestPoint(coor[0], coor[1], roadNodes);
+			randNb = rand.nextInt(roadNodes.length);
+			road = aStar.shortestRoute(coor[0], coor[1], roadNodes[randNb][0], roadNodes[randNb][1]);
 			System.out.println("Road length : " + road.length);
 			map = placeRoads(map, road);
 		}
@@ -1606,15 +1605,15 @@ public class MapGenerator {
 		for(int i = 0; i < map.length; i ++)
 			for(int j = 0; j < map[0].length; j ++) {
 				if(map[i][j] == sea || map[i][j] == reef)
-					weights[i][j] = 8;
+					weights[i][j] = 20;
 				else if(map[i][j] == mountain)
-					weights[i][j] = 6;
+					weights[i][j] = 15;
 				else if(map[i][j] == hill)
-					weights[i][j] = 5;
+					weights[i][j] = 12;
 				else if(map[i][j] == road || map[i][j] == bridge)
-					weights[i][j] = 1;
+					weights[i][j] = 0;
 				else
-					weights[i][j] = 4;
+					weights[i][j] = 8;
 			}
 		return weights;
 	}
